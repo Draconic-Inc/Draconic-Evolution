@@ -71,14 +71,15 @@ public class PeripheralFlowGate implements IPeripheral, ICapabilityProvider {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-            if (self == null) self = LazyOptional.of(() -> this);
-            return self.cast();
-        }
+		//TODO?
+//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
+//            if (self == null) self = LazyOptional.of(() -> this);
+//            return self.cast();
+//        }
         return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-        self = CapabilityUtil.invalidate(self);
+//        self = CapabilityUtil.invalidate(self);
     }
 }

@@ -51,7 +51,7 @@ public class ContainerJunkFilter extends AbstractContainerMenu {
 
     @Override
     public void broadcastChanges() {
-        if (stack != slot.getStackInSlot(player) && !player.level.isClientSide) {
+        if (stack != slot.getStackInSlot(player) && !player.level().isClientSide) {
             player.closeContainer();
         }
         super.broadcastChanges();

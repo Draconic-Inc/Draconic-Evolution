@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.brandon3055.draconicevolution.init.DEModules;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -286,7 +287,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         synchronized (moduleEntities) {
             for (ModuleEntity<?> entity : moduleEntities) {
                 CompoundTag entityNBT = new CompoundTag();
-                entityNBT.putString("id", entity.module.getRegistryName().toString());
+                entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
                 entity.writeToNBT(entityNBT);
                 modules.add(entityNBT);
             }

@@ -48,8 +48,8 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
     private ModuleGrid moduleGrid;
     private ModuleHost moduleHost;
 
-    public ContainerModularItem(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<TileBCore> factory) {
-        super(DEContent.container_modular_item, windowId, player, extraData, factory);
+    public ContainerModularItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
+        super(DEContent.container_modular_item, windowId, player, extraData);
         this.slot = PlayerSlot.fromBuff(extraData);
         this.onContainerOpen();
         this.moduleGrid = new ModuleGrid(this, player);
@@ -80,7 +80,7 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
             }
         }
 
-        sender.sendMessage(new TranslatableComponent("modular_item.draconicevolution.error.no_modular_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        sender.sendMessage(Component.translatable("modular_item.draconicevolution.error.no_modular_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
 
         @Override
         public Component getDisplayName() {
-            return stack.getHoverName().plainCopy().append(" ").append(new TranslatableComponent("gui.draconicevolution.modular_item.modules"));
+            return stack.getHoverName().plainCopy().append(" ").append(Component.translatable("gui.draconicevolution.modular_item.modules"));
         }
 
         @Nullable

@@ -20,7 +20,7 @@ public class WhatsBrokenGui extends ModularGuiScreen {
     protected GuiToolkit<WhatsBrokenGui> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.EXTRA_WIDE_EXTRA_TALL);
 
     public WhatsBrokenGui() {
-        super(new TextComponent("Whats Broken? (Besides this info tablet)"));
+        super(Component.literal("Whats Broken? (Besides this info tablet)"));
     }
 
     @Override

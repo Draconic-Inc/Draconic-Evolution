@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.LimitedModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,29 +30,17 @@ import java.util.function.Supplier;
  */
 public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleProvider<P> {
 
-    @Deprecated //Do not access this directly!
-    private Module<P> module = null;
+    private Module<P> moduleCache = null;
     private Supplier<Module<P>> moduleSupplier;
 
-    //This needs to be a supplier so i can lazy load the module. The reason being items are registered before modules
-    //so when this item is created the module does not exist yet.
-    public ModuleItem(Properties properties, Supplier<Module<P>> moduleSupplier) {
+    public ModuleItem(Properties properties, Supplier<Module<?>> moduleSupplier) {
         super(properties);
-        this.moduleSupplier = moduleSupplier;
+        this.moduleSupplier = SneakyUtils.unsafeCast(moduleSupplier);
     }
 
-    public ModuleItem(Properties properties, Module<P> module) {
-        super(properties);
-        this.module = module;
-    }
-
-    //Only use if you intend to call setModule immediately after construction.
-    public ModuleItem(Properties properties) {
-        super(properties);
-    }
-
-    public void setModule(Module<P> module) {
-        this.module = module;
+    public ModuleItem(Supplier<Module<?>> moduleSupplier) {
+        super(new Properties());
+        this.moduleSupplier = SneakyUtils.unsafeCast(moduleSupplier);
     }
 
     public static Module<?> getModule(ItemStack stack) {
@@ -78,10 +67,10 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
 
     @Override
     public Module<P> getModule() {
-        if (module == null) {
-            module = moduleSupplier.get();
+        if (moduleCache == null) {
+            moduleCache = moduleSupplier.get();
         }
-        return module;
+        return moduleCache;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -18,13 +18,12 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.DataUtils;
-import com.brandon3055.draconicevolution.client.DEGuiSprites;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -65,7 +64,7 @@ public class GuiDislocator extends ModularGuiScreen {
     @Override
     public void addElements(GuiElementManager manager) {
         TGuiBase temp = new TGuiBase(this);
-        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);
         int bgPad = 5;
@@ -213,7 +212,7 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setXPos(addButton.maxXPos())
                 .setYPos(addButton.yPos() + 1)
                 .onPressed(() -> addNew(1))
-                .addChild(new GuiTexture(8, 8, DEGuiSprites.get("dislocator/add_top"))
+                .addChild(new GuiTexture(8, 8, DEGuiTextures.get("dislocator/add_top"))
                         .onReload(GuiTexture::centerOnParent));
 
         toolkit.createButton_old("", addButton, true, 0)
@@ -222,7 +221,7 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setXPos(addButton.maxXPos())
                 .setMaxYPos(addButton.maxYPos() - 1, false)
                 .onPressed(() -> addNew(2))
-                .addChild(new GuiTexture(8, 8, DEGuiSprites.get("dislocator/add_bottom"))
+                .addChild(new GuiTexture(8, 8, DEGuiTextures.get("dislocator/add_bottom"))
                         .onReload(GuiTexture::centerOnParent));
 
         toolkit.createButton_old("", addButton, true)
@@ -346,14 +345,14 @@ public class GuiDislocator extends ModularGuiScreen {
 
         @Override
         public void addChildElements() {
-            lock = toolkit.createIconButton(this, 8, 8, () -> DEGuiSprites.get("dislocator/" + (isLocked() ? "locked" : "unlocked")))
+            lock = toolkit.createIconButton(this, 8, 8, () -> DEGuiTextures.get("dislocator/" + (isLocked() ? "locked" : "unlocked")))
                     .setHoverText(toolkit.i18n("edit_lock.info"))
                     .setXPosMod(() -> maxXPos() - 9)
                     .setYPosMod(() -> yPos() + 2)
                     .onPressed(() -> DraconicNetwork.sendDislocatorMessage(3, e -> e.writeVarInt(index).writeBoolean(!isLocked())))
                     .setEnabledCallback(this::hasTarget);
 
-            delete = toolkit.createIconButton(this, 8, 8, DEGuiSprites.getter("dislocator/delete"))
+            delete = toolkit.createIconButton(this, 8, 8, DEGuiTextures.getter("dislocator/delete"))
                     .setHoverText(toolkit.i18n("delete.info"))
                     .setXPosMod(() -> lock.xPos() - 9)
                     .setYPosMod(() -> yPos() + 2)
@@ -435,13 +434,13 @@ public class GuiDislocator extends ModularGuiScreen {
                 selected = index == selectedIndex;
             }
 
-            Material mat = DEGuiSprites.get("dislocator/slot");
-            Material matSelect = DEGuiSprites.get("dislocator/slot_selected");
+            Material mat = DEGuiTextures.get("dislocator/slot");
+            Material matSelect = DEGuiTextures.get("dislocator/slot_selected");
             MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
-            drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
+            drawSprite(getter.getBuffer(BCGuiTextures.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
-                drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
+                drawSprite(getter.getBuffer(BCGuiTextures.GUI_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
             }
             getter.endBatch();
             super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -464,7 +463,7 @@ public class GuiDislocator extends ModularGuiScreen {
                     getter.endBatch();
                 }
 
-                drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos, DEGuiSprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
+                drawSprite(getter.getBuffer(BCGuiTextures.GUI_TYPE), xPos(), yPos, DEGuiTextures.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
                 getter.endBatch();
 
 

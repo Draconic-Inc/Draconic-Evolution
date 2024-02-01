@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.Ctrl;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -15,7 +15,7 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
-import com.brandon3055.draconicevolution.client.DEGuiSprites;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyTransfuser;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -46,7 +46,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
     @Override
     public void addElements(GuiElementManager manager) {
         TBasicMachine temp = new TModularMachine(this, tile, false);
-        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);
 
@@ -78,7 +78,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
                     .setHoverText(e -> toolkit.i18n(tile.ioModes[fi].get().getName()))
                     .onButtonPressed(btn -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(Screen.hasShiftDown() == (btn == 0))));
 
-            button.addChild(new GuiTexture(16, 16, () -> DEGuiSprites.get(tile.ioModes[fi].get().getSpriteName()))
+            button.addChild(new GuiTexture(16, 16, () -> DEGuiTextures.get(tile.ioModes[fi].get().getSpriteName()))
                     .setRelPos(0, 0));
 
             toolkit.createEnergyBar(column)
@@ -118,7 +118,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
                 .setHoverText(e -> toolkit.i18n(tile.balancedMode.get() ? "balanced_charge" : "sequential_charge"))
                 .onPressed(() -> tile.balancedMode.invert());
 
-        button.addChild(new GuiTexture(18, 18, () -> DEGuiSprites.get("transfuser/" + (tile.balancedMode.get() ? "balanced_charge" : "sequential_charge")))
+        button.addChild(new GuiTexture(18, 18, () -> DEGuiTextures.get("transfuser/" + (tile.balancedMode.get() ? "balanced_charge" : "sequential_charge")))
                 .setRelPos(1, 1));
     }
 }

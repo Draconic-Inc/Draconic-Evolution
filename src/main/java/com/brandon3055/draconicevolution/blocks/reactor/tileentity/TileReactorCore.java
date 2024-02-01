@@ -28,12 +28,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ChunkHolder.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +47,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -136,7 +137,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     //endregion ======================================
 
     public TileReactorCore(BlockPos pos, BlockState state) {
-        super(DEContent.tile_reactor_core, pos, state);
+        super(DEContent.TILE_REACTOR_CORE.get(), pos, state);
         for (int i = 0; i < componentPositions.length; i++) {
             componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
@@ -148,7 +149,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     @Override
     public int getAccessDistanceSq() {
-        return 16*16;
+        return 16 * 16;
     }
 
     //region Update Logic
@@ -181,7 +182,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 ////                reactorState.set(ReactorState.COOLING);
 ////            }
 //        }
-
 
 
         super.tick();
@@ -409,7 +409,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
                 ManagedVec3I v = componentPositions[i];
                 if (v.get().sum() > 0) {
                     BlockPos p = getOffsetPos(v.get()).relative(Direction.from3DDataValue(i).getOpposite());
-                    level.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.BlockInteraction.DESTROY);
+                    level.explode((Entity) null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Level.ExplosionInteraction.BLOCK);
                 }
             }
         }
@@ -563,7 +563,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     public void onComponentClicked(Player player, TileReactorComponent component) {
         if (!level.isClientSide) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
             sendPacketToClient((ServerPlayer) player, output -> output.writePos(component.getBlockPos()), 1);
         }
     }
@@ -571,7 +571,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.getInventory(), this);
+        return new ContainerReactor(DEContent.MENU_REACTOR.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override
@@ -599,7 +599,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
@@ -624,7 +624,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             player.push(offsetX * m, offsetY * m, offsetZ * m);
         }
     }
-
 
 
     //endregion ############################################
@@ -699,7 +698,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
 
         if (tick % 100 == 0) {
-            double rad = (getCoreDiameter() * 1.05) / 2;
+            int rad = (int) ((getCoreDiameter() * 1.05) / 2);
             Iterable<BlockPos> inRange = BlockPos.betweenClosed(worldPosition.offset(-rad, -rad, -rad), worldPosition.offset(rad + 1, rad + 1, rad + 1));
 
             for (BlockPos p : inRange) {
@@ -868,7 +867,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         LogHelper.dev("Reactor: Validate Structure");
         for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
             BlockPos pos = getOffsetPos(componentPositions[facing.get3DDataValue()].get());
-            if (!Utils.isAreaLoaded(level, pos, FullChunkStatus.TICKING)) {
+            if (!level.isLoaded(pos)) {
                 return true;
             }
 
@@ -913,7 +912,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
         Vec3D vec = Vec3D.getCenter(worldPosition);
         level.removeBlock(worldPosition, false);
-        level.explode(null, vec.x, vec.y, vec.z, 8, Explosion.BlockInteraction.BREAK);
+        level.explode(null, vec.x, vec.y, vec.z, 8, Level.ExplosionInteraction.BLOCK);
         int c = 25 + level.random.nextInt(25);
         for (int i = 0; i < c; i++) {
             FallingBlockEntity entity = FallingBlockEntity.fall(level, vec.getPos(), lava);
@@ -1038,8 +1037,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             double z = Math.sin(direction);
 
             BlockPos p = pos.getPos();
-            if (world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) {
-                while ((world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) && p.getY() > 0) {
+            if (world.isEmptyBlock(p) || world.getBlockState(p).is(DEContent.REACTOR_CORE.get())) {
+                while ((world.isEmptyBlock(p) || world.getBlockState(p).is(DEContent.REACTOR_CORE.get())) && p.getY() > 0) {
                     p = p.below();
                 }
             } else {
@@ -1114,7 +1113,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             return shieldActive;
         }
 
-        @OnlyIn(Dist.CLIENT)
+        @OnlyIn (Dist.CLIENT)
         public String localize() {
             ChatFormatting[] colours = {ChatFormatting.RED, ChatFormatting.DARK_AQUA, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.LIGHT_PURPLE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_RED};
             return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");

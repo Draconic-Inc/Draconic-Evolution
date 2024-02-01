@@ -3,13 +3,14 @@ package com.brandon3055.draconicevolution.inventory;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
  * Created by Brandon on 29/10/2014.
  */
-public class CraftingInventoryWrapper extends CraftingContainer {
+public class CraftingInventoryWrapper extends TransientCraftingContainer {
     private IItemHandlerModifiable wrapped;
     private AbstractContainerMenu container;
 

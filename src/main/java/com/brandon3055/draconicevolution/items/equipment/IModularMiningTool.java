@@ -13,10 +13,9 @@ import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,30 +63,30 @@ public interface IModularMiningTool extends IModularTieredItem {
     }
 
     default boolean breakAOEBlocks(ModuleHost host, ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
-        BlockState blockState = player.level.getBlockState(pos);
+        BlockState blockState = player.level().getBlockState(pos);
         if (!isCorrectToolForDrops(stack, blockState)) {
             return false;
         }
 
         InventoryDynamic inventoryDynamic = new InventoryDynamic();
-        float refStrength = blockStrength(blockState, player, player.level, pos);
+        float refStrength = blockStrength(blockState, player, player.level(), pos);
         Pair<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
         List<BlockPos> aoeBlocks = BlockPos.betweenClosedStream(aoe.key(), aoe.value()).map(BlockPos::new).toList();
 
         if (aoeSafe) {
             for (BlockPos block : aoeBlocks) {
-                if (!player.level.isEmptyBlock(block) && player.level.getBlockEntity(block) != null) {
-                    if (player.level.isClientSide) player.sendMessage(new TranslatableComponent("item_prop.draconicevolution.aoe_safe.blocked"), Util.NIL_UUID);
-                    else ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(((ServerPlayer) player).level, block));
+                if (!player.level().isEmptyBlock(block) && player.level().getBlockEntity(block) != null) {
+                    if (player.level().isClientSide) player.sendSystemMessage(Component.translatable("item_prop.draconicevolution.aoe_safe.blocked"));
+                    else ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(player.level(), block));
                     return true;
                 }
             }
         }
 
-        aoeBlocks.forEach(block -> breakAOEBlock(stack, player.level, block, player, refStrength, inventoryDynamic, rand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0));
-        List<ItemEntity> items = player.level.getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key(), aoe.value().offset(1, 1, 1)));
+        aoeBlocks.forEach(block -> breakAOEBlock(stack, player.level(), block, player, refStrength, inventoryDynamic, rand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0));
+        List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key(), aoe.value().offset(1, 1, 1)));
         for (ItemEntity item : items) {
-            if (!player.level.isClientSide && item.isAlive()) {
+            if (!player.level().isClientSide && item.isAlive()) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
                 item.discard();
             }

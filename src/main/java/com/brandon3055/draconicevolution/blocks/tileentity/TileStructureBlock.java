@@ -2,11 +2,12 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.IInteractTile;
-import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedResource;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     public final ManagedBool reverting = register(new ManagedBool("reverting", DataFlags.SAVE_NBT));
 
     public TileStructureBlock(BlockPos pos, BlockState state) {
-        super(DEContent.tile_structure_block, pos, state);
+        super(DEContent.TILE_STRUCTURE_BLOCK.get(), pos, state);
     }
 
     public void setController(MultiBlockController controller) {
@@ -80,7 +81,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
         }
 
         StructureBlock.buildingLock = true;
-        level.scheduleTick(worldPosition, DEContent.structure_block, 1);
+        level.scheduleTick(worldPosition, DEContent.STRUCTURE_BLOCK.get(), 1);
         reverting.set(true);
         StructureBlock.buildingLock = false;
     }
@@ -114,7 +115,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         MultiBlockController controller = getController();
         return controller == null || controller.renderSelectionBox(event);
     }

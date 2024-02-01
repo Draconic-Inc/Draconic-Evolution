@@ -4,6 +4,7 @@ import codechicken.lib.model.ModelRegistryHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
+import com.brandon3055.brandonscore.client.hud.HudManager;
 import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
@@ -37,12 +38,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
+
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 15/11/2022
@@ -50,22 +57,23 @@ import org.jetbrains.annotations.NotNull;
 public class ClientInit {
     private static final CrashLock LOCK = new CrashLock("Already Initialized.");
     private static final ModelRegistryHelper MODEL_HELPER = new ModelRegistryHelper();
-    public static ModuleSpriteUploader moduleSpriteUploader;
-    public static ShieldHudElement hudElement = null;
+
+    public static final DeferredRegister<AbstractHudElement> HUDS = DeferredRegister.create(HudManager.HUD_REGISTRY, MODID);
+    public static final RegistryObject<AbstractHudElement> SHIELD_HUD = HUDS.register("shield_hud", ShieldHudElement::new);
 
     public static void init() {
         LOCK.lock();
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(ClientInit::clientSetupEvent);
-        modBus.addListener(ClientInit::onModelRegistryEvent);
+//        modBus.addListener(ClientInit::onModelRegistryEvent);
         modBus.addListener(ClientInit::registerRenderers);
         modBus.addListener(ClientInit::onAddRenderLayers);
-        modBus.addListener(DEGuiSprites::initialize);
-        modBus.addListener(DEMiscSprites::initialize);
+        modBus.addListener(ClientInit::onResourceReload);
 
-        modBus.addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
-        modBus.addGenericListener(AbstractHudElement.class, ClientInit::registerHudElements);
+//        modBus.addListener((RegisterColorHandlersEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
+
+        HUDS.register(modBus);
 
         ModularItemRenderOverrideHandler.init();
         CustomBossInfoHandler.init();
@@ -83,132 +91,133 @@ public class ClientInit {
         KeyBindings.init();
     }
 
-    private static void onModelRegistryEvent(ModelRegistryEvent event) {
-
+    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(ModuleTextures.getAtlasHolder());
+        event.registerReloadListener(DEGuiTextures.getAtlasHolder());
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         //Block Entities
-        event.registerBlockEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
-        event.registerBlockEntityRenderer(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
-        event.registerBlockEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
-        event.registerBlockEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
-        event.registerBlockEntityRenderer(DEContent.tile_core_stabilizer, RenderEnergyCoreStabilizer::new);
-        event.registerBlockEntityRenderer(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
-        event.registerBlockEntityRenderer(DEContent.tile_generator, RenderTileGenerator::new);
-        event.registerBlockEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
-        event.registerBlockEntityRenderer(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
-        event.registerBlockEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
-        event.registerBlockEntityRenderer(DEContent.tile_reactor_core, RenderTileReactorCore::new);
-        event.registerBlockEntityRenderer(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
-        event.registerBlockEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
-        event.registerBlockEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
-        event.registerBlockEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
-        event.registerBlockEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
-        event.registerBlockEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
-        event.registerBlockEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
-        event.registerBlockEntityRenderer(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
-        event.registerBlockEntityRenderer(DEContent.tile_placed_item, RenderTilePlacedItem::new);
-        event.registerBlockEntityRenderer(DEContent.tile_disenchanter, RenderTileDisenchanter::new);
-        event.registerBlockEntityRenderer(DEContent.tile_celestial_manipulator, RenderTileCelestialManipulator::new);
-        event.registerBlockEntityRenderer(DEContent.tile_entity_detector, RenderTileEntityDetector::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_GRINDER.get(), RenderTileGrinder::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_DRACONIUM_CHEST.get(), DraconiumChestTileRenderer::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_STORAGE_CORE.get(), RenderTileEnergyCore::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_ENERGY_PYLON.get(), RenderTileEnergyPylon::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_CORE_STABILIZER.get(), RenderEnergyCoreStabilizer::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_STABILIZED_SPAWNER.get(), RenderTileStabilizedSpawner::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_GENERATOR.get(), RenderTileGenerator::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_IO_CRYSTAL.get(), RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_RELAY_CRYSTAL.get(), RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_WIRELESS_CRYSTAL.get(), RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_REACTOR_CORE.get(), RenderTileReactorCore::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_REACTOR_INJECTOR.get(), RenderTileReactorComponent::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_REACTOR_STABILIZER.get(), RenderTileReactorComponent::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_CRAFTING_CORE.get(), RenderTileFusionCraftingCore::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_CRAFTING_INJECTOR.get(), RenderTileCraftingInjector::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_POTENTIOMETER.get(), RenderTilePotentiometer::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_ENERGY_TRANSFUSER.get(), RenderTileEnergyTransfuser::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_CHAOS_CRYSTAL.get(), RenderTileChaosCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_DISLOCATOR_PEDESTAL.get(), RenderTileDislocatorPedestal::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_PLACED_ITEM.get(), RenderTilePlacedItem::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_DISENCHANTER.get(), RenderTileDisenchanter::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_CELESTIAL_MANIPULATOR.get(), RenderTileCelestialManipulator::new);
+        event.registerBlockEntityRenderer(DEContent.TILE_ENTITY_DETECTOR.get(), RenderTileEntityDetector::new);
 
         //Entities
-        event.registerEntityRenderer(DEContent.draconicGuardian, DraconicGuardianRenderer::new);
-        event.registerEntityRenderer(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
-        event.registerEntityRenderer(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
-        event.registerEntityRenderer(DEContent.draconicArrow, DraconicArrowRenderer::new);
-        event.registerEntityRenderer(DEContent.guardianWither, GuardianWitherRenderer::new);
+        event.registerEntityRenderer(DEContent.ENTITY_DRACONIC_GUARDIAN.get(), DraconicGuardianRenderer::new);
+        event.registerEntityRenderer(DEContent.ENTITY_GUARDIAN_PROJECTILE.get(), GuardianProjectileRenderer::new);
+        event.registerEntityRenderer(DEContent.ENTITY_GUARDIAN_CRYSTAL.get(), GuardianCrystalRenderer::new);
+        event.registerEntityRenderer(DEContent.ENTITY_DRACONIC_ARROW.get(), DraconicArrowRenderer::new);
+        event.registerEntityRenderer(DEContent.ENTITY_GUARDIAN_WITHER.get(), GuardianWitherRenderer::new);
     }
 
     private static void registerGuiFactories() {
-        MenuScreens.register(DEContent.container_generator, GuiGenerator::new);
-        MenuScreens.register(DEContent.container_grinder, GuiGrinder::new);
-        MenuScreens.register(DEContent.container_draconium_chest, GuiDraconiumChest::new);
-        MenuScreens.register(DEContent.container_energy_core, GuiEnergyCore::new);
-        MenuScreens.register(DEContent.container_modular_item, GuiModularItem::new);
-        MenuScreens.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
-        MenuScreens.register(DEContent.container_reactor, GuiReactor::new);
+        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator::new);
+        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder::new);
+        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest::new);
+        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore::new);
+        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), GuiModularItem::new);
+        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), GuiConfigurableItem::new);
+        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor::new);
 
-        MenuScreens.register(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
-        MenuScreens.register(DEContent.container_disenchanter, GuiDisenchanter::new);
-        MenuScreens.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
-        MenuScreens.register(DEContent.container_flow_gate, GuiFlowGate::new);
-        MenuScreens.register(DEContent.container_entity_detector, GuiEntityDetector::new);
-        MenuScreens.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
+        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator::new);
+        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter::new);
+        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore::new);
+        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate::new);
+        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), GuiEntityDetector::new);
+        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), GuiEnergyTransfuser::new);
     }
 
     @SuppressWarnings("ConstantConditions")
     private static void registerItemRenderers() {
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.chaos_shard.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_shard));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.chaos_frag_large.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_large));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.chaos_frag_medium.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_medium));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.chaos_frag_small.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_small));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.mob_soul.getRegistryName(), "inventory"), new RenderItemMobSoul());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_io_basic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIUM));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_io_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.WYVERN));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_io_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIC));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_relay_basic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIUM));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_relay_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.WYVERN));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_relay_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIC));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_wireless_basic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIUM));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_wireless_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.WYVERN));
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.crystal_wireless_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIC));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_SHARD.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_SHARD.get()));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_FRAG_LARGE.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_FRAG_LARGE.get()));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_FRAG_MEDIUM.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_FRAG_MEDIUM.get()));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_FRAG_SMALL.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_FRAG_SMALL.get()));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.MOB_SOUL.get()), "inventory"), new RenderItemMobSoul());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_BASIC_IO_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIUM));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_WYVERN_IO_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.WYVERN));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_DRACONIC_IO_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIC));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_BASIC_RELAY_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIUM));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_WYVERN_RELAY_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.WYVERN));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_DRACONIC_RELAY_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIC));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_BASIC_WIRELESS_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIUM));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_WYVERN_WIRELESS_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.WYVERN));
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_DRACONIC_WIRELESS_CRYSTAL.get()), "inventory"), new RenderItemEnergyCrystal(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIC));
 
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.draconium_chest.getRegistryName(), "inventory"), new RenderItemDraconiumChest());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_DRACONIUM_CHEST.get()), "inventory"), new RenderItemDraconiumChest());
 
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_core.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_stabilizer.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_injector.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_prt_stab_frame.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_prt_in_rotor.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_prt_out_rotor.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_prt_rotor_full.getRegistryName(), "inventory"), new RenderItemReactorComponent());
-        MODEL_HELPER.register(new ModelResourceLocation(DEContent.reactor_prt_focus_ring.getRegistryName(), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_REACTOR_CORE.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_REACTOR_STABILIZER.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.ITEM_REACTOR_INJECTOR.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.REACTOR_PRT_STAB_FRAME.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.REACTOR_PRT_IN_ROTOR.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.REACTOR_PRT_OUT_ROTOR.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.REACTOR_PRT_ROTOR_FULL.get()), "inventory"), new RenderItemReactorComponent());
+        MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.REACTOR_PRT_FOCUS_RING.get()), "inventory"), new RenderItemReactorComponent());
 
         if (DEConfig.fancyToolModels) {
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.pickaxe_wyvern.getRegistryName(), "inventory"), new RenderModularPickaxe(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.pickaxe_draconic.getRegistryName(), "inventory"), new RenderModularPickaxe(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.pickaxe_chaotic.getRegistryName(), "inventory"), new RenderModularPickaxe(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.PICKAXE_WYVERN.get()), "inventory"), new RenderModularPickaxe(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.PICKAXE_DRACONIC.get()), "inventory"), new RenderModularPickaxe(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.PICKAXE_CHAOTIC.get()), "inventory"), new RenderModularPickaxe(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.axe_wyvern.getRegistryName(), "inventory"), new RenderModularAxe(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.axe_draconic.getRegistryName(), "inventory"), new RenderModularAxe(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.axe_chaotic.getRegistryName(), "inventory"), new RenderModularAxe(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.AXE_WYVERN.get()), "inventory"), new RenderModularAxe(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.AXE_DRACONIC.get()), "inventory"), new RenderModularAxe(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.AXE_CHAOTIC.get()), "inventory"), new RenderModularAxe(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.shovel_wyvern.getRegistryName(), "inventory"), new RenderModularShovel(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.shovel_draconic.getRegistryName(), "inventory"), new RenderModularShovel(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.shovel_chaotic.getRegistryName(), "inventory"), new RenderModularShovel(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SHOVEL_WYVERN.get()), "inventory"), new RenderModularShovel(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SHOVEL_DRACONIC.get()), "inventory"), new RenderModularShovel(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SHOVEL_CHAOTIC.get()), "inventory"), new RenderModularShovel(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.sword_wyvern.getRegistryName(), "inventory"), new RenderModularSword(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.sword_draconic.getRegistryName(), "inventory"), new RenderModularSword(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.sword_chaotic.getRegistryName(), "inventory"), new RenderModularSword(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SWORD_WYVERN.get()), "inventory"), new RenderModularSword(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SWORD_DRACONIC.get()), "inventory"), new RenderModularSword(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.SWORD_CHAOTIC.get()), "inventory"), new RenderModularSword(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.bow_wyvern.getRegistryName(), "inventory"), new RenderModularBow(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.bow_draconic.getRegistryName(), "inventory"), new RenderModularBow(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.bow_chaotic.getRegistryName(), "inventory"), new RenderModularBow(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.BOW_WYVERN.get()), "inventory"), new RenderModularBow(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.BOW_DRACONIC.get()), "inventory"), new RenderModularBow(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.BOW_CHAOTIC.get()), "inventory"), new RenderModularBow(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.staff_draconic.getRegistryName(), "inventory"), new RenderModularStaff(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.staff_chaotic.getRegistryName(), "inventory"), new RenderModularStaff(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.STAFF_DRACONIC.get()), "inventory"), new RenderModularStaff(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.STAFF_CHAOTIC.get()), "inventory"), new RenderModularStaff(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.hoe_wyvern.getRegistryName(), "inventory"), new RenderModularHoe(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.hoe_draconic.getRegistryName(), "inventory"), new RenderModularHoe(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.hoe_chaotic.getRegistryName(), "inventory"), new RenderModularHoe(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.HOE_WYVERN.get()), "inventory"), new RenderModularHoe(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.HOE_DRACONIC.get()), "inventory"), new RenderModularHoe(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.HOE_CHAOTIC.get()), "inventory"), new RenderModularHoe(TechLevel.CHAOTIC));
 
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.chestpiece_wyvern.getRegistryName(), "inventory"), new RenderModularChestpiece(TechLevel.WYVERN));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.chestpiece_draconic.getRegistryName(), "inventory"), new RenderModularChestpiece(TechLevel.DRACONIC));
-            MODEL_HELPER.register(new ModelResourceLocation(DEContent.chestpiece_chaotic.getRegistryName(), "inventory"), new RenderModularChestpiece(TechLevel.CHAOTIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHESTPIECE_WYVERN.get()), "inventory"), new RenderModularChestpiece(TechLevel.WYVERN));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHESTPIECE_DRACONIC.get()), "inventory"), new RenderModularChestpiece(TechLevel.DRACONIC));
+            MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHESTPIECE_CHAOTIC.get()), "inventory"), new RenderModularChestpiece(TechLevel.CHAOTIC));
         }
     }
 
     private static void setupRenderLayers() {
-        ItemBlockRenderTypes.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.portal, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_overworld, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_end, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_nether, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_deepslate, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.GRINDER.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.GENERATOR.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.ENERGY_TRANSFUSER.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.PORTAL.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.OVERWORLD_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.END_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.NETHER_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.DEEPSLATE_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -231,9 +240,5 @@ public class ClientInit {
                 }
             });
         }
-    }
-
-    public static void registerHudElements(RegistryEvent.Register<AbstractHudElement> event) {
-        event.getRegistry().register((hudElement = new ShieldHudElement()).setRegistryName("shield_hud"));
     }
 }

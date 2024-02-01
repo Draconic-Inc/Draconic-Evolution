@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -8,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -24,7 +22,7 @@ public class FusionCraftingCore extends EntityBlockBCore {
 
     public FusionCraftingCore(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_crafting_core, true);
+        setBlockEntity(DEContent.TILE_CRAFTING_CORE::get, true);
     }
 
     @Override

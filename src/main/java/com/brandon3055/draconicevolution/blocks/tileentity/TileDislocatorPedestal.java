@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -49,8 +51,8 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
 
     public TileDislocatorPedestal(BlockPos pos, BlockState state) {
-        super(DEContent.tile_dislocator_pedestal, pos, state);
-        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
+        super(DEContent.TILE_DISLOCATOR_PEDESTAL.get(), pos, state);
+        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
         itemHandler.setSlotValidator(0, stack -> stack.getItem() instanceof Dislocator);
     }
 
@@ -66,9 +68,9 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
                 if (location == null) {
                     if (BoundDislocator.isValid(stack)) {
                         if (BoundDislocator.isPlayer(stack)) {
-                            player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED));
                         } else {
-                            player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED));
                         }
                     }
 
@@ -78,14 +80,14 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
                 boolean silenced = level.getBlockState(worldPosition.below()).is(BlockTags.WOOL);
 
                 if (!silenced) {
-                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
                 }
 
-                BoundDislocator.notifyArriving(stack, player.level, player);
+                BoundDislocator.notifyArriving(stack, player.level(), player);
                 location.teleport(player);
 
                 if (!silenced) {
-                    DelayedTask.run(1, () -> BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false));
+                    DelayedTask.run(1, () -> BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false));
                 }
             }
 

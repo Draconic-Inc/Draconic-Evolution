@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -28,19 +27,16 @@ public interface IFusionDataTransfer {
         optCatHost.ifPresent(catHost -> {
             LazyOptional<ModuleHost> optResultHost = result.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
             optResultHost.ifPresent(host -> {
-                if (host instanceof ModuleHostImpl && catHost instanceof ModuleHostImpl)
+                if (host instanceof ModuleHostImpl && catHost instanceof ModuleHostImpl) {
                     ((ModuleHostImpl) host).transferModules((ModuleHostImpl) catHost);
+                }
             });
         });
 
         LazyOptional<IOPStorage> optCatStorage = cat.getCapability(DECapabilities.OP_STORAGE);
         optCatStorage.ifPresent(catStorage -> {
             LazyOptional<IOPStorage> optResStorage = result.getCapability(DECapabilities.OP_STORAGE);
-            optResStorage.ifPresent(resStorage -> {
-                if (resStorage instanceof IOPStorageModifiable) {
-                    ((IOPStorageModifiable) resStorage).modifyEnergyStored(Math.min(resStorage.getMaxOPStored(), catStorage.getOPStored()));
-                }
-            });
+            optResStorage.ifPresent(resStorage -> resStorage.modifyEnergyStored(Math.min(resStorage.getMaxOPStored(), catStorage.getOPStored())));
         });
     }
 }

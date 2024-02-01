@@ -7,7 +7,10 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCoreStabilizer;
@@ -15,10 +18,9 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +52,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     private boolean moveCheckComplete = false;
 
     public TileEnergyCoreStabilizer(BlockPos pos, BlockState state) {
-        super(DEContent.tile_core_stabilizer, pos, state);
+        super(DEContent.TILE_CORE_STABILIZER.get(), pos, state);
     }
 
 
@@ -70,7 +72,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         if (core != null) {
             core.handleRemoteClick(player, hand, hit);
         } else {
-            player.sendMessage(new TranslatableComponent("msg.draconicevolution.energy_core.core_not_found").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("msg.draconicevolution.energy_core.core_not_found").withStyle(ChatFormatting.DARK_RED));
         }
         return InteractionResult.SUCCESS;
     }
@@ -141,9 +143,9 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     private void buildMultiBlock(Direction.Axis axis) {
         StructureBlock.buildingLock = true;
         for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
-            level.setBlockAndUpdate(worldPosition.offset(offset), DEContent.structure_block.defaultBlockState());
+            level.setBlockAndUpdate(worldPosition.offset(offset), DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
             if (level.getBlockEntity(worldPosition.offset(offset)) instanceof TileStructureBlock tile) {
-                tile.blockName.set(DEContent.energy_core_stabilizer.getRegistryName());
+                tile.blockName.set(DEContent.ENERGY_CORE_STABILIZER.getId());
                 tile.setController(this);
             }
         }
@@ -192,7 +194,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     // ### Revert Multi-block
 
     public void revertStructure() {
-        if (level.getBlockState(worldPosition).getBlock() == DEContent.energy_core_stabilizer) {
+        if (level.getBlockState(worldPosition).is(DEContent.ENERGY_CORE_STABILIZER.get())) {
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCoreStabilizer.LARGE, false));
         }
         isValidMultiBlock.set(false);
@@ -268,7 +270,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     @Override
     public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
         BlockState stabState = level.getBlockState(worldPosition);
-        if (stabState.is(DEContent.energy_core_stabilizer)) {
+        if (stabState.is(DEContent.ENERGY_CORE_STABILIZER.get())) {
             BlockPos offset = worldPosition.subtract(pos);
             return stabState.getBlock().getShape(stabState, level, worldPosition, context).move(offset.getX(), offset.getY(), offset.getZ());
         }

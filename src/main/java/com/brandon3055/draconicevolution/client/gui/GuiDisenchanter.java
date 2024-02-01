@@ -1,12 +1,10 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos;
-import com.brandon3055.brandonscore.client.gui.modulargui.*;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.*;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
@@ -15,9 +13,7 @@ import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
-import com.brandon3055.draconicevolution.inventory.ContainerDisenchanter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -27,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -54,11 +49,11 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 	public void addElements(GuiElementManager manager) {
 		int padding = 3;
 		temp = new TModularMachine(this, tile, false);
-		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
 		temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 		toolkit.loadTemplate(temp);
 		temp.addPlayerSlots(false, true, false);
-		GuiElement input = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 0), BCGuiSprites.getter("slots/sword"), false);
+		GuiElement input = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 0), BCGuiTextures.getter("slots/sword"), false);
 		GuiElement books = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 1), null, false);
 		GuiElement output = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 2), null, false);
 		toolkit.placeInside(input, temp.background, LayoutPos.TOP_LEFT, 8, 24);
@@ -111,8 +106,8 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 				CompoundTag cTag = (CompoundTag)tag;
 				int lvl = cTag.getShort("lvl");
 				ArrayList<Component> hoverText = new ArrayList<Component>();
-				hoverText.add(new TranslatableComponent("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl));
-				hoverText.add(new TranslatableComponent("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(tile.getEnchantmentFromTag(cTag), lvl)));
+				hoverText.add(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl));
+				hoverText.add(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(tile.getEnchantmentFromTag(cTag), lvl)));
 				GuiButton button = toolkit.createButton(() -> ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(cTag.getString("id"))).getDescriptionId(), listElement)
 					.setYSize(14)
 					.setXSize(listElement.getInsetRect().width)

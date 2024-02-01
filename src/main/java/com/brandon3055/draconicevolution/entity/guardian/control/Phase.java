@@ -6,20 +6,18 @@ import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public abstract class Phase implements IPhase {
    protected final DraconicGuardianEntity guardian;
-   protected Random random = new Random();
+   protected RandomSource random = RandomSource.create();
 
    public Phase(DraconicGuardianEntity guardian) {
       this.guardian = guardian;
@@ -91,6 +89,6 @@ public abstract class Phase implements IPhase {
    }
 
    public boolean isValidTarget(LivingEntity entity) {
-      return entity.isAlive() && entity.level.dimensionType() == guardian.level.dimensionType() && entity.distanceToSqr(guardian) < 300*300;
+      return entity.isAlive() && entity.level().dimensionType() == guardian.level().dimensionType() && entity.distanceToSqr(guardian) < 300*300;
    }
 }

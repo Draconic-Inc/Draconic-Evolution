@@ -15,32 +15,39 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Sets;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by brandon3055 on 7/7/20
  */
 public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
-    public static final Set<DamageSource> UNBLOCKABLE = Sets.newHashSet(DamageSource.DROWN, DamageSource.STARVE, DamageSource.IN_WALL);
-    public static final HashMap<DamageSource, Double> ENV_SOURCES = new HashMap<>();
+    public static final Set<ResourceKey<DamageType>> UNBLOCKABLE = Sets.newHashSet(DamageTypes.DROWN, DamageTypes.STARVE, DamageTypes.IN_WALL, DamageTypes.GENERIC_KILL);
+    public static final HashMap<ResourceKey<DamageType>, Double> ENV_SOURCES = new HashMap<>();
 
     static {
-        ENV_SOURCES.put(DamageSource.IN_FIRE, 1D);
-        ENV_SOURCES.put(DamageSource.ON_FIRE, 0.5D);
-        ENV_SOURCES.put(DamageSource.LAVA, 4D);
-        ENV_SOURCES.put(DamageSource.HOT_FLOOR, 1D);
-        ENV_SOURCES.put(DamageSource.IN_WALL, 1D);
-        ENV_SOURCES.put(DamageSource.CRAMMING, 0D);
-        ENV_SOURCES.put(DamageSource.CACTUS, 1D);
+        ENV_SOURCES.put(DamageTypes.IN_FIRE, 1D);
+        ENV_SOURCES.put(DamageTypes.ON_FIRE, 0.5D);
+        ENV_SOURCES.put(DamageTypes.LAVA, 4D);
+        ENV_SOURCES.put(DamageTypes.HOT_FLOOR, 1D);
+        ENV_SOURCES.put(DamageTypes.IN_WALL, 1D);
+        ENV_SOURCES.put(DamageTypes.CRAMMING, 0D);
+        ENV_SOURCES.put(DamageTypes.CACTUS, 1D);
     }
 
     private BooleanProperty shieldEnabled;
@@ -180,7 +187,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
      */
     public void tryBlockDamage(LivingAttackEvent event) {
         DamageSource source = event.getSource();
-        if (!shieldEnabled.getValue() || UNBLOCKABLE.contains(source)) return;
+        if (!shieldEnabled.getValue() || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || FastStream.of(UNBLOCKABLE).anyMatch(source::is)) return;
 
         if (blockEnvironmentalDamage(event, source)) {
             return;
@@ -188,7 +195,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
 
         float damage = applyDamageModifiers(source, event.getAmount());
         if (damage <= getShieldPoints()) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
             event.setCanceled(true);
             subtractShieldPoints(damage);
             onShieldHit(entity, true);
@@ -196,13 +203,14 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     private boolean blockEnvironmentalDamage(LivingAttackEvent event, DamageSource source) {
-        LivingEntity entity = event.getEntityLiving();
-        if (source.isFire() && getShieldPoints() > 10) {
+        LivingEntity entity = event.getEntity();
+        if (source.is(DamageTypeTags.IS_FIRE) && getShieldPoints() > 10) {
             entity.clearFire();
         }
-        if (ENV_SOURCES.containsKey(source)) {
-            ENV_SOURCES.put(DamageSource.LAVA, 4D);
-            double value = ENV_SOURCES.get(source) / 20;
+
+        double value = FastStream.of(ENV_SOURCES.entrySet()).filter(e -> source.is(e.getKey())).map(Map.Entry::getValue).firstOrDefault(0D);
+        if (value != 0) {
+            value /= 20;
             if (value <= getShieldPoints()) {
                 subtractShieldPoints(value);
                 event.setCanceled(true);
@@ -211,7 +219,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
                 shieldCoolDown = getMaxShieldCoolDown();
                 if (envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+                    entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
                     envDmgCoolDown = 40;
                 }
                 return true;
@@ -234,7 +242,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         if (!shieldEnabled.getValue() || UNBLOCKABLE.contains(source)) return;
         float damage = applyDamageModifiers(source, event.getAmount());
 
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (damage <= getShieldPoints()) {
             event.setCanceled(true);
             subtractShieldPoints(damage);
@@ -254,7 +262,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
             shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 1F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+            entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 1F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
         }
     }
 
@@ -266,8 +274,8 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     private float applyDamageModifiers(DamageSource source, float damage) {
-        if (source.isBypassArmor()) damage *= 3;
-        if (source.isMagic()) damage *= 2;
+        if (source.is(DamageTypeTags.BYPASSES_ARMOR)) damage *= 3;
+        if (source.is(DamageTypes.MAGIC)) damage *= 2;
         return damage;
     }
 
@@ -305,17 +313,12 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     private static int getDefaultShieldColour(TechLevel techLevel) {
-        switch (techLevel) {
-            case DRACONIUM:
-                return 0x0080cc;
-            case WYVERN:
-                return 0x8C00A5;
-            case DRACONIC:
-                return 0xff9000;
-            case CHAOTIC:
-                return 0xBF0C0C;
-        }
-        return 0;
+        return switch (techLevel) {
+            case DRACONIUM -> 0x0080cc;
+            case WYVERN -> 0x8C00A5;
+            case DRACONIC -> 0xff9000;
+            case CHAOTIC -> 0xBF0C0C;
+        };
     }
 
     //endregion

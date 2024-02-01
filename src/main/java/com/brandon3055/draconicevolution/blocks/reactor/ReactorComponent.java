@@ -49,7 +49,7 @@ public class ReactorComponent extends EntityBlockBCore {
     public ReactorComponent(Properties properties, boolean injector) {
         super(properties);
         this.injector = injector;
-        setBlockEntity(() -> injector ? DEContent.tile_reactor_injector : DEContent.tile_reactor_stabilizer, true);
+        setBlockEntity(() -> injector ? DEContent.TILE_REACTOR_INJECTOR.get() : DEContent.TILE_REACTOR_STABILIZER.get(), true);
     }
 
     @Override

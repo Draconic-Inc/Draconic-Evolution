@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos;
-import com.brandon3055.brandonscore.client.gui.modulargui.*;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiEnergyBar;
@@ -19,10 +17,9 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
-import com.brandon3055.draconicevolution.client.DEGuiSprites;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 
 import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -65,7 +62,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		weatherControls.clear();
 		sunControls.clear();
 		temp = new TModularMachine(this, tile, false);
-		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
 		temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 		toolkit.loadTemplate(temp);
 		temp.playerSlots = toolkit.createPlayerSlots(temp.background, false);
@@ -136,7 +133,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		String[] rsButtonNames = {"clear", "rain", "storm", "sunrise", "noon", "sunset", "moonrise", "midnight", "moonset"};
 		for (int ii = 0; ii < rsControlButtons.length; ii++) {
 			final int num = ii;
-			rsControlButtons[num] = toolkit.createIconButton(rsBackground, 18, DEGuiSprites.getter("celestial_manipulator/" + rsButtonNames[num]))
+			rsControlButtons[num] = toolkit.createIconButton(rsBackground, 18, DEGuiTextures.getter("celestial_manipulator/" + rsButtonNames[num]))
 				.setFillColours(0, 0xFF505050, 0xFF707070)
 				.setBorderColours(0xFF505050, 0xFF707070, 0xFFF00000)
 				.onPressed(() -> tile.sendPacketToServer((output) -> {output.writeInt(num);}, 1))

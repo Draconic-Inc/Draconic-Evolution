@@ -49,12 +49,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -92,13 +94,13 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     private int killRate = 5; //Number of ticks between kills
 
     public TileGrinder(BlockPos pos, BlockState state) {
-        super(DEContent.tile_grinder, pos, state);
+        super(DEContent.TILE_GRINDER.get(), pos, state);
         enablePlayerAccessTracking(true);
 
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         installIOTracker(opStorage);
 
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
         entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
@@ -295,7 +297,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             return false;
         }
         if (DEConfig.grinderBlackList.isEmpty()) return true;
-        ResourceLocation reg = livingBase.getType().getRegistryName();
+        ResourceLocation reg = ForgeRegistries.ENTITY_TYPES.getKey(livingBase.getType());
         return !(reg != null && DEConfig.grinderBlackList.contains(reg.toString()));
     }
 
@@ -318,7 +320,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             for (Direction dir : Direction.values()) {
                 BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
-                    LazyOptional<IItemHandler> opCap = target.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
+                    LazyOptional<IItemHandler> opCap = target.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
                     opCap.ifPresent(iItemHandler -> {
                         Iterator<ItemEntity> i = items.iterator();
                         while (i.hasNext()) {
@@ -421,13 +423,13 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_GRINDER.get(), currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }

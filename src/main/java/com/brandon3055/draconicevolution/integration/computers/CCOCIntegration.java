@@ -29,7 +29,7 @@ public class CCOCIntegration {
 
 //    @Optional.Method(modid = "computercraft")
     public static void initCC() {
-        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
+//        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
     }
 
 //    @Optional.Method(modid = "opencomputers")

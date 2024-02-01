@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
@@ -10,7 +9,6 @@ import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,7 +34,7 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
     @Override
     public void tick(ModuleContext context) {
         if ((tick++ % 20 != 0) || !(context instanceof StackModuleContext ctx)) return;
-        if (!(ctx.getEntity() instanceof ServerPlayer player) || player.level.isClientSide() || !ctx.isEquipped()) return;
+        if (!(ctx.getEntity() instanceof ServerPlayer player) || player.level().isClientSide() || !ctx.isEquipped()) return;
 
         if (!enabled.getValue()) {
             if (wasJustDisabled && appliedByModule) {
@@ -55,7 +53,7 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
             return;
         }
 
-        boolean shouldApply = player.level.getRawBrightness(player.blockPosition(), 0) <= enableInLight.getValue();
+        boolean shouldApply = player.level().getRawBrightness(player.blockPosition(), 0) <= enableInLight.getValue();
         if (shouldApply) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 302, 0, false, false));
             ctx.getOpStorage().modifyEnergyStored(-EquipCfg.nightVisionEnergy * 20L);

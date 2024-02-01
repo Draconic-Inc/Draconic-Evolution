@@ -1,8 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -11,16 +12,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -55,7 +52,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         IOPStorage storage = moduleContext.getOpStorage();
         if (!(moduleContext instanceof StackModuleContext context) || storage == null) return;
 
-        Level level = context.getEntity().level;
+        Level level = context.getEntity().level();
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         if (!level.dimension().equals(dimKey)) {
@@ -125,15 +122,15 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
-        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, stackRender, partialTicks);
+    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+        super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, stackRender, partialTicks);
 
         EnergyLinkData data = module.getData();
         if (linkCharge >= data.activationEnergy()) return;
         double progress = linkCharge / (double) data.activationEnergy();
 
         String pText = (int) (progress * 100) + "%";
-        drawChargeProgress(getter, poseStack, x, y, width, height, progress, pText, I18n.get("module.draconicevolution.energy_link.charging") + StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4)));
+        drawChargeProgress(render, x, y, width, height, progress, pText, I18n.get("module.draconicevolution.energy_link.charging") + StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4)));
     }
 
     @Override
@@ -154,7 +151,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         if (nbt.contains("link_id")) {
             linkId = nbt.getUUID("link_id");
             corePos = new BlockPos(nbt.getInt("core_x"), nbt.getInt("core_y"), nbt.getInt("core_z"));
-            dimKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("dim")));
+            dimKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("dim")));
         }
     }
 
@@ -173,12 +170,12 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
     @Override
     public void addToolTip(List<Component> list) {
         if (linkId != null) {
-            list.add(new TranslatableComponent("module.draconicevolution.energy_link.linked_core")
+            list.add(Component.translatable("module.draconicevolution.energy_link.linked_core")
                     .withStyle(ChatFormatting.GRAY)
                     .append(": ")
-                    .append(new TextComponent("X:" + corePos.getX() + ", Y:" + corePos.getY() + ", Z:" + corePos.getZ() + ", " + dimKey.location()).withStyle(ChatFormatting.DARK_GREEN)));
+                    .append(Component.literal("X:" + corePos.getX() + ", Y:" + corePos.getY() + ", Z:" + corePos.getZ() + ", " + dimKey.location()).withStyle(ChatFormatting.DARK_GREEN)));
         } else {
-            list.add(new TranslatableComponent("module.draconicevolution.energy_link.link_to_core").withStyle(ChatFormatting.GRAY));
+            list.add(Component.translatable("module.draconicevolution.energy_link.link_to_core").withStyle(ChatFormatting.GRAY));
         }
     }
 }

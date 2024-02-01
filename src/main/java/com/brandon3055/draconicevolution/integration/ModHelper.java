@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -74,7 +75,7 @@ public class ModHelper {
         if (stack.isEmpty()) {
             return false;
         }
-        ResourceLocation registry = stack.getItem().getRegistryName();
+        ResourceLocation registry = ForgeRegistries.ITEMS.getKey(stack.getItem());
         if (registry == null || registry.getNamespace().equals("tconstruct")) {
             return false;
         }
@@ -89,7 +90,7 @@ public class ModHelper {
         }
 
         if (isHoldingAvaritiaSword(attacker)) {
-            event.getEntityLiving().invulnerableTime = 0;
+            event.getEntity().invulnerableTime = 0;
             return 300F;
         }
 //        else if (isHoldingBedrockSword(attacker)) {
@@ -101,7 +102,7 @@ public class ModHelper {
 //
 //            return Math.max(event.getAmount(), Math.min(50F, summery.protectionPoints));
 //        }
-        else if (event.getSource().isBypassArmor() || event.getSource().isBypassInvul()) {
+        else if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR) || event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 //            summery.entropy += 3;
 //
 //            if (summery.entropy > 100) {
@@ -114,14 +115,14 @@ public class ModHelper {
         return event.getAmount();
     }
 
-    public static void reloadJEI() {
-        if (JEI.isPresent()) {
-            DEJEIPlugin.reloadJEI();
-        }
-    }
+//    public static void reloadJEI() {
+//        if (JEI.isPresent()) {
+//            DEJEIPlugin.reloadJEI();
+//        }
+//    }
 
     public static boolean isWrench(ItemStack stack) {
-        String name = String.valueOf(stack.getItem().getRegistryName()).toLowerCase(Locale.ENGLISH);
+        String name = String.valueOf(ForgeRegistries.ITEMS.getKey(stack.getItem())).toLowerCase(Locale.ENGLISH);
         return name.contains("wrench") || name.contains("binder") || name.contains("hammer");
     }
 

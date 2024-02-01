@@ -1,15 +1,13 @@
 package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.draconicevolution.entity.guardian.control.LaserBeamPhase;
-import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 
 import java.util.function.Supplier;
@@ -25,12 +23,12 @@ public class SimpleSoundImpl extends SimpleSoundInstance implements TickableSoun
     private Supplier<Vector3> posSupplier;
     private boolean stop = false;
 
-    public static SimpleSoundImpl create(SoundEvent sound, SoundSource source) {
-        return new SimpleSoundImpl(sound, source);
+    public static SimpleSoundImpl create(SoundEvent sound, SoundSource source, RandomSource random) {
+        return new SimpleSoundImpl(sound, source, random);
     }
 
-    private SimpleSoundImpl(SoundEvent sound, SoundSource source) {
-        super(sound, source, 1F, 1F, 0, 0, 0);
+    private SimpleSoundImpl(SoundEvent sound, SoundSource source, RandomSource random) {
+        super(sound, source, 1F, 1F, random, BlockPos.ZERO);
     }
 
     public SimpleSoundImpl setPitch(float pitch) {

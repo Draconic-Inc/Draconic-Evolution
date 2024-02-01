@@ -42,11 +42,11 @@ public class CoverFirePhase extends Phase {
       double targetRelY = targetPos.y - headY;
       double targetRelZ = targetPos.z - headZ;
       if (!guardian.isSilent()) {
-         guardian.level.levelEvent(null, 1017, guardian.blockPosition(), 0);
+         guardian.level().levelEvent(null, 1017, guardian.blockPosition(), 0);
       }
-      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.COVER_FIRE_POWER);
+      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level(), this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.COVER_FIRE_POWER);
       projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
-      guardian.level.addFreshEntity(projectile);
+      guardian.level().addFreshEntity(projectile);
 
       double distanceFromTarget = targetLocation == null ? 0.0D : targetLocation.distanceToSqr(guardian.getX(), guardian.getY(), guardian.getZ());
       if (currentPath != null && currentPath.isDone() && distanceFromTarget < 100) {

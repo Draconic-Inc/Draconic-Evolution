@@ -29,7 +29,7 @@ public class EnergyCore extends EntityBlockBCore {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
         dontSpawnOnMe();
-        setBlockEntity(() -> DEContent.tile_storage_core, true);
+        setBlockEntity(DEContent.TILE_STORAGE_CORE::get, true);
         setLightTransparent();
     }
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
@@ -17,7 +17,6 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -97,7 +96,7 @@ public class PropertyContainer extends GuiManipulable {
             scrollElement.onReload(e -> e.setMaxPos(maxXPos() - 3, maxYPos() - 3, true));
             scrollElement.setEnabledCallback(() -> scrollElement.ySize() > 10 && !applyPreset.isEnabled());
 
-            GuiButton toggleHidden = gui.toolkit.createIconButton(this, 8, () -> BCGuiSprites.getThemed(collapsed ? "expand_content" : "collapse_content"));
+            GuiButton toggleHidden = gui.toolkit.createIconButton(this, 8, () -> BCGuiTextures.getThemed(collapsed ? "expand_content" : "collapse_content"));
             toggleHidden.setPos(xPos() + 2, yPos() + 2);
             toggleHidden.onPressed(this::toggleCollapsed);
             toggleHidden.setHoverText(e -> {
@@ -106,7 +105,7 @@ public class PropertyContainer extends GuiManipulable {
             });
 
             GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> {
-                return Screen.hasShiftDown() ? BCGuiSprites.getThemed("copy") : Screen.hasControlDown() ? BCGuiSprites.get("delete") : BCGuiSprites.getThemed("reposition");
+                return Screen.hasShiftDown() ? BCGuiTextures.getThemed("copy") : Screen.hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.getThemed("reposition");
             }, e -> e.getHoverTime() > 0 || dragPos);
             dragZone.setHoverText(e -> {
                 return dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info");
@@ -115,14 +114,14 @@ public class PropertyContainer extends GuiManipulable {
             dragZone.onReload(e -> e.setMaxXPos(maxXPos() - 2, false).setYPos(yPos() + 2));
             setDragZone(dragZone::isMouseOver);
 
-            GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCGuiSprites.themedGetter("preset_icon"));
+            GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCGuiTextures.themedGetter("preset_icon"));
             GuiElement<?> hoverRect = GuiToolkit.addHoverHighlight(togglePreset, 2, 2);
             togglePreset.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_preset.info"));
             togglePreset.onReload(e -> e.setMaxXPos(dragZone.xPos() - 2, false).setYPos(yPos() + 2));
             togglePreset.onPressed(this::togglePreset);
             togglePreset.addChild(new ThemedElements.ShadedRect(true, false).setPosAndSize(hoverRect).setEnabledCallback(() -> isPreset));
 
-            GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCGuiSprites.themedGetter("global_key_icon"));
+            GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCGuiTextures.themedGetter("global_key_icon"));
             hoverRect = GuiToolkit.addHoverHighlight(globalBinding, 2, 2);
             globalBinding.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_global_binding.info"));
             globalBinding.onReload(e -> e.setMaxXPos(togglePreset.xPos() - 2, false).setYPos(yPos() + 2));
@@ -295,7 +294,7 @@ public class PropertyContainer extends GuiManipulable {
             }
         });
 
-        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCGuiSprites.get("dark/copy") : Screen.hasControlDown() ? BCGuiSprites.get("delete") : BCGuiSprites.get("reposition_gray"));
+        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCGuiTextures.get("dark/copy") : Screen.hasControlDown() ? BCGuiTextures.get("delete") : BCGuiTextures.get("reposition_gray"));
         element.dragZone = dragZone;
         dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info"));
 
@@ -535,14 +534,14 @@ public class PropertyContainer extends GuiManipulable {
         poseStack.translate(0, 0, getRenderZLevel());
         if (dropTarget != null && timeSinceMove > 10) {
             if (!dropTarget.isGroup) {
-                renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.drop_create_group.info"), mouseX, mouseY);
+                renderTooltip(poseStack, Component.translatable("gui.draconicevolution.item_config.drop_create_group.info"), mouseX, mouseY);
             } else {
-                renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.add_to_group.info"), mouseX, mouseY);
+                renderTooltip(poseStack, Component.translatable("gui.draconicevolution.item_config.add_to_group.info"), mouseX, mouseY);
             }
             return true;
         }
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
-            renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.drop_to_delete.info"), mouseX, mouseY);
+            renderTooltip(poseStack, Component.translatable("gui.draconicevolution.item_config.drop_to_delete.info"), mouseX, mouseY);
         }
 
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -595,8 +594,8 @@ public class PropertyContainer extends GuiManipulable {
         }
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
-        Material mat = BCGuiSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCGuiSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        Material mat = BCGuiTextures.getThemed("borderless_bg_dynamic_small");
+        drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCGuiTextures.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
         getter.endBatch();
 
         int contentPos = yPos() + 2 + 9;
@@ -607,7 +606,7 @@ public class PropertyContainer extends GuiManipulable {
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
             getter.endBatch();
             if (dataList.isEmpty()) { //TODO Test this???
-                drawCustomString(fontRenderer, new TranslatableComponent("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, false, false, true, BCConfig.darkMode);
+                drawCustomString(fontRenderer, Component.translatable("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, false, false, true, BCConfig.darkMode);
                 getter.endBatch();
             }
         }

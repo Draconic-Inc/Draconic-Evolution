@@ -24,7 +24,7 @@ public class StabilizedSpawner extends EntityBlockBCore {
     public StabilizedSpawner(Properties properties) {
         super(properties);
         setMobResistant();
-        setBlockEntity(() -> DEContent.tile_stabilized_spawner, true);
+        setBlockEntity(DEContent.TILE_STABILIZED_SPAWNER::get, true);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class StabilizedSpawner extends EntityBlockBCore {
     //TODO
     public void setStackDataEntity(ItemStack stack, String entityString) {
         if (entityString != null) {
-            ItemStack soul = new ItemStack(DEContent.mob_soul);
-            DEContent.mob_soul.setEntity(MobSoul.getCachedRegName(entityString), soul);
+            ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
+            DEContent.MOB_SOUL.get().setEntity(MobSoul.getCachedRegName(entityString), soul);
             CompoundTag managedData = stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
             stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
             managedData.put("mob_soul", soul.serializeNBT());

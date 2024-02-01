@@ -13,13 +13,16 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Explosion;
@@ -51,7 +54,7 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     public GuardianCrystalEntity(Level worldIn, double x, double y, double z, UUID managerId) {
-        this(DEContent.guardianCrystal, worldIn);
+        this(DEContent.ENTITY_GUARDIAN_CRYSTAL.get(), worldIn);
         this.managerId = managerId;
         this.setPos(x, y, z);
     }
@@ -96,11 +99,11 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     public void tick() {
-        ++this.time;
-        if (this.level instanceof ServerLevel) {
-            BlockPos blockpos = this.blockPosition();
-            if (getManagerId() != null && this.level.getBlockState(blockpos).isAir()) {
-                this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
+        ++time;
+        if (level() instanceof ServerLevel) {
+            BlockPos blockpos = blockPosition();
+            if (getManagerId() != null && level().getBlockState(blockpos).isAir()) {
+                level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(level(), blockpos));
             }
 
             GuardianFightManager manager = getManager();
@@ -110,14 +113,14 @@ public class GuardianCrystalEntity extends Entity {
                     setUnstableTime(getUnstableTime() - 1);
                     if (getUnstableTime() > 0) {
                         for (int i = 0; i < 3; i++) {
-                            BCoreNetwork.sendParticle(level, ParticleTypes.FIREWORK, Vector3.fromEntity(this), new Vector3(random.nextFloat(), 0.5 + (random.nextFloat() / 2), random.nextFloat()).subtract(0.5).multiply(1.5), true);
+                            BCoreNetwork.sendParticle(level(), ParticleTypes.FIREWORK, Vector3.fromEntity(this), new Vector3(random.nextFloat(), 0.5 + (random.nextFloat() / 2), random.nextFloat()).subtract(0.5).multiply(1.5), true);
                         }
                         if (random.nextInt(3) == 0) {
                             setBeamTarget(manager.getArenaOrigin());
-                            BCoreNetwork.sendSound(level, this, DESounds.crystalUnstable, SoundSource.HOSTILE, 6F, 0.9F + (random.nextFloat() * 0.2F), false);
+                            BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_UNSTABLE.get(), SoundSource.HOSTILE, 6F, 0.9F + (random.nextFloat() * 0.2F), false);
                         }
                     } else {
-                        BCoreNetwork.sendSound(level, this, DESounds.crystalRestore, SoundSource.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
+                        BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_RESTORE.get(), SoundSource.HOSTILE, 8, 0.5F + level().random.nextFloat() * 0.2F, false);
                     }
                 } else if (getShieldPower() < DEConfig.guardianCrystalShield) {
                     setShieldPower(Math.min(DEConfig.guardianCrystalShield, getShieldPower() + (DEConfig.guardianCrystalShield / 1200.0f)));
@@ -140,22 +143,22 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        if (this.getBeamTarget() != null) {
-            compound.put("BeamTarget", NbtUtils.writeBlockPos(this.getBeamTarget()));
+        if (getBeamTarget() != null) {
+            compound.put("BeamTarget", NbtUtils.writeBlockPos(getBeamTarget()));
         }
 
-        compound.putBoolean("ShowBottom", this.showsBottom());
+        compound.putBoolean("ShowBottom", showsBottom());
         compound.putUUID("manager_id", managerId);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("BeamTarget", 10)) {
-            this.setBeamTarget(NbtUtils.readBlockPos(compound.getCompound("BeamTarget")));
+            setBeamTarget(NbtUtils.readBlockPos(compound.getCompound("BeamTarget")));
         }
 
         if (compound.contains("ShowBottom", 1)) {
-            this.setShowBottom(compound.getBoolean("ShowBottom"));
+            setShowBottom(compound.getBoolean("ShowBottom"));
         }
         if (compound.contains("manager_id")) {
             managerId = compound.getUUID("manager_id");
@@ -169,14 +172,14 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!this.isRemoved() && !this.level.isClientSide) {
+            if (!isRemoved() && !level().isClientSide) {
                 GuardianFightManager manager = getManager();
                 float shield = getShieldPower() / (float) DEConfig.guardianCrystalShield;
                 if (shield > 0) {
-                    BCoreNetwork.sendSound(level, this, DESounds.shieldStrike, SoundSource.HOSTILE, 6, 0.5F + shield, false);
+                    BCoreNetwork.sendSound(level(), this, DESounds.SHIELD_STRIKE.get(), SoundSource.HOSTILE, 6, 0.5F + shield, false);
                 }
                 if (manager != null && shield > 0) {
                     float modifier = manager.getCrystalDamageModifier(this, source);
@@ -195,11 +198,11 @@ public class GuardianCrystalEntity extends Entity {
                     }
                 }
 
-                this.discard();
-                if (!source.isExplosion()) {
-                    this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), 10.0F, Explosion.BlockInteraction.DESTROY);
+                discard();
+                if (!source.is(DamageTypeTags.IS_EXPLOSION)) {
+                    level().explode(null, getX(), getY(), getZ(), 10.0F, Level.ExplosionInteraction.BLOCK);
                 }
-                this.onCrystalAttacked(source, amount, true);
+                onCrystalAttacked(source, amount, true);
             }
 
             return true;
@@ -209,7 +212,7 @@ public class GuardianCrystalEntity extends Entity {
     private void playChargeAnimation() {
         GuardianFightManager manager = getManager();
         if (beamChargeAnim == 0 && manager != null) {
-            BCoreNetwork.sendSound(level, this, DESounds.crystalBeam, SoundSource.HOSTILE, 6, 1, false);
+            BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_BEAM.get(), SoundSource.HOSTILE, 6, 1, false);
             beamChargeAnim = 20;
             setBeamTarget(manager.getArenaOrigin());
             setBeamPower(0);
@@ -218,7 +221,7 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     public void kill() {
-        this.onCrystalAttacked(DamageSource.GENERIC, 0, true);
+        onCrystalAttacked(level().damageSources().generic(), 0, true);
         super.kill();
     }
 
@@ -231,7 +234,7 @@ public class GuardianCrystalEntity extends Entity {
 
     public void setBeamTarget(@Nullable BlockPos beamTarget) {
         setBeamPower(1F);
-        this.getEntityData().set(BEAM_TARGET, Optional.ofNullable(beamTarget));
+        getEntityData().set(BEAM_TARGET, Optional.ofNullable(beamTarget));
     }
 
     public void setBeamPower(float beamPower) {
@@ -244,38 +247,38 @@ public class GuardianCrystalEntity extends Entity {
 
     @Nullable
     public BlockPos getBeamTarget() {
-        return this.getEntityData().get(BEAM_TARGET).orElse((BlockPos) null);
+        return getEntityData().get(BEAM_TARGET).orElse((BlockPos) null);
     }
 
     public void setShowBottom(boolean showBottom) {
-        this.getEntityData().set(SHOW_BOTTOM, showBottom);
+        getEntityData().set(SHOW_BOTTOM, showBottom);
     }
 
     public boolean showsBottom() {
-        return this.getEntityData().get(SHOW_BOTTOM);
+        return getEntityData().get(SHOW_BOTTOM);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean shouldRenderAtSqrDistance(double distance) {
-        return super.shouldRenderAtSqrDistance(distance) || this.getBeamTarget() != null;
+        return super.shouldRenderAtSqrDistance(distance) || getBeamTarget() != null;
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public void destabilize() {
         if (getUnstableTime() == 0) {
-            BCoreNetwork.sendSound(level, this, DESounds.crystalDestabilize, SoundSource.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
+            BCoreNetwork.sendSound(level(), this, DESounds.CRYSTAL_DESTABILIZE.get(), SoundSource.HOSTILE, 8, 0.5F + level().random.nextFloat() * 0.2F, false);
         }
         setUnstableTime(DEConfig.guardianCrystalUnstableWindow);
     }
 
     public GuardianFightManager getManager() {
-        if (level instanceof ServerLevel && getManagerId() != null) {
-            WorldEntity worldEntity = WorldEntityHandler.getWorldEntity(level, managerId);
+        if (level() instanceof ServerLevel && getManagerId() != null) {
+            WorldEntity worldEntity = WorldEntityHandler.getWorldEntity(level(), managerId);
             if (worldEntity instanceof GuardianFightManager) {
                 return (GuardianFightManager) worldEntity;
             }

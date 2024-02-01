@@ -1,41 +1,30 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,8 +41,8 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
         background = guiHelper.createDrawable(new ResourceLocation(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
-        localizedName = new TranslatableComponent(DEContent.crafting_core.getDescriptionId());
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(DEContent.crafting_core));
+        localizedName = Component.translatable(DEContent.CRAFTING_CORE.get().getDescriptionId());
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(DEContent.CRAFTING_CORE.get()));
     }
 
     @Nonnull
@@ -80,29 +69,25 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
         return icon;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void draw(IFusionRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
-        Minecraft mc = Minecraft.getInstance();
+    public void draw(IFusionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        GuiRender render = GuiRender.convert(graphics);
         TechLevel tier = recipe.getRecipeTier();
         int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-        GuiHelperOld.drawCenteredString(mc.font, poseStack, I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2, 5, colour, false);
-        GuiHelperOld.drawCenteredString(mc.font, poseStack, I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2, this.ySize - 20, 4474111, false);
-        GuiHelperOld.drawCenteredString(mc.font, poseStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
+        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
+        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
+        render.drawCenteredString(Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
 
-        MultiBufferSource.BufferSource buffer = RenderUtils.getGuiBuffers();
-        TransformingVertexConsumer builder = new TransformingVertexConsumer(buffer.getBuffer(GuiHelper.transColourType), poseStack);
-        GuiHelperOld.drawBorderedRect(builder, (xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF, 0);
+        render.borderRect((xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);
         if (recipe.getIngredients().size() > 16) {
-            GuiHelperOld.drawBorderedRect(builder, 3, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelperOld.drawBorderedRect(builder, 23, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelperOld.drawBorderedRect(builder, xSize - 21, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelperOld.drawBorderedRect(builder, xSize - 41, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            render.borderRect(3, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.borderRect(23, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.borderRect(xSize - 21, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.borderRect(xSize - 41, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
         } else {
-            GuiHelperOld.drawBorderedRect(builder, 12, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelperOld.drawBorderedRect(builder, xSize - 32, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            render.borderRect(12, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
+            render.borderRect(xSize - 32, 2, 20, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
         }
-        buffer.endBatch();
     }
 
     @Override
@@ -112,7 +97,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
                 .setSlotName("catalyst");
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, xSize / 2 - 8, ySize / 2 - 8 + 23)
-                .addItemStack(recipe.getResultItem())
+                .addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()))
                 .setSlotName("output");
 
         List<Ingredient> ingreds = recipe.getIngredients();
@@ -137,13 +122,4 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
                     .setSlotName("input_" + i);
         }
     }
-
-    @SuppressWarnings("removal")
-    @Nonnull
-    @Override
-    public ResourceLocation getUid() {return RecipeCategoryUids.FUSION_CRAFTING;}
-
-    @SuppressWarnings("removal")
-    @Override
-    public @NotNull Class<? extends IFusionRecipe> getRecipeClass() {return IFusionRecipe.class;}
 }

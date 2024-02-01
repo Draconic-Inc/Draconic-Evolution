@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
 import com.brandon3055.draconicevolution.client.sound.SimpleSoundImpl;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +39,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
 
     public LaserBeamPhase(DraconicGuardianEntity guardian) {
         super(guardian, 3 * 20);
-        this.damage = new DraconicIndirectEntityDamage("draconicevolution.guardian_laser", guardian, guardian, TechLevel.CHAOTIC).bypassMagic().bypassArmor();
+        this.damage = DEDamage.guardianLaser(guardian.level(), guardian);
     }
 
     @Override
@@ -71,7 +69,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         //Check for block Collision
         beamPos = Vector3.fromEntityCenter(attackTarget);
         boolean obstructed = false;
-        HitResult result = guardian.level.clip(new ClipContext(headPos.vec3(), beamPos.vec3(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, guardian));
+        HitResult result = guardian.level().clip(new ClipContext(headPos.vec3(), beamPos.vec3(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, guardian));
         if (result.getType() != HitResult.Type.MISS) {
             beamPos = new Vector3(result.getLocation());
             obstructed = true;
@@ -84,15 +82,15 @@ public class LaserBeamPhase extends ChargeUpPhase {
         float beamPower = (getBeamCharge() - 0.5F) / 0.5F;
         if (fireSecondary()) {
             beamPower += getSecondaryCharge();
-            DraconicNetwork.sendGuardianBeam(guardian.level, headPos, beamPos, beamPower);
+            DraconicNetwork.sendGuardianBeam(guardian.level(), headPos, beamPos, beamPower);
             beamPower += getSecondaryCharge() * (Float.MAX_VALUE / 5F);
         } else {
-            DraconicNetwork.sendGuardianBeam(guardian.level, headPos, beamPos, beamPower);
+            DraconicNetwork.sendGuardianBeam(guardian.level(), headPos, beamPos, beamPower);
             beamPower *= 20;
         }
 
         if (obstructed & chargedTime % 2 == 0) {
-            guardian.level.explode(null, damage, null, beamPos.x, beamPos.y, beamPos.z, 8, false, Explosion.BlockInteraction.DESTROY);
+            guardian.level().explode(null, damage, null, beamPos.x, beamPos.y, beamPos.z, 8, false, Level.ExplosionInteraction.MOB);
         } else if (!obstructed) {
             float prevHealth = attackTarget.getHealth();
             if (getSecondaryCharge() >= 1) {
@@ -101,9 +99,9 @@ public class LaserBeamPhase extends ChargeUpPhase {
                  * 60,000,000,000,000,000,000,000,000,000,000,000,000 hit points worth of damage like It's nothing. What the hell am I supposed to do?
                  * Guardian beam at full power = death. End of story.
                  * */
-                attackTarget.getCombatTracker().recordDamage(damage, prevHealth, beamPower);
+                attackTarget.getCombatTracker().recordDamage(damage, beamPower);
                 attackTarget.setHealth(prevHealth - beamPower);
-                attackTarget.gameEvent(GameEvent.ENTITY_DAMAGED, damage.getEntity());
+                attackTarget.gameEvent(GameEvent.ENTITY_DAMAGE, damage.getEntity());
                 if (attackTarget.isDeadOrDying()) {
                     attackTarget.die(damage);
                 }
@@ -128,7 +126,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         }
 
         Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
-        List<Player> targetOptions = guardian.level.players()
+        List<Player> targetOptions = guardian.level().players()
                 .stream()
                 .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
                 .filter(e -> StartPhase.AGRO_TARGETS.test(guardian, e))
@@ -153,7 +151,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         super.clientTick();
         if (isCharged() && !soundInitialized) {
             soundInitialized = true;
-            SimpleSoundImpl.create(DESounds.beam, SoundSource.HOSTILE)
+            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE)
                     .setPitchSupplier(() -> 0.5F + getBeamCharge())
                     .setStoppedSupplier(this::isEnded)
                     .setPos(guardian)
@@ -163,7 +161,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         }
         if (fireSecondary() && !secondarySoundInit) {
             secondarySoundInit = true;
-            SimpleSoundImpl.create(DESounds.beam, SoundSource.HOSTILE)
+            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE)
                     .setPitchSupplier(() -> 1.5F + (getSecondaryCharge() / 2F))
                     .setStoppedSupplier(this::isEnded)
                     .setPos(guardian)

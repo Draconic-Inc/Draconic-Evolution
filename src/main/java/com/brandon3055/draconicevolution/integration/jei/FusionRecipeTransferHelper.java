@@ -17,20 +17,21 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,8 +58,13 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
     }
 
     @Override
-    public @NotNull Class<IFusionRecipe> getRecipeClass() {
-        return IFusionRecipe.class;
+    public Optional<MenuType<ContainerFusionCraftingCore>> getMenuType() {
+        return Optional.empty(); //TODO FusionRecipeTransferHelper.getMenuType
+    }
+
+    @Override
+    public RecipeType<IFusionRecipe> getRecipeType() {
+        return DEJEIPlugin.FUSION_RECIPE_TYPE;
     }
 
     @Override
@@ -72,7 +78,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
                 .filter(e -> e.getInjectorTier().index >= recipe.getRecipeTier().index)
                 .count();
         if (validInjectors < recipe.fusionIngredients().size()) {
-            return handlerHelper.createUserErrorWithTooltip(new TranslatableComponent("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
+            return handlerHelper.createUserErrorWithTooltip(Component.translatable("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
         }
 
         //Do... Pretty much everything else
@@ -118,13 +124,13 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         // check if we have enough inventory space to shuffle items around to their final locations
         if (filledCraftSlotCount - inputCount > emptySlotCount) {
             String message = I18n.get("jei.tooltip.error.recipe.transfer.inventory.full");
-            return handlerHelper.createUserErrorWithTooltip(new TextComponent(message));
+            return handlerHelper.createUserErrorWithTooltip(Component.literal(message));
         }
 
         List<IRecipeSlotView> missingStacks = checkForMissingIngredients(stackHelper, availableItemStacks, slotViews);
         if (missingStacks.size() > 0) {
             String message = I18n.get("jei.tooltip.error.recipe.transfer.missing");
-            return handlerHelper.createUserErrorForMissingSlots(new TextComponent(message), missingStacks);
+            return handlerHelper.createUserErrorForMissingSlots(Component.literal(message), missingStacks);
         }
 
         if (doTransfer) {
@@ -178,7 +184,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
 
     public static void doServerSideTransfer(ServerPlayer player, ContainerFusionCraftingCore container, IFusionRecipe recipe, boolean maxTransfer) {
         TileFusionCraftingCore tile = container.tile;
-        LazyOptional<IItemHandler> optionalHandler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
+        LazyOptional<IItemHandler> optionalHandler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP);
         if (!optionalHandler.isPresent()) {
             DraconicEvolution.LOGGER.error("FusionRecipeTransferHelper: Player has no inventory capability");
             return;

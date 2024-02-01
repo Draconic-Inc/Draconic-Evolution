@@ -22,7 +22,7 @@ public class EntityDetector extends EntityBlockBCore {
     public EntityDetector(Properties properties, boolean advanced) {
         super(properties);
         this.canProvidePower = true;
-        setBlockEntity(() -> DEContent.tile_entity_detector, true);
+        setBlockEntity(DEContent.TILE_ENTITY_DETECTOR::get, true);
     }
 
     @Override

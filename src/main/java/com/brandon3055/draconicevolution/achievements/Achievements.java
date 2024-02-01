@@ -117,23 +117,23 @@ public class Achievements {
 //        }
     }
 
-    @SubscribeEvent
-    public void craftEvent(PlayerEvent.ItemCraftedEvent event) {
-        ItemStack stack = event.getCrafting().copy();
-        stack.setCount(1);
-        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("craft")) {
-            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
-        }
-    }
-
-    @SubscribeEvent
-    public void smeltEvent(PlayerEvent.ItemSmeltedEvent event) {
-        ItemStack stack = event.getSmelting().copy();
-        stack.setCount(1);
-        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("smelt")) {
-            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
-        }
-    }
+//    @SubscribeEvent
+//    public void craftEvent(PlayerEvent.ItemCraftedEvent event) {
+//        ItemStack stack = event.getCrafting().copy();
+//        stack.setCount(1);
+//        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("craft")) {
+//            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
+//        }
+//    }
+//
+//    @SubscribeEvent
+//    public void smeltEvent(PlayerEvent.ItemSmeltedEvent event) {
+//        ItemStack stack = event.getSmelting().copy();
+//        stack.setCount(1);
+//        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("smelt")) {
+//            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
+//        }
+//    }
 
     private static class AchievementCondition {
         private final String name;

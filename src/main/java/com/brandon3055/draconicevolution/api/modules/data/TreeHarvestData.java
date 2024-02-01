@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -24,10 +23,10 @@ public record TreeHarvestData(int range, int speed) implements ModuleData<TreeHa
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context) {
         if (range() > 0) {
-            map.put(new TranslatableComponent("module.draconicevolution.tree_harvest_range.name"), new TranslatableComponent("module.draconicevolution.tree_harvest_range.value", range));
+            map.put(Component.translatable("module.draconicevolution.tree_harvest_range.name"), Component.translatable("module.draconicevolution.tree_harvest_range.value", range));
         }
         if (speed() > 0) {
-            map.put(new TranslatableComponent("module.draconicevolution.tree_harvest_speed.name"), new TranslatableComponent("module.draconicevolution.tree_harvest_speed.value", speed));
+            map.put(Component.translatable("module.draconicevolution.tree_harvest_speed.name"), Component.translatable("module.draconicevolution.tree_harvest_speed.value", speed));
         }
     }
 

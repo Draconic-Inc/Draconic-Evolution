@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,12 +37,12 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalDirectIO(BlockPos pos, BlockState state) {
-        super(DEContent.tile_crystal_io, pos, state);
+        super(DEContent.TILE_IO_CRYSTAL.get(), pos, state);
         outputMode.addValueListener(newVal -> opStorage.setIOMode(!newVal));
     }
 
     public TileCrystalDirectIO(TechLevel techLevel, BlockPos pos, BlockState state) {
-        super(DEContent.tile_crystal_io, techLevel, pos, state);
+        super(DEContent.TILE_IO_CRYSTAL.get(), techLevel, pos, state);
     }
 
     //region Update Energy IO
@@ -103,7 +102,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void addDisplayData(List<Component> displayList) {
         super.addDisplayData(displayList);
         ChatFormatting colour = outputMode.get() ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
-        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
     }
 
     //endregion

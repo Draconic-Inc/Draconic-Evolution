@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -41,7 +41,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     @Override
     public void addElements(GuiElementManager manager) {
         TBasicMachine template = new TModularMachine(this, tile, false);
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         template.background.onReload((guiTex) -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.addPlayerSlots(true, true, true);

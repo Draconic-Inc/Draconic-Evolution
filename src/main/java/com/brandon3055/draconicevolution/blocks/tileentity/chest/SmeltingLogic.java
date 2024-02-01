@@ -124,7 +124,7 @@ public class SmeltingLogic {
             slowestRecipe = Math.max(slowestRecipe, recipe.getCookingTime());
 
             if (attemptSmelt) {
-                ItemStack result = recipe.assemble(slot);
+                ItemStack result = recipe.assemble(slot, tile.getLevel().registryAccess());
                 if (InventoryUtils.insertItem(outputInv, result, true).isEmpty() && !inputInv.extractItem(i, 1, false).isEmpty()) {
                     InventoryUtils.insertItem(outputInv, result, false);
                     recipesUsed.addTo(recipe.getId(), 1);

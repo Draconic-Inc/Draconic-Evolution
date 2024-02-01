@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -12,14 +11,10 @@ import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -62,7 +57,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                                 double rem = storedFood + val - data.foodStorage();
                                 if (rem <= val * 0.25) {
                                     storedFood = (float) Math.min(storedFood + val, data.foodStorage());
-                                    entity.level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
+                                    entity.level().playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().random.nextFloat() * 0.1F)));
                                     stack.shrink(1);
                                     break;
                                 }
@@ -78,7 +73,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                     if (foodStats.needsFood() && storedFood > 1) {
                         foodStats.eat((int)consumeFood(Math.min(1, 20 - foodStats.getFoodLevel())), 0);
                     }else if (foodStats.getSaturationLevel() < maxSat && storedFood > 0) {
-                        foodStats.saturationLevel += consumeFood(Math.min(1, maxSat - foodStats.getSaturationLevel()));
+                        foodStats.saturationLevel += (float) consumeFood(Math.min(1, maxSat - foodStats.getSaturationLevel()));
                     }
                 }
             }
@@ -93,37 +88,35 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
-        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
-        VertexConsumer builder = BCGuiSprites.builder(getter, poseStack);
+    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         AutoFeedData data = module.getData();
         double progress = storedFood / data.foodStorage();
         progress = (int) (progress * 21F);
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_empty").sprite());
+            render.tex(BCGuiTextures.get("bars/food_empty"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_full").sprite());
+                    render.tex(BCGuiTextures.get("bars/food_full"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 } else {
-                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_half").sprite());
+                    render.tex(BCGuiTextures.get("bars/food_half"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 }
             }
         }
-        RenderUtils.endBatch(getter);
     }
 
     @Override
     public void addToolTip(List<Component> list) {
-        list.add(new TranslatableComponent("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(new TranslatableComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
+        list.add(Component.translatable("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(Component.translatable("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(new TranslatableComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
+            tooltip.add(Component.translatable("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(Component.translatable("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
         }
     }
 

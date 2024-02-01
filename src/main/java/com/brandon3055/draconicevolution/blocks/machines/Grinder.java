@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -8,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,7 +27,7 @@ public class Grinder extends EntityBlockBCore {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
         setMobResistant();
-        setBlockEntity(() -> DEContent.tile_grinder, true);
+        setBlockEntity(DEContent.TILE_GRINDER::get, true);
     }
 
     @Override

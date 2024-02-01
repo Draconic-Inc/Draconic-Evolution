@@ -21,7 +21,7 @@ public class DECommands {
 
     private static void registerServerCommands(RegisterCommandsEvent event) {
         CommandKaboom.register(event.getDispatcher());
-        CommandMakeRecipe.register(event.getDispatcher());
+//        CommandMakeRecipe.register(event.getDispatcher());
         CommandRespawnGuardian.register(event.getDispatcher());
     }
 

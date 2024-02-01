@@ -1,20 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import codechicken.lib.render.CCRenderState;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -50,7 +48,7 @@ public class RenderItemReactorPart implements IItemRenderer {
     //endregion
 
     @Override
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
 //        CCRenderState ccrs = CCRenderState.instance();
 //        ccrs.reset();
 //        ccrs.brightness = packedLight;
@@ -89,7 +87,7 @@ public class RenderItemReactorPart implements IItemRenderer {
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

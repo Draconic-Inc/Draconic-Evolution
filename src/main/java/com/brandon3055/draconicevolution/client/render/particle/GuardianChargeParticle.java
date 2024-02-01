@@ -2,12 +2,10 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -17,6 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianChargeParticle extends SingleQuadParticle {
@@ -66,13 +66,13 @@ public class GuardianChargeParticle extends SingleQuadParticle {
         float x = (float) (pos.x - vector3d.x()) + (Mth.sin((float) (angularPos * Math.PI * 2) + anim) * radius);
         float y = (float) (pos.y - vector3d.y());
         float z = (float) (pos.z - vector3d.z()) + (Mth.cos((float) (angularPos * Math.PI * 2) + anim) * radius);
-        Quaternion quaternion;
+        Quaternionf quaternion;
         if (this.roll == 0.0F) {
             quaternion = camera.rotation();
         } else {
-            quaternion = new Quaternion(camera.rotation());
+            quaternion = new Quaternionf(camera.rotation());
             float f3 = Mth.lerp(partialTicks, this.oRoll, this.roll);
-            quaternion.mul(Vector3f.ZP.rotation(f3));
+            quaternion.mul(Axis.ZP.rotation(f3));
         }
 
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);

@@ -21,7 +21,7 @@ public class CelestialManipulator extends EntityBlockBCore {
     public CelestialManipulator(Properties properties) {
         super(properties);
         canProvidePower = true;
-        setBlockEntity(() -> DEContent.tile_celestial_manipulator, true);
+        setBlockEntity(DEContent.TILE_CELESTIAL_MANIPULATOR::get, true);
     }
 
     @Override

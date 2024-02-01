@@ -214,7 +214,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         ;
         BlockPos playerPos = player.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(playerPos.offset(-1, -1, -1), playerPos.offset(1, 1, 1))) {
-            BlockEntity tile = player.level.getBlockEntity(pos);
+            BlockEntity tile = player.level().getBlockEntity(pos);
             if (tile instanceof TilePortal) {
                 ((TilePortal) tile).clientArrived(player);
             }

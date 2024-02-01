@@ -31,7 +31,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,9 +44,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -70,7 +69,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         provider.addCapability(host, "module_host", DECapabilities.MODULE_HOST_CAPABILITY, DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
         ModularOPStorage opStorage = createOPStorage(stack, host);
         if (opStorage != null) {
-            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, CapabilityEnergy.ENERGY);
+            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, ForgeCapabilities.ENERGY);
             host.addCategories(ModuleCategory.ENERGY);
         }
 
@@ -111,7 +110,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     @OnlyIn(Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("[Modular Item]").withStyle(ChatFormatting.BLUE));
+            tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 
         if (DECapabilities.MODULE_HOST_CAPABILITY != null) {
@@ -122,9 +121,9 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
 
         EnergyUtils.addEnergyInfo(stack, tooltip);
         if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
-            tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));
+            tooltip.add(Component.translatable("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));
             if (KeyBindings.toolModules != null && KeyBindings.toolModules.getTranslatedKeyMessage() != null) {
-                tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
             }
         }
     }

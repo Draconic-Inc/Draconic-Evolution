@@ -8,10 +8,13 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.LanguageProvider;
+
+import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -20,135 +23,136 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 //@formatter:off
 public class LangGenerator extends LanguageProvider {
-    public LangGenerator(DataGenerator gen) {
-        super(gen, MODID, "en_us");
+
+    public LangGenerator(PackOutput output) {
+        super(output, MODID, "en_us");
     }
 
     private void blocks(PrefixHelper helper) {
-        helper.add(DEContent.block_draconium,                                   "Draconium Block");
-        helper.add(DEContent.block_draconium_awakened,                          "Awakened Draconium Block");
-        helper.add(DEContent.chaos_crystal,                                     "Chaos Crystal");
-        helper.add(DEContent.crafting_injector_basic,                           "Draconium Fusion Crafting Injector");
-        helper.add(DEContent.crafting_injector_wyvern,                          "Wyvern Fusion Crafting Injector");
-        helper.add(DEContent.crafting_injector_awakened,                        "Draconic Fusion Crafting Injector");
-        helper.add(DEContent.crafting_injector_chaotic,                         "Chaotic Fusion Crafting Injector");
-        helper.add(DEContent.crafting_core,                                     "Fusion Crafting Core");
-        helper.add(DEContent.crystal_relay_basic,                               "Basic Energy Relay Crystal");
-        helper.add(DEContent.crystal_relay_wyvern,                              "Wyvern Energy Relay Crystal");
-        helper.add(DEContent.crystal_relay_draconic,                            "Draconic Energy Relay Crystal");
-//        helper.add(DEContent.crystal_relay_chaotic,                             "Chaotic Energy Relay Crystal");
-        helper.add(DEContent.crystal_io_basic,                                  "Basic Energy I/O Crystal");
-        helper.add(DEContent.crystal_io_wyvern,                                 "Wyvern Energy I/O Crystal");
-        helper.add(DEContent.crystal_io_draconic,                               "Draconic Energy I/O Crystal");
-//        helper.add(DEContent.crystal_io_chaotic,                                "Chaotic Energy I/O Crystal");
-        helper.add(DEContent.crystal_wireless_basic,                            "Basic Wireless Energy Crystal");
-        helper.add(DEContent.crystal_wireless_wyvern,                           "Wyvern Wireless Energy Crystal");
-        helper.add(DEContent.crystal_wireless_draconic,                         "Draconic Wireless Energy Crystal");
-//        helper.add(DEContent.crystal_wireless_chaotic,                          "Chaotic Wireless Energy Crystal");
-        helper.add(DEContent.creative_op_capacitor,                             "Creative Power Source");
-        helper.add(DEContent.celestial_manipulator,                             "Celestial Manipulator");
-        helper.add(DEContent.disenchanter,                                      "Disenchanter");
-        helper.add(DEContent.dislocation_inhibitor,                             "Dislocation Normalization Field Projector");
+        helper.addBlock(DEContent.DRACONIUM_BLOCK,                                   "Draconium Block");
+        helper.addBlock(DEContent.AWAKENED_DRACONIUM_BLOCK,                          "Awakened Draconium Block");
+        helper.addBlock(DEContent.CHAOS_CRYSTAL,                                     "Chaos Crystal");
+        helper.addBlock(DEContent.BASIC_CRAFTING_INJECTOR,                           "Draconium Fusion Crafting Injector");
+        helper.addBlock(DEContent.WYVERN_CRAFTING_INJECTOR,                          "Wyvern Fusion Crafting Injector");
+        helper.addBlock(DEContent.AWAKENED_CRAFTING_INJECTOR,                        "Draconic Fusion Crafting Injector");
+        helper.addBlock(DEContent.CHAOTIC_CRAFTING_INJECTOR,                         "Chaotic Fusion Crafting Injector");
+        helper.addBlock(DEContent.CRAFTING_CORE,                                     "Fusion Crafting Core");
+        helper.addBlock(DEContent.BASIC_RELAY_CRYSTAL,                               "Basic Energy Relay Crystal");
+        helper.addBlock(DEContent.WYVERN_RELAY_CRYSTAL,                              "Wyvern Energy Relay Crystal");
+        helper.addBlock(DEContent.DRACONIC_RELAY_CRYSTAL,                            "Draconic Energy Relay Crystal");
+//        helper.add(DEContent.CRYSTAL_RELAY_CHAOTIC,                             "Chaotic Energy Relay Crystal");
+        helper.addBlock(DEContent.BASIC_IO_CRYSTAL,                                  "Basic Energy I/O Crystal");
+        helper.addBlock(DEContent.WYVERN_IO_CRYSTAL,                                 "Wyvern Energy I/O Crystal");
+        helper.addBlock(DEContent.DRACONIC_IO_CRYSTAL,                               "Draconic Energy I/O Crystal");
+//        helper.add(DEContent.CRYSTAL_IO_CHAOTIC,                                "Chaotic Energy I/O Crystal");
+        helper.addBlock(DEContent.BASIC_WIRELESS_CRYSTAL,                            "Basic Wireless Energy Crystal");
+        helper.addBlock(DEContent.WYVERN_WIRELESS_CRYSTAL,                           "Wyvern Wireless Energy Crystal");
+        helper.addBlock(DEContent.DRACONIC_WIRELESS_CRYSTAL,                         "Draconic Wireless Energy Crystal");
+//        helper.add(DEContent.CRYSTAL_WIRELESS_CHAOTIC,                          "Chaotic Wireless Energy Crystal");
+        helper.addBlock(DEContent.CREATIVE_OP_CAPACITOR,                             "Creative Power Source");
+        helper.addBlock(DEContent.CELESTIAL_MANIPULATOR,                             "Celestial Manipulator");
+        helper.addBlock(DEContent.DISENCHANTER,                                      "Disenchanter");
+        helper.addBlock(DEContent.DISLOCATION_INHIBITOR,                             "Dislocation Normalization Field Projector");
         add("tile." + MODID + ".dislocation_inhibitor.info",                    "Prevents items dropped within 5 blocks from being collected by Item Dislocators.");
-        helper.add(DEContent.dislocator_pedestal,                               "Dislocator Pedestal");
-        helper.add(DEContent.dislocator_receptacle,                             "Dislocator Receptacle");
-        helper.add(DEContent.draconium_chest,                                   "Draconium Chest");
-        helper.add(DEContent.energy_transfuser,                                 "Energy Transfuser");
-        helper.add(DEContent.entity_detector,                                   "Entity Detector");
-        helper.add(DEContent.entity_detector_advanced,                          "Advanced Entity Detector");
-        helper.add(DEContent.energy_core,                                       "Energy Core");
-        helper.add(DEContent.energy_core_stabilizer,                            "Energy Core Stabilizer");
-        helper.add(DEContent.energy_pylon,                                      "Energy Pylon");
-        helper.add(DEContent.structure_block,                                   "");
-        helper.add(DEContent.flux_gate,                                         "Flux Gate");
-        helper.add(DEContent.fluid_gate,                                        "Fluid Gate");
-        helper.add(DEContent.generator,                                         "Generator");
-        helper.add(DEContent.grinder,                                           "Mob Grinder");
-        helper.add(DEContent.infused_obsidian,                                  "Draconium Infused Obsidian");
-        helper.add(DEContent.ore_draconium_overworld,                           "Draconium Ore");
-        helper.add(DEContent.ore_draconium_deepslate,                           "Deepslate Draconium Ore");
-        helper.add(DEContent.ore_draconium_nether,                              "Nether Draconium Ore");
-        helper.add(DEContent.ore_draconium_end,                                 "Ender Draconium Ore");
-        helper.add(DEContent.potentiometer,                                     "Potentiometer");
-        helper.add(DEContent.particle_generator,                                "Particle Generator");
-        helper.add(DEContent.placed_item,                                       "Placed Item");
-        helper.add(DEContent.portal,                                            "Portal");
-        helper.add(DEContent.reactor_core,                                      "Draconic Reactor Core");
-        helper.add(DEContent.reactor_stabilizer,                                "Reactor Stabilizer");
-        helper.add(DEContent.reactor_injector,                                  "Reactor Energy Injector");
-        helper.add(DEContent.rain_sensor,                                       "Rain Sensor");
-        helper.add(DEContent.stabilized_spawner,                                "Stabilized Mob Spawner");
+        helper.addBlock(DEContent.DISLOCATOR_PEDESTAL,                               "Dislocator Pedestal");
+        helper.addBlock(DEContent.DISLOCATOR_RECEPTACLE,                             "Dislocator Receptacle");
+        helper.addBlock(DEContent.DRACONIUM_CHEST,                                   "Draconium Chest");
+        helper.addBlock(DEContent.ENERGY_TRANSFUSER,                                 "Energy Transfuser");
+        helper.addBlock(DEContent.ENTITY_DETECTOR,                                   "Entity Detector");
+        helper.addBlock(DEContent.ENTITY_DETECTOR_ADVANCED,                          "Advanced Entity Detector");
+        helper.addBlock(DEContent.ENERGY_CORE,                                       "Energy Core");
+        helper.addBlock(DEContent.ENERGY_CORE_STABILIZER,                            "Energy Core Stabilizer");
+        helper.addBlock(DEContent.ENERGY_PYLON,                                      "Energy Pylon");
+        helper.addBlock(DEContent.STRUCTURE_BLOCK,                                   "");
+        helper.addBlock(DEContent.FLUX_GATE,                                         "Flux Gate");
+        helper.addBlock(DEContent.FLUID_GATE,                                        "Fluid Gate");
+        helper.addBlock(DEContent.GENERATOR,                                         "Generator");
+        helper.addBlock(DEContent.GRINDER,                                           "Mob Grinder");
+        helper.addBlock(DEContent.INFUSED_OBSIDIAN,                                  "Draconium Infused Obsidian");
+        helper.addBlock(DEContent.OVERWORLD_DRACONIUM_ORE,                           "Draconium Ore");
+        helper.addBlock(DEContent.DEEPSLATE_DRACONIUM_ORE,                           "Deepslate Draconium Ore");
+        helper.addBlock(DEContent.NETHER_DRACONIUM_ORE,                              "Nether Draconium Ore");
+        helper.addBlock(DEContent.END_DRACONIUM_ORE,                                 "Ender Draconium Ore");
+        helper.addBlock(DEContent.POTENTIOMETER,                                     "Potentiometer");
+        helper.addBlock(DEContent.PARTICLE_GENERATOR,                                "Particle Generator");
+        helper.addBlock(DEContent.PLACED_ITEM,                                       "Placed Item");
+        helper.addBlock(DEContent.PORTAL,                                            "Portal");
+        helper.addBlock(DEContent.REACTOR_CORE,                                      "Draconic Reactor Core");
+        helper.addBlock(DEContent.REACTOR_STABILIZER,                                "Reactor Stabilizer");
+        helper.addBlock(DEContent.REACTOR_INJECTOR,                                  "Reactor Energy Injector");
+        helper.addBlock(DEContent.RAIN_SENSOR,                                       "Rain Sensor");
+        helper.addBlock(DEContent.STABILIZED_SPAWNER,                                "Stabilized Mob Spawner");
     }
 
     private void items(PrefixHelper helper) {
         //Components
-        helper.add(DEContent.dust_draconium,                                    "Draconium Dust");
-        helper.add(DEContent.dust_draconium_awakened,                           "Awakened Draconium Dust");
-        helper.add(DEContent.ingot_draconium,                                   "Draconium Ingot");
-        helper.add(DEContent.ingot_draconium_awakened,                          "Awakened Draconium Ingot");
-        helper.add(DEContent.nugget_draconium,                                  "Draconium Nugget");
-        helper.add(DEContent.nugget_draconium_awakened,                         "Awakened Draconium Nugget");
-        helper.add(DEContent.core_draconium,                                    "Draconium Core");
-        helper.add(DEContent.core_wyvern,                                       "Wyvern Core");
-        helper.add(DEContent.core_awakened,                                     "Draconic Core");
-        helper.add(DEContent.core_chaotic,                                      "Chaotic Core");
-        helper.add(DEContent.energy_core_wyvern,                                "Wyvern Energy Controller");
-        helper.add(DEContent.energy_core_draconic,                              "Draconic Energy Controller");
-        helper.add(DEContent.energy_core_chaotic,                               "Chaotic Energy Controller");
-        helper.add(DEContent.dragon_heart,                                      "Dragon Heart");
-        helper.add(DEContent.chaos_shard,                                       "Chaos Shard");
-        helper.add(DEContent.chaos_frag_large,                                  "Large Chaos Fragment");
-        helper.add(DEContent.chaos_frag_medium,                                 "Small Chaos Fragment");
-        helper.add(DEContent.chaos_frag_small,                                  "Tiny Chaos Fragment");
-        helper.add(DEContent.module_core,                                       "Module Core");
-        helper.add(DEContent.reactor_prt_stab_frame,                            "Reactor Stabilizer Frame");
-        helper.add(DEContent.reactor_prt_in_rotor,                              "Reactor Stabilizer Inner Rotor");
-        helper.add(DEContent.reactor_prt_out_rotor,                             "Reactor Stabilizer Outer Rotor");
-        helper.add(DEContent.reactor_prt_rotor_full,                            "Reactor Stabilizer Rotor Assembly");
-        helper.add(DEContent.reactor_prt_focus_ring,                            "Reactor Stabilizer Focus Ring");
+        helper.addItem(DEContent.DUST_DRACONIUM,                                    "Draconium Dust");
+        helper.addItem(DEContent.DUST_DRACONIUM_AWAKENED,                           "Awakened Draconium Dust");
+        helper.addItem(DEContent.INGOT_DRACONIUM,                                   "Draconium Ingot");
+        helper.addItem(DEContent.INGOT_DRACONIUM_AWAKENED,                          "Awakened Draconium Ingot");
+        helper.addItem(DEContent.NUGGET_DRACONIUM,                                  "Draconium Nugget");
+        helper.addItem(DEContent.NUGGET_DRACONIUM_AWAKENED,                         "Awakened Draconium Nugget");
+        helper.addItem(DEContent.CORE_DRACONIUM,                                    "Draconium Core");
+        helper.addItem(DEContent.CORE_WYVERN,                                       "Wyvern Core");
+        helper.addItem(DEContent.CORE_AWAKENED,                                     "Draconic Core");
+        helper.addItem(DEContent.CORE_CHAOTIC,                                      "Chaotic Core");
+        helper.addItem(DEContent.ENERGY_CORE_WYVERN,                                "Wyvern Energy Controller");
+        helper.addItem(DEContent.ENERGY_CORE_DRACONIC,                              "Draconic Energy Controller");
+        helper.addItem(DEContent.ENERGY_CORE_CHAOTIC,                               "Chaotic Energy Controller");
+        helper.addItem(DEContent.DRAGON_HEART,                                      "Dragon Heart");
+        helper.addItem(DEContent.CHAOS_SHARD,                                       "Chaos Shard");
+        helper.addItem(DEContent.CHAOS_FRAG_LARGE,                                  "Large Chaos Fragment");
+        helper.addItem(DEContent.CHAOS_FRAG_MEDIUM,                                 "Small Chaos Fragment");
+        helper.addItem(DEContent.CHAOS_FRAG_SMALL,                                  "Tiny Chaos Fragment");
+        helper.addItem(DEContent.MODULE_CORE,                                       "Module Core");
+        helper.addItem(DEContent.REACTOR_PRT_STAB_FRAME,                            "Reactor Stabilizer Frame");
+        helper.addItem(DEContent.REACTOR_PRT_IN_ROTOR,                              "Reactor Stabilizer Inner Rotor");
+        helper.addItem(DEContent.REACTOR_PRT_OUT_ROTOR,                             "Reactor Stabilizer Outer Rotor");
+        helper.addItem(DEContent.REACTOR_PRT_ROTOR_FULL,                            "Reactor Stabilizer Rotor Assembly");
+        helper.addItem(DEContent.REACTOR_PRT_FOCUS_RING,                            "Reactor Stabilizer Focus Ring");
         //Misc Tools
-        helper.add(DEContent.magnet,                                            "Item Dislocator");
-        helper.add(DEContent.magnet_advanced,                                   "Awakened Item Dislocator");
-        helper.add(DEContent.dislocator,                                        "Dislocator");
-        helper.add(DEContent.dislocator_advanced,                               "Advanced Dislocator");
-        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Point-to-Point)");
-        helper.add(DEContent.dislocator_p2p_unbound,                            "Un-Bound Dislocator (Point-to-Point)");
-        helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Player)");
-        helper.add(DEContent.dislocator_player_unbound,                         "Un-Bound Dislocator (Player)");
-        helper.add(DEContent.crystal_binder,                                    "Crystal Binder");
-        helper.add(DEContent.info_tablet,                                       "Information Tablet");
-        helper.add(DEContent.ender_energy_manipulator,                          "Ender Energy Manipulator");
-//        helper.add(DEContent.creative_exchanger,                                "Creative Exchanger");
-        helper.add(DEContent.mob_soul,                                          "Soul");
+        helper.addItem(DEContent.MAGNET,                                            "Item Dislocator");
+        helper.addItem(DEContent.MAGNET_ADVANCED,                                   "Awakened Item Dislocator");
+        helper.addItem(DEContent.DISLOCATOR,                                        "Dislocator");
+        helper.addItem(DEContent.DISLOCATOR_ADVANCED,                               "Advanced Dislocator");
+        helper.addItem(DEContent.DISLOCATOR_P2P,                                    "Bound Dislocator (Point-to-Point)");
+        helper.addItem(DEContent.DISLOCATOR_P2P_UNBOUND,                            "Un-Bound Dislocator (Point-to-Point)");
+        helper.addItem(DEContent.DISLOCATOR_PLAYER,                                 "Bound Dislocator (Player)");
+        helper.addItem(DEContent.DISLOCATOR_PLAYER_UNBOUND,                         "Un-Bound Dislocator (Player)");
+        helper.addItem(DEContent.CRYSTAL_BINDER,                                    "Crystal Binder");
+        helper.addItem(DEContent.INFO_TABLET,                                       "Information Tablet");
+//        helper.add(DEContent.ENDER_ENERGY_MANIPULATOR,                          "Ender Energy Manipulator");
+//        helper.add(DEContent.CREATIVE_EXCHANGER,                                "Creative Exchanger");
+        helper.addItem(DEContent.MOB_SOUL,                                          "Soul");
         //Tools
-        helper.add(DEContent.capacitor_wyvern,                                  "Wyvern Capacitor");
-        helper.add(DEContent.capacitor_draconic,                                "Draconic Capacitor");
-        helper.add(DEContent.capacitor_chaotic,                                 "Chaotic Capacitor");
-        helper.add(DEContent.capacitor_creative,                                "Creative Capacitor");
-        helper.add(DEContent.shovel_wyvern,                                     "Wyvern Shovel");
-        helper.add(DEContent.shovel_draconic,                                   "Draconic Shovel");
-        helper.add(DEContent.shovel_chaotic,                                    "Chaotic Shovel");
-        helper.add(DEContent.hoe_wyvern,                                        "Wyvern Hoe");
-        helper.add(DEContent.hoe_draconic,                                      "Draconic Hoe");
-        helper.add(DEContent.hoe_chaotic,                                       "Chaotic Hoe");
-        helper.add(DEContent.pickaxe_wyvern,                                    "Wyvern Pickaxe");
-        helper.add(DEContent.pickaxe_draconic,                                  "Draconic Pickaxe");
-        helper.add(DEContent.pickaxe_chaotic,                                   "Chaotic Pickaxe");
-        helper.add(DEContent.axe_wyvern,                                        "Wyvern Axe");
-        helper.add(DEContent.axe_draconic,                                      "Draconic Axe");
-        helper.add(DEContent.axe_chaotic,                                       "Chaotic Axe");
-        helper.add(DEContent.bow_wyvern,                                        "Wyvern Bow");
-        helper.add(DEContent.bow_draconic,                                      "Draconic Bow");
-        helper.add(DEContent.bow_chaotic,                                       "Chaotic Bow");
-        helper.add(DEContent.sword_wyvern,                                      "Wyvern Sword");
-        helper.add(DEContent.sword_draconic,                                    "Draconic Sword");
-        helper.add(DEContent.sword_chaotic,                                     "Chaotic Sword");
-        helper.add(DEContent.staff_draconic,                                    "Draconic Staff of Power");
-        helper.add(DEContent.staff_chaotic,                                     "Chaotic Staff of Power");
+        helper.addItem(DEContent.CAPACITOR_WYVERN,                                  "Wyvern Capacitor");
+        helper.addItem(DEContent.CAPACITOR_DRACONIC,                                "Draconic Capacitor");
+        helper.addItem(DEContent.CAPACITOR_CHAOTIC,                                 "Chaotic Capacitor");
+        helper.addItem(DEContent.CAPACITOR_CREATIVE,                                "Creative Capacitor");
+        helper.addItem(DEContent.SHOVEL_WYVERN,                                     "Wyvern Shovel");
+        helper.addItem(DEContent.SHOVEL_DRACONIC,                                   "Draconic Shovel");
+        helper.addItem(DEContent.SHOVEL_CHAOTIC,                                    "Chaotic Shovel");
+        helper.addItem(DEContent.HOE_WYVERN,                                        "Wyvern Hoe");
+        helper.addItem(DEContent.HOE_DRACONIC,                                      "Draconic Hoe");
+        helper.addItem(DEContent.HOE_CHAOTIC,                                       "Chaotic Hoe");
+        helper.addItem(DEContent.PICKAXE_WYVERN,                                    "Wyvern Pickaxe");
+        helper.addItem(DEContent.PICKAXE_DRACONIC,                                  "Draconic Pickaxe");
+        helper.addItem(DEContent.PICKAXE_CHAOTIC,                                   "Chaotic Pickaxe");
+        helper.addItem(DEContent.AXE_WYVERN,                                        "Wyvern Axe");
+        helper.addItem(DEContent.AXE_DRACONIC,                                      "Draconic Axe");
+        helper.addItem(DEContent.AXE_CHAOTIC,                                       "Chaotic Axe");
+        helper.addItem(DEContent.BOW_WYVERN,                                        "Wyvern Bow");
+        helper.addItem(DEContent.BOW_DRACONIC,                                      "Draconic Bow");
+        helper.addItem(DEContent.BOW_CHAOTIC,                                       "Chaotic Bow");
+        helper.addItem(DEContent.SWORD_WYVERN,                                      "Wyvern Sword");
+        helper.addItem(DEContent.SWORD_DRACONIC,                                    "Draconic Sword");
+        helper.addItem(DEContent.SWORD_CHAOTIC,                                     "Chaotic Sword");
+        helper.addItem(DEContent.STAFF_DRACONIC,                                    "Draconic Staff of Power");
+        helper.addItem(DEContent.STAFF_CHAOTIC,                                     "Chaotic Staff of Power");
         //Armor
-        helper.add(DEContent.chestpiece_wyvern,                                 "Wyvern Chestpiece");
-        helper.add(DEContent.chestpiece_draconic,                               "Draconic Chestpiece");
-        helper.add(DEContent.chestpiece_chaotic,                                "Chaotic Chestpiece");
+        helper.addItem(DEContent.CHESTPIECE_WYVERN,                                 "Wyvern Chestpiece");
+        helper.addItem(DEContent.CHESTPIECE_DRACONIC,                               "Draconic Chestpiece");
+        helper.addItem(DEContent.CHESTPIECE_CHAOTIC,                                "Chaotic Chestpiece");
     }
 
     private void itemProps(PrefixHelper helper) {
@@ -212,23 +216,23 @@ public class LangGenerator extends LanguageProvider {
 
     private void modules(PrefixHelper helper) {
         helper.setPrefix("module." + MODID);
-        helper.add(ModuleTypes.ENERGY_STORAGE,                                  "Energy Capacity");
-        helper.add(DEModules.draconiumEnergy,                                   "Energy Module");
-        helper.add(DEModules.wyvernEnergy,                                      "Wyvern Energy Module");
-        helper.add(DEModules.draconicEnergy,                                    "Draconic Energy Module");
-        helper.add(DEModules.chaoticEnergy,                                     "Chaotic Energy Module");
+        helper.addModule(ModuleTypes.ENERGY_STORAGE,                                  "Energy Capacity");
+        helper.addModule(DEModules.DRACONIUM_ENERGY,                                   "Energy Module");
+        helper.addModule(DEModules.WYVERN_ENERGY,                                      "Wyvern Energy Module");
+        helper.addModule(DEModules.DRACONIC_ENERGY,                                    "Draconic Energy Module");
+        helper.addModule(DEModules.CHAOTIC_ENERGY,                                     "Chaotic Energy Module");
         helper.add("energy.stored_energy",                                      "Stored Energy");
         helper.add("energy.capacity",                                           "Energy Capacity");
         helper.add("energy.capacity.value",                                     "+%s OP");
         helper.add("energy.transfer",                                           "Energy Transfer");
         helper.add("energy.transfer.value",                                     "+%s OP/t");
 
-        helper.add(ModuleTypes.ENERGY_SHARE,                                    "Energy Share");
+        helper.addModule(ModuleTypes.ENERGY_SHARE,                                    "Energy Share");
 
-        helper.add(ModuleTypes.ENERGY_LINK,                                     "Energy Link");
-        helper.add(DEModules.wyvernEnergyLink,                                  "Wireless Energy Link");
-        helper.add(DEModules.draconicEnergyLink,                                "Quantum Energy Tunnel");
-        helper.add(DEModules.chaoticEnergyLink,                                 "Chaos-Entangled Quantum Energy Tunnel");
+        helper.addModule(ModuleTypes.ENERGY_LINK,                                     "Energy Link");
+        helper.addModule(DEModules.WYVERN_ENERGY_LINK,                                  "Wireless Energy Link");
+        helper.addModule(DEModules.DRACONIC_ENERGY_LINK,                                "Quantum Energy Tunnel");
+        helper.addModule(DEModules.CHAOTIC_ENERGY_LINK,                                 "Chaos-Entangled Quantum Energy Tunnel");
         helper.add("energy_link.activation",                                    "Activation Energy");
         helper.add("energy_link.activation.value",                              "%s OP");
         helper.add("energy_link.operation",                                     "Operation Energy");
@@ -243,21 +247,21 @@ public class LangGenerator extends LanguageProvider {
         helper.add("energy_link.core_not_active",                               "Core must be active.");
         helper.add("energy_link.charging",                                      "Activating");
 
-        helper.add(ModuleTypes.SHIELD_CONTROLLER,                               "Shield Controller");
-        helper.add(DEModules.wyvernShieldControl,                               "Wyvern Shield Control Module");
-        helper.add(DEModules.draconicShieldControl,                             "Draconic Shield Control Module");
-        helper.add(DEModules.chaoticShieldControl,                              "Chaotic Shield Control Module");
+        helper.addModule(ModuleTypes.SHIELD_CONTROLLER,                               "Shield Controller");
+        helper.addModule(DEModules.WYVERN_SHIELD_CONTROL,                               "Wyvern Shield Control Module");
+        helper.addModule(DEModules.DRACONIC_SHIELD_CONTROL,                             "Draconic Shield Control Module");
+        helper.addModule(DEModules.CHAOTIC_SHIELD_CONTROL,                              "Chaotic Shield Control Module");
 
-        helper.add(ModuleTypes.SHIELD_BOOST,                                    "Shield Boost");
-        helper.add(DEModules.wyvernShieldCapacity,                              "Wyvern Shield Capacity Module");
-        helper.add(DEModules.draconicShieldCapacity,                            "Draconic Shield Capacity Module");
-        helper.add(DEModules.chaoticShieldCapacity,                             "Chaotic Shield Capacity Module");
-        helper.add(DEModules.wyvernLargeShieldCapacity,                         "Wyvern Large Shield Capacity Module");
-        helper.add(DEModules.draconicLargeShieldCapacity,                       "Draconic Large Shield Capacity Module");
-        helper.add(DEModules.chaoticLargeShieldCapacity,                        "Chaotic Large Shield Capacity Module");
-        helper.add(DEModules.wyvernShieldRecovery,                              "Wyvern Shield Recovery Module");
-        helper.add(DEModules.draconicShieldRecovery,                            "Draconic Shield Recovery Module");
-        helper.add(DEModules.chaoticShieldRecovery,                             "Chaotic Shield Recovery Module");
+        helper.addModule(ModuleTypes.SHIELD_BOOST,                                    "Shield Boost");
+        helper.addModule(DEModules.WYVERN_SHIELD_CAPACITY,                              "Wyvern Shield Capacity Module");
+        helper.addModule(DEModules.DRACONIC_SHIELD_CAPACITY,                            "Draconic Shield Capacity Module");
+        helper.addModule(DEModules.CHAOTIC_SHIELD_CAPACITY,                             "Chaotic Shield Capacity Module");
+        helper.addModule(DEModules.WYVERN_LARGE_SHIELD_CAPACITY,                         "Wyvern Large Shield Capacity Module");
+        helper.addModule(DEModules.DRACONIC_LARGE_SHIELD_CAPACITY,                       "Draconic Large Shield Capacity Module");
+        helper.addModule(DEModules.CHAOTIC_LARGE_SHIELD_CAPACITY,                        "Chaotic Large Shield Capacity Module");
+        helper.addModule(DEModules.WYVERN_SHIELD_RECOVERY,                              "Wyvern Shield Recovery Module");
+        helper.addModule(DEModules.DRACONIC_SHIELD_RECOVERY,                            "Draconic Shield Recovery Module");
+        helper.addModule(DEModules.CHAOTIC_SHIELD_RECOVERY,                             "Chaotic Shield Recovery Module");
         helper.add("shield_capacity.name",                                      "Shield Capacity");
         helper.add("shield_capacity.value",                                     "%s points");
         helper.add("shield_recharge.name",                                      "Shield Recharge");
@@ -267,20 +271,20 @@ public class LangGenerator extends LanguageProvider {
         helper.add("shield_control.name",                                       "Shield Cooldown");
         helper.add("shield_control.value",                                      "%s Seconds");
 
-        helper.add(ModuleTypes.FLIGHT,                                          "Flight");
-        helper.add(DEModules.wyvernFlight,                                      "Wyvern Flight Module");
-        helper.add(DEModules.draconicFlight,                                    "Draconic Flight Module");
-        helper.add(DEModules.chaoticFlight,                                     "Chaotic Flight Module");
+        helper.addModule(ModuleTypes.FLIGHT,                                          "Flight");
+        helper.addModule(DEModules.WYVERN_FLIGHT,                                      "Wyvern Flight Module");
+        helper.addModule(DEModules.DRACONIC_FLIGHT,                                    "Draconic Flight Module");
+        helper.addModule(DEModules.CHAOTIC_FLIGHT,                                     "Chaotic Flight Module");
         helper.add("flight.name",                                               "Flight");
         helper.add("flight.true.false",                                         "Elytra");
         helper.add("flight.false.true",                                         "Creative");
         helper.add("flight.true.true",                                          "Creative & Elytra");
         helper.add("flight.boost.name",                                         "Elytra Boost");
 
-        helper.add(ModuleTypes.UNDYING,                                         "Undying");
-        helper.add(DEModules.wyvernUndying,                                     "Wyvern Undying Module");
-        helper.add(DEModules.draconicUndying,                                   "Draconic Undying Module");
-        helper.add(DEModules.chaoticUndying,                                    "Chaotic Undying Module");
+        helper.addModule(ModuleTypes.UNDYING,                                         "Undying");
+        helper.addModule(DEModules.WYVERN_UNDYING,                                     "Wyvern Undying Module");
+        helper.addModule(DEModules.DRACONIC_UNDYING,                                   "Draconic Undying Module");
+        helper.addModule(DEModules.CHAOTIC_UNDYING,                                    "Chaotic Undying Module");
         helper.add("undying.health.name",                                       "Health Boost");
         helper.add("undying.health.value",                                      "%s Health points");
         helper.add("undying.shield.name",                                       "Shield Boost");
@@ -293,60 +297,60 @@ public class LangGenerator extends LanguageProvider {
         helper.add("undying.invuln.value",                                      "%s Seconds");
         helper.add("undying.invuln.active",                                     "Invulnerable for %s Seconds");
 
-        helper.add(ModuleTypes.AUTO_FEED,                                       "Auto Feed");
-        helper.add(DEModules.draconiumAutoFeed,                                 "Auto Feed Module");
-        helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
-        helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
+        helper.addModule(ModuleTypes.AUTO_FEED,                                       "Auto Feed");
+        helper.addModule(DEModules.DRACONIUM_AUTO_FEED,                                 "Auto Feed Module");
+        helper.addModule(DEModules.WYVERN_AUTO_FEED,                                    "Wyvern Auto Feed Module");
+        helper.addModule(DEModules.DRACONIC_AUTO_FEED,                                  "Draconic Auto Feed Module");
         helper.add("auto_feed.name",                                            "Food Storage");
         helper.add("auto_feed.value",                                           "%s Hunger Points");
         helper.add("auto_feed.stored",                                          "Food Stored:");
         helper.add("auto_feed.stored.value",                                    "%s Hunger Points");
 
-        helper.add(ModuleTypes.NIGHT_VISION,                                    "Night Vision");
-        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
+        helper.addModule(ModuleTypes.NIGHT_VISION,                                    "Night Vision");
+        helper.addModule(DEModules.WYVERN_NIGHT_VISION,                                 "Night Vision Module");
 
-        helper.add(ModuleTypes.JUMP_BOOST,                                      "Jump Boost");
-        helper.add(DEModules.draconiumJump,                                     "Jump Module");
-        helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
-        helper.add(DEModules.draconicJump,                                      "Draconic Jump Module");
-        helper.add(DEModules.chaoticJump,                                       "Chaotic Jump Module");
+        helper.addModule(ModuleTypes.JUMP_BOOST,                                      "Jump Boost");
+        helper.addModule(DEModules.DRACONIUM_JUMP,                                     "Jump Module");
+        helper.addModule(DEModules.WYVERN_JUMP,                                        "Wyvern Jump Module");
+        helper.addModule(DEModules.DRACONIC_JUMP,                                      "Draconic Jump Module");
+        helper.addModule(DEModules.CHAOTIC_JUMP,                                       "Chaotic Jump Module");
         helper.add("jump.name",                                                 "Jump Boost");
         helper.add("jump.value",                                                "+%s%%");
 
-        helper.add(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
+        helper.addModule(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
 //        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
 
-        helper.add(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
+        helper.addModule(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
 
-        helper.add(ModuleTypes.AOE,                                             "AOE");
-        helper.add(DEModules.draconiumAOE,                                      "AOE Module");
-        helper.add(DEModules.wyvernAOE,                                         "Wyvern AOE Module");
-        helper.add(DEModules.draconicAOE,                                       "Draconic AOE Module");
-        helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
+        helper.addModule(ModuleTypes.AOE,                                             "AOE");
+        helper.addModule(DEModules.DRACONIUM_AOE,                                      "AOE Module");
+        helper.addModule(DEModules.WYVERN_AOE,                                         "Wyvern AOE Module");
+        helper.addModule(DEModules.DRACONIC_AOE,                                       "Draconic AOE Module");
+        helper.addModule(DEModules.CHAOTIC_AOE,                                        "Chaotic AOE Module");
         helper.add("aoe.name",                                                  "AOE");
         helper.add("aoe.value",                                                 "%sx%s");
 
-        helper.add(ModuleTypes.DAMAGE,                                          "Damage");
-        helper.add(DEModules.draconiumDamage,                                   "Damage Module");
-        helper.add(DEModules.wyvernDamage,                                      "Wyvern Damage Module");
-        helper.add(DEModules.draconicDamage,                                    "Draconic Damage Module");
-        helper.add(DEModules.chaoticDamage,                                     "Chaotic Damage Module");
+        helper.addModule(ModuleTypes.DAMAGE,                                          "Damage");
+        helper.addModule(DEModules.DRACONIUM_DAMAGE,                                   "Damage Module");
+        helper.addModule(DEModules.WYVERN_DAMAGE,                                      "Wyvern Damage Module");
+        helper.addModule(DEModules.DRACONIC_DAMAGE,                                    "Draconic Damage Module");
+        helper.addModule(DEModules.CHAOTIC_DAMAGE,                                     "Chaotic Damage Module");
         helper.add("damage.name",                                               "Damage");
         helper.add("damage.attack",                                             "+%s Attack Damage");
 
-        helper.add(ModuleTypes.SPEED,                                           "Speed");
-        helper.add(DEModules.draconiumSpeed,                                    "Speed Module");
-        helper.add(DEModules.wyvernSpeed,                                       "Wyvern Speed Module");
-        helper.add(DEModules.draconicSpeed,                                     "Draconic Speed Module");
-        helper.add(DEModules.chaoticSpeed,                                      "Chaotic Speed Module");
+        helper.addModule(ModuleTypes.SPEED,                                           "Speed");
+        helper.addModule(DEModules.DRACONIUM_SPEED,                                    "Speed Module");
+        helper.addModule(DEModules.WYVERN_SPEED,                                       "Wyvern Speed Module");
+        helper.addModule(DEModules.DRACONIC_SPEED,                                     "Draconic Speed Module");
+        helper.addModule(DEModules.CHAOTIC_SPEED,                                      "Chaotic Speed Module");
         helper.add("speed.name",                                                "Speed");
         helper.add("speed.value",                                               "+%s%%");
 
-        helper.add(ModuleTypes.HILL_STEP,                                       "Step Assist");
-        helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
+        helper.addModule(ModuleTypes.HILL_STEP,                                       "Step Assist");
+        helper.addModule(DEModules.WYVERN_HILL_STEP,                                    "Hill Step Module");
 
-        helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
-        helper.add(DEModules.wyvernJunkFilter,                                  "Selective Incineration Module");
+        helper.addModule(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
+        helper.addModule(DEModules.WYVERN_JUNK_FILTER,                                  "Selective Incineration Module");
         helper.add("filtered_module.filter_slot",                               "Filter Slot");
         helper.add("filtered_module.filter_item",                               "Filter Item");
         helper.add("filtered_module.filter_tag",                                "Filter Tag");
@@ -360,9 +364,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("filtered_module.select_or_enter",                           "Select tag");
         helper.add("filtered_module.select_from_item",                          "Select tag from item");
 
-        helper.add(ModuleTypes.ENDER_COLLECTION,                                "Ender Collection");
-        helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
-        helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
+        helper.addModule(ModuleTypes.ENDER_COLLECTION,                                "Ender Collection");
+        helper.addModule(DEModules.WYVERN_ENDER_COLLECTION,                             "Ender Collection Module");
+        helper.addModule(DEModules.DRACONIC_ENDER_COLLECTION,                           "Filterable Ender Collection Module");
         helper.add("ender_storage.about",                                       "Transfers collected items to your personal ender chest.");
         helper.add("ender_storage.about_compat",                                "Can be bound to an Ender Storage ender chest.");
         helper.add("ender_storage.about_compat2",                               "(Shift+Right Click ender chest with module)");
@@ -370,10 +374,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("ender_storage.owner",                                       "Owner");
         helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
 
-        helper.add(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
-        helper.add(DEModules.wyvernTreeHarvest,                                 "Wyvern Tree Harvester");
-        helper.add(DEModules.draconicTreeHarvest,                               "Draconic Forest Reduction Assistant");
-        helper.add(DEModules.chaoticTreeHarvest,                                "Chaotic Deforestation Module");
+        helper.addModule(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
+        helper.addModule(DEModules.WYVERN_TREE_HARVEST,                                 "Wyvern Tree Harvester");
+        helper.addModule(DEModules.DRACONIC_TREE_HARVEST,                               "Draconic Forest Reduction Assistant");
+        helper.addModule(DEModules.CHAOTIC_TREE_HARVEST,                                "Chaotic Deforestation Module");
         helper.add("tree_harvest_range.name",                                   "Tree Harvest Range");
         helper.add("tree_harvest_range.value",                                  "%s Blocks");
         helper.add("tree_harvest_speed.name",                                   "Tree Harvest Speed");
@@ -381,42 +385,42 @@ public class LangGenerator extends LanguageProvider {
         helper.add("tree_harvest.single",                                       "Single: Hold right click on tree.");
         helper.add("tree_harvest.area",                                         "Area: Hold right click in centre of target area.");
 
-        helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
-        helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
+        helper.addModule(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
+        helper.addModule(DEModules.WYVERN_AUTO_FIRE,                                    "Auto Fire Module");
 
-        helper.add(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
-        helper.add(DEModules.draconicProjAntiImmune,                            "Projectile Immunity Cancellation Module");
+        helper.addModule(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
+        helper.addModule(DEModules.DRACONIC_PROJ_ANTI_IMMUNE,                            "Projectile Immunity Cancellation Module");
 
-        helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
-        helper.add(DEModules.wyvernProjVelocity,                                "Wyvern Projectile Velocity Module");
-        helper.add(DEModules.draconicProjVelocity,                              "Draconic Projectile Velocity Module");
-        helper.add(DEModules.chaoticProjVelocity,                               "Chaotic Projectile Velocity Module");
+        helper.addModule(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
+        helper.addModule(DEModules.WYVERN_PROJ_VELOCITY,                                "Wyvern Projectile Velocity Module");
+        helper.addModule(DEModules.DRACONIC_PROJ_VELOCITY,                              "Draconic Projectile Velocity Module");
+        helper.addModule(DEModules.CHAOTIC_PROJ_VELOCITY,                               "Chaotic Projectile Velocity Module");
         helper.add("proj_velocity.name",                                        "Velocity");
         helper.add("proj_velocity.value",                                       "%s%% (~%s m/s)");
 
-        helper.add(DEModules.wyvernProjAccuracy,                                "Wyvern Projectile Accuracy Module");
-        helper.add(DEModules.draconicProjAccuracy,                              "Draconic Projectile Accuracy Module");
-        helper.add(DEModules.chaoticProjAccuracy,                               "Chaotic Projectile Accuracy Module");
+        helper.addModule(DEModules.WYVERN_PROJ_ACCURACY,                                "Wyvern Projectile Accuracy Module");
+        helper.addModule(DEModules.DRACONIC_PROJ_ACCURACY,                              "Draconic Projectile Accuracy Module");
+        helper.addModule(DEModules.CHAOTIC_PROJ_ACCURACY,                               "Chaotic Projectile Accuracy Module");
         helper.add("proj_accuracy.name",                                        "Inaccuracy");
         helper.add("proj_accuracy.value",                                       "%s%%");
 
-        helper.add(DEModules.wyvernProjGravComp,                                "Wyvern Projectile Gravity Compensation Module");
-        helper.add(DEModules.draconicProjGravComp,                              "Draconic Projectile Gravity Compensation Module");
-        helper.add(DEModules.chaoticProjGravComp,                               "Chaotic Projectile Gravity Compensation Module");
+        helper.addModule(DEModules.WYVERN_PROJ_GRAV_COMP,                                "Wyvern Projectile Gravity Compensation Module");
+        helper.addModule(DEModules.DRACONIC_PROJ_GRAV_COMP,                              "Draconic Projectile Gravity Compensation Module");
+        helper.addModule(DEModules.CHAOTIC_PROJ_GRAV_COMP,                               "Chaotic Projectile Gravity Compensation Module");
         helper.add("proj_grav_comp.name",                                       "Gravity Cancellation");
         helper.add("proj_grav_comp.value",                                      "%s%%");
 
-        helper.add(DEModules.wyvernProjPenetration,                             "Wyvern Projectile Penetration Module");
-        helper.add(DEModules.draconicProjPenetration,                           "Draconic Projectile Penetration Module");
-        helper.add(DEModules.chaoticProjPenetration,                            "Chaotic Projectile Penetration Module");
+        helper.addModule(DEModules.WYVERN_PROJ_PENETRATION,                             "Wyvern Projectile Penetration Module");
+        helper.addModule(DEModules.DRACONIC_PROJ_PENETRATION,                           "Draconic Projectile Penetration Module");
+        helper.addModule(DEModules.CHAOTIC_PROJ_PENETRATION,                            "Chaotic Projectile Penetration Module");
         helper.add("proj_penetration.name",                                     "Penetration Chance");
         helper.add("proj_penetration.value",                                    "%s%%");
         helper.add("proj_penetration.info",                                     "Increases the chance a projectile will pass through a target and potentially hit additional targets.");
         helper.add("proj_penetration.info2",                                    "Decreases by 25%% for every subsequent target.");
 
-        helper.add(DEModules.wyvernProjDamage,                                  "Wyvern Projectile Damage Module");
-        helper.add(DEModules.draconicProjDamage,                                "Draconic Projectile Damage Module");
-        helper.add(DEModules.chaoticProjDamage,                                 "Chaotic Projectile Damage Module");
+        helper.addModule(DEModules.WYVERN_PROJ_DAMAGE,                                  "Wyvern Projectile Damage Module");
+        helper.addModule(DEModules.DRACONIC_PROJ_DAMAGE,                                "Draconic Projectile Damage Module");
+        helper.addModule(DEModules.CHAOTIC_PROJ_DAMAGE,                                 "Chaotic Projectile Damage Module");
         helper.add("proj_damage.name",                                          "Base Damage");
         helper.add("proj_damage.value",                                         "%s%%");
 
@@ -965,20 +969,20 @@ public class LangGenerator extends LanguageProvider {
             generator.add(prefix + translationKey, translation);
         }
 
-        public void add(Block key, String name) {
-            if (key != null) generator.add(key, name);
+        public void addBlock(Supplier<? extends Block> key, String name) {
+            if (key != null && key.get() != null) generator.add(key.get(), name);
         }
 
-        public void add(Item key, String name) {
-            if (key != null) generator.add(key, name);
+        public void addItem(Supplier<? extends ItemLike> key, String name) {
+            if (key != null) generator.add(key.get().asItem(), name);
         }
 
-        public void add(ModuleType<?> key, String name) {
+        public void addModule(ModuleType<?> key, String name) {
             generator.add("module_type." + MODID + "." + key.getName() + ".name", name);
         }
 
-        public void add(Module<?> key, String name) {
-            generator.add(key.getItem(), name);
+        public void addModule(Supplier<? extends Module<?>> key, String name) {
+            generator.add(key.get().getItem(), name);
         }
     }
     //endregion

@@ -238,7 +238,7 @@ public abstract class TileReactorComponent extends TileBCore {
             BlockPos corePos = getCorePos();
             LevelChunk coreChunk = level.getChunkAt(corePos);
 
-            if (!Utils.isAreaLoaded(level, corePos, ChunkHolder.FullChunkStatus.TICKING)) {
+            if (!level.isLoaded(corePos)) {
                 cachedCore = null;
                 return null;
             }

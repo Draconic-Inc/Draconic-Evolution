@@ -7,9 +7,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallRe
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Multimap;
 import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -57,8 +55,8 @@ public interface ModuleType<T extends ModuleData<T>> {
 
     String getName();
 
-    default BaseComponent getDisplayName() {
-        return new TranslatableComponent("module_type.draconicevolution." + getName() + ".name");
+    default Component getDisplayName() {
+        return Component.translatable("module_type.draconicevolution." + getName() + ".name");
     }
 
     /**
@@ -113,11 +111,4 @@ public interface ModuleType<T extends ModuleData<T>> {
     default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlot slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {}
 
     Collection<ModuleCategory> getCategories();
-
-//    /**
-//     * If you are using {@link #getAttributeModifiers(ModuleData, EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
-//     * implement this method and add all of your attribute id's to the provided list. This list is used to refresh or remove attributes added by modules.
-//     * @param list the list to which you must add your attribute id's
-//     */
-//    default void getAttributeIDs(List<UUID> list) {}
 }

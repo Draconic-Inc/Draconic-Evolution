@@ -89,7 +89,7 @@ public class ForestHarvestHandler implements IHarvestHandler {
 
         complete = true;//temp
 //        harvestComplete();
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.7F + 1.8F));
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.8F));
     }
 
     private void updateSearch(Level level, Player player) {
@@ -183,11 +183,11 @@ public class ForestHarvestHandler implements IHarvestHandler {
      * If true then the block can be traversed by the search process
      */
     private boolean canSearchThrough(BlockState state) {
-        return !state.isAir() && !state.is(BlockTags.REPLACEABLE_PLANTS) && !state.is(BlockTags.FLOWERS) && !state.is(BlockTags.LOGS) && !state.is(BlockTags.LEAVES) && state.getFluidState().isEmpty();
+        return !state.isAir() && !state.is(BlockTags.REPLACEABLE) && !state.is(BlockTags.FLOWERS) && !state.is(BlockTags.LOGS) && !state.is(BlockTags.LEAVES) && state.getFluidState().isEmpty();
     }
 
     private boolean canSearchUnder(BlockState state) {
-        return (state.isAir() || state.is(BlockTags.REPLACEABLE_PLANTS) || state.is(BlockTags.FLOWERS) || state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) && state.getFluidState().isEmpty();
+        return (state.isAir() || state.is(BlockTags.REPLACEABLE) || state.is(BlockTags.FLOWERS) || state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) && state.getFluidState().isEmpty();
     }
 
     private boolean isHarvestable(BlockState state) {

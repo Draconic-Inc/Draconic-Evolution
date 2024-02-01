@@ -1,33 +1,25 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
-import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
-import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
-import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Quaternion;
-import net.covers1624.quack.collection.StreamableIterable;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -46,14 +38,14 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
 
     private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/reactor/reactor_stabilizer.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/reactor/reactor_injector.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .createCompositeState(false)
     );
@@ -74,57 +66,57 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
 
     static {
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(MODID, "models/block/reactor/reactor_injector.obj")).quads().ignoreMtl().parse();
-        modelInjectorBase = CCModel.combine(StreamableIterable.of(map.entrySet())
+        modelInjectorBase = CCModel.combine(FastStream.of(map.entrySet())
                 .filter(e -> !e.getKey().startsWith("emitter"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
-        modelInjectorEmitters = CCModel.combine(StreamableIterable.of(map.entrySet())
+        modelInjectorEmitters = CCModel.combine(FastStream.of(map.entrySet())
                 .filter(e -> e.getKey().startsWith("emitter"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
         Map<String, CCModel> stabMap = new OBJParser(new ResourceLocation(MODID, "models/block/reactor/reactor_stabilizer.obj")).quads().ignoreMtl().parse();
-        modelStabFrame = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabFrame = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("frame"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabInnerRotor = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabInnerRotor = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("inner_rotor_blade"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabInnerRotorArm = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabInnerRotorArm = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("inner_rotor_arm"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabOuterRotor = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabOuterRotor = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("outer_rotor_blade"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabOuterRotorArm = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabOuterRotorArm = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("outer_rotor_arm"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabRing = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabRing = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("ring"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelStabRingEmitter = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelStabRingEmitter = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("focus_panel"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelInnerRotorPart = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelInnerRotorPart = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("inner_rotor_blade_a"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        modelOuterRotorPart = CCModel.combine(StreamableIterable.of(stabMap.entrySet())
+        modelOuterRotorPart = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("outer_rotor_blade_a"))
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
@@ -218,24 +210,24 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
     }
 
     public static void renderComponent(Item item, CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        if (item == DEContent.reactor_prt_stab_frame) {
+        if (item == DEContent.REACTOR_PRT_STAB_FRAME.get()) {
             ccrs.bind(STAB_FRAME_TYPE, getter);
             mat.translate(0.5, 0, 0.5);
             modelStabFrame.render(ccrs, mat);
 
-        } else if (item == DEContent.reactor_prt_in_rotor) {
+        } else if (item == DEContent.REACTOR_PRT_IN_ROTOR.get()) {
             ccrs.bind(STAB_FRAME_TYPE, getter);
             mat.translate(0.3, 0, 0.5);
             mat.scale(1.5F, 1.5F, 1.5F);
             modelInnerRotorPart.render(ccrs, mat);
 
-        } else if (item == DEContent.reactor_prt_out_rotor) {
+        } else if (item == DEContent.REACTOR_PRT_OUT_ROTOR.get()) {
             ccrs.bind(STAB_FRAME_TYPE, getter);
             mat.translate(0.3, 0, 0.5);
             mat.scale(1.5F, 1.5F, 1.5F);
             modelOuterRotorPart.render(ccrs, mat);
 
-        } else if (item == DEContent.reactor_prt_rotor_full) {
+        } else if (item == DEContent.REACTOR_PRT_ROTOR_FULL.get()) {
             ccrs.bind(STAB_FRAME_TYPE, getter);
             mat.translate(0.5, -0.2, 0.5);
             mat.scale(1.5F, 1.5F, 1.5F);
@@ -246,7 +238,7 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
             modelStabOuterRotor.render(ccrs, mat);
             modelStabOuterRotorArm.render(ccrs, mat);
 
-        } else if (item == DEContent.reactor_prt_focus_ring) {
+        } else if (item == DEContent.REACTOR_PRT_FOCUS_RING.get()) {
             ccrs.bind(STAB_FRAME_TYPE, getter);
             mat.translate(0.5, -0.2, 1.25);
             mat.scale(1.5F, 1.5F, 1.5F);

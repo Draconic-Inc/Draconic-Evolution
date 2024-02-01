@@ -20,6 +20,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +36,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -48,8 +50,8 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     public TileItemStackHandler itemHandler = new TileItemStackHandler(3);
 
     public TileDisenchanter(BlockPos pos, BlockState state) {
-        super(DEContent.tile_disenchanter, pos, state);
-        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        super(DEContent.TILE_DISENCHANTER.get(), pos, state);
+        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         itemHandler.setStackValidator(this::isItemValidForSlot);
     }
 
@@ -96,7 +98,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
             int cost = getCostInLevels(e, lvl);
 
             if (!client.getAbilities().instabuild && cost > client.experienceLevel) {
-                client.sendMessage(new TranslatableComponent("disenchanter." + DraconicEvolution.MODID + ".not_enough_levels", cost).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                client.sendSystemMessage(Component.translatable("disenchanter." + DraconicEvolution.MODID + ".not_enough_levels", cost).withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
 
@@ -146,13 +148,13 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.container_disenchanter, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.DISENCHANTER_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_DISENCHANTER.get(), currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.DISENCHANTER_LAYOUT);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }

@@ -256,7 +256,7 @@ public class ModuleCfg {
     }
 
     public static long getModuleLong(Module<?> module, String tagName, long defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue longTag = tag.getValue(tagName).setDefaultLong(defaultValue);
         if (!override) {
@@ -266,7 +266,7 @@ public class ModuleCfg {
     }
 
     public static int getModuleInt(Module<?> module, String tagName, int defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue valueTag = tag.getValue(tagName).setDefaultInt(defaultValue);
         if (!override) {
@@ -276,7 +276,7 @@ public class ModuleCfg {
     }
 
     public static double getModuleDouble(Module<?> module, String tagName, double defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue valueTag = tag.getValue(tagName).setDefaultDouble(defaultValue);
         if (!override) {
@@ -286,7 +286,7 @@ public class ModuleCfg {
     }
 
     public static boolean getModuleBoolean(Module<?> module, String tagName, boolean defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue valueTag = tag.getValue(tagName).setDefaultBoolean(defaultValue);
         if (!override) {

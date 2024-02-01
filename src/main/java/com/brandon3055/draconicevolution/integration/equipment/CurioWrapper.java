@@ -22,8 +22,8 @@ public class CurioWrapper implements ICurio {
     }
 
     @Override
-    public void curioTick(String identifier, int index, LivingEntity livingEntity) {
-        item.equipmentTick(stack, livingEntity);
+    public void curioTick(SlotContext slotContext) {
+        item.equipmentTick(stack, slotContext.entity());
     }
 
     @Override

@@ -2,22 +2,16 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.math.MathHelper;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.IOTracker;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.multiblock.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
-import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
@@ -28,7 +22,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -37,8 +31,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -49,10 +41,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +98,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     private int defCacheLastTier = 1;
 
     public TileEnergyCore(BlockPos pos, BlockState state) {
-        super(DEContent.tile_storage_core, pos, state);
+        super(DEContent.TILE_STORAGE_CORE.get(), pos, state);
         capManager.setInternalManaged("energy", CapabilityOP.OP, energy).saveTile().syncContainer();
         energy.setIOTracker(addTickable(new IOTracker()));
 
@@ -215,15 +208,15 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                 BlockState originalState = level.getBlockState(pos);
                 //Fixes edge case where core can deactivate without reverting structure blocks,
                 //Only ever happened once due to a crash that is now fixed, but just to be safe...
-                if (originalState.is(DEContent.structure_block)) {
+                if (originalState.is(DEContent.STRUCTURE_BLOCK.get())) {
                     deactivateCore();
                     LOGGER.error("Detected existing structure block when attempting to activate core...");
                     return;
                 }
-                level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                 BlockEntity tile = level.getBlockEntity(pos);
                 if (tile instanceof TileStructureBlock) {
-                    ((TileStructureBlock) tile).blockName.set(originalState.getBlock().getRegistryName());
+                    ((TileStructureBlock) tile).blockName.set(ForgeRegistries.BLOCKS.getKey(originalState.getBlock()));
                     ((TileStructureBlock) tile).setController(this);
                 }
             }
@@ -655,7 +648,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
     private void attemptAutoBuild(ServerPlayer player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslatableComponent("msg.draconicevolution.energy_core.already_building").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("msg.draconicevolution.energy_core.already_building").withStyle(ChatFormatting.RED));
         } else {
             MultiBlockDefinition definition = getMultiBlockDef();
             if (definition != null) {
@@ -682,8 +675,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return false;
     }
 

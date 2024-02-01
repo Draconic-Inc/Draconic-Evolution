@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.utils.FacingUtils;
@@ -10,12 +9,12 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -27,8 +26,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 16/07/2016.
@@ -51,13 +48,13 @@ public class Portal extends EntityBlockBCore {
                 .setValue(DRAW_EAST, true)
                 .setValue(DRAW_WEST, true)
                 .setValue(VISIBLE, true));
-        setBlockEntity(() -> DEContent.tile_portal, false);
+        setBlockEntity(DEContent.TILE_PORTAL::get, false);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> entityType) {
-        if (level.isClientSide() && entityType == DEContent.tile_portal) {
+        if (level.isClientSide() && entityType == DEContent.TILE_PORTAL.get()) {
             return (e, e2, e3, tile) -> ((TileBCore) tile).tick();
         }
         return null;
@@ -99,7 +96,7 @@ public class Portal extends EntityBlockBCore {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         if (!state.canSurvive(world, pos)) {
             world.removeBlock(pos, false);
         }
@@ -129,33 +126,29 @@ public class Portal extends EntityBlockBCore {
     }
 
     public static BlockState getPlacementState(BlockState state, Level world, BlockPos pos) {
-        switch (state.getValue(AXIS)) {
-            case Z:
-                return state.setValue(DRAW_UP, isFrame(world, pos.above()))
-                        .setValue(DRAW_DOWN, isFrame(world, pos.below()))
-                        .setValue(DRAW_EAST, isFrame(world, pos.east()))
-                        .setValue(DRAW_WEST, isFrame(world, pos.west()));
-            case Y:
-                return state.setValue(DRAW_UP, isFrame(world, pos.north()))
-                        .setValue(DRAW_DOWN, isFrame(world, pos.south()))
-                        .setValue(DRAW_EAST, isFrame(world, pos.east()))
-                        .setValue(DRAW_WEST, isFrame(world, pos.west()));
-            case X:
-                return state.setValue(DRAW_UP, isFrame(world, pos.above()))
-                        .setValue(DRAW_DOWN, isFrame(world, pos.below()))
-                        .setValue(DRAW_EAST, isFrame(world, pos.south()))
-                        .setValue(DRAW_WEST, isFrame(world, pos.north()));
-        }
-        return state;
+        return switch (state.getValue(AXIS)) {
+            case Z -> state.setValue(DRAW_UP, isFrame(world, pos.above()))
+                    .setValue(DRAW_DOWN, isFrame(world, pos.below()))
+                    .setValue(DRAW_EAST, isFrame(world, pos.east()))
+                    .setValue(DRAW_WEST, isFrame(world, pos.west()));
+            case Y -> state.setValue(DRAW_UP, isFrame(world, pos.north()))
+                    .setValue(DRAW_DOWN, isFrame(world, pos.south()))
+                    .setValue(DRAW_EAST, isFrame(world, pos.east()))
+                    .setValue(DRAW_WEST, isFrame(world, pos.west()));
+            case X -> state.setValue(DRAW_UP, isFrame(world, pos.above()))
+                    .setValue(DRAW_DOWN, isFrame(world, pos.below()))
+                    .setValue(DRAW_EAST, isFrame(world, pos.south()))
+                    .setValue(DRAW_WEST, isFrame(world, pos.north()));
+        };
     }
 
     private static boolean isFrame(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return state.getBlock() == DEContent.infused_obsidian || state.getBlock() == DEContent.dislocator_receptacle;
+        return state.is(DEContent.INFUSED_OBSIDIAN.get()) || state.is(DEContent.DISLOCATOR_RECEPTACLE.get());
     }
 
     private static boolean isPortal(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return state.getBlock() == DEContent.portal;
+        return state.is(DEContent.PORTAL.get());
     }
 }

@@ -2,91 +2,91 @@ package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by brandon3055 on 02/09/2022
  */
 public class BlockTagGenerator extends BlockTagsProvider {
-    public BlockTagGenerator(DataGenerator generatorIn, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generatorIn, modId, existingFileHelper);
+
+    public BlockTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, modId, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
-        tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium);
-        tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
-        tag(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
+    protected void addTags(HolderLookup.Provider pProvider) {
+        tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.DRACONIUM_BLOCK.get());
+        tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.AWAKENED_DRACONIUM_BLOCK.get());
+        tag(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.DRACONIUM_BLOCK.get(), DEContent.AWAKENED_DRACONIUM_BLOCK.get());
 
-        tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld, DEContent.ore_draconium_deepslate);
-        tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld, DEContent.ore_draconium_deepslate);
-        tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.infused_obsidian);
+        tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.END_DRACONIUM_ORE.get(), DEContent.NETHER_DRACONIUM_ORE.get(), DEContent.OVERWORLD_DRACONIUM_ORE.get(), DEContent.DEEPSLATE_DRACONIUM_ORE.get());
+        tag(Tags.Blocks.ORES).add(DEContent.END_DRACONIUM_ORE.get(), DEContent.NETHER_DRACONIUM_ORE.get(), DEContent.OVERWORLD_DRACONIUM_ORE.get(), DEContent.DEEPSLATE_DRACONIUM_ORE.get());
+        tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.INFUSED_OBSIDIAN.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(DEContent.generator)
-                .add(DEContent.grinder)
-                .add(DEContent.disenchanter)
-                .add(DEContent.energy_transfuser)
-                .add(DEContent.dislocator_pedestal)
-                .add(DEContent.dislocator_receptacle)
-                .add(DEContent.creative_op_capacitor)
-                .add(DEContent.entity_detector)
-                .add(DEContent.entity_detector_advanced)
-                .add(DEContent.stabilized_spawner)
-                .add(DEContent.potentiometer)
-                .add(DEContent.celestial_manipulator)
-                .add(DEContent.draconium_chest)
-                .add(DEContent.particle_generator)
-                .add(DEContent.chaos_crystal)
-                .add(DEContent.chaos_crystal_part)
-                .add(DEContent.crafting_injector_basic)
-                .add(DEContent.crafting_injector_wyvern)
-                .add(DEContent.crafting_injector_awakened)
-                .add(DEContent.crafting_injector_chaotic)
-                .add(DEContent.crafting_core)
-                .add(DEContent.energy_core)
-                .add(DEContent.energy_core_stabilizer)
-                .add(DEContent.energy_pylon)
-                .add(DEContent.structure_block)
-                .add(DEContent.reactor_core)
-                .add(DEContent.reactor_stabilizer)
-                .add(DEContent.reactor_injector)
-                .add(DEContent.rain_sensor)
-                .add(DEContent.dislocation_inhibitor)
-                .add(DEContent.ore_draconium_overworld)
-                .add(DEContent.ore_draconium_deepslate)
-                .add(DEContent.ore_draconium_nether)
-                .add(DEContent.ore_draconium_end)
-                .add(DEContent.block_draconium)
-                .add(DEContent.block_draconium_awakened)
-                .add(DEContent.infused_obsidian)
-                .add(DEContent.crystal_io_basic)
-                .add(DEContent.crystal_io_wyvern)
-                .add(DEContent.crystal_io_draconic)
-//                .add(DEContent.crystal_io_chaotic)
-                .add(DEContent.crystal_relay_basic)
-                .add(DEContent.crystal_relay_wyvern)
-                .add(DEContent.crystal_relay_draconic)
-//                .add(DEContent.crystal_relay_chaotic)
-                .add(DEContent.crystal_wireless_basic)
-                .add(DEContent.crystal_wireless_wyvern)
-                .add(DEContent.crystal_wireless_draconic)
-//                .add(DEContent.crystal_wireless_chaotic)
-                .add(DEContent.flux_gate)
-                .add(DEContent.fluid_gate);
-
+                .add(DEContent.GENERATOR.get())
+                .add(DEContent.GRINDER.get())
+                .add(DEContent.DISENCHANTER.get())
+                .add(DEContent.ENERGY_TRANSFUSER.get())
+                .add(DEContent.DISLOCATOR_PEDESTAL.get())
+                .add(DEContent.DISLOCATOR_RECEPTACLE.get())
+                .add(DEContent.CREATIVE_OP_CAPACITOR.get())
+                .add(DEContent.ENTITY_DETECTOR.get())
+                .add(DEContent.ENTITY_DETECTOR_ADVANCED.get())
+                .add(DEContent.STABILIZED_SPAWNER.get())
+                .add(DEContent.POTENTIOMETER.get())
+                .add(DEContent.CELESTIAL_MANIPULATOR.get())
+                .add(DEContent.DRACONIUM_CHEST.get())
+                .add(DEContent.PARTICLE_GENERATOR.get())
+                .add(DEContent.CHAOS_CRYSTAL.get())
+                .add(DEContent.CHAOS_CRYSTAL_PART.get())
+                .add(DEContent.BASIC_CRAFTING_INJECTOR.get())
+                .add(DEContent.WYVERN_CRAFTING_INJECTOR.get())
+                .add(DEContent.AWAKENED_CRAFTING_INJECTOR.get())
+                .add(DEContent.CHAOTIC_CRAFTING_INJECTOR.get())
+                .add(DEContent.CRAFTING_CORE.get())
+                .add(DEContent.ENERGY_CORE.get())
+                .add(DEContent.ENERGY_CORE_STABILIZER.get())
+                .add(DEContent.ENERGY_PYLON.get())
+                .add(DEContent.STRUCTURE_BLOCK.get())
+                .add(DEContent.REACTOR_CORE.get())
+                .add(DEContent.REACTOR_STABILIZER.get())
+                .add(DEContent.REACTOR_INJECTOR.get())
+                .add(DEContent.RAIN_SENSOR.get())
+                .add(DEContent.DISLOCATION_INHIBITOR.get())
+                .add(DEContent.OVERWORLD_DRACONIUM_ORE.get())
+                .add(DEContent.DEEPSLATE_DRACONIUM_ORE.get())
+                .add(DEContent.NETHER_DRACONIUM_ORE.get())
+                .add(DEContent.END_DRACONIUM_ORE.get())
+                .add(DEContent.DRACONIUM_BLOCK.get())
+                .add(DEContent.AWAKENED_DRACONIUM_BLOCK.get())
+                .add(DEContent.INFUSED_OBSIDIAN.get())
+                .add(DEContent.BASIC_IO_CRYSTAL.get())
+                .add(DEContent.WYVERN_IO_CRYSTAL.get())
+                .add(DEContent.DRACONIC_IO_CRYSTAL.get())
+//                .add(DEContent.CRYSTAL_IO_CHAOTIC.get())
+                .add(DEContent.BASIC_RELAY_CRYSTAL.get())
+                .add(DEContent.WYVERN_RELAY_CRYSTAL.get())
+                .add(DEContent.DRACONIC_RELAY_CRYSTAL.get())
+//                .add(DEContent.CRYSTAL_RELAY_CHAOTIC.get())
+                .add(DEContent.BASIC_WIRELESS_CRYSTAL.get())
+                .add(DEContent.WYVERN_WIRELESS_CRYSTAL.get())
+                .add(DEContent.DRACONIC_WIRELESS_CRYSTAL.get())
+//                .add(DEContent.CRYSTAL_WIRELESS_CHAOTIC.get())
+                .add(DEContent.FLUX_GATE.get())
+                .add(DEContent.FLUID_GATE.get());
 
         tag(BlockTags.NEEDS_DIAMOND_TOOL)
-                .add(DEContent.infused_obsidian)
-                .add(DEContent.chaos_crystal)
-                .add(DEContent.chaos_crystal_part);
-
-
+                .add(DEContent.INFUSED_OBSIDIAN.get())
+                .add(DEContent.CHAOS_CRYSTAL.get())
+                .add(DEContent.CHAOS_CRYSTAL_PART.get());
     }
 }

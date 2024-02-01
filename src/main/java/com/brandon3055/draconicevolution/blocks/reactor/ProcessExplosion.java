@@ -8,24 +8,24 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.lib.ExplosionHelper;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -40,13 +40,11 @@ import java.util.function.Consumer;
  */
 public class ProcessExplosion implements IProcess {
 
-    public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode").setExplosion().bypassArmor().bypassMagic();
-
     /**
      * The origin of the explosion.
      */
     public final Vector3 origin;
-    private final ServerLevel world;
+    private final ServerLevel level;
     private final MinecraftServer server;
     private final int minimumDelay;
     public double[] angularResistance;
@@ -88,7 +86,7 @@ public class ProcessExplosion implements IProcess {
      */
     public ProcessExplosion(BlockPos origin, int radius, ServerLevel world, int minimumDelayTime) {
         this.origin = Vector3.fromBlockPosCenter(origin);
-        this.world = world;
+        this.level = world;
         this.server = world.getServer();
         this.minimumDelay = minimumDelayTime;
         this.angularResistance = new double[121];
@@ -161,15 +159,15 @@ public class ProcessExplosion implements IProcess {
                     coreFalloff = 1 - ((1 - coreFalloff) * (1 - coreFalloff) * (1 - coreFalloff));
                     double coreHeight = coreFalloff * maxCoreHeight;
                     double edgeNoise = Math.max(0, (-radialPos + 0.2) * 5);
-                    double edgeScatter = edgeNoise * world.random.nextInt(10);
+                    double edgeScatter = edgeNoise * level.random.nextInt(10);
                     double sim = SimplexNoise.noise(x / 50D, z / 50D);
                     edgeNoise = 1 + (Math.abs(sim) * edgeNoise * 8);
 
                     double power = (10000 * radialPos * radialPos * radialPos * angularLoad * edgeNoise) + edgeScatter;
                     double heightUp = 20 + ((5D + (radius / 10D)) * angularLoad);
                     double heightDown = coreHeight + ((5D + (radius / 10D)) * angularLoad * (1 - coreFalloff));
-                    heightDown += (Math.abs(sim) * 4) + world.random.nextDouble();
-                    heightUp += (Math.abs(sim) * 4) + world.random.nextDouble();
+                    heightDown += (Math.abs(sim) * 4) + level.random.nextDouble();
+                    heightUp += (Math.abs(sim) * 4) + level.random.nextDouble();
 
                     posVecDown.set(posVecUp);
                     double resist = trace(posVecUp, power/* * (1 + 8 * radialPos)*/, (int) heightUp * 3, 1, 0, 0);
@@ -256,7 +254,7 @@ public class ProcessExplosion implements IProcess {
         if (dist > 100) {
             dist = 100;
         }
-        if (dist <= 0 || power <= 0 || posVec.y < world.getMinBuildHeight() || posVec.y > world.getMaxBuildHeight()) {
+        if (dist <= 0 || power <= 0 || posVec.y < level.getMinBuildHeight() || posVec.y > level.getMaxBuildHeight()) {
             return totalResist;
         }
 
@@ -273,10 +271,9 @@ public class ProcessExplosion implements IProcess {
 
         double r = 1;
 
-        BlockState state = world.getBlockState(mPos);
+        BlockState state = level.getBlockState(mPos);
         Block block = state.getBlock();
         if (!state.isAir()) {
-            Material mat = state.getMaterial();
             double effectivePower = (power / 10) * ((double) dist / (dist + travel));
 
             r = block.getExplosionResistance();
@@ -289,7 +286,7 @@ public class ProcessExplosion implements IProcess {
             if (effectivePower >= removeResist) {
                 destroyedCache.add(lPos);
             }
-            else if (mat == Material.WATER || mat == Material.LAVA) {
+            else if (state.is(Blocks.WATER) || state.is(Blocks.LAVA)) {
                 if (effectivePower > 5) {
                     destroyedCache.add(lPos);
                 }
@@ -318,7 +315,7 @@ public class ProcessExplosion implements IProcess {
         totalResist += r;
         power -= r;
 
-        if (dist == 1 && traceDir == -1 && lava && world.random.nextInt(250) == 0 && !world.isEmptyBlock(mPos.below())) {
+        if (dist == 1 && traceDir == -1 && lava && level.random.nextInt(250) == 0 && !level.isEmptyBlock(mPos.below())) {
             dist = 0;
             destroyedCache.remove(lPos);
             lavaPositions.add(lPos);
@@ -352,7 +349,7 @@ public class ProcessExplosion implements IProcess {
         LogHelper.dev("Removing Blocks!");
         LogHelper.startTimer("Adding Blocks For Removal");
 
-        ExplosionHelper removalHelper = new ExplosionHelper(world, origin.pos());
+        ExplosionHelper removalHelper = new ExplosionHelper(level, origin.pos());
         int blocksRemoved = 0;
 
         removalHelper.setBlocksForRemoval(destroyedBlocks);
@@ -366,7 +363,7 @@ public class ProcessExplosion implements IProcess {
 
         LogHelper.startTimer("Adding Lava");
         for (Long pos : lavaPositions) {
-            world.setBlockAndUpdate(mPos.set(pos), lavaState);
+            level.setBlockAndUpdate(mPos.set(pos), lavaState);
         }
         LogHelper.stopTimer();
 
@@ -377,7 +374,7 @@ public class ProcessExplosion implements IProcess {
 
         final BlockPos pos = origin.pos();
         if (enableEffect) {
-            DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, true);
+            DraconicNetwork.sendExplosionEffect(level.dimension(), pos, radius * 4, true);
         }
 
         for (int i = 0; i <= radius; i+=10) {
@@ -385,12 +382,12 @@ public class ProcessExplosion implements IProcess {
             new DelayedExecutor(i + 30) {
                 @Override
                 public void execute(Object[] args) {
-                    List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
+                    List<Entity> list = level.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
                     for (Entity e : list) {
                         double dist = Vec3D.getCenter(pos).distance(e);
                         float dmg = (1000) * (1F - (float) (dist / (calcRadius * 1.2D)));
                         if (dmg <= 0) continue;
-                        e.hurt(fusionExplosion, dmg);
+                        e.hurt(DEDamage.fusionDamage(level), dmg);
                     }
                 }
             }.run();

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
@@ -8,18 +9,20 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.joml.Quaternionf;
 
 import java.util.List;
 
@@ -36,19 +39,19 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
     @Override
     public void render(TileDislocatorPedestal tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedoverlay) {
         if (modelQuads == null) {
-            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.dislocator_pedestal.defaultBlockState()).getQuads(DEContent.dislocator_pedestal.defaultBlockState(), null, tile.getLevel().random);
+            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState()).getQuads(DEContent.DISLOCATOR_PEDESTAL.get().defaultBlockState(), null, tile.getLevel().random);
         }
 
         mStack.pushPose();
         mStack.translate(0.5, 0.5, 0.5);
-        mStack.mulPose(new Quaternion(0, -tile.rotation.get() * 22.5F, 0, true));
+        mStack.mulPose(Axis.YP.rotationDegrees(-tile.rotation.get() * 22.5F));
         mStack.translate(-0.5, -0.5, -0.5);
 
         VertexConsumer builder = getter.getBuffer(RenderType.solid());
         int i = 0;
         for (int j = modelQuads.size(); i < j; ++i) {
             BakedQuad bakedquad = modelQuads.get(i);
-            builder.putBulkData(mStack.last(), bakedquad, 1F, 1F, 1F, 1F, packedLight, packedLight);
+            builder.putBulkData(mStack.last(), bakedquad, 1F, 1F, 1F, 1F, packedLight, packedLight, true);
         }
 
         Minecraft mc = Minecraft.getInstance();
@@ -57,8 +60,8 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
             mStack.pushPose();
             mStack.translate(0.5, 0.79, 0.52);
             mStack.scale(0.5F, 0.5F, 0.5F);
-            mStack.mulPose(new Quaternion(-67.5F, 0, 0, true));
-            mc.getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, packedLight, packedoverlay, mStack, getter, tile.posSeed());
+            mStack.mulPose(Axis.XP.rotationDegrees(-67.5F));
+            mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, packedoverlay, mStack, getter, tile.getLevel(), tile.posSeed());
             mStack.popPose();
         }
         RenderUtils.endBatch(getter);
@@ -94,7 +97,7 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
         mStack.pushPose();
         mStack.translate(0.5, 1.125, 0.5);
         mStack.scale(0.02F, 0.02F, 0.02F);
-        mStack.mulPose(new Quaternion(0, -90, 180, true));
+        mStack.mulPose(new Quaternionf().rotationXYZ(0, -90 * (float) MathHelper.torad, 180 * (float) MathHelper.torad));
 
         double xDiff = player.getX() - (tile.getBlockPos().getX() + 0.5);
         double yDiff = (player.getY() + player.getEyeHeight()) - (tile.getBlockPos().getY() + 1.125);
@@ -102,12 +105,12 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
         double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistance(player.getX(), player.getY(), player.getZ(), tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5)));
 
-        mStack.mulPose(new Quaternion(0, (float) yawAngle, 0, true));
-        mStack.mulPose(new Quaternion((float) -pitchAngle, 0, 0, true));
+        mStack.mulPose(Axis.YP.rotationDegrees((float) yawAngle));
+        mStack.mulPose(Axis.XP.rotationDegrees((float) -pitchAngle));
 
         int textWidth = mc.font.width(name);
         mStack.translate(0, 0, -0.0125);
-        mc.font.drawInBatch(name, -(textWidth / 2F), 0, 0xffffff, true, mStack.last().pose(), getter, false, 0, 15728880);
+        mc.font.drawInBatch(name, -(textWidth / 2F), 0, 0xffffff, true, mStack.last().pose(), getter, Font.DisplayMode.NORMAL, 0, 15728880);
         mStack.popPose();
     }
 }

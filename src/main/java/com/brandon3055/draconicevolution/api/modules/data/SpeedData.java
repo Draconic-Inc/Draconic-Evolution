@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -18,6 +17,6 @@ public record SpeedData(double speedMultiplier) implements ModuleData<SpeedData>
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        map.put(new TranslatableComponent("module.draconicevolution.speed.name"), new TranslatableComponent("module.draconicevolution.speed.value", (int) (speedMultiplier * 100D)));
+        map.put(Component.translatable("module.draconicevolution.speed.name"), Component.translatable("module.draconicevolution.speed.value", (int) (speedMultiplier * 100D)));
     }
 }

@@ -4,12 +4,8 @@ import codechicken.lib.config.ConfigCategory;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
 import net.covers1624.quack.util.CrashLock;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -18,14 +14,14 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -41,9 +37,9 @@ public class DEWorldGen {
 
     public static final RuleTest END_STONE = new BlockMatchTest(Blocks.END_STONE);
 
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registry.FEATURE_REGISTRY, MODID);
-    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, MODID);
-    public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
+    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registries.CONFIGURED_FEATURE, MODID);
+    public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registries.PLACED_FEATURE, MODID);
 
     public static RegistryObject<PlacedFeature> DRACONIUM_ORE_PLACED_OVERWORLD;
     public static RegistryObject<PlacedFeature> DRACONIUM_ORE_PLACED_NETHER;
@@ -59,13 +55,13 @@ public class DEWorldGen {
         FEATURES.register(modEventBus);
         CONFIGURED_FEATURES.register(modEventBus);
         PLACED_FEATURES.register(modEventBus);
-        MinecraftForge.EVENT_BUS.addListener(DEWorldGen::onBiomeLoad);
+//        MinecraftForge.EVENT_BUS.addListener(DEWorldGen::onBiomeLoad);
 
         final Supplier<List<OreConfiguration.TargetBlockState>> ores = () -> List.of(
-                OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, DEContent.ore_draconium_overworld.defaultBlockState()),
-                OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, DEContent.ore_draconium_deepslate.defaultBlockState()),
-                OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState()),
-                OreConfiguration.target(END_STONE, DEContent.ore_draconium_end.defaultBlockState()));
+//                OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, DEContent.ore_draconium_overworld.defaultBlockState()),
+//                OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, DEContent.ore_draconium_deepslate.defaultBlockState()),
+//                OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState()),
+                OreConfiguration.target(END_STONE, DEContent.END_DRACONIUM_ORE.get().defaultBlockState()));
 
         ConfigCategory worldGenTag = configTag.getCategory("World Gen");
 
@@ -146,30 +142,30 @@ public class DEWorldGen {
         return PLACED_FEATURES.register("chaos_island", () -> new PlacedFeature(configuredIsland.getHolder().get(), Collections.emptyList()));
     }
 
-    public static void onBiomeLoad(BiomeLoadingEvent event) {
-        Biome.BiomeCategory category = event.getCategory();
-        List<Holder<PlacedFeature>> oreFeatures = event.getGeneration().getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES);
-
-        if (isLikelyOverworldBiome(category)) {
-            if (DRACONIUM_ORE_PLACED_OVERWORLD != null) {
-                DRACONIUM_ORE_PLACED_OVERWORLD.getHolder().ifPresent(oreFeatures::add);
-            }
-        } else if (category == Biome.BiomeCategory.NETHER) {
-            if (DRACONIUM_ORE_PLACED_NETHER != null) {
-                DRACONIUM_ORE_PLACED_NETHER.getHolder().ifPresent(oreFeatures::add);
-            }
-        } else if (category == Biome.BiomeCategory.THEEND) {
-            if (DRACONIUM_ORE_PLACED_END != null) {
-                DRACONIUM_ORE_PLACED_END.getHolder().ifPresent(oreFeatures::add);
-            }
-
-            if (ISLAND_FEATURE != null) {
-                ISLAND_FEATURE.getHolder().ifPresent(holder -> event.getGeneration().getFeatures(GenerationStep.Decoration.RAW_GENERATION).add(holder));
-            }
-        }
-    }
-
-    public static boolean isLikelyOverworldBiome(Biome.BiomeCategory category) {
-        return category != Biome.BiomeCategory.NONE && category != Biome.BiomeCategory.THEEND && category != Biome.BiomeCategory.NETHER;
-    }
+//    public static void onBiomeLoad(BiomeLoadingEvent event) {
+//        Biome.BiomeCategory category = event.getCategory();
+//        List<Holder<PlacedFeature>> oreFeatures = event.getGeneration().getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES);
+//
+//        if (isLikelyOverworldBiome(category)) {
+//            if (DRACONIUM_ORE_PLACED_OVERWORLD != null) {
+//                DRACONIUM_ORE_PLACED_OVERWORLD.getHolder().ifPresent(oreFeatures::add);
+//            }
+//        } else if (category == Biome.BiomeCategory.NETHER) {
+//            if (DRACONIUM_ORE_PLACED_NETHER != null) {
+//                DRACONIUM_ORE_PLACED_NETHER.getHolder().ifPresent(oreFeatures::add);
+//            }
+//        } else if (category == Biome.BiomeCategory.THEEND) {
+//            if (DRACONIUM_ORE_PLACED_END != null) {
+//                DRACONIUM_ORE_PLACED_END.getHolder().ifPresent(oreFeatures::add);
+//            }
+//
+//            if (ISLAND_FEATURE != null) {
+//                ISLAND_FEATURE.getHolder().ifPresent(holder -> event.getGeneration().getFeatures(GenerationStep.Decoration.RAW_GENERATION).add(holder));
+//            }
+//        }
+//    }
+//
+//    public static boolean isLikelyOverworldBiome(Biome.BiomeCategory category) {
+//        return category != Biome.BiomeCategory.NONE && category != Biome.BiomeCategory.THEEND && category != Biome.BiomeCategory.NETHER;
+//    }
 }

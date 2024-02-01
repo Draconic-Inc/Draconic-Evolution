@@ -37,7 +37,7 @@ public enum GuardianSpawnState {
         }
     },
     SUMMONING_PILLARS {
-        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel level, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
             int spawnRate = 15;
             boolean spawn = ticks % spawnRate == 0;
 
@@ -46,14 +46,14 @@ public enum GuardianSpawnState {
                 if (nextSpawn != null) {
                     //Clear the spawn area
                     for (BlockPos blockpos : BlockPos.betweenClosed(nextSpawn.offset(-10, -10, -10), nextSpawn.offset(10, 10, 10))) {
-                        world.removeBlock(blockpos, false);
+                        level.removeBlock(blockpos, false);
                     }
 
-                    ChaosIslandFeature.generateObelisk(world, nextSpawn, world.random);
-                    world.setBlock(nextSpawn, DEContent.infused_obsidian.defaultBlockState(), 3);
-                    GuardianCrystalEntity crystal = new GuardianCrystalEntity(world.getLevel(), nextSpawn.getX() + 0.5, nextSpawn.getY() + 1, nextSpawn.getZ() + 0.5, manager.getUniqueID());
+                    ChaosIslandFeature.generateObelisk(level, nextSpawn, level.random);
+                    level.setBlock(nextSpawn, DEContent.INFUSED_OBSIDIAN.get().defaultBlockState(), 3);
+                    GuardianCrystalEntity crystal = new GuardianCrystalEntity(level.getLevel(), nextSpawn.getX() + 0.5, nextSpawn.getY() + 1, nextSpawn.getZ() + 0.5, manager.getUniqueID());
                     crystal.setInvulnerable(true);
-                    world.addFreshEntity(crystal);
+                    level.addFreshEntity(crystal);
                     crystal.setBeamTarget(pos.offset(0, 80, 0));
                     manager.crystalSpawned();
                 } else {

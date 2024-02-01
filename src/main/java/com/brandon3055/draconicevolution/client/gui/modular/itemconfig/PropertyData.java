@@ -367,12 +367,12 @@ public class PropertyData {
         try {
             data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"));
         }catch (JsonParseException ignored) {
-            data.toolTip = new TextComponent(nbt.getString("tooltip"));
+            data.toolTip = Component.literal(nbt.getString("tooltip"));
         }
         try {
             data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"));
         }catch (JsonParseException ignored) {
-            data.displayName = new TextComponent(nbt.getString("display_name"));
+            data.displayName = Component.literal(nbt.getString("display_name"));
         }
 
         data.displayValue = nbt.getString("display_value");

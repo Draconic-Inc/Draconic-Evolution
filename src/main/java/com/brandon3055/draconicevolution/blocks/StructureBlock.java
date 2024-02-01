@@ -1,19 +1,16 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.multiblock.StructurePart;
 import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -22,12 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
@@ -36,13 +29,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
-import java.util.Random;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * An invisible placeholder block used by multi-block structures.
@@ -54,7 +42,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
 
     public StructureBlock(Block.Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_structure_block, false);
+        setBlockEntity(DEContent.TILE_STRUCTURE_BLOCK::get, false);
         dontSpawnOnMe();
         setLightTransparent();
     }
@@ -63,9 +51,6 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.INVISIBLE;
     }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
@@ -144,7 +129,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
             tile.debug("Structure Block: Block Tick doRevert");
 //            if (tile.debugEnabled()) LogHelper.bigInfo("Trace");
@@ -192,7 +177,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event, Level level) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event, Level level) {
         if (level.getBlockEntity(event.getTarget().getBlockPos()) instanceof TileStructureBlock tile) {
             return tile.renderSelectionBox(event);
         }

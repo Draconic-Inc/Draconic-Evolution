@@ -21,7 +21,7 @@ public class ReactorSound extends SimpleSoundInstance implements TickableSoundIn
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESounds.coreSound, SoundSource.BLOCKS, tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
+        super(DESounds.CORE_SOUND.get(), SoundSource.BLOCKS, tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE ? 10F : 1.5F, 1, tile.getLevel().random, tile.getBlockPos());
         this.tile = tile;
         this.looping = true;
         this.targetPitch = 1F;

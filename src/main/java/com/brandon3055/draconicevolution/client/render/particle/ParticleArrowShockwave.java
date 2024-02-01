@@ -9,6 +9,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by brandon3055 on 17/05/2017.
@@ -18,7 +19,7 @@ public class ParticleArrowShockwave extends BCParticle {
     public double size = 0;
     public double maxSize;
 
-    public ParticleArrowShockwave(ClientLevel worldIn, Vec3D pos) {
+    public ParticleArrowShockwave(ClientLevel worldIn, Vec3 pos) {
         super(worldIn, pos);
         if (model == null) {
 //            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
@@ -27,7 +28,7 @@ public class ParticleArrowShockwave extends BCParticle {
         }
     }
 
-    public ParticleArrowShockwave(ClientLevel worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleArrowShockwave(ClientLevel worldIn, Vec3 pos, Vec3 speed) {
         this(worldIn, pos);
     }
 
@@ -101,7 +102,7 @@ public class ParticleArrowShockwave extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+        public Particle getEntityFX(int particleID, Level world, Vec3 pos, Vec3 speed, int... args) {
             ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave((ClientLevel) world, pos, speed);
 
             world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 10, 0.9F + world.random.nextFloat() * 0.2F, false);

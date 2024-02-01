@@ -11,7 +11,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -29,12 +28,9 @@ import java.util.function.Supplier;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 public class EnderCollectionModuleItem extends ModuleItem<NoData> {
-    public EnderCollectionModuleItem(Properties properties, Supplier<Module<NoData>> moduleSupplier) {
-        super(properties, moduleSupplier);
-    }
 
-    public EnderCollectionModuleItem(Properties properties) {
-        super(properties);
+    public EnderCollectionModuleItem(Supplier<Module<?>> moduleSupplier) {
+        super(moduleSupplier);
     }
 
     @Override
@@ -89,9 +85,9 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
             addEnderStorageInfo(stack, tooltip);
         }
 
-        tooltip.add(new TranslatableComponent("module." + MODID + ".ender_storage.about").withStyle(ChatFormatting.DARK_GRAY));
-        tooltip.add(new TranslatableComponent("module." + MODID + ".ender_storage.about_compat").withStyle(ChatFormatting.DARK_GRAY));
-        tooltip.add(new TranslatableComponent("module." + MODID + ".ender_storage.about_compat2").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about_compat").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("module." + MODID + ".ender_storage.about_compat2").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     private void addEnderStorageInfo(ItemStack stack, List<Component> tooltip) {
@@ -104,12 +100,12 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
             if (name instanceof MutableComponent mutable) {
                 mutable.withStyle(ChatFormatting.DARK_GREEN);
             }
-            tooltip.add(new TranslatableComponent("module." + MODID + ".ender_storage.owner").withStyle(ChatFormatting.GRAY).append(": ").append(name));
+            tooltip.add(Component.translatable("module." + MODID + ".ender_storage.owner").withStyle(ChatFormatting.GRAY).append(": ").append(name));
         }
         Component freq = frequency.getTooltip();
         if (freq instanceof MutableComponent mutable) {
             mutable.withStyle(ChatFormatting.DARK_GREEN);
         }
-        tooltip.add(new TranslatableComponent("module." + MODID + ".ender_storage.frequency").withStyle(ChatFormatting.GRAY).append(": ").append(freq));
+        tooltip.add(Component.translatable("module." + MODID + ".ender_storage.frequency").withStyle(ChatFormatting.GRAY).append(": ").append(freq));
     }
 }

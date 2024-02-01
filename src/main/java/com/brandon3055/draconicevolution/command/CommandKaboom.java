@@ -17,7 +17,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -69,7 +69,7 @@ public class CommandKaboom {
 
     private static int calculate(CommandSourceStack source, int radius, Vec3i pos, boolean prime, boolean effect) {
         if (explosionProcess != null && !explosionProcess.isDead()) {
-            source.sendFailure(new TextComponent("Explosion already in progress"));
+            source.sendFailure(Component.literal("Explosion already in progress"));
             return 1;
         }
 
@@ -78,7 +78,7 @@ public class CommandKaboom {
         explosionProcess.enableEffect = effect;
         explosionProcess.progressMon = progress -> {
             if (TimeKeeper.getServerTick() % 20 == 0) {
-                source.sendSuccess(new TextComponent("Calculating: " + Math.round(progress * 100D) + "%"), true);
+                source.sendSuccess(() -> Component.literal("Calculating: " + Math.round(progress * 100D) + "%"), true);
             }
         };
         ProcessHandler.addProcess(explosionProcess);
@@ -155,7 +155,7 @@ public class CommandKaboom {
     }
 
     private static int relight(CommandSourceStack source) {
-        BlockPos pos = new BlockPos(source.getPosition());
+        BlockPos pos = BlockPos.containing(source.getPosition());
         ServerLevel world = source.getLevel();
         while (world.isEmptyBlock(pos)) pos = pos.below();
 

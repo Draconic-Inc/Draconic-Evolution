@@ -45,20 +45,20 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Figure out this shader type
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );

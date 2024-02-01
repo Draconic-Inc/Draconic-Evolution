@@ -3,13 +3,10 @@ package com.brandon3055.draconicevolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.client.ClientProxy;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.command.DECommands;
-import com.brandon3055.draconicevolution.handlers.DEEventHandler;
-import com.brandon3055.draconicevolution.handlers.LootEventHandler;
-import com.brandon3055.draconicevolution.handlers.ModuleEventHandler;
-import com.brandon3055.draconicevolution.init.ClientInit;
-import com.brandon3055.draconicevolution.init.DETags;
-import com.brandon3055.draconicevolution.init.ModCapabilities;
+import com.brandon3055.draconicevolution.handlers.*;
+import com.brandon3055.draconicevolution.init.*;
 import com.brandon3055.draconicevolution.integration.computers.ComputerCraftCompatEventHandler;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
@@ -35,22 +32,21 @@ public class DraconicEvolution {
 
     public DraconicEvolution() {
         proxy = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
-        DraconicAPI.FUSION_RECIPE_TYPE = new RecipeType<>() {
-            @Override
-            public String toString() {
-                return MODID + ":fusion_crafting";
-            }
-        };
         CraftingHelper.register(DraconicAPI.INGREDIENT_STACK_TYPE, IngredientStack.SERIALIZER);
 
         DEConfig.load();
         DETags.init();
+        DEContent.init();
+        DEModules.init();
+        DESounds.init();
+        DEParticles.init();
         DraconicNetwork.init();
         EquipmentManager.initialize();
         DECommands.init();
         ModCapabilities.init();
         LootEventHandler.init();
         ModuleEventHandler.init();
+        ModularArmorEventHandler.init();
 
         OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);

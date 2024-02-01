@@ -20,7 +20,7 @@ public class DyingPhase extends Phase {
          float f = (this.guardian.getRandom().nextFloat() - 0.5F) * 8.0F;
          float f1 = (this.guardian.getRandom().nextFloat() - 0.5F) * 4.0F;
          float f2 = (this.guardian.getRandom().nextFloat() - 0.5F) * 8.0F;
-         this.guardian.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.guardian.getX() + (double)f, this.guardian.getY() + 2.0D + (double)f1, this.guardian.getZ() + (double)f2, 0.0D, 0.0D, 0.0D);
+         this.guardian.level().addParticle(ParticleTypes.EXPLOSION_EMITTER, this.guardian.getX() + (double)f, this.guardian.getY() + 2.0D + (double)f1, this.guardian.getZ() + (double)f2, 0.0D, 0.0D, 0.0D);
       }
    }
 

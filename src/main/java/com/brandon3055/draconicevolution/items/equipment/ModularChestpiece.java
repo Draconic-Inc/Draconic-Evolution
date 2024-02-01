@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
-import com.brandon3055.brandonscore.client.model.DummyHumanoidModel;
 import com.brandon3055.brandonscore.client.render.EquippedItemModel;
 import com.brandon3055.brandonscore.items.EquippedModelItem;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -23,6 +22,7 @@ import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,11 +36,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IItemRenderProperties;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -50,7 +48,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechProperties props) {
-        super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, props);
+        super(ArmorMaterials.DIAMOND, Type.CHESTPLATE, props);
         this.techLevel = props.getTechLevel();
     }
 
@@ -127,11 +125,11 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
-    }
+//    @Override
+//    @OnlyIn(Dist.CLIENT)
+//    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+//        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
+//    }
 
     @OnlyIn(Dist.CLIENT)
     private ModularChestpieceModel<?> model;
@@ -163,7 +161,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

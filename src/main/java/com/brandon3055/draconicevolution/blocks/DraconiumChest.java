@@ -1,12 +1,9 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,18 +18,16 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,7 +44,7 @@ public class DraconiumChest extends EntityBlockBCore {
     public DraconiumChest(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
-        setBlockEntity(() -> DEContent.tile_draconium_chest, true);
+        setBlockEntity(DEContent.TILE_DRACONIUM_CHEST::get, true);
     }
 
     @Override
@@ -59,7 +54,7 @@ public class DraconiumChest extends EntityBlockBCore {
 
     public static boolean isStackValid(ItemStack stack) {
         if (!stack.isEmpty()) {
-            ResourceLocation name = stack.getItem().getRegistryName();
+            ResourceLocation name = ForgeRegistries.ITEMS.getKey(stack.getItem());
             for (String key : DEConfig.chestBlacklist) {
                 if (key.contains(":") ? name.toString().contains(key) : name.getPath().contains(key)) {
                     return false;

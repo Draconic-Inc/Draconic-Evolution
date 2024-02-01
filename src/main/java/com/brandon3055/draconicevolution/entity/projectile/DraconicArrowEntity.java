@@ -3,28 +3,32 @@ package com.brandon3055.draconicevolution.entity.projectile;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.api.damage.DraconicDamage;
 import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.lib.ProjectileAntiImmunityDamage;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -46,6 +50,7 @@ import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,11 +77,11 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos) {
-        super(DEContent.draconicArrow, xPos, yPos, zPos, world);
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), xPos, yPos, zPos, world);
     }
 
     public DraconicArrowEntity(Level world, LivingEntity shooter) {
-        super(DEContent.draconicArrow, shooter, world);
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, world);
     }
 
     // ## Arrow Setup ##
@@ -134,7 +139,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     public void tick() {
         superTick();
 
-        if (this.level.isClientSide) {
+        if (level().isClientSide) {
             if (this.inGround) {
                 if (this.inGroundTime % 5 == 0) {
                     this.makeParticle(1);
@@ -143,7 +148,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                 this.makeParticle(2);
             }
         } else if (this.inGround && this.inGroundTime != 0 && !this.effects.isEmpty() && this.inGroundTime >= 600) {
-            this.level.broadcastEntityEvent(this, (byte) 0);
+            level().broadcastEntityEvent(this, (byte) 0);
             this.potion = Potions.EMPTY;
             this.effects.clear();
             this.entityData.set(ID_EFFECT_COLOR, -1);
@@ -157,7 +162,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.leftOwner = this.checkLeftOwner();
         }
         //Entity Tick
-        if (!this.level.isClientSide) {
+        if (!level().isClientSide) {
             this.setSharedFlag(6, this.isCurrentlyGlowing());
         }
         this.baseTick();
@@ -174,9 +179,9 @@ public class DraconicArrowEntity extends AbstractArrow {
         }
 
         BlockPos blockpos = this.blockPosition();
-        BlockState blockstate = this.level.getBlockState(blockpos);
+        BlockState blockstate = level().getBlockState(blockpos);
         if (!blockstate.isAir() && !flag) {
-            VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
+            VoxelShape voxelshape = blockstate.getCollisionShape(level(), blockpos);
             if (!voxelshape.isEmpty()) {
                 Vec3 vector3d1 = this.position();
 
@@ -200,7 +205,7 @@ public class DraconicArrowEntity extends AbstractArrow {
         if (this.inGround && !flag) {
             if (this.lastState != blockstate && this.shouldFall()) {
                 this.startFalling();
-            } else if (!this.level.isClientSide) {
+            } else if (!level().isClientSide) {
                 this.tickDespawn();
             }
 
@@ -209,7 +214,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.inGroundTime = 0;
             Vec3 vector3d2 = this.position();
             Vec3 vector3d3 = vector3d2.add(vector3d);
-            HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            HitResult raytraceresult = level().clip(new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
             if (raytraceresult.getType() != HitResult.Type.MISS) {
                 vector3d3 = raytraceresult.getLocation();
             }
@@ -247,7 +252,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             double d0 = vector3d.z;
             if (this.isCritArrow()) {
                 for (int i = 0; i < 4; ++i) {
-                    this.level.addParticle(ParticleTypes.CRIT, this.getX() + d3 * (double) i / 4.0D, this.getY() + d4 * (double) i / 4.0D, this.getZ() + d0 * (double) i / 4.0D, -d3, -d4 + 0.2D, -d0);
+                    level().addParticle(ParticleTypes.CRIT, this.getX() + d3 * (double) i / 4.0D, this.getY() + d4 * (double) i / 4.0D, this.getZ() + d0 * (double) i / 4.0D, -d3, -d4 + 0.2D, -d0);
                 }
             }
 
@@ -269,7 +274,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             if (this.isInWater()) {
                 for (int j = 0; j < 4; ++j) {
                     float f4 = 0.25F;
-                    this.level.addParticle(ParticleTypes.BUBBLE, d5 - d3 * 0.25D, d1 - d4 * 0.25D, d2 - d0 * 0.25D, d3, d4, d0);
+                    level().addParticle(ParticleTypes.BUBBLE, d5 - d3 * 0.25D, d1 - d4 * 0.25D, d2 - d0 * 0.25D, d3, d4, d0);
                 }
 
                 f2 = this.getWaterInertia();
@@ -334,7 +339,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             Player player = (Player) entity;
             if (player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem) {
                 player.getCooldowns().addCooldown(player.getUseItem().getItem(), 100);
-                level.broadcastEntityEvent(player, (byte) 30);
+                level().broadcastEntityEvent(player, (byte) 30);
                 player.stopUsingItem();
             }
         }
@@ -346,7 +351,7 @@ public class DraconicArrowEntity extends AbstractArrow {
 
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity) entity;
-                if (!this.level.isClientSide && this.getPierceLevel() <= 0 && penetration <= 0) {
+                if (!level().isClientSide && this.getPierceLevel() <= 0 && penetration <= 0) {
                     livingentity.setArrowCount(livingentity.getArrowCount() + 1);
                 }
 
@@ -357,7 +362,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                     }
                 }
 
-                if (!this.level.isClientSide && owner instanceof LivingEntity) {
+                if (!level().isClientSide && owner instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(livingentity, owner);
                     EnchantmentHelper.doPostDamageEffects((LivingEntity) owner, livingentity);
                 }
@@ -371,7 +376,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!this.level.isClientSide && owner instanceof ServerPlayer) {
+                if (!level().isClientSide && owner instanceof ServerPlayer) {
                     ServerPlayer serverplayerentity = (ServerPlayer) owner;
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
                         CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, this.piercedAndKilledEntities);
@@ -390,7 +395,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             this.setDeltaMovement(this.getDeltaMovement().scale(0));
             this.setYRot(getYRot() + 180.0F);
             this.yRotO += 180.0F;
-            if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
+            if (!level().isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
                 if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
@@ -402,20 +407,9 @@ public class DraconicArrowEntity extends AbstractArrow {
 
     private DamageSource getDamageSource(Entity target) {
         Entity owner = this.getOwner();
-        EntityDamageSource damagesource;
         TechLevel techLevel = TechLevel.byIndex(entityData.get(TECH_LEVEL));
-        if (owner == null) {
-            damagesource = DraconicIndirectEntityDamage.arrow(this, this, techLevel);
-        } else {
-            damagesource = DraconicIndirectEntityDamage.arrow(this, owner, techLevel);
-            if (owner instanceof LivingEntity) {
-                ((LivingEntity) owner).setLastHurtMob(target);
-            }
-        }
-        if (getProjectileImmuneOverride() && DEConfig.projectileAntiImmuneEntities.contains(target.getType().getRegistryName().toString())) {
-            damagesource = new ProjectileAntiImmunityDamage("arrow", this, damagesource.getEntity(), techLevel);
-        }
-        return damagesource;
+        boolean bypassImmune = getProjectileImmuneOverride() && DEConfig.projectileAntiImmuneEntities.contains(ForgeRegistries.ENTITY_TYPES.getKey(target.getType()).toString());
+        return DEDamage.draconicArrow(level(), this, owner, techLevel, bypassImmune);
     }
 
     private int blockPenetration = 0;
@@ -432,9 +426,9 @@ public class DraconicArrowEntity extends AbstractArrow {
         if (canPenetrate > 0 && basePenetration >= techLevel * 1.5) {
             blockPenetration += remainingPenetration;
             BlockPos pos = traceResult.getBlockPos();
-            BlockState blockstate = this.level.getBlockState(pos);
+            BlockState blockstate = level().getBlockState(pos);
             if (!blockstate.isAir()) {
-                VoxelShape voxelshape = blockstate.getCollisionShape(this.level, pos);
+                VoxelShape voxelshape = blockstate.getCollisionShape(level(), pos);
                 if (!voxelshape.isEmpty()) {
                     boolean canPass = true;
                     Vec3 vector3d1 = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(canPenetrate, canPenetrate, canPenetrate));
@@ -450,7 +444,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                         for (int i = 0; i < 25; i++) {
                             Vec3 critPos = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(2, 2, 2).add((-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2));
                             Vec3 critVel = getDeltaMovement().normalize().multiply(5, 5, 5);
-                            level.addParticle(ParticleTypes.CRIT, critPos.x, critPos.y, critPos.z, critVel.x, critVel.y, critVel.z);
+                            level().addParticle(ParticleTypes.CRIT, critPos.x, critPos.y, critPos.z, critVel.x, critVel.y, critVel.z);
                         }
 
                         //Fire Shrapnel
@@ -468,9 +462,9 @@ public class DraconicArrowEntity extends AbstractArrow {
             }
         }
 
-        this.lastState = this.level.getBlockState(traceResult.getBlockPos());
-        BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
-        blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
+        this.lastState = level().getBlockState(traceResult.getBlockPos());
+        BlockState blockstate = level().getBlockState(traceResult.getBlockPos());
+        blockstate.onProjectileHit(level(), blockstate, traceResult, this);
         Vec3 vector3d = traceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vector3d);
         Vec3 vector3d1 = vector3d.normalize().scale((double) 0.05F);
@@ -551,7 +545,7 @@ public class DraconicArrowEntity extends AbstractArrow {
             double d2 = (double) (i >> 0 & 255) / 255.0D;
 
             for (int j = 0; j < p_184556_1_; ++j) {
-                this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
             }
 
         }
@@ -576,7 +570,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.potion != Potions.EMPTY && this.potion != null) {
-            compound.putString("Potion", Registry.POTION.getKey(this.potion).toString());
+            compound.putString("Potion", BuiltInRegistries.POTION.getKey(this.potion).toString());
         }
 
         if (this.fixedColor) {
@@ -689,7 +683,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                 double d2 = (double) (i >> 0 & 255) / 255.0D;
 
                 for (int j = 0; j < 20; ++j) {
-                    this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                    level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                 }
             }
         } else {
@@ -698,12 +692,12 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
-        return BCoreNetwork.getEntitySpawnPacket(this);
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this));
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.isFire() || super.isInvulnerableTo(source);
+        return source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
     }
 }

@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -18,12 +16,13 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent.RSMode;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.DEGuiSprites;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,7 +35,8 @@ import java.util.Locale;
 /**
  * Created by brandon3055 on 10/02/2017.
  */
-public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
+//public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
+public class GuiReactor extends AbstractContainerScreen<ContainerReactor> { //Temp fix for tile
 
     private Player player;
     private final TileReactorCore tile;
@@ -61,7 +61,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         manager.addChild(compPanel = new GuiBorderedRect(leftPos + imageWidth, topPos + 125, 0, 91));
         exclusions.add(compPanel);
         manager.setJeiExclusions(() -> exclusions);
-        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DEGuiSprites.get("reactor/background")) {
+        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DEGuiTextures.get("reactor/background")) {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -194,7 +194,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         background.addChild(new GuiSlideIndicator(() -> tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE)
                 .setPos(leftPos + 10, topPos + 5)
                 .setSize(16, 112)
-                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
                 .setOffsets(-2, -1)
                 .setHoverText(element -> getTempStats())
                 .setHoverTextDelay(5)
@@ -203,7 +203,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         background.addChild(new GuiSlideIndicator(() -> tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1))
                 .setPos(leftPos + 34, topPos + 5)
                 .setSize(16, 112)
-                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
                 .setOffsets(-2, -1)
                 .setHoverText(element -> getShieldStats())
                 .setHoverTextDelay(5)
@@ -212,7 +212,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         background.addChild(new GuiSlideIndicator(() -> tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1))
                 .setPos(leftPos + 198, topPos + 5)
                 .setSize(16, 112)
-                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
                 .setOffsets(-2, -1)
                 .setHoverText(element -> getSaturationStats())
                 .setHoverTextDelay(5)
@@ -221,7 +221,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         background.addChild(new GuiSlideIndicator(() -> tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1))
                 .setPos(leftPos + 222, topPos + 5)
                 .setSize(16, 112)
-                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
                 .setOffsets(-2, -1)
                 .setHoverText(element -> getFuelStats())
                 .setHoverTextDelay(5)

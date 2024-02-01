@@ -32,7 +32,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -47,6 +46,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -82,9 +82,9 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     private TechLevel minTierCache = null;
 
     public TileFusionCraftingCore(BlockPos pos, BlockState state) {
-        super(DEContent.tile_crafting_core, pos, state);
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
+        super(DEContent.TILE_CRAFTING_CORE.get(), pos, state);
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
         itemHandler.setContentsChangeListener(i -> localInventoryChange());
         itemHandler.setStackValidator((slot, stack) -> slot == 0);
         fxHandler = DraconicEvolution.proxy.createFusionFXHandler(this);
@@ -126,7 +126,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (id == 1) {// Craft Complete
             level.addParticle(ParticleTypes.EXPLOSION, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, 1.0D, 0.0D, 0.0D);
 //            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, SoundEvents.GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
-            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
+            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
 
             for (int i = 0; i < 100; i++) {
                 double velX = (level.random.nextDouble() - 0.5) * 0.1;
@@ -184,7 +184,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             double dist = Utils.getCardinalDistance(tile.getBlockPos(), worldPosition);
 
             if (dist <= DEConfig.fusionInjectorMinDist) {
-                setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.injector_close").withStyle(ChatFormatting.RED));
+                setFusionStatus(-1, Component.translatable("fusion_status.draconicevolution.injector_close").withStyle(ChatFormatting.RED));
                 injectorPositions.clear();
                 return false;
             }
@@ -231,7 +231,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             if (recipe != null) {
                 recipe.canStartCraft(this, level, e -> setFusionStatus(-1, e));
             } else {
-                setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.no_recipe"));
+                setFusionStatus(-1, Component.translatable("fusion_status.draconicevolution.no_recipe"));
             }
             setActiveRecipe(recipe);
         }
@@ -246,7 +246,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             updateInjectors(); //TODO just have the injectors poke the core when placed so i dont need this
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
@@ -333,8 +333,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public void cancelCraft() {
         crafting.set(false);
         getInjectors().forEach(e -> e.setEnergyRequirement(0, 0));
-        setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.canceled"));
-        level.playSound(null, getBlockPos(), DESounds.fusionComplete, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
+        setFusionStatus(-1, Component.translatable("fusion_status.draconicevolution.canceled"));
+        level.playSound(null, getBlockPos(), DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
         inventoryChanged();
     }
 

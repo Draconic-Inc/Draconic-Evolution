@@ -15,9 +15,6 @@ public class ShockwavePhase extends ChargeUpPhase {
 
     }
 
-
-
-
     @Override
     public PhaseType<ShockwavePhase> getType() {
         return PhaseType.SHOCKWAVE;

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -40,7 +40,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
     @Override
     public void addElements(GuiElementManager manager) {
         TBasicMachine template = new TModularMachine(this, tile, container.getSlotLayout());
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         GuiElement bg = template.background;
@@ -70,9 +70,9 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         template.energyBar.setYPos(filterUI.yPos()).setMaxYPos(template.powerSlot.yPos() - 12, true).setXPos(template.powerSlot.xPos() + 2);
 
         //Weapon Slot
-        GuiElement toolBg = GuiTexture.newDynamicTexture(() -> BCGuiSprites.getThemed("bg_dynamic_small"));
+        GuiElement toolBg = GuiTexture.newDynamicTexture(() -> BCGuiTextures.getThemed("bg_dynamic_small"));
         toolBg.getInsets().right = 0;
-        GuiElement element = toolkit.createSlots(toolBg, 1, 1, 0, (column, row) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 1), BCGuiSprites.get("slots/sword"));
+        GuiElement element = toolkit.createSlots(toolBg, 1, 1, 0, (column, row) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 1), BCGuiTextures.get("slots/sword"));
         element.setHoverText(e -> tile.itemHandler.getStackInSlot(1).isEmpty() ? toolkit.i18n("gui.draconicevolution.grinder.weapon_slot") : null);
         element.setPos(3, 3);
         toolBg.setMaxPos(element.maxXPos() + 1, element.maxYPos() + 3, true);

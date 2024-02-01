@@ -28,7 +28,7 @@ public class Disenchanter extends EntityBlockBCore {
 
     public Disenchanter(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_disenchanter, false);
+        setBlockEntity(DEContent.TILE_DISENCHANTER::get, false);
     }
 
     @Override

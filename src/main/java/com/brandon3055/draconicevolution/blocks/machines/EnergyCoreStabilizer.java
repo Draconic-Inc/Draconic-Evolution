@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
@@ -11,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,7 +33,7 @@ public class EnergyCoreStabilizer extends EntityBlockBCore {
     public EnergyCoreStabilizer(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(LARGE, false));
-        setBlockEntity(() -> DEContent.tile_core_stabilizer, true);
+        setBlockEntity(DEContent.TILE_CORE_STABILIZER::get, true);
         dontSpawnOnMe();
         setLightTransparent();
     }

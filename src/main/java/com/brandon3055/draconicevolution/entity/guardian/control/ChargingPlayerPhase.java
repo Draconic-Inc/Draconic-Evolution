@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.damage.DraconicDamage;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -62,10 +61,10 @@ public class ChargingPlayerPhase extends Phase {
                 if (distance <= 5) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
                     debug("Charge Successful");
-                    targetPlayer.hurt(new DraconicDamage(DraconicEvolution.MODID + ".draconic_guardian", guardian, TechLevel.CHAOTIC).bypassMagic().bypassArmor(), GuardianFightManager.CHARGE_DAMAGE);
+                    targetPlayer.hurt(DEDamage.guardian(guardian.level(), guardian), GuardianFightManager.CHARGE_DAMAGE);
                     guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
                     guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
-                    DraconicNetwork.sendImpactEffect(guardian.level, targetPlayer.blockPosition(), 0);
+                    DraconicNetwork.sendImpactEffect(guardian.level(), targetPlayer.blockPosition(), 0);
                 }
             }
         }

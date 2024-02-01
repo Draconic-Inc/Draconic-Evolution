@@ -7,13 +7,13 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
 
 import java.util.Random;
 
@@ -119,8 +119,8 @@ public class EffectLib {
         float yRot = (float) (Mth.atan2(dirVec.x, dirVec.z) * (double) (180F / (float) Math.PI));
         float xRot = (float) (Mth.atan2(dirVec.y, dirVecXZDist) * (double) (180F / (float) Math.PI));
         mStack.translate(startPos.x, startPos.y, startPos.z);
-        mStack.mulPose(Vector3f.YP.rotationDegrees(yRot - 90));
-        mStack.mulPose(Vector3f.ZP.rotationDegrees(xRot - 90));
+        mStack.mulPose(Axis.YP.rotationDegrees(yRot - 90));
+        mStack.mulPose(Axis.ZP.rotationDegrees(xRot - 90));
         mStack.translate(-startPos.x, -startPos.y, -startPos.z);
         renderLightningP2P(mStack, getter, startPos, virtualEndPos, segCount, randSeed, scaleMod, deflectMod, autoScale, segTaper, colour);
         mStack.popPose();

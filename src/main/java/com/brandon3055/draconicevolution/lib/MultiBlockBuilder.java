@@ -3,13 +3,10 @@ package com.brandon3055.draconicevolution.lib;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
 import com.brandon3055.brandonscore.multiblock.MultiBlockPart;
-import com.brandon3055.brandonscore.multiblock.TagPart;
 import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -17,12 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
-import org.openzen.zenscript.codemodel.definition.StructDefinition;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -62,7 +57,7 @@ public class MultiBlockBuilder implements IProcess {
                     workList.put(pos, part);
                 } else {
                     isDead = true;
-                    player.sendMessage(new TranslatableComponent("struct_build.brandonscore.found_invalid", level.getBlockState(pos).getBlock().getName(), "[X: " + pos.getX() + ", Y: " + pos.getY() + ", Z: " + pos.getZ() + "]").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("struct_build.brandonscore.found_invalid", level.getBlockState(pos).getBlock().getName(), "[X: " + pos.getX() + ", Y: " + pos.getY() + ", Z: " + pos.getZ() + "]").withStyle(ChatFormatting.RED));
                     return;
                 }
             }
@@ -74,7 +69,7 @@ public class MultiBlockBuilder implements IProcess {
 
     @Override
     public void updateProcess() {
-        if (workOrder.isEmpty() || !player.isAlive() || player.level != level) {
+        if (workOrder.isEmpty() || !player.isAlive() || player.level() != level) {
             isDead = true;
             if (controller != null) {
                 controller.validateStructure();
@@ -87,7 +82,7 @@ public class MultiBlockBuilder implements IProcess {
         if (part.isMatch(level, pos)) {
             return;
         } else if (!level.isEmptyBlock(pos)) {
-            player.sendMessage(new TranslatableComponent("struct_build.brandonscore.found_invalid", level.getBlockState(pos).getBlock().getName(), "[X: " + pos.getX() + ", Y: " + pos.getY() + ", Z: " + pos.getZ() + "]").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("struct_build.brandonscore.found_invalid", level.getBlockState(pos).getBlock().getName(), "[X: " + pos.getX() + ", Y: " + pos.getY() + ", Z: " + pos.getZ() + "]").withStyle(ChatFormatting.RED));
             isDead = true;
             return;
         }
@@ -98,7 +93,7 @@ public class MultiBlockBuilder implements IProcess {
             SoundType soundtype = placeBlock.getSoundType(placeBlock.defaultBlockState(), level, pos, player);
             level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
         } else {
-            player.sendMessage(new TranslatableComponent("struct_build.brandonscore.missing_required", part.getFirstValidBlock().getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("struct_build.brandonscore.missing_required", part.getFirstValidBlock().getName()).withStyle(ChatFormatting.RED));
             isDead = true;
         }
     }
@@ -109,7 +104,7 @@ public class MultiBlockBuilder implements IProcess {
             return part.getFirstValidBlock();
         }
 
-        LazyOptional<IItemHandler> opHandler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        LazyOptional<IItemHandler> opHandler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
         if (opHandler.isPresent()) {
             IItemHandler handler = opHandler.orElseThrow(WTFException::new);
             for (int i = 0; i < handler.getSlots(); i++) {

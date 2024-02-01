@@ -2,26 +2,23 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.api.render.RenderTypes;
-import com.brandon3055.draconicevolution.init.ClientInit;
+import com.brandon3055.draconicevolution.api.render.DERenderTypes;
+import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
@@ -37,11 +34,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -257,41 +255,42 @@ public class ModuleEntity<T extends ModuleData<T>> {
     //end
 
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
-            poseStack.translate(0, 0, 210);
+            render.pose().translate(0, 0, 210);
         }
+
         int colour = getModuleColour(module);
-        GuiHelper.drawRect(getter, poseStack, x, y, width, height, colour);
-        GuiHelper.drawBorderedRect(getter, poseStack, x, y, width, height, 1, colour, GuiHelper.mixColours(colour, 0x20202000, true));
+        render.rect(x, y, width, height, colour);
+        render.borderRect(x, y, width, height, 1, colour, GuiRender.mixColours(colour, 0x20202000, true));
 
         if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
-            VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(RenderType.glint()), poseStack);
+            VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderType.glint()), render.pose());
             builder.vertex(x, y + height, 0).uv(0, ((float) height / width) / 64F).endVertex();
             builder.vertex(x + width, y + height, 0).uv(((float) width / height) / 64F, ((float) height / width) / 64F).endVertex();
             builder.vertex(x + width, y, 0).uv(((float) width / height) / 64F, 0).endVertex();
             builder.vertex(x, y, 0).uv(0, 0).endVertex();
-            RenderUtils.endBatch(getter);
+            RenderUtils.endBatch(render.buffers());
         }
 
-        TextureAtlasSprite sprite = ClientInit.moduleSpriteUploader.getSprite(module);
-        float ar = (float) sprite.getWidth() / (float) sprite.getHeight();
-        float iar = (float) sprite.getHeight() / (float) sprite.getWidth();
+        Material texture = module.getTexture();
+        TextureAtlasSprite sprite = texture.sprite();
+        float ar = (float) sprite.contents().width() / (float) sprite.contents().height();
+        float iar = (float) sprite.contents().height() / (float) sprite.contents().width();
 
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(RenderTypes.MODULE_TYPE), poseStack);
         if (iar * width <= height) { //Fit Width
             double h = width * iar;
-            GuiHelper.drawSprite(builder, x, y + (height / 2D) - (h / 2D), width, h, sprite);
+            render.tex(texture, x, y + (height / 2D) - (h / 2D), width, h);
         } else { //Fit height
             double w = height * ar;
-            GuiHelper.drawSprite(builder, x + (width / 2D) - (w / 2D), y, w, height, sprite);
+            render.tex(texture, x + (width / 2D) - (w / 2D), y, w, height);
         }
 
         //Hover highlight
         if (stackRender) {
-            poseStack.translate(0, 0, -210);
-        } else if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)) {
-            GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x50FFFFFF);
+            render.pose().translate(0, 0, -210);
+        } else if (GuiRender.isInRect(x, y, width, height, mouseX, mouseY)) {
+            render.rect(x, y, width, height, 0x50FFFFFF);
         }
     }
 
@@ -299,18 +298,17 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * This should be used primarily for things like rendering tool tips.
      * This render method may be blocked by other overlay rendering so don't count on it to always get called.
      *
-     * @return true to block further overlay rendering. (Equivalent to returning true in {@link com.brandon3055.brandonscore.client.gui.modulargui.GuiElement#renderOverlayLayer(Minecraft, int, int, float)} )
+     * @return true to block further overlay rendering. (Equivalent to returning true in {@link GuiElement#renderOverlay(GuiRender, double, double, float, boolean)} )
      */
     @OnlyIn(Dist.CLIENT)
-    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
+    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (hoverTicks > 10) {
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             writeToItemStack(stack, context);
             List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-            ;
-            parent.getScreen().renderTooltip(poseStack, list, Optional.empty(), (int) mouseX, (int) mouseY);
+            render.componentTooltip(list, mouseX, mouseY);
             return true;
         }
         return false;
@@ -433,7 +431,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     @Override
     public String toString() {
         return "ModuleEntity{" +
-                "module=" + module.getRegistryName() +
+                "module=" + DEModules.REGISTRY.getKey(module) +
                 ", gridX=" + gridX +
                 ", gridY=" + gridY +
                 '}';
@@ -462,11 +460,11 @@ public class ModuleEntity<T extends ModuleData<T>> {
     //Render Utils
 
     @OnlyIn(Dist.CLIENT)
-    protected void drawChargeProgress(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double progress, @org.jetbrains.annotations.Nullable String text1, @org.jetbrains.annotations.Nullable String text2) {
+    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @org.jetbrains.annotations.Nullable String text1, @org.jetbrains.annotations.Nullable String text2) {
         double diameter = Math.min(width, height) * 0.425;
 
-        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
+        render.rect(x, y, width, height, 0x60FF0000);
+        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(DERenderTypes.FAN_TYPE), render.pose());
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
@@ -474,22 +472,21 @@ public class ModuleEntity<T extends ModuleData<T>> {
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
             builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
         }
-        RenderUtils.endBatch(getter);
+        RenderUtils.endBatch(render.buffers());
 
         if (text1 != null) {
-            drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, text1, x + width / 2F, y + height / 2F - (text2 == null ? 4 : 8), 0, 0x8000FF00, 1, false, true);
+            drawBackgroundString(render, text1, x + width / 2F, y + height / 2F - (text2 == null ? 4 : 8), 0, 0x8000FF00, 1, false, true);
         }
         if (text2 != null) {
-            drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, text2, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
+            drawBackgroundString(render, text2, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void drawBackgroundString(MultiBufferSource getter, PoseStack mStack, Font font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
-        PoseStack matrixstack = new PoseStack();
-        int width = font.width(text);
+    public static void drawBackgroundString(GuiRender render, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+        int width = render.font().width(text);
         x = centered ? x - width / 2F : x;
-        GuiHelper.drawRect(getter, mStack, x - padding, y - padding, width + padding * 2, font.lineHeight - 2 + padding * 2, background);
-        font.drawInBatch(text, x, y, colour, shadow, matrixstack.last().pose(), getter, false, 0, 15728880);
+        render.rect(x - padding, y - padding, width + padding * 2, render.font().lineHeight - 2 + padding * 2, background);
+        render.drawString(text, x, y, colour, shadow);
     }
 }

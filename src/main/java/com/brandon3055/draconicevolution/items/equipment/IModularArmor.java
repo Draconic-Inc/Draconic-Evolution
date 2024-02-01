@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +40,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
             ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.speedMultiplier() > DEConfig.armorSpeedLimit) {
-                tooltip.add(new TextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(ChatFormatting.RED));
+                tooltip.add(Component.literal("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(ChatFormatting.RED));
             }
         }
     }
@@ -83,7 +82,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
                     }
                 }
 
-                if (!entity.level.isClientSide && !creative) {
+                if (!entity.level().isClientSide && !creative) {
                     storage.modifyEnergyStored(-energy);
                 }
             }

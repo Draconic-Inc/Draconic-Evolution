@@ -11,7 +11,8 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +26,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     private final ManagedLong powerRate = register(new ManagedLong("power_rate", 1000000000, DataFlags.SAVE_NBT));
 
     public TileCreativeOPCapacitor(BlockPos pos, BlockState state) {
-        super(DEContent.tile_creative_op_capacitor, pos, state);
+        super(DEContent.TILE_CREATIVE_OP_CAPACITOR.get(), pos, state);
 
         capManager.set(CapabilityOP.OP, new IOPStorage() {
             @Override
@@ -112,7 +113,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
                 powerRate.set(Long.MAX_VALUE);
             }
 
-            BrandonsCore.proxy.sendIndexedMessage(player, new TextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
+            BrandonsCore.proxy.sendIndexedMessage(player, Component.literal("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
 //            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
         return true;

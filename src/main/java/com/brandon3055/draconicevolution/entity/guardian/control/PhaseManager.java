@@ -27,7 +27,7 @@ public class PhaseManager {
             }
 
             phase = getPhase(phaseIn);
-            if (!dragon.level.isClientSide) {
+            if (!dragon.level().isClientSide) {
                 dragon.getEntityData().set(DraconicGuardianEntity.PHASE, phaseIn.getId());
                 GuardianFightManager manager = dragon.getFightManager();
                 if (manager != null) {

@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -161,7 +162,7 @@ public class SimpleModuleHost implements ModuleHost {
         ListTag modules = new ListTag();
         for (ModuleEntity<?> entity : moduleEntities) {
             CompoundTag entityNBT = new CompoundTag();
-            entityNBT.putString("id", entity.module.getRegistryName().toString());
+            entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
             entity.writeToNBT(entityNBT);
             modules.add(entityNBT);
         }

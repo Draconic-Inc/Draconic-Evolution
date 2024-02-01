@@ -47,8 +47,8 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     private Consumer<Boolean> onSelectionMade;
     private ItemStack stackCache = ItemStack.EMPTY;
 
-    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<Object> factory) {
-        super(DEContent.container_configurable_item, windowId, player, extraData, factory);
+    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
+        super(DEContent.container_configurable_item, windowId, player, extraData);
         PlayerSlot slot = PlayerSlot.fromBuff(extraData);
         UUID found = getProviderID(slot.getStackInSlot(player.player));
         if (found != null) stackCache = slot.getStackInSlot(player.player);
@@ -259,7 +259,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
             }
         }
 
-        sender.sendMessage(new TranslatableComponent("gui.draconicevolution.item_config.no_configurable_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        sender.sendMessage(Component.translatable("gui.draconicevolution.item_config.no_configurable_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
     }
 
     public static class Provider implements MenuProvider {
@@ -271,7 +271,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
         @Override
         public Component getDisplayName() {
-            return new TranslatableComponent("gui.draconicevolution.item_config.name");
+            return Component.translatable("gui.draconicevolution.item_config.name");
         }
 
         @Nullable

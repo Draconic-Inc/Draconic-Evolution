@@ -3,16 +3,12 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
-import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -22,11 +18,8 @@ import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.client.render.particle.SparkParticle;
 import com.brandon3055.draconicevolution.init.DEContent;
-
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -50,10 +43,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -81,7 +73,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public List<String> playerNames = new ArrayList<>(); //TODO Need this?
 
     public TileEntityDetector(BlockPos pos, BlockState state) {
-        super(DEContent.tile_entity_detector, pos, state);
+        super(DEContent.TILE_ENTITY_DETECTOR.get(), pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         if (isAdvanced()) {
             entityFilter = new EntityFilter(false, FilterType.values());
@@ -342,13 +334,13 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.container_entity_detector, currentWindowIndex, playerInventory, this);
+        return new ContainerDETile<>(DEContent.MENU_ENTITY_DETECTOR.get(), currentWindowIndex, playerInventory, this);
     }
 
     @Override
     public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
             MinecraftServer server = player.getServer();
             if (server != null) {
                 ListTag list = new ListTag();
@@ -392,7 +384,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     }
 
     public boolean isAdvanced() {
-        return getBlockState().is(DEContent.entity_detector_advanced);
+        return getBlockState().is(DEContent.ENTITY_DETECTOR_ADVANCED.get());
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -20,13 +20,13 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,18 +87,25 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
-            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
-            if (entity != null && entity.getAutoFireEnabled()) {
-                // auto fire
-                InteractionHand usingHand = player.getUsedItemHand();
-                player.stopUsingItem();
-                stack.releaseUsing(player.level, player, 0);
-                player.startUsingItem(usingHand);
-            }
-        }
+    public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int pRemainingUseDuration) {
+        super.onUseTick(pLevel, player, stack, pRemainingUseDuration);
+
+        //TODO Has the count actually changed?
     }
+
+//    @Override
+//    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+//        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
+//            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+//            if (entity != null && entity.getAutoFireEnabled()) {
+//                // auto fire
+//                InteractionHand usingHand = player.getUsedItemHand();
+//                player.stopUsingItem();
+//                stack.releaseUsing(player.level(), player, 0);
+//                player.startUsingItem(usingHand);
+//            }
+//        }
+//    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
@@ -217,9 +224,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
         Entity owner = arrow.getOwner();
         if (!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
-            return new DraconicArrowEntity(DEContent.draconicArrow, arrow.level);
+            return new DraconicArrowEntity(DEContent.draconicArrow, arrow.level());
         }
-        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level, (LivingEntity) arrow.getOwner());
+        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner());
         if (arrow instanceof SpectralArrow) {
             newArrow.setSpectral(((SpectralArrow) arrow).duration);
         }
@@ -268,8 +275,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     public void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
         if (worldIn != null && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
-            tooltip.add(new TranslatableComponent("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(new TranslatableComponent("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 
@@ -290,7 +297,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

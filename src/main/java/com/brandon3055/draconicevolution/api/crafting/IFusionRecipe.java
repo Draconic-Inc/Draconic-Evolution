@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine.Fusion
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -37,7 +36,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
 
     @Override
     default RecipeType<?> getType() {
-        return DraconicAPI.FUSION_RECIPE_TYPE;
+        return DraconicAPI.FUSION_RECIPE_TYPE.get();
     }
 
     TechLevel getRecipeTier();
@@ -74,10 +73,10 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
      * It does not take into account the energy or crafting tier requirements.
      *
      * @param inv   The fusion crafting inventory.
-     * @param world the world
+     * @param level the world
      */
     @Override
-    default boolean matches(IFusionInventory inv, Level world) {
+    default boolean matches(IFusionInventory inv, Level level) {
         if (!getCatalyst().test(inv.getCatalystStack())) {
             return false;
         }
@@ -109,13 +108,13 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
      *
      * @param stateMachine The fusion crafting state machine
      * @param inv          The fusion inventory
-     * @param world        The world
+     * @param level        The world
      */
-    default void tickFusionState(IFusionStateMachine stateMachine, IFusionInventory inv, Level world) {
+    default void tickFusionState(IFusionStateMachine stateMachine, IFusionInventory inv, Level level) {
         switch (stateMachine.getFusionState()) {
             case START:
                 //<ake sure the recipe is valid. It should be but just in case.
-                if (!matches(inv, world)) {
+                if (!matches(inv, level)) {
                     stateMachine.cancelCraft();
                     return;
                 }
@@ -126,7 +125,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
                         .filter(e -> !e.getInjectorStack().isEmpty())
                         .forEach(e -> e.setEnergyRequirement(itemEnergy, itemEnergy / DEConfig.fusionChargeTime.get(e.getInjectorTier().index)));
                 //Update Progress
-                stateMachine.setFusionStatus(0, new TranslatableComponent("fusion_status.draconicevolution.charging", 0).withStyle(ChatFormatting.GREEN));
+                stateMachine.setFusionStatus(0, Component.translatable("fusion_status.draconicevolution.charging", 0).withStyle(ChatFormatting.GREEN));
                 //Progress to next state
                 stateMachine.setFusionState(FusionState.CHARGING);
                 stateMachine.setCraftAnimation(0, 0);
@@ -136,9 +135,9 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
                         .stream()
                         .mapToLong(IFusionInjector::getInjectorEnergy)
                         .sum();
-                stateMachine.setFusionStatus((double) totalCharge / getEnergyCost(), new TranslatableComponent("fusion_status.draconicevolution.charging", Math.round(((double) totalCharge / getEnergyCost()) * 1000) / 10D).withStyle(ChatFormatting.GREEN));
+                stateMachine.setFusionStatus((double) totalCharge / getEnergyCost(), Component.translatable("fusion_status.draconicevolution.charging", Math.round(((double) totalCharge / getEnergyCost()) * 1000) / 10D).withStyle(ChatFormatting.GREEN));
                 if (totalCharge >= getEnergyCost()) {
-                    stateMachine.setFusionStatus(0, new TranslatableComponent("fusion_status.draconicevolution.crafting", 0).withStyle(ChatFormatting.GREEN));
+                    stateMachine.setFusionStatus(0, Component.translatable("fusion_status.draconicevolution.crafting", 0).withStyle(ChatFormatting.GREEN));
                     stateMachine.setCounter(0);
                     //Proceed to next step
                     int craftTime = DEConfig.fusionCraftTime.get(inv.getMinimumTier().index);
@@ -151,25 +150,25 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
                 int counter = stateMachine.getCounter();
                 stateMachine.setCraftAnimation(counter / (float)craftTime, craftTime);
                 stateMachine.setCounter(counter + 1);
-                stateMachine.setFusionStatus((double) counter / (double) craftTime, new TranslatableComponent("fusion_status.draconicevolution.crafting", Math.round(((double) counter / (double) craftTime) * 1000) / 10D).withStyle(ChatFormatting.GREEN));
+                stateMachine.setFusionStatus((double) counter / (double) craftTime, Component.translatable("fusion_status.draconicevolution.crafting", Math.round(((double) counter / (double) craftTime) * 1000) / 10D).withStyle(ChatFormatting.GREEN));
 
                 if (counter >= craftTime) {
                     if (inv.getInjectors().stream().anyMatch(e -> !e.validate())) {
                         stateMachine.cancelCraft();
                         return;
                     }
-                    if (!matches(inv, world) || !canStartCraft(inv, world, null)) {
+                    if (!matches(inv, level) || !canStartCraft(inv, level, null)) {
                         stateMachine.cancelCraft();
                         return;
                     }
-                    completeCraft(inv, world, this);
+                    completeCraft(inv, level, this);
                     stateMachine.completeCraft();
                 }
                 break;
         }
     }
 
-    static void completeCraft(IFusionInventory inv, Level world, IFusionRecipe recipe) {
+    static void completeCraft(IFusionInventory inv, Level level, IFusionRecipe recipe) {
         List<IFusionInjector> injectors = new ArrayList<>(inv.getInjectors());
         for (IFusionIngredient ingredient : recipe.fusionIngredients()) {
             for (IFusionInjector injector : injectors) {
@@ -178,8 +177,8 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
                     if (!ingredient.consume()) {
                         break;
                     }
-                    if (stack.hasContainerItem()) {
-                        stack = stack.getItem().getContainerItem(stack);
+                    if (stack.hasCraftingRemainingItem()) {
+                        stack = stack.getItem().getCraftingRemainingItem(stack);
                     } else {
                         stack.shrink(1);
                     }
@@ -197,7 +196,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
         }
 
         ItemStack catalyst = inv.getCatalystStack();
-        ItemStack result = recipe.assemble(inv);
+        ItemStack result = recipe.assemble(inv, level.registryAccess());
         catalyst.shrink(catCount);
         inv.setCatalystStack(catalyst);
         ItemStack outputStack = inv.getOutputStack();
@@ -220,16 +219,16 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
      * etc.
      *
      * @param inv    The fusion crafting inventory.
-     * @param world  The world
+     * @param level  The world
      * @param userStatus Give this the reason this recipe can not start crafting (if there is one)
      */
-    default boolean canStartCraft(IFusionInventory inv, Level world, @Nullable Consumer<Component> userStatus) {
+    default boolean canStartCraft(IFusionInventory inv, Level level, @Nullable Consumer<Component> userStatus) {
         ItemStack output = inv.getOutputStack();
         if (!output.isEmpty()) {
-            ItemStack result = assemble(inv);
-            if (!ItemStack.isSame(output, result) || !ItemStack.tagMatches(output, result) || output.getCount() + result.getCount() > result.getItem().getItemStackLimit(result)) {
+            ItemStack result = assemble(inv, level.registryAccess());
+            if (!ItemStack.isSameItemSameTags(output, result) || output.getCount() + result.getCount() > result.getItem().getMaxStackSize(result)) {
                 if (userStatus != null) {
-                    userStatus.accept(new TranslatableComponent("fusion_status.draconicevolution.output_obstructed").withStyle(ChatFormatting.RED));
+                    userStatus.accept(Component.translatable("fusion_status.draconicevolution.output_obstructed").withStyle(ChatFormatting.RED));
                 }
                 return false;
             }
@@ -237,13 +236,13 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
 
         if (inv.getMinimumTier().index < getRecipeTier().index) {
             if (userStatus != null) {
-                userStatus.accept(new TranslatableComponent("fusion_status.draconicevolution.tier_low").withStyle(ChatFormatting.RED));
+                userStatus.accept(Component.translatable("fusion_status.draconicevolution.tier_low").withStyle(ChatFormatting.RED));
             }
             return false;
         }
 
         if (userStatus != null) {
-            userStatus.accept(new TranslatableComponent("fusion_status.draconicevolution.ready").withStyle(ChatFormatting.GREEN));
+            userStatus.accept(Component.translatable("fusion_status.draconicevolution.ready").withStyle(ChatFormatting.GREEN));
         }
         return true;
     }

@@ -1,24 +1,11 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://repo.spongepowered.org/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id "net.covers1624.signing" version '1.1.4'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: "org.spongepowered.mixin"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -55,7 +42,7 @@ if (System.getenv("KEY_STORE")) {
 config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "9999")
 version = "${config.mc_version}-${config.mod_version}"
 println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
-println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with Mappings: 'official'"
+println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}"
 
 minecraft {
     mappings channel: 'official', version: config.mc_version
@@ -64,33 +51,21 @@ minecraft {
         client {
             workingDirectory file('run')
             mods { draconicevolution { source sourceSets.main } }
-//            property 'mixin.env.remapRefMap', 'true'
-//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
         server {
             workingDirectory file('run')
             mods { draconicevolution { source sourceSets.main } }
-//            property 'mixin.env.remapRefMap', 'true'
-//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
         data {
             workingDirectory file('run')
             args '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated"), '--existing', file("src/main/resources")
             mods { draconicevolution { source sourceSets.main } }
-//            property 'mixin.env.remapRefMap', 'true'
-//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
     }
 }
 
 mixin {
     add(sourceSets.main, "mixins.draconicevolution.refmap.json")
-}
-
-configurations {
-    ////    shadow
-////    implementation.extendsFrom shadow
-    annotationProcessor.extendsFrom minecraft
 }
 
 processResources {
@@ -111,6 +86,13 @@ processResources {
     }
 }
 
+configurations {
+//    shadow
+//    implementation.extendsFrom shadow
+    annotationProcessor.extendsFrom minecraft
+}
+
+
 repositories {
     mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
@@ -123,25 +105,32 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
+    minecraft "net.neoforged:forge:${config.mc_version}-${config.forge_version}"
 
     implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:universal")
-    implementation fg.deobf("codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:universal")
-    implementation fg.deobf("codechicken:EnderStorage:${config.mc_version}-${config.ender_storage_version}:universal")
-    implementation fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
-    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
-    implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
+    implementation fg.deobf("io.codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:universal")
+    implementation fg.deobf("io.codechicken:EnderStorage:${config.mc_version}-${config.ender_storage_version}:universal")
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${config.mc_version}:${config.crt_version}")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
+    compileOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-common-api:${config.jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-forge-api:${config.jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-forge:${config.jei_version}"))
+
+    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${config.curios_version}:api"))
+    runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${config.curios_version}"))
+
+    compileOnly("cc.tweaked:cc-tweaked-${config.mc_version}-core-api:${config.cct_version}")
+    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge-api:${config.cct_version}"))
+    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge:${config.cct_version}"))
+
     // For Testing
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:additions")// Mekanism: Additions
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:generators")// Mekanism: Generators
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:tools")// Mekanism: Tools
+//    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
+//    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:additions")// Mekanism: Additions
+//    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:generators")// Mekanism: Generators
+//    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:tools")// Mekanism: Tools
 }
 
 test {
@@ -162,28 +151,30 @@ signing {
     }
 }
 
+def commonManifest = {
+    attributes 'Specification-Title': archivesBaseName
+    attributes 'Specification-Vendor': 'brandon3055'
+    attributes 'Specification-Version': "1"
+    attributes 'Implementation-Title': archivesBaseName
+    attributes 'Implementation-Vendor': 'brandon3055'
+    attributes 'Implementation-Version': version
+    attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    attributes 'MixinConfigs': 'mixins.draconicevolution.json'
+}
+
 
 
 jar {
     finalizedBy 'reobfJar'
-    classifier = 'universal'
+    archiveClassifier = 'universal'
     from file("LICENSE")
-    manifest {
-        attributes 'Specification-Title': archivesBaseName
-        attributes 'Specification-Vendor': 'brandon3055'
-        attributes 'Specification-Version': "1"
-        attributes 'Implementation-Title': archivesBaseName
-        attributes 'Implementation-Vendor': 'brandon3055'
-        attributes 'Implementation-Version': version
-        attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        attributes 'MixinConfigs': 'mixins.draconicevolution.json'
-    }
+    manifest commonManifest
 }
 
 task srcJar(type: Jar) {
     build.dependsOn it
     from sourceSets.main.allSource
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from file("LICENSE")
 }
 

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -18,6 +17,6 @@ public record DamageData(double damagePoints) implements ModuleData<DamageData> 
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        map.put(new TranslatableComponent("module.draconicevolution.damage.name"), new TranslatableComponent("module.draconicevolution.damage.attack", ModuleData.round(damagePoints, 10)));
+        map.put(Component.translatable("module.draconicevolution.damage.name"), Component.translatable("module.draconicevolution.damage.attack", ModuleData.round(damagePoints, 10)));
     }
 }

@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
@@ -18,9 +17,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -36,7 +35,7 @@ public class TileFluidGate extends TileFlowGate {
     private FlowHandler outputHandler = new FlowHandler(this, false);
 
     public TileFluidGate(BlockPos pos, BlockState state) {
-        super(DEContent.tile_fluid_gate, pos, state);
+        super(DEContent.TILE_FLUID_GATE.get(), pos, state);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class TileFluidGate extends TileFlowGate {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null && side.getAxis() == getDirection().getAxis()) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER && side != null && side.getAxis() == getDirection().getAxis()) {
             return side == getDirection() ? LazyOptional.of(() -> (T) outputHandler) : LazyOptional.of(() -> (T) inputHandler);
         }
         return super.getCapability(capability, side);
@@ -70,7 +69,7 @@ public class TileFluidGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerDETile<>(DEContent.container_flow_gate, id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
     }
 
     @Override
@@ -81,7 +80,7 @@ public class TileFluidGate extends TileFlowGate {
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
@@ -100,7 +99,7 @@ public class TileFluidGate extends TileFlowGate {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).getTanks();
@@ -116,7 +115,7 @@ public class TileFluidGate extends TileFlowGate {
             if (!isInput) {
                 BlockEntity tile = getSource();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).getFluidInTank(tank);
@@ -132,7 +131,7 @@ public class TileFluidGate extends TileFlowGate {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).getTankCapacity(tank);
@@ -147,7 +146,7 @@ public class TileFluidGate extends TileFlowGate {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).isFluidValid(tank, stack);
@@ -162,7 +161,7 @@ public class TileFluidGate extends TileFlowGate {
             if (isInput) {
                 BlockEntity tile = getTarget();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         IFluidHandler handler = fluidHandler.orElseThrow(WTFException::new);
@@ -191,7 +190,7 @@ public class TileFluidGate extends TileFlowGate {
                 }
                 BlockEntity tile = getSource();
                 if (tile != null) {
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).drain(resource, action);
@@ -208,7 +207,7 @@ public class TileFluidGate extends TileFlowGate {
                 BlockEntity tile = getSource();
                 if (tile != null) {
                     if (maxDrain > getFlow()) maxDrain = (int) getFlow();
-                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, getDirection().getOpposite());
+                    LazyOptional<IFluidHandler> fluidHandler = tile.getCapability(ForgeCapabilities.FLUID_HANDLER, getDirection().getOpposite());
 
                     if (fluidHandler.isPresent()) {
                         return fluidHandler.orElseThrow(WTFException::new).drain(maxDrain, action);

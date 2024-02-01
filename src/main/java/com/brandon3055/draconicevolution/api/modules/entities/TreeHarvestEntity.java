@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.api.modules.entities.logic.TreeHarvestH
 import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -66,7 +67,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         }
         IOPStorage storage = optional.orElseThrow(IllegalStateException::new);
 
-        activeHandler.tick(player.level, player, stack, storage, itemBuffer);
+        activeHandler.tick(player.level(), player, stack, storage, itemBuffer);
 
         if (itemBuffer.getStacks().size() > 8) {
             dropContents(player, stack);
@@ -75,7 +76,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
     private void endUse(LivingEntityUseItemEvent event) {
         if (activeHandler != null && event.getEntity() instanceof ServerPlayer player) {
-            activeHandler.stop(player.level, player);
+            activeHandler.stop(player.level(), player);
         }
         activeHandler = null;
 
@@ -107,30 +108,30 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         TreeHarvestData data = getModule().getData();
         if (playerEvent instanceof PlayerInteractEvent.RightClickItem event && activeHandler == null) {
             if (data.range() <= 0) return;
-            if (event.getPlayer() instanceof ServerPlayer player) {
+            if (event.getEntity() instanceof ServerPlayer player) {
                 activeHandler = new ForestHarvestHandler(data.speed(), harvestRange.getValue(), harvestLeaves.getValue());
-                activeHandler.start(event.getPos(), event.getWorld(), player);
+                activeHandler.start(event.getPos(), event.getLevel(), player);
             }
         } else if (playerEvent instanceof PlayerInteractEvent.RightClickBlock event) {
-            if (event.getPlayer() instanceof ServerPlayer player) {
+            if (event.getEntity() instanceof ServerPlayer player) {
                 activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
-                activeHandler.start(event.getPos(), event.getWorld(), player);
+                activeHandler.start(event.getPos(), event.getLevel(), player);
             }
         } else {
             return;
         }
 
         playerEvent.setCanceled(true);
-        playerEvent.getPlayer().startUsingItem(playerEvent.getHand());
+        playerEvent.getEntity().startUsingItem(playerEvent.getHand());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
             if (getModule().getData().range() > 0) {
-                tooltip.add(new TranslatableComponent("module." + MODID + ".tree_harvest.area").withStyle(ChatFormatting.DARK_GRAY));
+                tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.area").withStyle(ChatFormatting.DARK_GRAY));
             }
         }
     }
@@ -143,10 +144,10 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         int handOffset = !leftHand ? 1 : -1;
 
         poseStack.translate((float) handOffset * -0.2785682F, 0.18344387F, 0.15731531F);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-13.935F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees((float) handOffset * 35.3F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees((float) handOffset * -9.785F));
-        float drawTime = (float) 72000 - ((float) player.getUseItemRemainingTicks() - event.getPartialTicks() + 1.0F);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-13.935F));
+        poseStack.mulPose(Axis.YP.rotationDegrees((float) handOffset * 35.3F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) handOffset * -9.785F));
+        float drawTime = (float) 72000 - ((float) player.getUseItemRemainingTicks() - event.getPartialTick() + 1.0F);
         float charge = drawTime / 20.0F;
         charge = (charge * charge + charge * 2.0F) / 3.0F;
         if (charge > 1.0F) {
@@ -162,7 +163,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
         poseStack.translate(charge * 0.0F, charge * 0.0F, charge * 0.04F);
         poseStack.scale(1.0F, 1.0F, 1.0F + charge * 0.2F);
-        poseStack.mulPose(Vector3f.YN.rotationDegrees((float) handOffset * 45.0F));
+        poseStack.mulPose(Axis.YN.rotationDegrees((float) handOffset * 45.0F));
     }
 
     @Override

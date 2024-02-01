@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -16,16 +14,13 @@ import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,7 +35,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
@@ -67,9 +61,9 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof Player) {
                     if (invulnerableTime == 0) {
-                        ((Player) entity).displayClientMessage(new TextComponent(""), true);
+                        ((Player) entity).displayClientMessage(Component.literal(""), true);
                     } else {
-                        ((Player) entity).displayClientMessage(new TranslatableComponent("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD), true);
+                        ((Player) entity).displayClientMessage(Component.translatable("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD), true);
                     }
                 }
             }
@@ -120,18 +114,18 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
         /*
-         * If you die, you die. The invulnerability does not block death only damage. So if someone really wants you kill they player they can.
+         * If you die, you die. The invulnerability does not block death only damage. So if someone really wants to kill the player they can.
          * This is to allow this module to block full power guardian beam damage.
          * The undying module is intended to be the only way to have *some* change of *maybe* surviving a full power beam hit.
          * */
-        if (event.getSource() instanceof IDraconicDamage && invulnerableTime > 0) {
-            event.getEntityLiving().setHealth(event.getEntityLiving().getHealth() + 1);
+        if (event.getSource().is(DEDamage.GUARDIAN_LASER) && invulnerableTime > 0) {
+            event.getEntity().setHealth(event.getEntity().getHealth() + 1);
             return true;
         }
 
         UndyingData data = module.getData();
         if (charge >= data.chargeTime()) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
             entity.setHealth(entity.getHealth() + data.healthBoost());
             ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
@@ -156,7 +150,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             }
             charge = 0;
             DraconicNetwork.sendUndyingActivation(entity, module.getItem());
-            entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
+            entity.level().playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level().random.nextFloat() * 0.1F)));
             invulnerableTime = data.invulnerableTime();
             return true;
         }
@@ -165,33 +159,16 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
-        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
+    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
 
         UndyingData data = module.getData();
         if (charge >= data.chargeTime()) return;
-//        double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.chargeTime());
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.chargeTime() - charge) / 20) + "s";
-        drawChargeProgress(getter, poseStack, x, y, width, height, progress, pText, tText);
-
-//        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
-//        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
-//        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
-//        for (double d = 0; d <= 1; d += 1D / 30D) {
-//            double angle = (d * progress) + 0.5 - progress;
-//            double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
-//            double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-//            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
-//        }
-//        RenderUtils.endBatch(getter);
-//
-//        String pText = (int) (progress * 100) + "%";
-//        String tText = ((data.chargeTime() - charge) / 20) + "s";
-//        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x8000FF00, 1, false, true);
-//        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
+        drawChargeProgress(render, x, y, width, height, progress, pText, tText);
     }
 
 

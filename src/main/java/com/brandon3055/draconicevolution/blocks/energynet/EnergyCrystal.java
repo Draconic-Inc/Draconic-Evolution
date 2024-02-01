@@ -16,7 +16,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -99,25 +98,25 @@ public class EnergyCrystal extends BlockBCore implements IHudBlock, EntityBlock 
         BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof TileCrystalBase)) return;
 
-        displayList.add(new TranslatableComponent(asItem().getDescriptionId()).withStyle(ChatFormatting.ITALIC, ChatFormatting.GOLD));
+        displayList.add(Component.translatable(asItem().getDescriptionId()).withStyle(ChatFormatting.ITALIC, ChatFormatting.GOLD));
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }
 
     public enum CrystalType implements StringRepresentable {
-        RELAY(0, () -> DEContent.tile_crystal_relay) {
+        RELAY(0, DEContent.TILE_RELAY_CRYSTAL::get) {
             @Override
             public BlockEntity createTile(TechLevel techLevel, BlockPos pos, BlockState state) {
                 return new TileCrystalRelay(techLevel, pos, state);
             }
         },
-        CRYSTAL_IO(1, () -> DEContent.tile_crystal_io) {
+        CRYSTAL_IO(1, DEContent.TILE_IO_CRYSTAL::get) {
             @Override
             public BlockEntity createTile(TechLevel techLevel, BlockPos pos, BlockState state) {
                 return new TileCrystalDirectIO(techLevel, pos, state);
             }
         },
-        WIRELESS(2, () -> DEContent.tile_crystal_wireless) {
+        WIRELESS(2, DEContent.TILE_WIRELESS_CRYSTAL::get) {
             @Override
             public BlockEntity createTile(TechLevel techLevel, BlockPos pos, BlockState state) {
                 return new TileCrystalWirelessIO(techLevel, pos, state);

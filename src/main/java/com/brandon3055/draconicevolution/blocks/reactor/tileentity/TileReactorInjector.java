@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileReactorInjector extends TileReactorComponent {
 
     public TileReactorInjector(BlockPos pos, BlockState state) {
-        super(DEContent.tile_reactor_injector, pos, state);
+        super(DEContent.TILE_REACTOR_INJECTOR.get(), pos, state);
         OPInjector opInjector = new OPInjector(this);
         capManager.set(CapabilityOP.OP, opInjector);
         capManager.setCapSideValidator(opInjector, face -> face == this.facing.get().getOpposite());

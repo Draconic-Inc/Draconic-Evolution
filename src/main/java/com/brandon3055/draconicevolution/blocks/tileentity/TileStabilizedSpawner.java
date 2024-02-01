@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -38,7 +39,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     private int activatingRangeFromPlayer = 24;
 
     public TileStabilizedSpawner(BlockPos pos, BlockState state) {
-        super(DEContent.tile_stabilized_spawner, pos, state);
+        super(DEContent.TILE_STABILIZED_SPAWNER.get(), pos, state);
     }
 
 
@@ -70,7 +71,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (stack.getItem() == DEContent.mob_soul) {
+        if (stack.is(DEContent.MOB_SOUL.get())) {
             if (!level.isClientSide) {
                 (mobSoul.set(stack.copy())).setCount(1);
                 if (!player.isCreative()) {
@@ -80,8 +81,8 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
             return true;
         } else if (stack.getItem() instanceof SpawnEggItem) {
             EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
-            ItemStack soul = new ItemStack(DEContent.mob_soul);
-            DEContent.mob_soul.setEntity(type.getRegistryName(), soul);
+            ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
+            DEContent.MOB_SOUL.get().setEntity(ForgeRegistries.ENTITY_TYPES.getKey(type), soul);
             mobSoul.set(soul);
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
@@ -89,41 +90,31 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
             return true;
         } else if (!stack.isEmpty()) {
             SpawnerTier prevTier = spawnerTier.get();
-            if (stack.getItem() == DEContent.core_draconium) {
+            if (stack.is(DEContent.CORE_DRACONIUM.get())) {
                 if (spawnerTier.get() == SpawnerTier.BASIC) return false;
                 spawnerTier.set(SpawnerTier.BASIC);
-            } else if (stack.getItem() == DEContent.core_wyvern) {
+            } else if (stack.is(DEContent.CORE_WYVERN.get())) {
                 if (spawnerTier.get() == SpawnerTier.WYVERN) return false;
                 spawnerTier.set(SpawnerTier.WYVERN);
-            } else if (stack.getItem() == DEContent.core_awakened) {
+            } else if (stack.is(DEContent.CORE_AWAKENED.get())) {
                 if (spawnerTier.get() == SpawnerTier.DRACONIC) return false;
                 spawnerTier.set(SpawnerTier.DRACONIC);
-            } else if (stack.getItem() == DEContent.core_chaotic) {
+            } else if (stack.is(DEContent.CORE_CHAOTIC.get())) {
                 if (spawnerTier.get() == SpawnerTier.CHAOTIC) return false;
                 spawnerTier.set(SpawnerTier.CHAOTIC);
             } else {
                 return false;
             }
 
-            ItemStack dropStack = ItemStack.EMPTY;
-            switch (prevTier) {
-                case BASIC:
-                    dropStack = new ItemStack(DEContent.core_draconium);
-                    break;
-                case WYVERN:
-                    dropStack = new ItemStack(DEContent.core_wyvern);
-                    break;
-                case DRACONIC:
-                    dropStack = new ItemStack(DEContent.core_awakened);
-                    break;
-                case CHAOTIC:
-                    dropStack = new ItemStack(DEContent.core_chaotic);
-                    break;
-            }
+            ItemStack dropStack = switch (prevTier) {
+                case BASIC -> new ItemStack(DEContent.CORE_DRACONIUM.get());
+                case WYVERN -> new ItemStack(DEContent.CORE_WYVERN.get());
+                case DRACONIC -> new ItemStack(DEContent.CORE_AWAKENED.get());
+                case CHAOTIC -> new ItemStack(DEContent.CORE_CHAOTIC.get());
+            };
             if (!level.isClientSide && !player.getAbilities().instabuild) {
                 ItemEntity entityItem = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1, worldPosition.getZ() + 0.5, dropStack);
                 entityItem.setDeltaMovement(entityItem.getDeltaMovement().x, 0.2, entityItem.getDeltaMovement().z);
-                ;
                 level.addFreshEntity(entityItem);
                 InventoryUtils.consumeHeldItem(player, stack, hand);
             }
@@ -146,7 +137,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
         if (mobSoul.get().isEmpty()) {
             return null;
         }
-        return DEContent.mob_soul.getRenderEntity(mobSoul.get());
+        return DEContent.MOB_SOUL.get().getRenderEntity(mobSoul.get());
     }
 
     //endregion
@@ -200,7 +191,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
         }
 
         public static SpawnerTier getTierFromCore(ItemCore core) {
-            return core == DEContent.core_chaotic ? CHAOTIC : core == DEContent.core_wyvern ? WYVERN : core == DEContent.core_awakened ? DRACONIC : SpawnerTier.BASIC;
+            return core == DEContent.CORE_CHAOTIC.get() ? CHAOTIC : core == DEContent.CORE_WYVERN.get() ? WYVERN : core == DEContent.CORE_AWAKENED.get() ? DRACONIC : SpawnerTier.BASIC;
         }
     }
     //endregion

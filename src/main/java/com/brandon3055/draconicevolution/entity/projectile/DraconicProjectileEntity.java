@@ -9,12 +9,15 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import com.brandon3055.draconicevolution.lib.Serializers;
 import com.google.common.collect.Sets;
+import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -75,11 +78,11 @@ public class DraconicProjectileEntity extends AbstractArrow {
     }
 
     public DraconicProjectileEntity(Level worldIn, double x, double y, double z) {
-        super(DEContent.draconicArrow, x, y, z, worldIn);
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), x, y, z, worldIn);
     }
 
     public DraconicProjectileEntity(Level worldIn, LivingEntity shooter) {
-        super(DEContent.draconicArrow, shooter, worldIn);
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, worldIn);
     }
 
     @Override
@@ -198,7 +201,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
      * @return true prevents normal arrow damage processing.
      * */
     protected boolean activateDamageEffect(@Nullable HitResult traceResult) {
-        if (level.isClientSide) return true;
+        if (level().isClientSide) return true;
         Entity owner = getOwner();
         Module<DamageModData> damageMod = getDamageModifier();
         Vec3 pos = position();
@@ -222,14 +225,14 @@ public class DraconicProjectileEntity extends AbstractArrow {
             } else {
                 modifier = damageMod.getData().modifier();
             }
-            modifier.doDamageAndEffects(level, pos, traceResult, owner instanceof LivingEntity ? (LivingEntity) owner : null, projectileBaseDamage, secondaryChange, true);
+            modifier.doDamageAndEffects(level(), pos, traceResult, owner instanceof LivingEntity ? (LivingEntity) owner : null, projectileBaseDamage, secondaryChange, true);
             setDamageModifier(null);
             disableDefault = true;
         } else if (explosivePower > 0) {
             if (owner instanceof LivingEntity) {
-                level.explode(owner, DamageSource.explosion((LivingEntity)owner), null, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+                level().explode(owner, level().damageSources().explosion(owner, null), null, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
             }else {
-                level.explode(this, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+                level().explode(this, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
             }
 
             explosivePower = 0;
@@ -313,7 +316,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
 
     @Override
     public void tick() {
-        boolean forceActivation = pseudoInstantTravel && !Utils.isAreaLoaded(level, new BlockPos(position().add(getDeltaMovement().multiply(1.1, 1.1, 1.1))), ChunkHolder.FullChunkStatus.ENTITY_TICKING);
+        boolean forceActivation = pseudoInstantTravel && !level().isAreaLoaded(getOnPos(), 20);
 
         //Drag mitigation. This is a little nasty but it works and there really isn't a better way to do it without mixins.
         if (hasNoDrag()) {
@@ -327,7 +330,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
             super.tick();
         }
 
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.inGround) {
                 if (this.inGroundTime % 5 == 0) {
                     this.spawnPotionParticles(1);
@@ -336,7 +339,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
                 this.spawnPotionParticles(2);
             }
         } else if (this.inGround && this.inGroundTime != 0 && !this.customPotionEffects.isEmpty() && this.inGroundTime >= 600) {
-            this.level.broadcastEntityEvent(this, (byte) 0);
+            this.level().broadcastEntityEvent(this, (byte) 0);
             this.potion = Potions.EMPTY;
             this.customPotionEffects.clear();
             this.entityData.set(COLOR, -1);
@@ -362,7 +365,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
             double d2 = (double) (i >> 0 & 255) / 255.0D;
 
             for (int j = 0; j < particleCount; ++j) {
-                this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
             }
 
         }
@@ -381,7 +384,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.potion != Potions.EMPTY && this.potion != null) {
-            compound.putString("Potion", Registry.POTION.getKey(this.potion).toString());
+            compound.putString("Potion", BuiltInRegistries.POTION.getKey(this.potion).toString());
         }
 
         if (this.fixedColor) {
@@ -483,7 +486,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
                 double d2 = (double) (i >> 0 & 255) / 255.0D;
 
                 for (int j = 0; j < 20; ++j) {
-                    this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                    this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                 }
             }
         } else {
@@ -492,7 +495,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
-        return BCoreNetwork.getEntitySpawnPacket(this);
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this));
     }
 }

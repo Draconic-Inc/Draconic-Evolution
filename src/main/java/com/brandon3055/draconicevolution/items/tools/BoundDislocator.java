@@ -80,15 +80,15 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (player.level.isClientSide) {
+        if (player.level().isClientSide) {
             return true;
         }
         TargetPos location = getTargetPos(stack, player.level);
         if (location == null) {
             if (isPlayer(stack)) {
-                player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
-                player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
             return true;
         }
@@ -97,21 +97,21 @@ public class BoundDislocator extends Dislocator {
             return true;
         }
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
 
         location.setPitch(player.getXRot());
         location.setYaw(player.getYRot());
         notifyArriving(stack, player.level, entity);
         location.teleport(entity);
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
         return true;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.level.isClientSide) {
+        if (player.level().isClientSide) {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 
@@ -135,19 +135,19 @@ public class BoundDislocator extends Dislocator {
             TargetPos location = getTargetPos(stack, world);
             if (location == null) {
                 if (isPlayer(stack)) {
-                    player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
                 return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
 
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
             location.setPitch(player.getXRot());
             location.setYaw(player.getYRot());
             notifyArriving(stack, player.level, player);
             location.teleport(player);
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
 
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
@@ -238,14 +238,14 @@ public class BoundDislocator extends Dislocator {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.getItem() == DEContent.dislocator_p2p_unbound) {
-            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.click_to_link").withStyle(ChatFormatting.GREEN));
+            tooltip.add(Component.translatable("dislocate.draconicevolution.bound.click_to_link").withStyle(ChatFormatting.GREEN));
         } else if (stack.getItem() == DEContent.dislocator_player_unbound) {
-            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.click_to_link_self").withStyle(ChatFormatting.GREEN));
+            tooltip.add(Component.translatable("dislocate.draconicevolution.bound.click_to_link_self").withStyle(ChatFormatting.GREEN));
         } else {
             if (isPlayer(stack)) {
-                tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.player_link").append(": ").append(ItemNBTHelper.getString(stack, "player_name", "Unknown Player")).withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("dislocate.draconicevolution.bound.player_link").append(": ").append(ItemNBTHelper.getString(stack, "player_name", "Unknown Player")).withStyle(ChatFormatting.BLUE));
             } else {
-                tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.link_id").append(": ").append(String.valueOf(getLinkId(stack))).withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("dislocate.draconicevolution.bound.link_id").append(": ").append(String.valueOf(getLinkId(stack))).withStyle(ChatFormatting.BLUE));
             }
         }
     }

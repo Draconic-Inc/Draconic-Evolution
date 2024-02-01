@@ -1,15 +1,14 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import codechicken.lib.datagen.recipe.FurnaceRecipeBuilder;
+import codechicken.lib.datagen.recipe.RecipeProvider;
+import codechicken.lib.datagen.recipe.ShapedRecipeBuilder;
+import codechicken.lib.datagen.recipe.ShapelessRecipeBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -21,406 +20,372 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 1/12/20
  */
 public class RecipeGenerator extends RecipeProvider {
 
-    public RecipeGenerator(DataGenerator generatorIn) {
-        super(generatorIn);
+    public RecipeGenerator(PackOutput pOutput) {
+        super(pOutput);
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        components(consumer);
+    protected void registerRecipes() {
+        components();
+        compressDecompress();
+        machines();
+        energy();
+        tools();
+        equipment();
+        modules();
+        unsorted();
 
-        compressDecompress(consumer);
-        machines(consumer);
-        energy(consumer);
-        tools(consumer);
-        equipment(consumer);
-        modules(consumer);
-        unsorted(consumer);
-
-        FusionRecipeBuilder.fusionRecipe(DEContent.block_draconium_awakened, 4)
+        fusionRecipe(DEContent.ITEM_AWAKENED_DRACONIUM_BLOCK, 4)
                 .catalyst(4, DETags.Items.STORAGE_BLOCKS_DRACONIUM)
                 .energy(50000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
-                .ingredient(DEContent.core_draconium)
-                .ingredient(DEContent.core_draconium)
-                .ingredient(DEContent.dragon_heart)
-                .ingredient(DEContent.core_draconium)
-                .ingredient(DEContent.core_draconium)
-                .ingredient(DEContent.core_draconium)
-                .build(consumer);
+                .ingredient(DEContent.CORE_DRACONIUM)
+                .ingredient(DEContent.CORE_DRACONIUM)
+                .ingredient(DEContent.CORE_DRACONIUM)
+                .ingredient(DEContent.DRAGON_HEART)
+                .ingredient(DEContent.CORE_DRACONIUM)
+                .ingredient(DEContent.CORE_DRACONIUM)
+                .ingredient(DEContent.CORE_DRACONIUM);
     }
 
-    private static void components(Consumer<FinishedRecipe> consumer) {
+    @Override
+    public String getName() {
+        return "Recipes";
+    }
 
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.DUSTS_DRACONIUM), DEContent.ingot_draconium, 0, 200).unlockedBy("has_draconium_dust", has(DETags.Items.DUSTS_DRACONIUM)).save(consumer, folder("components", DEContent.ingot_draconium));
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.ORES_DRACONIUM), DEContent.ingot_draconium, 1, 200).unlockedBy("has_draconium_ore", has(DETags.Items.ORES_DRACONIUM)).save(consumer);
 
-        ShapedRecipeBuilder.shaped(DEContent.core_draconium)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', Tags.Items.INGOTS_GOLD)
-                .define('C', Tags.Items.GEMS_DIAMOND)
-                .unlockedBy("has_draconium", has(DEContent.ingot_draconium))
-                .save(consumer, folder("components", DEContent.core_draconium));
+    private void components() {
 
-        ShapedRecipeBuilder.shaped(DEContent.core_wyvern)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', DEContent.core_draconium)
-                .define('C', Tags.Items.NETHER_STARS)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer, folder("components", DEContent.core_wyvern));
+        smelting(DEContent.INGOT_DRACONIUM, "components")
+                .ingredient(Ingredient.of(DETags.Items.DUSTS_DRACONIUM))
+                .cookingTime(200)
+                .experience(0);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.core_awakened)
+        smelting(DEContent.INGOT_DRACONIUM, "components")
+                .ingredient(Ingredient.of(DETags.Items.ORES_DRACONIUM))
+                .cookingTime(200)
+                .experience(1);
+
+
+        shapedRecipe(DEContent.CORE_DRACONIUM, "components")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', Tags.Items.INGOTS_GOLD)
+                .key('C', Tags.Items.GEMS_DIAMOND);
+
+        shapedRecipe(DEContent.CORE_WYVERN, "components")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', Tags.Items.NETHER_STARS);
+
+        fusionRecipe(DEContent.CORE_AWAKENED, "components")
                 .catalyst(Tags.Items.NETHER_STARS)
                 .energy(1000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_wyvern)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_wyvern)
-                .ingredient(DEContent.core_wyvern)
-                .build(consumer, folder("components", DEContent.core_awakened));
+                .ingredient(DEContent.CORE_WYVERN)
+                .ingredient(DEContent.CORE_WYVERN);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.core_chaotic)
-                .catalyst(DEContent.chaos_frag_large)
+        fusionRecipe(DEContent.CORE_CHAOTIC, "components")
+                .catalyst(DEContent.CHAOS_FRAG_LARGE)
                 .energy(100000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("components", DEContent.core_chaotic));
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_core_wyvern)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('C', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer, folder("components", DEContent.energy_core_wyvern));
+        shapedRecipe(DEContent.ENERGY_CORE_WYVERN, "components")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('C', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_core_draconic)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.energy_core_wyvern)
-                .define('C', DEContent.core_wyvern)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer, folder("components", DEContent.energy_core_draconic));
+        shapedRecipe(DEContent.ENERGY_CORE_DRACONIC, "components")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.ENERGY_CORE_WYVERN)
+                .key('C', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_core_chaotic)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DEContent.chaos_frag_medium)
-                .define('B', DEContent.energy_core_draconic)
-                .define('C', DEContent.core_awakened)
-                .unlockedBy("has_core_awakened", has(DEContent.core_awakened))
-                .save(consumer, folder("components", DEContent.energy_core_chaotic));
+        shapedRecipe(DEContent.ENERGY_CORE_CHAOTIC, "components")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DEContent.CHAOS_FRAG_MEDIUM)
+                .key('B', DEContent.ENERGY_CORE_DRACONIC)
+                .key('C', DEContent.CORE_AWAKENED);
     }
 
-    private static void compressDecompress(Consumer<FinishedRecipe> consumer) {
-        compress3x3(DEContent.ingot_draconium, DETags.Items.NUGGETS_DRACONIUM, "nugget_draconium", consumer);
-        compress3x3(DEContent.ingot_draconium_awakened, DETags.Items.NUGGETS_DRACONIUM_AWAKENED, "nugget_draconium_awakened", consumer);
-        compress3x3(DEContent.block_draconium, DETags.Items.INGOTS_DRACONIUM, "ingot_draconium", consumer);
-        compress3x3(DEContent.block_draconium_awakened, DETags.Items.INGOTS_DRACONIUM_AWAKENED, "ingot_draconium_awakened", consumer);
+    private void compressDecompress() {
+        compress3x3(DEContent.INGOT_DRACONIUM, DETags.Items.NUGGETS_DRACONIUM);
+        compress3x3(DEContent.INGOT_DRACONIUM_AWAKENED, DETags.Items.NUGGETS_DRACONIUM_AWAKENED);
+        compress3x3(DEContent.DRACONIUM_BLOCK, DETags.Items.INGOTS_DRACONIUM);
+        compress3x3(DEContent.AWAKENED_DRACONIUM_BLOCK, DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
-        deCompress(DEContent.nugget_draconium, DETags.Items.INGOTS_DRACONIUM, "ingot_draconium", consumer);
-        deCompress(DEContent.nugget_draconium_awakened, DETags.Items.INGOTS_DRACONIUM_AWAKENED, "ingot_draconium_awakened", consumer);
-        deCompress(DEContent.ingot_draconium, DETags.Items.STORAGE_BLOCKS_DRACONIUM, "block_draconium", consumer);
-        deCompress(DEContent.ingot_draconium_awakened, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED, "block_draconium_awakened", consumer);
+        deCompress(DEContent.NUGGET_DRACONIUM, DETags.Items.INGOTS_DRACONIUM);
+        deCompress(DEContent.NUGGET_DRACONIUM_AWAKENED, DETags.Items.INGOTS_DRACONIUM_AWAKENED);
+        deCompress(DEContent.INGOT_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM);
+        deCompress(DEContent.INGOT_DRACONIUM_AWAKENED, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
 
-        deCompress(DEContent.chaos_frag_large, DEContent.chaos_shard, consumer);
-        deCompress(DEContent.chaos_frag_medium, DEContent.chaos_frag_large, consumer);
-        deCompress(DEContent.chaos_frag_small, DEContent.chaos_frag_medium, consumer);
-        compress3x3(DEContent.chaos_shard, DEContent.chaos_frag_large, consumer);
-        compress3x3(DEContent.chaos_frag_large, DEContent.chaos_frag_medium, consumer);
-        compress3x3(DEContent.chaos_frag_medium, DEContent.chaos_frag_small, consumer);
+        deCompress(DEContent.CHAOS_FRAG_LARGE, DEContent.CHAOS_SHARD);
+        deCompress(DEContent.CHAOS_FRAG_MEDIUM, DEContent.CHAOS_FRAG_LARGE);
+        deCompress(DEContent.CHAOS_FRAG_SMALL, DEContent.CHAOS_FRAG_MEDIUM);
+        compress3x3(DEContent.CHAOS_SHARD, DEContent.CHAOS_FRAG_LARGE);
+        compress3x3(DEContent.CHAOS_FRAG_LARGE, DEContent.CHAOS_FRAG_MEDIUM);
+        compress3x3(DEContent.CHAOS_FRAG_MEDIUM, DEContent.CHAOS_FRAG_SMALL);
     }
 
-    private static void machines(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(DEContent.crafting_core)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Tags.Items.STORAGE_BLOCKS_LAPIS)
-                .define('B', Tags.Items.GEMS_DIAMOND)
-                .define('C', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+    private void machines() {
+        shapedRecipe(DEContent.CRAFTING_CORE, "machines")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', Tags.Items.STORAGE_BLOCKS_LAPIS)
+                .key('B', Tags.Items.GEMS_DIAMOND)
+                .key('C', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.crafting_injector_basic)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("CCC")
-                .define('A', Tags.Items.GEMS_DIAMOND)
-                .define('B', DEContent.core_draconium)
-                .define('C', Tags.Items.STONE)
-                .define('D', Tags.Items.STORAGE_BLOCKS_IRON)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.BASIC_CRAFTING_INJECTOR, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("CCC")
+                .key('A', Tags.Items.GEMS_DIAMOND)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', Tags.Items.STONE)
+                .key('D', Tags.Items.STORAGE_BLOCKS_IRON);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.crafting_injector_wyvern)
-                .catalyst(DEContent.crafting_injector_basic)
+        fusionRecipe(DEContent.WYVERN_CRAFTING_INJECTOR, "machines")
+                .catalyst(DEContent.BASIC_CRAFTING_INJECTOR)
                 .energy(32000)
                 .techLevel(TechLevel.DRACONIUM)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
                 .ingredient(DETags.Items.STORAGE_BLOCKS_DRACONIUM)
-                .ingredient(Tags.Items.GEMS_DIAMOND)
-                .build(consumer);
+                .ingredient(Tags.Items.GEMS_DIAMOND);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.crafting_injector_awakened)
-                .catalyst(DEContent.crafting_injector_wyvern)
+        fusionRecipe(DEContent.AWAKENED_CRAFTING_INJECTOR, "machines")
+                .catalyst(DEContent.WYVERN_CRAFTING_INJECTOR)
                 .energy(256000)
                 .techLevel(TechLevel.WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(Tags.Items.GEMS_DIAMOND)
-                .build(consumer);
+                .ingredient(Tags.Items.GEMS_DIAMOND);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.crafting_injector_chaotic)
-                .catalyst(DEContent.crafting_injector_awakened)
+        fusionRecipe(DEContent.CHAOTIC_CRAFTING_INJECTOR, "machines")
+                .catalyst(DEContent.AWAKENED_CRAFTING_INJECTOR)
                 .energy(8000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
                 .ingredient(Items.DRAGON_EGG)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(Tags.Items.GEMS_DIAMOND)
-                .build(consumer);
+                .ingredient(Tags.Items.GEMS_DIAMOND);
 
-        ShapedRecipeBuilder.shaped(DEContent.generator)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ADA")
-                .define('A', Tags.Items.INGOTS_NETHER_BRICK)
-                .define('B', Tags.Items.INGOTS_IRON)
-                .define('C', Items.FURNACE)
-                .define('D', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.GENERATOR, "machines")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ADA")
+                .key('A', Tags.Items.INGOTS_NETHER_BRICK)
+                .key('B', Tags.Items.INGOTS_IRON)
+                .key('C', Items.FURNACE)
+                .key('D', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.grinder)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("AEA")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', Items.DIAMOND_SWORD)
-                .define('D', DEContent.energy_core_wyvern)
-                .define('E', Tags.Items.HEADS)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.GRINDER, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', Items.DIAMOND_SWORD)
+                .key('D', DEContent.ENERGY_CORE_WYVERN)
+                .key('E', Tags.Items.HEADS);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_transfuser)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("ACA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', DEContent.energy_core_stabilizer)
-                .define('C', DEContent.core_draconium)
-                .define('D', Items.ENCHANTING_TABLE)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.ENERGY_TRANSFUSER, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("ACA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', DEContent.ENERGY_CORE_STABILIZER)
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('D', Items.ENCHANTING_TABLE);
 
-        ShapedRecipeBuilder.shaped(DEContent.particle_generator)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('B', Items.BLAZE_ROD)
-                .define('C', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.PARTICLE_GENERATOR, "machines")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('B', Items.BLAZE_ROD)
+                .key('C', DEContent.CORE_DRACONIUM);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.draconium_chest)
+        fusionRecipe(DEContent.DRACONIUM_CHEST, "machines")
                 .catalyst(Items.CHEST)
                 .energy(2000000)
                 .techLevel(TechLevel.DRACONIUM)
                 .ingredient(Items.FURNACE)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(Items.FURNACE)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(Items.FURNACE)
                 .ingredient(Items.CRAFTING_TABLE)
                 .ingredient(Items.FURNACE)
                 .ingredient(DETags.Items.STORAGE_BLOCKS_DRACONIUM)
                 .ingredient(Items.FURNACE)
-                .ingredient(Items.CRAFTING_TABLE)
-                .build(consumer);
+                .ingredient(Items.CRAFTING_TABLE);
 
-        ShapedRecipeBuilder.shaped(DEContent.potentiometer)
-                .pattern(" A ")
-                .pattern("BCB")
-                .pattern("DDD")
-                .define('A', ItemTags.PLANKS)
-                .define('B', Tags.Items.DUSTS_REDSTONE)
-                .define('C', DETags.Items.DUSTS_DRACONIUM)
-                .define('D', Items.STONE_SLAB)
-                .unlockedBy("has_STONE_SLAB", has(Items.STONE_SLAB))
-                .save(consumer);
+        shapedRecipe(DEContent.POTENTIOMETER, "machines")
+                .patternLine(" A ")
+                .patternLine("BCB")
+                .patternLine("DDD")
+                .key('A', ItemTags.PLANKS)
+                .key('B', Tags.Items.DUSTS_REDSTONE)
+                .key('C', DETags.Items.DUSTS_DRACONIUM)
+                .key('D', Items.STONE_SLAB);
 
     }
 
-    private static void energy(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(DEContent.energy_core)
-                .pattern("AAA")
-                .pattern("BCB")
-                .pattern("AAA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', DEContent.energy_core_wyvern)
-                .define('C', DEContent.core_wyvern)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+    private void energy() {
+        shapedRecipe(DEContent.ENERGY_CORE, "machines")
+                .patternLine("AAA")
+                .patternLine("BCB")
+                .patternLine("AAA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', DEContent.ENERGY_CORE_WYVERN)
+                .key('C', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_core_stabilizer)
-                .pattern("A A")
-                .pattern(" B ")
-                .pattern("A A")
-                .define('A', Tags.Items.GEMS_DIAMOND)
-                .define('B', DEContent.particle_generator)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+        shapedRecipe(DEContent.ENERGY_CORE_STABILIZER, "machines")
+                .patternLine("A A")
+                .patternLine(" B ")
+                .patternLine("A A")
+                .key('A', Tags.Items.GEMS_DIAMOND)
+                .key('B', DEContent.PARTICLE_GENERATOR);
 
-        ShapedRecipeBuilder.shaped(DEContent.energy_pylon, 2)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("AEA")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', Items.ENDER_EYE)
-                .define('C', Tags.Items.GEMS_EMERALD)
-                .define('D', DEContent.core_draconium)
-                .define('E', Tags.Items.GEMS_DIAMOND)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+        shapedRecipe(DEContent.ENERGY_PYLON, 2, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', Items.ENDER_EYE)
+                .key('C', Tags.Items.GEMS_EMERALD)
+                .key('D', DEContent.CORE_DRACONIUM)
+                .key('E', Tags.Items.GEMS_DIAMOND);
 
         //Reactor
-        ShapedRecipeBuilder.shaped(DEContent.reactor_prt_stab_frame)
-                .pattern("AAA")
-                .pattern("BC ")
-                .pattern("AAA")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DEContent.core_wyvern)
-                .define('C', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+        shapedRecipe(DEContent.REACTOR_PRT_STAB_FRAME, "machines")
+                .patternLine("AAA")
+                .patternLine("BC ")
+                .patternLine("AAA")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('C', DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
-        ShapedRecipeBuilder.shaped(DEContent.reactor_prt_in_rotor)
-                .pattern("   ")
-                .pattern("AAA")
-                .pattern("BCC")
-                .define('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_draconium)
-                .define('C', DETags.Items.INGOTS_DRACONIUM)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.REACTOR_PRT_IN_ROTOR, "machines")
+                .patternLine("   ")
+                .patternLine("AAA")
+                .patternLine("BCC")
+                .key('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', DETags.Items.INGOTS_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.reactor_prt_out_rotor)
-                .pattern("   ")
-                .pattern("AAA")
-                .pattern("BCC")
-                .define('A', Tags.Items.GEMS_DIAMOND)
-                .define('B', DEContent.core_draconium)
-                .define('C', DETags.Items.INGOTS_DRACONIUM)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.REACTOR_PRT_OUT_ROTOR, "machines")
+                .patternLine("   ")
+                .patternLine("AAA")
+                .patternLine("BCC")
+                .key('A', Tags.Items.GEMS_DIAMOND)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', DETags.Items.INGOTS_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.reactor_prt_rotor_full)
-                .pattern(" AB")
-                .pattern("CDD")
-                .pattern(" AB")
-                .define('A', DEContent.reactor_prt_in_rotor)
-                .define('B', DEContent.reactor_prt_out_rotor)
-                .define('C', DEContent.core_wyvern)
-                .define('D', DETags.Items.INGOTS_DRACONIUM)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+        shapedRecipe(DEContent.REACTOR_PRT_ROTOR_FULL, "machines")
+                .patternLine(" AB")
+                .patternLine("CDD")
+                .patternLine(" AB")
+                .key('A', DEContent.REACTOR_PRT_IN_ROTOR)
+                .key('B', DEContent.REACTOR_PRT_OUT_ROTOR)
+                .key('C', DEContent.CORE_WYVERN)
+                .key('D', DETags.Items.INGOTS_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.reactor_prt_focus_ring)
-                .pattern("ABA")
-                .pattern("CBC")
-                .pattern("ABA")
-                .define('A', Tags.Items.INGOTS_GOLD)
-                .define('B', Tags.Items.GEMS_DIAMOND)
-                .define('C', DEContent.core_wyvern)
-                .unlockedBy("has_core_wyvern", has(DEContent.core_wyvern))
-                .save(consumer);
+        shapedRecipe(DEContent.REACTOR_PRT_FOCUS_RING, "machines")
+                .patternLine("ABA")
+                .patternLine("CBC")
+                .patternLine("ABA")
+                .key('A', Tags.Items.INGOTS_GOLD)
+                .key('B', Tags.Items.GEMS_DIAMOND)
+                .key('C', DEContent.CORE_WYVERN);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.reactor_stabilizer)
-                .catalyst(DEContent.reactor_prt_stab_frame)
+        fusionRecipe(DEContent.REACTOR_STABILIZER, "machines")
+                .catalyst(DEContent.REACTOR_PRT_STAB_FRAME)
                 .energy(16000000)
                 .techLevel(TechLevel.CHAOTIC)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(DEContent.reactor_prt_rotor_full)
-                .ingredient(DEContent.reactor_prt_focus_ring)
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(DEContent.REACTOR_PRT_ROTOR_FULL)
+                .ingredient(DEContent.REACTOR_PRT_FOCUS_RING)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.chaos_frag_large)
-                .build(consumer);
+                .ingredient(DEContent.CHAOS_FRAG_LARGE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.reactor_injector)
-                .catalyst(DEContent.core_wyvern)
+        fusionRecipe(DEContent.REACTOR_INJECTOR, "machines")
+                .catalyst(DEContent.CORE_WYVERN)
                 .energy(16000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.reactor_prt_in_rotor)
-                .ingredient(DEContent.reactor_prt_in_rotor)
-                .ingredient(DEContent.reactor_prt_in_rotor)
+                .ingredient(DEContent.REACTOR_PRT_IN_ROTOR)
+                .ingredient(DEContent.REACTOR_PRT_IN_ROTOR)
+                .ingredient(DEContent.REACTOR_PRT_IN_ROTOR)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(Tags.Items.INGOTS_IRON)
-                .ingredient(DEContent.reactor_prt_in_rotor)
+                .ingredient(DEContent.REACTOR_PRT_IN_ROTOR)
                 .ingredient(Tags.Items.INGOTS_IRON)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .build(consumer);
+                .ingredient(DETags.Items.INGOTS_DRACONIUM);
 
-
-        FusionRecipeBuilder.fusionRecipe(DEContent.reactor_core)
-                .catalyst(DEContent.chaos_shard)
+        fusionRecipe(DEContent.REACTOR_CORE, "machines")
+                .catalyst(DEContent.CHAOS_SHARD)
                 .energy(64000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
@@ -430,136 +395,108 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.chaos_frag_large)
-                .build(consumer);
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_binder)
-                .pattern(" AB")
-                .pattern(" CA")
-                .pattern("D  ")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', Tags.Items.GEMS_DIAMOND)
-                .define('C', Items.BLAZE_ROD)
-                .define('D', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.CRYSTAL_BINDER, "tools")
+                .patternLine(" AB")
+                .patternLine(" CA")
+                .patternLine("D  ")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', Tags.Items.GEMS_DIAMOND)
+                .key('C', Items.BLAZE_ROD)
+                .key('D', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_relay_basic, 4)
-                .pattern(" A ")
-                .pattern("ABA")
-                .pattern(" A ")
-                .define('A', Tags.Items.GEMS_DIAMOND)
-                .define('B', DEContent.energy_core_wyvern)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.BASIC_RELAY_CRYSTAL, 4, "machines")
+                .patternLine(" A ")
+                .patternLine("ABA")
+                .patternLine(" A ")
+                .key('A', Tags.Items.GEMS_DIAMOND)
+                .key('B', DEContent.ENERGY_CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_relay_wyvern, 4)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', DEContent.energy_core_wyvern)
-                .define('B', DEContent.crystal_relay_basic)
-                .define('C', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.WYVERN_RELAY_CRYSTAL, 4, "machines")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', DEContent.ENERGY_CORE_WYVERN)
+                .key('B', DEContent.BASIC_RELAY_CRYSTAL)
+                .key('C', DEContent.CORE_DRACONIUM);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.crystal_relay_draconic, 4)
-                .catalyst(4, DEContent.crystal_relay_wyvern)
+        fusionRecipe(DEContent.DRACONIC_RELAY_CRYSTAL, 4, "machines")
+                .catalyst(4, DEContent.WYVERN_RELAY_CRYSTAL)
                 .energy(128000)
                 .techLevel(TechLevel.DRACONIC)
-                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
                 .ingredient(Tags.Items.GEMS_DIAMOND)
-                .ingredient(DEContent.energy_core_wyvern)
-                .build(consumer);
+                .ingredient(DEContent.ENERGY_CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_wireless_basic)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("ABA")
-                .define('A', Items.ENDER_PEARL)
-                .define('B', DEContent.particle_generator)
-                .define('C', Items.ENDER_EYE)
-                .define('D', DEContent.crystal_relay_basic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.BASIC_WIRELESS_CRYSTAL, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("ABA")
+                .key('A', Items.ENDER_PEARL)
+                .key('B', DEContent.PARTICLE_GENERATOR)
+                .key('C', Items.ENDER_EYE)
+                .key('D', DEContent.BASIC_RELAY_CRYSTAL);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_wireless_wyvern)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("ABA")
-                .define('A', Items.ENDER_PEARL)
-                .define('B', DEContent.particle_generator)
-                .define('C', Items.ENDER_EYE)
-                .define('D', DEContent.crystal_relay_wyvern)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.WYVERN_WIRELESS_CRYSTAL, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("ABA")
+                .key('A', Items.ENDER_PEARL)
+                .key('B', DEContent.PARTICLE_GENERATOR)
+                .key('C', Items.ENDER_EYE)
+                .key('D', DEContent.WYVERN_RELAY_CRYSTAL);
 
-        ShapedRecipeBuilder.shaped(DEContent.crystal_wireless_draconic)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("ABA")
-                .define('A', Items.ENDER_PEARL)
-                .define('B', DEContent.particle_generator)
-                .define('C', Items.ENDER_EYE)
-                .define('D', DEContent.crystal_relay_draconic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.DRACONIC_WIRELESS_CRYSTAL, "machines")
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("ABA")
+                .key('A', Items.ENDER_PEARL)
+                .key('B', DEContent.PARTICLE_GENERATOR)
+                .key('C', Items.ENDER_EYE)
+                .key('D', DEContent.DRACONIC_RELAY_CRYSTAL);
 
         //to-from io
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_io_basic, 2)
-                .requires(DEContent.crystal_relay_basic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapelessRecipe(DEContent.BASIC_IO_CRYSTAL, 2, "machines")
+                .addIngredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_io_wyvern, 2)
-                .requires(DEContent.crystal_relay_wyvern)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapelessRecipe(DEContent.WYVERN_IO_CRYSTAL, 2, "machines")
+                .addIngredient(DEContent.WYVERN_RELAY_CRYSTAL);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_io_draconic, 2)
-                .requires(DEContent.crystal_relay_draconic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapelessRecipe(DEContent.DRACONIC_IO_CRYSTAL, 2, "machines")
+                .addIngredient(DEContent.DRACONIC_RELAY_CRYSTAL);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_relay_basic)
-                .requires(DEContent.crystal_io_basic)
-                .requires(DEContent.crystal_io_basic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer, "draconicevolution:crystal_io_basic_combine");
+        shapelessRecipe(DEContent.BASIC_RELAY_CRYSTAL, "machines")
+                .addIngredient(DEContent.BASIC_IO_CRYSTAL)
+                .addIngredient(DEContent.BASIC_IO_CRYSTAL);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_relay_wyvern)
-                .requires(DEContent.crystal_io_wyvern)
-                .requires(DEContent.crystal_io_wyvern)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer, "draconicevolution:crystal_io_wyvern_combine");
+        shapelessRecipe(DEContent.WYVERN_RELAY_CRYSTAL, "machines")
+                .addIngredient(DEContent.WYVERN_IO_CRYSTAL)
+                .addIngredient(DEContent.WYVERN_IO_CRYSTAL);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.crystal_relay_draconic)
-                .requires(DEContent.crystal_io_draconic)
-                .requires(DEContent.crystal_io_draconic)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer, "draconicevolution:crystal_io_draconic_combine");
+        shapelessRecipe(DEContent.DRACONIC_RELAY_CRYSTAL, "machines")
+                .addIngredient(DEContent.DRACONIC_IO_CRYSTAL)
+                .addIngredient(DEContent.DRACONIC_IO_CRYSTAL);
     }
 
-    private static void tools(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(DEContent.dislocator)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Items.BLAZE_POWDER)
-                .define('B', DETags.Items.DUSTS_DRACONIUM)
-                .define('C', Items.ENDER_EYE)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
+    private void tools() {
+        shapedRecipe(DEContent.DISLOCATOR, "tools")
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', Items.BLAZE_POWDER)
+                .key('B', DETags.Items.DUSTS_DRACONIUM)
+                .key('C', Items.ENDER_EYE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.dislocator_advanced)
-                .catalyst(DEContent.dislocator)
+        fusionRecipe(DEContent.DISLOCATOR_ADVANCED, "tools")
+                .catalyst(DEContent.DISLOCATOR)
                 .energy(1000000)
                 .techLevel(TechLevel.WYVERN)
                 .ingredient(Tags.Items.ENDER_PEARLS)
@@ -568,1497 +505,1337 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(Tags.Items.ENDER_PEARLS)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.core_wyvern)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .build(consumer);
+                .ingredient(DEContent.CORE_WYVERN)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.dislocator_p2p_unbound)
-                .requires(DEContent.dislocator)
-                .requires(DEContent.core_draconium)
-                .requires(DEContent.dislocator)
-                .requires(Items.GHAST_TEAR)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapelessRecipe(DEContent.DISLOCATOR_P2P_UNBOUND, "tools")
+                .addIngredient(DEContent.DISLOCATOR)
+                .addIngredient(DEContent.CORE_DRACONIUM)
+                .addIngredient(DEContent.DISLOCATOR)
+                .addIngredient(Items.GHAST_TEAR);
 
-        ShapelessRecipeBuilder.shapeless(DEContent.dislocator_player_unbound)
-                .requires(DEContent.dislocator)
-                .requires(DEContent.core_draconium)
-                .requires(Items.GHAST_TEAR)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
+        shapelessRecipe(DEContent.DISLOCATOR_PLAYER_UNBOUND, "tools")
+                .addIngredient(DEContent.DISLOCATOR)
+                .addIngredient(DEContent.CORE_DRACONIUM)
+                .addIngredient(Items.GHAST_TEAR);
 
-        ShapedRecipeBuilder.shaped(DEContent.magnet)
-                .pattern("A A")
-                .pattern("B B")
-                .pattern("CDC")
-                .define('A', Tags.Items.DUSTS_REDSTONE)
-                .define('B', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', Tags.Items.INGOTS_IRON)
-                .define('D', DEContent.dislocator)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.MAGNET, "tools")
+                .patternLine("A A")
+                .patternLine("B B")
+                .patternLine("CDC")
+                .key('A', Tags.Items.DUSTS_REDSTONE)
+                .key('B', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', Tags.Items.INGOTS_IRON)
+                .key('D', DEContent.DISLOCATOR);
 
-        ShapedRecipeBuilder.shaped(DEContent.magnet_advanced)
-                .pattern("A A")
-                .pattern("B B")
-                .pattern("CDC")
-                .define('A', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', Tags.Items.DUSTS_REDSTONE)
-                .define('C', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('D', DEContent.magnet)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.MAGNET_ADVANCED, "tools")
+                .patternLine("A A")
+                .patternLine("B B")
+                .patternLine("CDC")
+                .key('A', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', Tags.Items.DUSTS_REDSTONE)
+                .key('C', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('D', DEContent.MAGNET);
     }
 
-    private static void equipment(Consumer<FinishedRecipe> consumer) {
+    private void equipment() {
         //Capacitors
-        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_wyvern)
-                .catalyst(DEContent.core_wyvern)
+        fusionRecipe(DEContent.CAPACITOR_WYVERN, "tools")
+                .catalyst(DEContent.CORE_WYVERN)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .build(consumer, folder("tools", DEContent.capacitor_wyvern));
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_draconic)
-                .catalyst(DEContent.capacitor_wyvern)
+        fusionRecipe(DEContent.CAPACITOR_DRACONIC, "tools")
+                .catalyst(DEContent.CAPACITOR_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_awakened)
+                .ingredient(DEContent.CORE_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.capacitor_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_chaotic)
-                .catalyst(DEContent.capacitor_draconic)
+        fusionRecipe(DEContent.CAPACITOR_CHAOTIC, "tools")
+                .catalyst(DEContent.CAPACITOR_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.capacitor_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Shovel
-        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_wyvern)
+        fusionRecipe(DEContent.SHOVEL_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_SHOVEL)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.shovel_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_draconic)
-                .catalyst(DEContent.shovel_wyvern)
+        fusionRecipe(DEContent.SHOVEL_DRACONIC, "tools")
+                .catalyst(DEContent.SHOVEL_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.shovel_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_chaotic)
-                .catalyst(DEContent.shovel_draconic)
+        fusionRecipe(DEContent.SHOVEL_CHAOTIC, "tools")
+                .catalyst(DEContent.SHOVEL_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.shovel_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Hoe
-        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_wyvern)
+        fusionRecipe(DEContent.HOE_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_HOE)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.hoe_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_draconic)
-                .catalyst(DEContent.hoe_wyvern)
+        fusionRecipe(DEContent.HOE_DRACONIC, "tools")
+                .catalyst(DEContent.HOE_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.hoe_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_chaotic)
-                .catalyst(DEContent.hoe_draconic)
+        fusionRecipe(DEContent.HOE_CHAOTIC, "tools")
+                .catalyst(DEContent.HOE_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.hoe_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Pickaxe
-        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_wyvern)
+        fusionRecipe(DEContent.PICKAXE_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_PICKAXE)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.pickaxe_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_draconic)
-                .catalyst(DEContent.pickaxe_wyvern)
+        fusionRecipe(DEContent.PICKAXE_DRACONIC, "tools")
+                .catalyst(DEContent.PICKAXE_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.pickaxe_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_chaotic)
-                .catalyst(DEContent.pickaxe_draconic)
+        fusionRecipe(DEContent.PICKAXE_CHAOTIC, "tools")
+                .catalyst(DEContent.PICKAXE_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.pickaxe_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Axe
-        FusionRecipeBuilder.fusionRecipe(DEContent.axe_wyvern)
+        fusionRecipe(DEContent.AXE_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_AXE)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.axe_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.axe_draconic)
-                .catalyst(DEContent.axe_wyvern)
+        fusionRecipe(DEContent.AXE_DRACONIC, "tools")
+                .catalyst(DEContent.AXE_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.axe_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.axe_chaotic)
-                .catalyst(DEContent.axe_draconic)
+        fusionRecipe(DEContent.AXE_CHAOTIC, "tools")
+                .catalyst(DEContent.AXE_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.axe_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Bow
-        FusionRecipeBuilder.fusionRecipe(DEContent.bow_wyvern)
+        fusionRecipe(DEContent.BOW_WYVERN, "tools")
                 .catalyst(Items.BOW)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.bow_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.bow_draconic)
-                .catalyst(DEContent.bow_wyvern)
+        fusionRecipe(DEContent.BOW_DRACONIC, "tools")
+                .catalyst(DEContent.BOW_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.bow_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.bow_chaotic)
-                .catalyst(DEContent.bow_draconic)
+        fusionRecipe(DEContent.BOW_CHAOTIC, "tools")
+                .catalyst(DEContent.BOW_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.bow_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Sword
-        FusionRecipeBuilder.fusionRecipe(DEContent.sword_wyvern)
+        fusionRecipe(DEContent.SWORD_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_SWORD)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.sword_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.sword_draconic)
-                .catalyst(DEContent.sword_wyvern)
+        fusionRecipe(DEContent.SWORD_DRACONIC, "tools")
+                .catalyst(DEContent.SWORD_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.sword_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.sword_chaotic)
-                .catalyst(DEContent.sword_draconic)
+        fusionRecipe(DEContent.SWORD_CHAOTIC, "tools")
+                .catalyst(DEContent.SWORD_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.sword_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
         //Staff
-        FusionRecipeBuilder.fusionRecipe(DEContent.staff_draconic)
-                .catalyst(DEContent.core_awakened)
+        fusionRecipe(DEContent.STAFF_DRACONIC, "tools")
+                .catalyst(DEContent.CORE_AWAKENED)
                 .energy(256000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.pickaxe_draconic)
+                .ingredient(DEContent.PICKAXE_DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.sword_draconic)
-                .ingredient(DEContent.shovel_draconic)
+                .ingredient(DEContent.SWORD_DRACONIC)
+                .ingredient(DEContent.SHOVEL_DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.staff_draconic));
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.staff_chaotic)
-                .catalyst(DEContent.core_chaotic)
+        fusionRecipe(DEContent.STAFF_CHAOTIC, "tools")
+                .catalyst(DEContent.CORE_CHAOTIC)
                 .energy(1024000000)
                 .techLevel(TechLevel.CHAOTIC)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.pickaxe_chaotic)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.sword_chaotic)
-                .ingredient(DEContent.shovel_chaotic)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.chaos_frag_medium)
-                .build(consumer, folder("tools", DEContent.staff_chaotic));
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.PICKAXE_CHAOTIC)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.SWORD_CHAOTIC)
+                .ingredient(DEContent.SHOVEL_CHAOTIC)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.staff_chaotic)
-                .catalyst(DEContent.staff_draconic)
+        fusionRecipe(DEContent.STAFF_CHAOTIC, new ResourceLocation(MODID, "tools/alt_" + ForgeRegistries.ITEMS.getKey(DEContent.STAFF_CHAOTIC.get()).getPath()))
+                .catalyst(DEContent.STAFF_DRACONIC)
                 .energy(1024000000)
                 .techLevel(TechLevel.CHAOTIC)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.core_chaotic)
-                .ingredient(DEContent.chaos_frag_medium)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.core_awakened)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DEContent.chaos_frag_large)
-                .ingredient(DEContent.energy_core_chaotic)
-                .build(consumer, folder("tools", "alt_" + DEContent.staff_chaotic.getRegistryName().getPath()));
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.CORE_CHAOTIC)
+                .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CORE_AWAKENED)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DEContent.CHAOS_FRAG_LARGE)
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC);
 
         //Chestpiece
-        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_wyvern)
+        fusionRecipe(DEContent.CHESTPIECE_WYVERN, "tools")
                 .catalyst(Items.DIAMOND_CHESTPLATE)
                 .energy(8000000)
                 .techLevel(TechLevel.WYVERN)
-                .ingredient(DEContent.core_draconium)
+                .ingredient(DEContent.CORE_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM)
-                .ingredient(DEContent.crystal_relay_basic)
-                .ingredient(DEContent.energy_core_wyvern)
-                .ingredient(DEContent.crystal_relay_basic)
-                .build(consumer, folder("tools", DEContent.chestpiece_wyvern));
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL)
+                .ingredient(DEContent.ENERGY_CORE_WYVERN)
+                .ingredient(DEContent.BASIC_RELAY_CRYSTAL);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_draconic)
-                .catalyst(DEContent.chestpiece_wyvern)
+        fusionRecipe(DEContent.CHESTPIECE_DRACONIC, "tools")
+                .catalyst(DEContent.CHESTPIECE_WYVERN)
                 .energy(32000000)
                 .techLevel(TechLevel.DRACONIC)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.core_wyvern)
+                .ingredient(DEContent.CORE_WYVERN)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .ingredient(DEContent.energy_core_draconic)
-                .ingredient(Tags.Items.INGOTS_NETHERITE)
-                .build(consumer, folder("tools", DEContent.chestpiece_draconic));
+                .ingredient(DEContent.ENERGY_CORE_DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE);
 
-        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_chaotic)
-                .catalyst(DEContent.chestpiece_draconic)
+        fusionRecipe(DEContent.CHESTPIECE_CHAOTIC, "tools")
+                .catalyst(DEContent.CHESTPIECE_DRACONIC)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.CORE_CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(DEContent.energy_core_chaotic)
-                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.chestpiece_chaotic));
+                .ingredient(DEContent.ENERGY_CORE_CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED);
     }
 
-    private static void modules(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(DEContent.module_core)
-                .pattern("IRI")
-                .pattern("GDG")
-                .pattern("IRI")
-                .define('I', Tags.Items.INGOTS_IRON)
-                .define('R', Tags.Items.DUSTS_REDSTONE)
-                .define('G', Tags.Items.INGOTS_GOLD)
-                .define('D', DETags.Items.INGOTS_DRACONIUM)
-                .unlockedBy("has_ingot_draconium", has(DETags.Items.INGOTS_DRACONIUM))
-                .save(consumer, folder("modules", DEContent.module_core));
+    private void modules() {
+        shapedRecipe(DEContent.MODULE_CORE, "modules")
+                .patternLine("IRI")
+                .patternLine("GDG")
+                .patternLine("IRI")
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('R', Tags.Items.DUSTS_REDSTONE)
+                .key('G', Tags.Items.INGOTS_GOLD)
+                .key('D', DETags.Items.INGOTS_DRACONIUM);
 
         //Energy
-        ShapedRecipeBuilder.shaped(DEModules.draconiumEnergy.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DEContent.module_core)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumEnergy));
+        shapedRecipe(DEModules.DRACONIUM_ENERGY.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DEContent.MODULE_CORE);
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernEnergy.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEModules.draconiumEnergy.getItem())
-                .define('B', DEContent.core_draconium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernEnergy));
+        shapedRecipe(DEModules.WYVERN_ENERGY.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEModules.DRACONIUM_ENERGY.get().getItem())
+                .key('B', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicEnergy.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('A', DEModules.wyvernEnergy.getItem())
-                .define('B', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicEnergy));
+        shapedRecipe(DEModules.DRACONIC_ENERGY.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('A', DEModules.WYVERN_ENERGY.get().getItem())
+                .key('B', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticEnergy.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('A', DEModules.draconicEnergy.getItem())
-                .define('B', DEContent.core_awakened)
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticEnergy));
+        shapedRecipe(DEModules.CHAOTIC_ENERGY.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('A', DEModules.DRACONIC_ENERGY.get().getItem())
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Energy Link
-        ShapedRecipeBuilder.shaped(DEModules.wyvernEnergyLink.getItem())
-                .pattern("#E#")
-                .pattern("WMW")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('E', Items.END_CRYSTAL)
-                .define('M', DEContent.module_core)
-                .define('W', DEContent.crystal_wireless_basic)
-                .define('C', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernEnergyLink));
+        shapedRecipe(DEModules.WYVERN_ENERGY_LINK.get().getItem(), "modules")
+                .patternLine("#E#")
+                .patternLine("WMW")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('E', Items.END_CRYSTAL)
+                .key('M', DEContent.MODULE_CORE)
+                .key('W', DEContent.BASIC_WIRELESS_CRYSTAL.get())
+                .key('C', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicEnergyLink.getItem())
-                .pattern("#E#")
-                .pattern("WMW")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('E', Items.END_CRYSTAL)
-                .define('M', DEModules.wyvernEnergyLink.getItem())
-                .define('W', DEContent.crystal_wireless_wyvern)
-                .define('C', DEContent.core_awakened)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicEnergyLink));
+        shapedRecipe(DEModules.DRACONIC_ENERGY_LINK.get().getItem(), "modules")
+                .patternLine("#E#")
+                .patternLine("WMW")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('E', Items.END_CRYSTAL)
+                .key('M', DEModules.WYVERN_ENERGY_LINK.get().getItem())
+                .key('W', DEContent.WYVERN_WIRELESS_CRYSTAL.get())
+                .key('C', DEContent.CORE_AWAKENED);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticEnergyLink.getItem())
-                .pattern("#E#")
-                .pattern("WMW")
-                .pattern("#C#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('E', Items.END_CRYSTAL)
-                .define('M', DEModules.draconicEnergyLink.getItem())
-                .define('W', DEContent.crystal_wireless_draconic)
-                .define('C', DEContent.core_chaotic)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticEnergyLink));
+        shapedRecipe(DEModules.CHAOTIC_ENERGY_LINK.get().getItem(), "modules")
+                .patternLine("#E#")
+                .patternLine("WMW")
+                .patternLine("#C#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('E', Items.END_CRYSTAL)
+                .key('M', DEModules.DRACONIC_ENERGY_LINK.get().getItem())
+                .key('W', DEContent.DRACONIC_WIRELESS_CRYSTAL.get())
+                .key('C', DEContent.CORE_CHAOTIC);
 
         //Speed
-        ShapedRecipeBuilder.shaped(DEModules.draconiumSpeed.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#P#")
-                .define('#', Tags.Items.INGOTS_IRON)
-                .define('A', Items.CLOCK)
-                .define('B', DEContent.module_core)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SWIFTNESS)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumSpeed));
+        shapedRecipe(DEModules.DRACONIUM_SPEED.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#P#")
+                .key('#', Tags.Items.INGOTS_IRON)
+                .key('A', Items.CLOCK)
+                .key('B', DEContent.MODULE_CORE)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SWIFTNESS)));
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernSpeed.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEModules.draconiumSpeed.getItem())
-                .define('B', DEContent.core_draconium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernSpeed));
+        shapedRecipe(DEModules.WYVERN_SPEED.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEModules.DRACONIUM_SPEED.get().getItem())
+                .key('B', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicSpeed.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('A', DEModules.wyvernSpeed.getItem())
-                .define('B', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicSpeed));
+        shapedRecipe(DEModules.DRACONIC_SPEED.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('A', DEModules.WYVERN_SPEED.get().getItem())
+                .key('B', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticSpeed.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('A', DEModules.draconicSpeed.getItem())
-                .define('B', DEContent.core_awakened)
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticSpeed));
+        shapedRecipe(DEModules.CHAOTIC_SPEED.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('A', DEModules.DRACONIC_SPEED.get().getItem())
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Damage
-        ShapedRecipeBuilder.shaped(DEModules.draconiumDamage.getItem())
-                .pattern("IPG")
-                .pattern("ABA")
-                .pattern("GPI")
-                .define('I', Tags.Items.INGOTS_IRON)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRENGTH)))
-                .define('G', Tags.Items.INGOTS_GOLD)
-                .define('A', Tags.Items.DUSTS_GLOWSTONE)
-                .define('B', DEContent.module_core)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumDamage));
+        shapedRecipe(DEModules.DRACONIUM_DAMAGE.get().getItem(), "modules")
+                .patternLine("IPG")
+                .patternLine("ABA")
+                .patternLine("GPI")
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRENGTH)))
+                .key('G', Tags.Items.INGOTS_GOLD)
+                .key('A', Tags.Items.DUSTS_GLOWSTONE)
+                .key('B', DEContent.MODULE_CORE);
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernDamage.getItem())
-                .pattern("IPI")
-                .pattern("ABA")
-                .pattern("IPI")
-                .define('I', DETags.Items.INGOTS_DRACONIUM)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_STRENGTH)))
-                .define('A', DEModules.draconiumDamage.getItem())
-                .define('B', DEContent.core_draconium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernDamage));
+        shapedRecipe(DEModules.WYVERN_DAMAGE.get().getItem(), "modules")
+                .patternLine("IPI")
+                .patternLine("ABA")
+                .patternLine("IPI")
+                .key('I', DETags.Items.INGOTS_DRACONIUM)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_STRENGTH)))
+                .key('A', DEModules.DRACONIUM_DAMAGE.get().getItem())
+                .key('B', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicDamage.getItem())
-                .pattern("IPI")
-                .pattern("ABA")
-                .pattern("IPI")
-                .define('I', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('P', Items.DRAGON_BREATH)
-                .define('A', DEModules.wyvernDamage.getItem())
-                .define('B', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicDamage));
+        shapedRecipe(DEModules.DRACONIC_DAMAGE.get().getItem(), "modules")
+                .patternLine("IPI")
+                .patternLine("ABA")
+                .patternLine("IPI")
+                .key('I', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('P', Items.DRAGON_BREATH)
+                .key('A', DEModules.WYVERN_DAMAGE.get().getItem())
+                .key('B', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticDamage.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('I', chaos_frag_small)
-                .define('C', DEContent.chaos_frag_medium)
-                .define('A', DEModules.draconicDamage.getItem())
-                .define('B', DEContent.core_awakened)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticDamage));
+        shapedRecipe(DEModules.CHAOTIC_DAMAGE.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('I', chaos_frag_small)
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM)
+                .key('A', DEModules.DRACONIC_DAMAGE.get().getItem())
+                .key('B', DEContent.CORE_AWAKENED);
 
         //AOE
-        ShapedRecipeBuilder.shaped(DEModules.draconiumAOE.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', Items.PISTON)
-                .define('I', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumAOE));
+        shapedRecipe(DEModules.DRACONIUM_AOE.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', Items.PISTON)
+                .key('I', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE);
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernAOE.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('I', Items.NETHERITE_SCRAP)
-                .define('A', DEModules.draconiumAOE.getItem())
-                .define('B', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernAOE));
+        shapedRecipe(DEModules.WYVERN_AOE.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('I', Items.NETHERITE_SCRAP)
+                .key('A', DEModules.DRACONIUM_AOE.get().getItem())
+                .key('B', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicAOE.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('I', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEModules.wyvernAOE.getItem())
-                .define('B', DEContent.core_awakened)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicAOE));
+        shapedRecipe(DEModules.DRACONIC_AOE.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('I', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEModules.WYVERN_AOE.get().getItem())
+                .key('B', DEContent.CORE_AWAKENED);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticAOE.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('I', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEModules.draconicAOE.getItem())
-                .define('B', DEContent.core_chaotic)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticAOE));
+        shapedRecipe(DEModules.CHAOTIC_AOE.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('I', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEModules.DRACONIC_AOE.get().getItem())
+                .key('B', DEContent.CORE_CHAOTIC);
 
         //        //Mining Stability
-        //        ShapedRecipeBuilder.shaped(DEModules.wyvernMiningStability.getItem())
-        //                .pattern("#C#")
-        //                .pattern("ABA")
-        //                .pattern("#D#")
-        //                .define('#', INGOTS_DRACONIUM)
-        //                .define('A', core_draconium)
-        //                .define('B', module_core)
-        //                .define('C', PHANTOM_MEMBRANE)
-        //                .define('D', GOLDEN_PICKAXE)
+        //        shapedRecipe(DEModules.wyvernMiningStability.getItem())
+        //                .patternLine("#C#")
+        //                .patternLine("ABA")
+        //                .patternLine("#D#")
+        //                .key('#', INGOTS_DRACONIUM)
+        //                .key('A', core_draconium)
+        //                .key('B', module_core)
+        //                .key('C', PHANTOM_MEMBRANE)
+        //                .key('D', GOLDEN_PICKAXE)
         //                .unlockedBy("has_module_core", has(module_core))
         //                .save(consumer, folder("modules", DEModules.wyvernMiningStability));
         //
-        ShapedRecipeBuilder.shaped(DEModules.wyvernJunkFilter.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .define('C', Items.LAVA_BUCKET)
-                .define('D', Tags.Items.DUSTS_REDSTONE)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernJunkFilter));
+        shapedRecipe(DEModules.WYVERN_JUNK_FILTER.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.LAVA_BUCKET)
+                .key('D', Tags.Items.DUSTS_REDSTONE);
 
         //Tree Harvest
-        ShapedRecipeBuilder.shaped(DEModules.wyvernTreeHarvest.getItem())
-                .pattern("#A#")
-                .pattern("CMC")
-                .pattern("#A#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', Items.DIAMOND_AXE)
-                .define('M', DEContent.module_core)
-                .define('C', DEContent.core_draconium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernTreeHarvest));
+        shapedRecipe(DEModules.WYVERN_TREE_HARVEST.get().getItem(), "modules")
+                .patternLine("#A#")
+                .patternLine("CMC")
+                .patternLine("#A#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', Items.DIAMOND_AXE)
+                .key('M', DEContent.MODULE_CORE)
+                .key('C', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicTreeHarvest.getItem())
-                .pattern("#C#")
-                .pattern("IMI")
-                .pattern("#W#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('C', DEContent.core_draconium)
-                .define('I', Tags.Items.INGOTS_NETHERITE)
-                .define('M', DEModules.wyvernTreeHarvest.getItem())
-                .define('W', DEContent.core_wyvern)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicTreeHarvest));
+        shapedRecipe(DEModules.DRACONIC_TREE_HARVEST.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("IMI")
+                .patternLine("#W#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('I', Tags.Items.INGOTS_NETHERITE)
+                .key('M', DEModules.WYVERN_TREE_HARVEST.get().getItem())
+                .key('W', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticTreeHarvest.getItem())
-                .pattern("#C#")
-                .pattern("IMI")
-                .pattern("#W#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('C', DEContent.core_draconium)
-                .define('I', DEContent.chaos_frag_large)
-                .define('M', DEModules.draconicTreeHarvest.getItem())
-                .define('W', DEContent.core_awakened)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticTreeHarvest));
+        shapedRecipe(DEModules.CHAOTIC_TREE_HARVEST.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("IMI")
+                .patternLine("#W#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('I', DEContent.CHAOS_FRAG_LARGE)
+                .key('M', DEModules.DRACONIC_TREE_HARVEST.get().getItem())
+                .key('W', DEContent.CORE_AWAKENED);
 
         //Ender Collection
-        ShapedRecipeBuilder.shaped(DEModules.wyvernEnderCollection.getItem())
-                .pattern("#C#")
-                .pattern("IMI")
-                .pattern("#W#")
-                .define('#', Items.ENDER_EYE)
-                .define('C', DEContent.core_draconium)
-                .define('I', DETags.Items.INGOTS_DRACONIUM)
-                .define('M', DEContent.module_core)
-                .define('W', Tags.Items.CHESTS_ENDER)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernEnderCollection));
+        shapedRecipe(DEModules.WYVERN_ENDER_COLLECTION.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("IMI")
+                .patternLine("#W#")
+                .key('#', Items.ENDER_EYE)
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('I', DETags.Items.INGOTS_DRACONIUM)
+                .key('M', DEContent.MODULE_CORE)
+                .key('W', Tags.Items.CHESTS_ENDER);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicEnderCollection.getItem())
-                .pattern("#C#")
-                .pattern("IMI")
-                .pattern("#W#")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('C', DEContent.core_draconium)
-                .define('I', Items.COMPARATOR)
-                .define('M', DEModules.wyvernEnderCollection.getItem())
-                .define('W', Tags.Items.CHESTS)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicEnderCollection));
+        shapedRecipe(DEModules.DRACONIC_ENDER_COLLECTION.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("IMI")
+                .patternLine("#W#")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('I', Items.COMPARATOR)
+                .key('M', DEModules.WYVERN_ENDER_COLLECTION.get().getItem())
+                .key('W', Tags.Items.CHESTS);
 
         //Shield Controller
-        ShapedRecipeBuilder.shaped(DEModules.wyvernShieldControl.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', Tags.Items.GEMS_DIAMOND)
-                .define('A', DEContent.core_wyvern)
-                .define('B', DEContent.module_core)
-                .define('C', DEContent.dragon_heart)
-                .define('D', DEContent.particle_generator)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernShieldControl));
+        shapedRecipe(DEModules.WYVERN_SHIELD_CONTROL.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', Tags.Items.GEMS_DIAMOND)
+                .key('A', DEContent.CORE_WYVERN)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', DEContent.DRAGON_HEART)
+                .key('D', DEContent.PARTICLE_GENERATOR);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicShieldControl.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', Tags.Items.GEMS_EMERALD)
-                .define('A', DEContent.core_awakened)
-                .define('B', DEModules.wyvernShieldControl.getItem())
-                .define('I', Tags.Items.INGOTS_NETHERITE)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicShieldControl));
+        shapedRecipe(DEModules.DRACONIC_SHIELD_CONTROL.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', Tags.Items.GEMS_EMERALD)
+                .key('A', DEContent.CORE_AWAKENED)
+                .key('B', DEModules.WYVERN_SHIELD_CONTROL.get().getItem())
+                .key('I', Tags.Items.INGOTS_NETHERITE);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticShieldControl.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', Tags.Items.NETHER_STARS)
-                .define('A', DEContent.core_chaotic)
-                .define('B', DEModules.draconicShieldControl.getItem())
-                .define('I', Tags.Items.INGOTS_NETHERITE)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticShieldControl));
+        shapedRecipe(DEModules.CHAOTIC_SHIELD_CONTROL.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', Tags.Items.NETHER_STARS)
+                .key('A', DEContent.CORE_CHAOTIC)
+                .key('B', DEModules.DRACONIC_SHIELD_CONTROL.get().getItem())
+                .key('I', Tags.Items.INGOTS_NETHERITE);
 
         //Shield Capacity
-        ShapedRecipeBuilder.shaped(DEModules.wyvernShieldCapacity.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', Tags.Items.DUSTS_GLOWSTONE)
-                .define('B', DEContent.module_core)
-                .define('I', Items.NETHERITE_SCRAP)
-                .unlockedBy("has_wyvern_shield", has(DEModules.wyvernShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.wyvernShieldCapacity));
+        shapedRecipe(DEModules.WYVERN_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', Tags.Items.DUSTS_GLOWSTONE)
+                .key('B', DEContent.MODULE_CORE)
+                .key('I', Items.NETHERITE_SCRAP);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicShieldCapacity.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('B', DEModules.wyvernShieldCapacity.getItem())
-                .define('C', DEContent.core_draconium)
-                .define('D', DEContent.core_wyvern)
-                .unlockedBy("has_draconic_shield", has(DEModules.draconicShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.draconicShieldCapacity));
+        shapedRecipe(DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('B', DEModules.WYVERN_SHIELD_CAPACITY.get().getItem())
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('D', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticShieldCapacity.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEContent.chaos_frag_large)
-                .define('B', DEModules.draconicShieldCapacity.getItem())
-                .define('C', DEContent.core_wyvern)
-                .define('D', DEContent.core_chaotic)
-                .unlockedBy("has_chaotic_shield", has(DEModules.chaoticShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.chaoticShieldCapacity));
+        shapedRecipe(DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEContent.CHAOS_FRAG_LARGE)
+                .key('B', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem())
+                .key('C', DEContent.CORE_WYVERN)
+                .key('D', DEContent.CORE_CHAOTIC);
 
         //Shield Capacity XL
-        ShapedRecipeBuilder.shaped(DEModules.wyvernLargeShieldCapacity.getItem())
-                .pattern("#A#")
-                .pattern("A#A")
-                .pattern("#A#")
-                .define('#', DEModules.wyvernShieldCapacity.getItem())
-                .define('A', DEContent.core_draconium)
-                .unlockedBy("has_wyvern_shield", has(DEModules.wyvernShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.wyvernLargeShieldCapacity));
+        shapedRecipe(DEModules.WYVERN_LARGE_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#A#")
+                .patternLine("A#A")
+                .patternLine("#A#")
+                .key('#', DEModules.WYVERN_SHIELD_CAPACITY.get().getItem())
+                .key('A', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicLargeShieldCapacity.getItem())
-                .pattern("#A#")
-                .pattern("A#A")
-                .pattern("#A#")
-                .define('#', DEModules.draconicShieldCapacity.getItem())
-                .define('A', DEContent.core_draconium)
-                .unlockedBy("has_draconic_shield", has(DEModules.draconicShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.draconicLargeShieldCapacity));
+        shapedRecipe(DEModules.DRACONIC_LARGE_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#A#")
+                .patternLine("A#A")
+                .patternLine("#A#")
+                .key('#', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem())
+                .key('A', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticLargeShieldCapacity.getItem())
-                .pattern("#A#")
-                .pattern("A#A")
-                .pattern("#A#")
-                .define('#', DEModules.chaoticShieldCapacity.getItem())
-                .define('A', DEContent.core_draconium)
-                .unlockedBy("has_chaotic_shield", has(DEModules.chaoticShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.chaoticLargeShieldCapacity));
+        shapedRecipe(DEModules.CHAOTIC_LARGE_SHIELD_CAPACITY.get().getItem(), "modules")
+                .patternLine("#A#")
+                .patternLine("A#A")
+                .patternLine("#A#")
+                .key('#', DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem())
+                .key('A', DEContent.CORE_DRACONIUM);
 
-        ShapelessRecipeBuilder.shapeless(DEModules.wyvernShieldCapacity.getItem(), 5)
-                .requires(DEModules.wyvernLargeShieldCapacity.getItem())
-                .unlockedBy("has_wyvern_shield", has(DEModules.wyvernShieldControl.getItem()))
-                .save(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.wyvernShieldCapacity.getRegistryName().getPath());
+        shapelessRecipe(DEModules.WYVERN_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.WYVERN_SHIELD_CAPACITY.get())))
+                .addIngredient(DEModules.WYVERN_LARGE_SHIELD_CAPACITY.get().getItem());
 
-        ShapelessRecipeBuilder.shapeless(DEModules.draconicShieldCapacity.getItem(), 5)
-                .requires(DEModules.draconicLargeShieldCapacity.getItem())
-                .unlockedBy("has_draconic_shield", has(DEModules.draconicShieldControl.getItem()))
-                .save(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.draconicShieldCapacity.getRegistryName().getPath());
+        shapelessRecipe(DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.DRACONIC_SHIELD_CAPACITY.get())))
+                .addIngredient(DEModules.DRACONIC_LARGE_SHIELD_CAPACITY.get().getItem());
 
-        ShapelessRecipeBuilder.shapeless(DEModules.chaoticShieldCapacity.getItem(), 5)
-                .requires(DEModules.chaoticLargeShieldCapacity.getItem())
-                .unlockedBy("has_chaotic_shield", has(DEModules.chaoticShieldControl.getItem()))
-                .save(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.chaoticShieldCapacity.getRegistryName().getPath());
+        shapelessRecipe(DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.CHAOTIC_SHIELD_CAPACITY.get())))
+                .addIngredient(DEModules.CHAOTIC_LARGE_SHIELD_CAPACITY.get().getItem());
 
         //Shield Recovery
-        ShapedRecipeBuilder.shaped(DEModules.wyvernShieldRecovery.getItem())
-                .pattern("#I#")
-                .pattern("ABA")
-                .pattern("#I#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', Tags.Items.DUSTS_REDSTONE)
-                .define('B', DEContent.module_core)
-                .define('I', Items.NETHERITE_SCRAP)
-                .unlockedBy("has_wyvern_shield", has(DEModules.wyvernShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.wyvernShieldRecovery));
+        shapedRecipe(DEModules.WYVERN_SHIELD_RECOVERY.get().getItem(), "modules")
+                .patternLine("#I#")
+                .patternLine("ABA")
+                .patternLine("#I#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', Tags.Items.DUSTS_REDSTONE)
+                .key('B', DEContent.MODULE_CORE)
+                .key('I', Items.NETHERITE_SCRAP);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicShieldRecovery.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', Tags.Items.INGOTS_NETHERITE)
-                .define('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('B', DEModules.wyvernShieldRecovery.getItem())
-                .define('C', DEContent.core_draconium)
-                .define('D', DEContent.core_wyvern)
-                .unlockedBy("has_draconic_shield", has(DEModules.draconicShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.draconicShieldRecovery));
+        shapedRecipe(DEModules.DRACONIC_SHIELD_RECOVERY.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', Tags.Items.INGOTS_NETHERITE)
+                .key('A', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('B', DEModules.WYVERN_SHIELD_RECOVERY.get().getItem())
+                .key('C', DEContent.CORE_DRACONIUM)
+                .key('D', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticShieldRecovery.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEContent.chaos_frag_large)
-                .define('B', DEModules.draconicShieldRecovery.getItem())
-                .define('C', DEContent.core_wyvern)
-                .define('D', DEContent.core_chaotic)
-                .unlockedBy("has_chaotic_shield", has(DEModules.chaoticShieldControl.getItem()))
-                .save(consumer, folder("modules", DEModules.chaoticShieldRecovery));
+        shapedRecipe(DEModules.CHAOTIC_SHIELD_RECOVERY.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEContent.CHAOS_FRAG_LARGE)
+                .key('B', DEModules.DRACONIC_SHIELD_RECOVERY.get().getItem())
+                .key('C', DEContent.CORE_WYVERN)
+                .key('D', DEContent.CORE_CHAOTIC);
 
         //Flight
-        ShapedRecipeBuilder.shaped(DEModules.wyvernFlight.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', Items.ELYTRA)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .define('D', Items.FIREWORK_ROCKET)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernFlight));
+        shapedRecipe(DEModules.WYVERN_FLIGHT.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', Items.ELYTRA)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('D', Items.FIREWORK_ROCKET);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicFlight.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEContent.core_wyvern)
-                .define('B', DEModules.wyvernFlight.getItem())
-                .define('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SLOW_FALLING)))
-                .define('D', Items.FIREWORK_ROCKET)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicFlight));
+        shapedRecipe(DEModules.DRACONIC_FLIGHT.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEContent.CORE_WYVERN)
+                .key('B', DEModules.WYVERN_FLIGHT.get().getItem())
+                .key('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SLOW_FALLING)))
+                .key('D', Items.FIREWORK_ROCKET);
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticFlight.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_SWIFTNESS)))
-                .define('A', DEContent.core_awakened)
-                .define('B', DEModules.draconicFlight.getItem())
-                .define('C', DEContent.chaos_frag_large)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticFlight));
+        shapedRecipe(DEModules.CHAOTIC_FLIGHT.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_SWIFTNESS)))
+                .key('A', DEContent.CORE_AWAKENED)
+                .key('B', DEModules.DRACONIC_FLIGHT.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_LARGE);
 
         //Last Stand
-        ShapedRecipeBuilder.shaped(DEModules.wyvernUndying.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .define('C', Items.TOTEM_OF_UNDYING)
-                .define('D', DEModules.wyvernShieldCapacity.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernUndying));
+        shapedRecipe(DEModules.WYVERN_UNDYING.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.TOTEM_OF_UNDYING)
+                .key('D', DEModules.WYVERN_SHIELD_CAPACITY.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicUndying.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .define('A', DEContent.core_wyvern)
-                .define('B', DEModules.wyvernUndying.getItem())
-                .define('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_HEALING)))
-                .define('D', DEModules.draconicShieldCapacity.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicUndying));
+        shapedRecipe(DEModules.DRACONIC_UNDYING.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .key('A', DEContent.CORE_WYVERN)
+                .key('B', DEModules.WYVERN_UNDYING.get().getItem())
+                .key('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_HEALING)))
+                .key('D', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticUndying.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', DEContent.chaos_frag_medium)
-                .define('A', DEContent.core_awakened)
-                .define('B', DEModules.draconicUndying.getItem())
-                .define('C', Items.ENCHANTED_GOLDEN_APPLE)
-                .define('D', DEModules.chaoticShieldCapacity.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticUndying));
+        shapedRecipe(DEModules.CHAOTIC_UNDYING.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DEContent.CHAOS_FRAG_MEDIUM)
+                .key('A', DEContent.CORE_AWAKENED)
+                .key('B', DEModules.DRACONIC_UNDYING.get().getItem())
+                .key('C', Items.ENCHANTED_GOLDEN_APPLE)
+                .key('D', DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem());
 
         //Auto Feed
-        ShapedRecipeBuilder.shaped(DEModules.draconiumAutoFeed.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', Tags.Items.INGOTS_IRON)
-                .define('A', Items.COOKIE)
-                .define('B', DEContent.module_core)
-                .define('C', Items.GOLDEN_APPLE)
-                .define('D', DEContent.core_draconium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumAutoFeed));
+        shapedRecipe(DEModules.DRACONIUM_AUTO_FEED.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', Tags.Items.INGOTS_IRON)
+                .key('A', Items.COOKIE)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.GOLDEN_APPLE)
+                .key('D', DEContent.CORE_DRACONIUM);
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernAutoFeed.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEModules.draconiumAutoFeed.getItem())
-                .define('C', Items.COOKIE)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernAutoFeed));
+        shapedRecipe(DEModules.WYVERN_AUTO_FEED.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEModules.DRACONIUM_AUTO_FEED.get().getItem())
+                .key('C', Items.COOKIE);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicAutoFeed.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEModules.wyvernAutoFeed.getItem())
-                .define('C', Items.COOKIE)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicAutoFeed));
+        shapedRecipe(DEModules.DRACONIC_AUTO_FEED.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEModules.WYVERN_AUTO_FEED.get().getItem())
+                .key('C', Items.COOKIE);
 
         //Night Vision
-        ShapedRecipeBuilder.shaped(DEModules.wyvernNightVision.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#P#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.NIGHT_VISION)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernNightVision));
+        shapedRecipe(DEModules.WYVERN_NIGHT_VISION.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#P#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.NIGHT_VISION)));
 
         //Jump Boost
-        ShapedRecipeBuilder.shaped(DEModules.draconiumJump.getItem())
-                .pattern("CPD")
-                .pattern("ABA")
-                .pattern("DPC")
-                .define('A', Tags.Items.DUSTS_GLOWSTONE)
-                .define('B', DEContent.module_core)
-                .define('C', Tags.Items.INGOTS_IRON)
-                .define('D', Tags.Items.INGOTS_GOLD)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.LEAPING)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconiumJump));
+        shapedRecipe(DEModules.DRACONIUM_JUMP.get().getItem(), "modules")
+                .patternLine("CPD")
+                .patternLine("ABA")
+                .patternLine("DPC")
+                .key('A', Tags.Items.DUSTS_GLOWSTONE)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Tags.Items.INGOTS_IRON)
+                .key('D', Tags.Items.INGOTS_GOLD)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.LEAPING)));
 
-        ShapedRecipeBuilder.shaped(DEModules.wyvernJump.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#P#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('B', DEContent.core_draconium)
-                .define('A', DEModules.draconiumJump.getItem())
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_LEAPING)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernJump));
+        shapedRecipe(DEModules.WYVERN_JUMP.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#P#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('A', DEModules.DRACONIUM_JUMP.get().getItem())
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_LEAPING)));
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicJump.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernJump.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicJump));
+        shapedRecipe(DEModules.DRACONIC_JUMP.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_JUMP.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticJump.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicJump.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticJump));
+        shapedRecipe(DEModules.CHAOTIC_JUMP.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_JUMP.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //        //Aqua
-        //        ShapedRecipeBuilder.shaped(DEModules.wyvernAquaAdapt.getItem())
-        //                .pattern("#C#")
-        //                .pattern("ABA")
-        //                .pattern("#D#")
-        //                .define('#', INGOTS_DRACONIUM)
-        //                .define('A', core_draconium)
-        //                .define('B', module_core)
-        //                .define('C', HEART_OF_THE_SEA)
-        //                .define('D', IRON_PICKAXE)
+        //        shapedRecipe(DEModules.wyvernAquaAdapt.getItem())
+        //                .patternLine("#C#")
+        //                .patternLine("ABA")
+        //                .patternLine("#D#")
+        //                .key('#', INGOTS_DRACONIUM)
+        //                .key('A', core_draconium)
+        //                .key('B', module_core)
+        //                .key('C', HEART_OF_THE_SEA)
+        //                .key('D', IRON_PICKAXE)
         //                .unlockedBy("has_module_core", has(module_core))
         //                .save(consumer, folder("modules", DEModules.wyvernAquaAdapt));
 
         //Hill Step
-        ShapedRecipeBuilder.shaped(DEModules.wyvernHillStep.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("D#D")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('A', DEContent.core_draconium)
-                .define('B', DEContent.module_core)
-                .define('C', Items.GOLDEN_BOOTS)
-                .define('D', Items.PISTON)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernHillStep));
+        shapedRecipe(DEModules.WYVERN_HILL_STEP.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("D#D")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.GOLDEN_BOOTS)
+                .key('D', Items.PISTON);
 
         //Arrow Velocity
-        ShapedRecipeBuilder.shaped(DEModules.wyvernProjVelocity.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', ItemTags.ARROWS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_SWIFTNESS)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernProjVelocity));
+        shapedRecipe(DEModules.WYVERN_PROJ_VELOCITY.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', ItemTags.ARROWS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_SWIFTNESS)));
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjVelocity.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernProjVelocity.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjVelocity));
+        shapedRecipe(DEModules.DRACONIC_PROJ_VELOCITY.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_PROJ_VELOCITY.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticProjVelocity.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicProjVelocity.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticProjVelocity));
+        shapedRecipe(DEModules.CHAOTIC_PROJ_VELOCITY.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_PROJ_VELOCITY.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Arrow Accuracy
-        ShapedRecipeBuilder.shaped(DEModules.wyvernProjAccuracy.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', ItemTags.ARROWS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', Items.TARGET)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernProjAccuracy));
+        shapedRecipe(DEModules.WYVERN_PROJ_ACCURACY.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', ItemTags.ARROWS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', Items.TARGET);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjAccuracy.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernProjAccuracy.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjAccuracy));
+        shapedRecipe(DEModules.DRACONIC_PROJ_ACCURACY.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_PROJ_ACCURACY.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticProjAccuracy.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicProjAccuracy.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticProjAccuracy));
+        shapedRecipe(DEModules.CHAOTIC_PROJ_ACCURACY.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_PROJ_ACCURACY.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Arrow Penetration
-        ShapedRecipeBuilder.shaped(DEModules.wyvernProjPenetration.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', ItemTags.ARROWS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', Items.SHIELD)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernProjPenetration));
+        shapedRecipe(DEModules.WYVERN_PROJ_PENETRATION.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', ItemTags.ARROWS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', Items.SHIELD);
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjPenetration.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernProjPenetration.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjPenetration));
+        shapedRecipe(DEModules.DRACONIC_PROJ_PENETRATION.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_PROJ_PENETRATION.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticProjPenetration.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicProjPenetration.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticProjPenetration));
+        shapedRecipe(DEModules.CHAOTIC_PROJ_PENETRATION.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_PROJ_PENETRATION.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Arrow Damage
-        ShapedRecipeBuilder.shaped(DEModules.wyvernProjDamage.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', ItemTags.ARROWS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_STRENGTH)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernProjDamage));
+        shapedRecipe(DEModules.WYVERN_PROJ_DAMAGE.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', ItemTags.ARROWS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_STRENGTH)));
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjDamage.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernProjDamage.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjDamage));
+        shapedRecipe(DEModules.DRACONIC_PROJ_DAMAGE.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_PROJ_DAMAGE.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticProjDamage.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicProjDamage.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticProjDamage));
+        shapedRecipe(DEModules.CHAOTIC_PROJ_DAMAGE.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_PROJ_DAMAGE.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         //Arrow Anti Grav
-        ShapedRecipeBuilder.shaped(DEModules.wyvernProjGravComp.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', ItemTags.ARROWS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.LONG_SLOW_FALLING)))
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernProjGravComp));
+        shapedRecipe(DEModules.WYVERN_PROJ_GRAV_COMP.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', ItemTags.ARROWS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.LONG_SLOW_FALLING)));
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjGravComp.getItem())
-                .pattern("###")
-                .pattern("ABA")
-                .pattern("###")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('B', DEContent.core_wyvern)
-                .define('A', DEModules.wyvernProjGravComp.getItem())
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjGravComp));
+        shapedRecipe(DEModules.DRACONIC_PROJ_GRAV_COMP.get().getItem(), "modules")
+                .patternLine("###")
+                .patternLine("ABA")
+                .patternLine("###")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('B', DEContent.CORE_WYVERN)
+                .key('A', DEModules.WYVERN_PROJ_GRAV_COMP.get().getItem());
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticProjGravComp.getItem())
-                .pattern("CCC")
-                .pattern("ABA")
-                .pattern("CCC")
-                //                .define('#', chaos_frag_small)
-                .define('B', DEContent.core_awakened)
-                .define('A', DEModules.draconicProjGravComp.getItem())
-                .define('C', DEContent.chaos_frag_medium)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.chaoticProjGravComp));
+        shapedRecipe(DEModules.CHAOTIC_PROJ_GRAV_COMP.get().getItem(), "modules")
+                .patternLine("CCC")
+                .patternLine("ABA")
+                .patternLine("CCC")
+                //                .key('#', chaos_frag_small)
+                .key('B', DEContent.CORE_AWAKENED)
+                .key('A', DEModules.DRACONIC_PROJ_GRAV_COMP.get().getItem())
+                .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
         // Auto Fire
-        ShapedRecipeBuilder.shaped(DEModules.wyvernAutoFire.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.INGOTS_DRACONIUM)
-                .define('C', Items.BOW)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_draconium)
-                .define('P', Items.CLOCK)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.wyvernAutoFire));
+        shapedRecipe(DEModules.WYVERN_AUTO_FIRE.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('C', Items.BOW)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('P', Items.CLOCK);
 
         // Projectile Anti Immunity
-        ShapedRecipeBuilder.shaped(DEModules.draconicProjAntiImmune.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
-                .define('C', Tags.Items.ENDER_PEARLS)
-                .define('B', DEContent.module_core)
-                .define('A', DEContent.core_wyvern)
-                .define('P', Items.WITHER_SKELETON_SKULL)
-                .unlockedBy("has_module_core", has(DEContent.module_core))
-                .save(consumer, folder("modules", DEModules.draconicProjAntiImmune));
+        shapedRecipe(DEModules.DRACONIC_PROJ_ANTI_IMMUNE.get().getItem(), "modules")
+                .patternLine("#P#")
+                .patternLine("ABA")
+                .patternLine("#C#")
+                .key('#', DETags.Items.NUGGETS_DRACONIUM_AWAKENED)
+                .key('C', Tags.Items.ENDER_PEARLS)
+                .key('B', DEContent.MODULE_CORE)
+                .key('A', DEContent.CORE_WYVERN)
+                .key('P', Items.WITHER_SKELETON_SKULL);
     }
 
+    private void unsorted() {
+        shapedRecipe(DEContent.INFUSED_OBSIDIAN)
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', Items.BLAZE_POWDER)
+                .key('B', Tags.Items.OBSIDIAN)
+                .key('C', DETags.Items.DUSTS_DRACONIUM);
 
-    private static void unsorted(Consumer<FinishedRecipe> consumer) {
+        shapedRecipe(DEContent.DISLOCATOR_RECEPTACLE)
+                .patternLine("ABA")
+                .patternLine(" C ")
+                .patternLine("A A")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', DEContent.INFUSED_OBSIDIAN);
 
-        ShapedRecipeBuilder.shaped(DEContent.infused_obsidian)
-                .pattern("ABA")
-                .pattern("BCB")
-                .pattern("ABA")
-                .define('A', Items.BLAZE_POWDER)
-                .define('B', Tags.Items.OBSIDIAN)
-                .define('C', DETags.Items.DUSTS_DRACONIUM)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
+        shapedRecipe(DEContent.DISLOCATOR_PEDESTAL)
+                .patternLine(" A ")
+                .patternLine(" B ")
+                .patternLine("CDC")
+                .key('A', Items.STONE_PRESSURE_PLATE)
+                .key('B', Tags.Items.STONE)
+                .key('C', Items.STONE_SLAB)
+                .key('D', Items.BLAZE_POWDER);
 
+        shapedRecipe(DEContent.RAIN_SENSOR)
+                .patternLine(" A ")
+                .patternLine("BCB")
+                .patternLine("DDD")
+                .key('A', Items.BUCKET)
+                .key('B', Tags.Items.DUSTS_REDSTONE)
+                .key('C', Items.STONE_PRESSURE_PLATE)
+                .key('D', Items.STONE_SLAB);
 
-        //        FusionRecipeBuilder.fusionRecipe(ender_energy_manipulator).catalyst(SKELETON_SKULL).energy(12000000).techLevel(WYVERN).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(core_draconium).ingredient(core_wyvern).ingredient(core_draconium).ingredient(ENDER_EYE).build(consumer);
+        shapedRecipe(DEContent.DISENCHANTER)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("EEE")
+                .key('A', Tags.Items.GEMS_EMERALD)
+                .key('B', DEContent.CORE_DRACONIUM)
+                .key('C', Items.ENCHANTED_BOOK)
+                .key('D', Items.ENCHANTING_TABLE)
+                .key('E', Items.BOOKSHELF);
 
+        shapedRecipe(DEContent.CELESTIAL_MANIPULATOR)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("EFE")
+                .key('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('B', Items.CLOCK)
+                .key('C', DETags.Items.INGOTS_DRACONIUM)
+                .key('D', Items.DRAGON_EGG)
+                .key('E', Tags.Items.INGOTS_IRON)
+                .key('F', DEContent.CORE_WYVERN);
 
-        ShapedRecipeBuilder.shaped(DEContent.dislocator_receptacle)
-                .pattern("ABA")
-                .pattern(" C ")
-                .pattern("A A")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DEContent.core_draconium)
-                .define('C', DEContent.infused_obsidian)
-                .unlockedBy("has_dust_draconium", has(DEContent.dislocator))
-                .save(consumer);
+        shapedRecipe(DEContent.ENTITY_DETECTOR)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("EFE")
+                .key('A', Tags.Items.GEMS_LAPIS)
+                .key('B', Items.ENDER_EYE)
+                .key('C', Tags.Items.DUSTS_REDSTONE)
+                .key('D', DETags.Items.INGOTS_DRACONIUM)
+                .key('E', Tags.Items.INGOTS_IRON)
+                .key('F', DEContent.CORE_DRACONIUM);
 
+        shapedRecipe(DEContent.ENTITY_DETECTOR_ADVANCED)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("EFE")
+                .key('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('B', Items.SKELETON_SKULL)
+                .key('C', Tags.Items.STORAGE_BLOCKS_LAPIS)
+                .key('D', Tags.Items.GEMS_DIAMOND)
+                .key('E', DETags.Items.INGOTS_DRACONIUM)
+                .key('F', DEContent.ENTITY_DETECTOR);
 
-        ShapedRecipeBuilder.shaped(DEContent.dislocator_pedestal)
-                .pattern(" A ")
-                .pattern(" B ")
-                .pattern("CDC")
-                .define('A', Items.STONE_PRESSURE_PLATE)
-                .define('B', Tags.Items.STONE)
-                .define('C', Items.STONE_SLAB)
-                .define('D', Items.BLAZE_POWDER)
-                .unlockedBy("has_dust_draconium", has(DEContent.dislocator))
-                .save(consumer);
+        shapedRecipe(DEContent.FLUID_GATE)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DEContent.POTENTIOMETER)
+                .key('C', Items.BUCKET)
+                .key('D', DEContent.CORE_DRACONIUM)
+                .key('E', Items.COMPARATOR);
 
+        shapedRecipe(DEContent.FLUX_GATE)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', DEContent.POTENTIOMETER)
+                .key('C', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .key('D', DEContent.CORE_DRACONIUM)
+                .key('E', Items.COMPARATOR);
 
-        ShapedRecipeBuilder.shaped(DEContent.rain_sensor)
-                .pattern(" A ")
-                .pattern("BCB")
-                .pattern("DDD")
-                .define('A', Items.BUCKET)
-                .define('B', Tags.Items.DUSTS_REDSTONE)
-                .define('C', Items.STONE_PRESSURE_PLATE)
-                .define('D', Items.STONE_SLAB)
-                .unlockedBy("has_STONE_SLAB", has(Items.STONE_SLAB))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.disenchanter)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("EEE")
-                .define('A', Tags.Items.GEMS_EMERALD)
-                .define('B', DEContent.core_draconium)
-                .define('C', Items.ENCHANTED_BOOK)
-                .define('D', Items.ENCHANTING_TABLE)
-                .define('E', Items.BOOKSHELF)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.celestial_manipulator)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("EFE")
-                .define('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('B', Items.CLOCK)
-                .define('C', DETags.Items.INGOTS_DRACONIUM)
-                .define('D', Items.DRAGON_EGG)
-                .define('E', Tags.Items.INGOTS_IRON)
-                .define('F', DEContent.core_wyvern)
-                .unlockedBy("has_ingot_draconium", has(DETags.Items.INGOTS_DRACONIUM))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.entity_detector)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("EFE")
-                .define('A', Tags.Items.GEMS_LAPIS)
-                .define('B', Items.ENDER_EYE)
-                .define('C', Tags.Items.DUSTS_REDSTONE)
-                .define('D', DETags.Items.INGOTS_DRACONIUM)
-                .define('E', Tags.Items.INGOTS_IRON)
-                .define('F', DEContent.core_draconium)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.entity_detector_advanced)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("EFE")
-                .define('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('B', Items.SKELETON_SKULL)
-                .define('C', Tags.Items.STORAGE_BLOCKS_LAPIS)
-                .define('D', Tags.Items.GEMS_DIAMOND)
-                .define('E', DETags.Items.INGOTS_DRACONIUM)
-                .define('F', DEContent.entity_detector)
-                .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.fluid_gate)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("AEA")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DEContent.potentiometer)
-                .define('C', Items.BUCKET)
-                .define('D', DEContent.core_draconium)
-                .define('E', Items.COMPARATOR)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.flux_gate)
-                .pattern("ABA")
-                .pattern("CDC")
-                .pattern("AEA")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', DEContent.potentiometer)
-                .define('C', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-                .define('D', DEContent.core_draconium)
-                .define('E', Items.COMPARATOR)
-                .unlockedBy("has_dust_draconium", has(DEContent.dust_draconium))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(DEContent.dislocation_inhibitor)
-                .pattern("AAA")
-                .pattern("BCB")
-                .pattern("AAA")
-                .define('A', Tags.Items.INGOTS_IRON)
-                .define('B', Items.IRON_BARS)
-                .define('C', DEContent.magnet)
-                .unlockedBy("has_magnet", has(DEContent.magnet))
-                .save(consumer);
-
-
-        //        ShapedRecipeBuilder.shaped(info_tablet).pattern("AAA").pattern("ABA").pattern("AAA").define('A', Tags.Items.STONE).define('B', DUSTS_DRACONIUM).build(consumer);
-
-
+        shapedRecipe(DEContent.DISLOCATION_INHIBITOR)
+                .patternLine("AAA")
+                .patternLine("BCB")
+                .patternLine("AAA")
+                .key('A', Tags.Items.INGOTS_IRON)
+                .key('B', Items.IRON_BARS)
+                .key('C', DEContent.MAGNET);
     }
 
-    private static void compress3x3(ItemLike output, ItemLike input, Consumer<FinishedRecipe> consumer) {
-        ResourceLocation name = output.asItem().getRegistryName();
-        ShapedRecipeBuilder.shaped(output)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .define('#', input)
-                .unlockedBy("has_" + input.asItem().getRegistryName().getPath(), has(input))
-                .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
+    private void compress3x3(Supplier<? extends ItemLike> output, Supplier<? extends ItemLike> input) {
+        shapedRecipe(output, "compress")
+                .patternLine("###")
+                .patternLine("###")
+                .patternLine("###")
+                .key('#', input);
     }
 
-    private static void compress3x3(ItemLike output, TagKey<Item> input, String inputName, Consumer<FinishedRecipe> consumer) {
-        ResourceLocation name = output.asItem().getRegistryName();
-        ShapedRecipeBuilder.shaped(output)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .define('#', input)
-                .unlockedBy("has_" + inputName, has(input))
-                .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
+    private void compress3x3(Supplier<? extends ItemLike> output, TagKey<Item> input) {
+        shapedRecipe(output, "compress")
+                .patternLine("###")
+                .patternLine("###")
+                .patternLine("###")
+                .key('#', input);
     }
 
-    private static void compress2x2(ItemLike output, ItemLike input, Consumer<FinishedRecipe> consumer) {
-        ResourceLocation name = output.asItem().getRegistryName();
-        ShapedRecipeBuilder.shaped(output)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .define('#', input)
-                .unlockedBy("has_" + input.asItem().getRegistryName().getPath(), has(input))
-                .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
+    private void compress2x2(Supplier<? extends ItemLike> output, Supplier<? extends ItemLike> input) {
+        shapedRecipe(output, "compress")
+                .patternLine("###")
+                .patternLine("###")
+                .patternLine("###")
+                .key('#', input);
     }
 
-    private static void deCompress(ItemLike output, int count, ItemLike from, Consumer<FinishedRecipe> consumer) {
-        ResourceLocation name = output.asItem().getRegistryName();
-        ShapelessRecipeBuilder.shapeless(output, count)
-                .requires(from)
-                .unlockedBy("has_" + from.asItem().getRegistryName().getPath(), has(from))
-                .save(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
+    private void deCompress(Supplier<? extends ItemLike> output, int count, Supplier<? extends ItemLike> from) {
+        shapelessRecipe(output, count, "decompress")
+                .addIngredient(from);
     }
 
-    private static void deCompress(ItemLike output, int count, TagKey<Item> from, String hasName, Consumer<FinishedRecipe> consumer) {
-        ResourceLocation name = output.asItem().getRegistryName();
-        ShapelessRecipeBuilder.shapeless(output, count)
-                .requires(from)
-                .unlockedBy("has_" + hasName, has(from))
-                .save(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
+    private void deCompress(Supplier<? extends ItemLike> output, int count, TagKey<Item> from) {
+        shapelessRecipe(output, count, "decompress")
+                .addIngredient(from);
     }
 
-    private static void deCompress(ItemLike output, ItemLike from, Consumer<FinishedRecipe> consumer) {
-        deCompress(output, 9, from, consumer);
+    private void deCompress(Supplier<? extends ItemLike> output, Supplier<? extends ItemLike> from) {
+        deCompress(output, 9, from);
     }
 
-    private static void deCompress(ItemLike output, TagKey<Item> from, String hasName, Consumer<FinishedRecipe> consumer) {
-        deCompress(output, 9, from, hasName, consumer);
+    private void deCompress(Supplier<? extends ItemLike> output, TagKey<Item> from) {
+        deCompress(output, 9, from);
     }
 
-    public static String folder(String folder, IForgeRegistryEntry<?> key) {
-        return DraconicEvolution.MODID + ":" + folder + "/" + key.getRegistryName().getPath();
-    }
+//    public String folder(String folder, IForgeRegistryEntry<?> key) {
+//        return DraconicEvolution.MODID + ":" + folder + "/" + key.getRegistryName().getPath();
+//    }
+//
+//    public String folder(String folder, String name) {
+//        return DraconicEvolution.MODID + ":" + folder + "/" + name;
+//    }
+//
+//    public InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
+//        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
+//    }
 
-    public static String folder(String folder, String name) {
-        return DraconicEvolution.MODID + ":" + folder + "/" + name;
-    }
-
-    public static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
-        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
-    }
-
-    @Override
-    public void run(HashCache cache) {
-        super.run(cache);
-    }
-
-    public static class NBTIngredient extends net.minecraftforge.common.crafting.NBTIngredient {
+//    @Override
+//    public void run(HashCache cache) {
+//        super.run(cache);
+//    }
+//
+    public static class NBTIngredient extends StrictNBTIngredient {
         public NBTIngredient(ItemStack stack) {
             super(stack);
         }
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, ResourceLocation id) {
+        return builder(FusionRecipeBuilder.builder(result.get(), 1, id));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(ItemLike result) {
+        return builder(FusionRecipeBuilder.builder(result));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(ItemLike result, int count) {
+        return builder(FusionRecipeBuilder.builder(new ItemStack(result, count)));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result) {
+        return builder(FusionRecipeBuilder.builder(result.get(), 1));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count) {
+        return builder(FusionRecipeBuilder.builder(new ItemStack(result.get(), count)));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(ItemStack result) {
+        return builder(FusionRecipeBuilder.builder(result, ForgeRegistries.ITEMS.getKey(result.getItem())));
+    }
+
+    protected FusionRecipeBuilder fusionRecipe(ItemStack result, ResourceLocation id) {
+        return builder(FusionRecipeBuilder.builder(result, id));
+    }
+
+    protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapedRecipeBuilder shapedRecipe(ItemLike result, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.asItem());
+        return builder(ShapedRecipeBuilder.builder(result, 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), count), new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, ResourceLocation id) {
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), id));
     }
 }

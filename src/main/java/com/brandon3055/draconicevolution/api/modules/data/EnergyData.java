@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public record EnergyData(long capacity, long transfer) implements ModuleData<Ene
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         long capacity = capacity();
         long transfer = transfer();
-        map.put(new TranslatableComponent("module.draconicevolution.energy.capacity"), new TranslatableComponent("module.draconicevolution.energy.capacity.value", ModuleData.formatNumber(capacity)));
-        map.put(new TranslatableComponent("module.draconicevolution.energy.transfer"), new TranslatableComponent("module.draconicevolution.energy.transfer.value", ModuleData.formatNumber(transfer)));
+        map.put(Component.translatable("module.draconicevolution.energy.capacity"), Component.translatable("module.draconicevolution.energy.capacity.value", ModuleData.formatNumber(capacity)));
+        map.put(Component.translatable("module.draconicevolution.energy.transfer"), Component.translatable("module.draconicevolution.energy.transfer.value", ModuleData.formatNumber(transfer)));
     }
 }

@@ -51,11 +51,11 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
      * @return the display name for this config property. e.g. Mining AOE
      */
     public Component getDisplayName() {
-        return displayName == null ? new TranslatableComponent("item_prop.draconicevolution." + name) : displayName.get();
+        return displayName == null ? Component.translatable("item_prop.draconicevolution." + name) : displayName.get();
     }
 
     public Component getToolTip() {
-        return toolTip == null ? new TranslatableComponent("item_prop.draconicevolution." + name + ".info") : toolTip.get();
+        return toolTip == null ? Component.translatable("item_prop.draconicevolution." + name + ".info") : toolTip.get();
     }
 
     /**

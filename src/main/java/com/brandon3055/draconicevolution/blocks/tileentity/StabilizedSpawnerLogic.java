@@ -6,15 +6,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,9 +35,6 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
     public StabilizedSpawnerLogic(TileStabilizedSpawner tile) {
         this.tile = tile;
     }
-
-    @Override
-    public void setEntityId(EntityType<?> type) {}
 
     @Override
     public void clientTick(Level level, BlockPos pos) {
@@ -71,7 +72,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
             boolean flag = false;
             int successCount = 0;
             for (int i = 0; i < tier.getSpawnCount() + tier.ordinal() + 3; ++i) {
-                Entity entity = DEContent.mob_soul.createEntity(level, tile.mobSoul.get());
+                Entity entity = DEContent.MOB_SOUL.get().createEntity(level, tile.mobSoul.get());
 
                 do {
                     double spawnX = (double) pos.getX() + (level.random.nextDouble() - level.random.nextDouble()) * (double) this.spawnRange + 0.5D;
@@ -89,14 +90,14 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
                 LivingEntity entityliving = entity instanceof LivingEntity ? (LivingEntity) entity : null;
                 entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), level.random.nextFloat() * 360.0F, 0.0F);
 
-                if (entityliving == null || !(entityliving instanceof Mob) || canEntitySpawnSpawner((Mob) entityliving, tile.getLevel(), (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), this)) {
+                if (entityliving == null || !(entityliving instanceof Mob) || canEntitySpawnSpawner((Mob) entityliving, (ServerLevel) tile.getLevel(), (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), this)) {
                     if (!tier.requiresPlayer() && entity instanceof Mob) {
                         ((Mob) entity).setPersistenceRequired();
                         entity.getPersistentData().putLong("DESpawnedMob", System.currentTimeMillis());
                         DEEventHandler.onMobSpawnedBySpawner((Mob) entity);
                     }
 
-                    if (!((ServerLevel) level).tryAddFreshEntityWithPassengers(entity)) {
+                    if (!level.tryAddFreshEntityWithPassengers(entity)) {
                         this.resetTimer();
                         return;
                     }
@@ -130,13 +131,13 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
         }
     }
 
-    public boolean canEntitySpawnSpawner(Mob entity, Level world, float x, float y, float z, BaseSpawner spawner) {
-        Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, spawner, MobSpawnType.SPAWNER);
-        if (result == Event.Result.DEFAULT) {
-            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(world, MobSpawnType.SPAWNER)) && entity.checkSpawnObstruction(world);
-        } else {
-            return result == Event.Result.ALLOW;
+    public boolean canEntitySpawnSpawner(Mob entity, ServerLevel level, float x, float y, float z, BaseSpawner spawner) {
+        var event = new MobSpawnEvent.PositionCheck(entity, level, MobSpawnType.SPAWNER, null);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.getResult() == Event.Result.DEFAULT) {
+            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(level, MobSpawnType.SPAWNER)) && entity.checkSpawnObstruction(level);
         }
+        return event.getResult() == Event.Result.ALLOW;
     }
 
     private void resetTimer() {
@@ -185,7 +186,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
 
     @Nullable
     @Override
-    public Entity getOrCreateDisplayEntity(Level level) {
+    public Entity getOrCreateDisplayEntity(Level pLevel, RandomSource pRandom, BlockPos pPos) {
         return tile.getRenderEntity();
     }
 

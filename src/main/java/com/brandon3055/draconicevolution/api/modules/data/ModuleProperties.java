@@ -4,11 +4,8 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -73,16 +70,22 @@ public class ModuleProperties<T extends ModuleData<T>> {
      * @param toolTip the item tool tip.
      */
     public void addStats(List<Component> toolTip, Module<?> module, ModuleContext context) {
-        toolTip.add(new TranslatableComponent("module.draconicevolution.module_type")
+        toolTip.add(Component.translatable("module.draconicevolution.module_type")
                 .withStyle(ChatFormatting.GRAY)
                 .append(": ")
-                .append(module.getType().getDisplayName()
-                        .withStyle(techLevel.getTextColour())));
-        toolTip.add(new TranslatableComponent("module.draconicevolution.grid_size")
+                .append(module.getType()
+                        .getDisplayName()
+                        .copy()
+                        .withStyle(techLevel.getTextColour())
+                )
+        );
+        toolTip.add(Component.translatable("module.draconicevolution.grid_size")
                 .withStyle(ChatFormatting.GRAY)
                 .append(": ")
-                .append(new TextComponent(getWidth() + "x" + getHeight())
-                        .withStyle(ChatFormatting.DARK_GREEN)));
+                .append(Component.literal(getWidth() + "x" + getHeight())
+                        .withStyle(ChatFormatting.DARK_GREEN)
+                )
+        );
 
         Map<Component, Component> map = new HashMap<>();
         getData().addInformation(map, context);

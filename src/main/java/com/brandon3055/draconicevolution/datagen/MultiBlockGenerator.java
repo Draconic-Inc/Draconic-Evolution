@@ -31,14 +31,14 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier1() {
         builder("energy_core_1")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .addRow("X")
                 .build();
     }
 
     private void buildTier2() {
         builder("energy_core_2")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .setOrigin(new BlockPos(1, 1, 1))
 
@@ -59,7 +59,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier3() {
         builder("energy_core_3")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .setOrigin(new BlockPos(1, 1, 1))
 
@@ -80,7 +80,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier4() {
         builder("energy_core_4")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .key('R', Tags.Blocks.STORAGE_BLOCKS_REDSTONE)
                 .setOrigin(new BlockPos(2, 2, 2))
@@ -120,7 +120,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier5() {
         builder("energy_core_5")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .key('R', Tags.Blocks.STORAGE_BLOCKS_REDSTONE)
                 .setOrigin(new BlockPos(3, 3, 3))
@@ -186,7 +186,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier6() {
         builder("energy_core_6")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .key('R', Tags.Blocks.STORAGE_BLOCKS_REDSTONE)
                 .setOrigin(new BlockPos(4, 4, 4))
@@ -286,7 +286,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier7() {
         builder("energy_core_7")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .key('R', Tags.Blocks.STORAGE_BLOCKS_REDSTONE)
                 .setOrigin(new BlockPos(5, 5, 5))
@@ -429,7 +429,7 @@ public class MultiBlockGenerator extends MultiBlockProvider {
 
     private void buildTier8() {
         builder("energy_core_8")
-                .key('X', DEContent.energy_core)
+                .key('X', DEContent.ENERGY_CORE)
                 .key('D', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM)
                 .key('A', DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED)
                 .setOrigin(new BlockPos(6, 6, 6))

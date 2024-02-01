@@ -38,12 +38,12 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         TileGenerator.Mode mode = tile.mode.get();
         if (activeSound == null || activeSound.isStopped()) {
             if (mode.index >= 2) {
-                activeSound = new GeneratorSound(tile, DESounds.generator2, startHigh ? 1.5F : 0.5F);
+                activeSound = new GeneratorSound(tile, DESounds.GENERATOR2.get(), startHigh ? 1.5F : 0.5F);
                 Minecraft.getInstance().getSoundManager().play(activeSound);
                 currentHigh = true;
             }
             else {
-                activeSound = new GeneratorSound(tile, DESounds.generator1, startHigh ? 1F : 0.5F);
+                activeSound = new GeneratorSound(tile, DESounds.GENERATOR1.get(), startHigh ? 1F : 0.5F);
                 Minecraft.getInstance().getSoundManager().play(activeSound);
                 currentHigh = false;
             }
@@ -77,7 +77,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         boolean fadeDown = false;
 
         public GeneratorSound(TileGenerator tile, SoundEvent sound, float startPitch) {
-            super(sound, SoundSource.BLOCKS, 0.3F, 1F, tile.getBlockPos());
+            super(sound, SoundSource.BLOCKS, 0.3F, 1F, tile.getLevel().random, tile.getBlockPos());
             this.tile = tile;
             this.looping = true;
             this.pitch = startPitch;

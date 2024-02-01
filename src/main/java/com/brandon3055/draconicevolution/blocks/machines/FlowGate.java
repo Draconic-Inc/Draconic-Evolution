@@ -1,18 +1,13 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -31,7 +26,7 @@ public class FlowGate extends EntityBlockBCore {
         super(properties);
         this.fluxGate = fluxGate;
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
-        setBlockEntity(() -> fluxGate ? DEContent.tile_flux_gate : DEContent.tile_fluid_gate, true);
+        setBlockEntity(() -> fluxGate ? DEContent.TILE_FLUX_GATE.get() : DEContent.TILE_FLUID_GATE.get(), true);
     }
 
     @Override

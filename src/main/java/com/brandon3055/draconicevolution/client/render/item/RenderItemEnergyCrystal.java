@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.colour.Colour;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.item.IItemRenderer;
@@ -13,6 +14,7 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.client.DEShaders;
@@ -24,7 +26,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -72,7 +76,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     //endregion
 
     @Override
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         int tier = techLevel.index;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -86,20 +90,20 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
         if (type == CrystalType.CRYSTAL_IO) {
             ccrs.bind(crystalBaseType, getter);
             crystalBase.render(ccrs, mat);
-            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
+            mat.apply(new Rotation(TimeKeeper.getClientTick() / 400F, 0, 1, 0));
             ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
             ccrs.bind(RenderTileEnergyCrystal.crystalType, getter);
             crystalHalf.render(ccrs, mat);
         } else {
             ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
-            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
+            mat.apply(new Rotation(TimeKeeper.getClientTick() / 400F, 0, 1, 0));
             ccrs.bind(RenderTileEnergyCrystal.crystalType, getter);
             crystalFull.render(ccrs, mat);
         }
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

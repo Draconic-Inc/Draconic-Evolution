@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
@@ -177,16 +176,16 @@ public class ModuleGrid {
     public InstallResult checkInstall(ModuleEntity<?> entity) {
         ModuleHost host = getModuleHost();
         if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.level_high"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.level_high"));
         }
         if (!host.isModuleSupported(entity)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.not_supported"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.not_supported"));
         }
         if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {

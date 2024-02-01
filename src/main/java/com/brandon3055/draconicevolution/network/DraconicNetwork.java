@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.event.EventNetworkChannel;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -138,8 +139,8 @@ public class DraconicNetwork {
     public static void sendUndyingActivation(LivingEntity target, Item item) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_UNDYING_ACTIVATION);
         packet.writeVarInt(target.getId());
-        packet.writeRegistryId(item);
-        packet.sendToChunk(target.level, target.blockPosition());
+        packet.writeRegistryId(ForgeRegistries.ITEMS, item);
+        packet.sendToChunk(target.level(), target.blockPosition());
     }
 
     public static void sendDislocatorMessage(int id, Consumer<MCDataOutput> callback) {
@@ -153,7 +154,7 @@ public class DraconicNetwork {
         PacketCustom packet = new PacketCustom(CHANNEL, C_BLINK);
         packet.writeVarInt(player.getId());
         packet.writeFloat(distance);
-        packet.sendToChunk(player.level, player.blockPosition());
+        packet.sendToChunk(player.level(), player.blockPosition());
     }
 
     public static void sendStaffEffect(LivingEntity source, int damageType, Consumer<MCDataOutput> callback) {
@@ -161,7 +162,7 @@ public class DraconicNetwork {
         packet.writeByte(damageType);
         packet.writeVarInt(source.getId());
         callback.accept(packet);
-        packet.sendToChunk(source.level, source.blockPosition());
+        packet.sendToChunk(source.level(), source.blockPosition());
     }
 
     public static void sendFusionRecipeMove(IFusionRecipe recipe, boolean maxTransfer) {
@@ -185,7 +186,7 @@ public class DraconicNetwork {
         packet.writeByte(phase.getType().getId());
         packet.writeByte(func);
         if (callBack != null) callBack.accept(packet);
-        packet.sendToChunk(entity.level, entity.blockPosition());
+        packet.sendToChunk(entity.level(), entity.blockPosition());
     }
 
     public static void sendBossShieldPacket(ServerPlayer player, UUID id, int operation, Consumer<MCDataOutput> callBack) {

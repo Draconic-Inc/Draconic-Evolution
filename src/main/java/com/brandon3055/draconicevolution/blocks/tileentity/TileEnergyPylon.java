@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -29,13 +30,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -128,7 +129,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
 
     public TileEnergyPylon(BlockPos pos, BlockState state) {
-        super(DEContent.tile_energy_pylon, pos, state);
+        super(DEContent.TILE_ENERGY_PYLON.get(), pos, state);
         capManager.set(CapabilityOP.OP, opAdapter);
         enableTileDebug();
     }
@@ -219,7 +220,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         BlockPos max = worldPosition.offset(18, 18, 18).offset(offset);
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
+            if (level.getBlockState(blockPos).is(DEContent.ENERGY_CORE.get())) {
                 if (level.getBlockEntity(blockPos) instanceof TileEnergyCore tile && tile.active.get()) {
                     list.add(tile);
                 }
@@ -267,10 +268,10 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
                     colour.set(getGlassColour(testState));
                     StructureBlock.buildingLock = true;
                     level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, dir));
-                    level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                    level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                     StructureBlock.buildingLock = false;
                     if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
-                        tile.blockName.set(testState.getBlock().getRegistryName());
+                        tile.blockName.set(ForgeRegistries.BLOCKS.getKey(testState.getBlock()));
                         tile.setController(this);
                         direction.set(dir);
                         found = true;
@@ -322,7 +323,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         BlockPos thisPos = worldPosition.relative(direction.get());
         Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(core.getBlockPos()).add(0.5, 0.5, 0.5));
-        double coreDistance = Utils.getDistance(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(core.getBlockPos().offset(0.5, 0.5, 0.5)));
+        double coreDistance = Utils.getDistance(new Vec3D(thisPos).add(0.5, 0.5, 0.5), Vec3D.getCenter(core.getBlockPos()));
 
         for (int i = 0; i < 100; i++) {
             double location = i / 100D;
@@ -342,7 +343,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
-        Random rand = level.random;
+        RandomSource rand = level.random;
         if (getCore() == null || particleRate.get() <= 0) return;
         if (particleRate.get() > 20) particleRate.set((byte) 20);
 
@@ -374,7 +375,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Vec3D getParticleSpawn(Random random) {
+    private Vec3D getParticleSpawn(RandomSource random) {
         if (ioMode.get().canExtract()) {
             double range = core.tier.get();
             return new Vec3D(core.getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
@@ -384,7 +385,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Vec3D getParticleDest(Random random) {
+    private Vec3D getParticleDest(RandomSource random) {
         if (ioMode.get().canExtract()) {
             return Vec3D.getCenter(worldPosition.relative(direction.get()));
         } else {
@@ -399,8 +400,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return false;
     }
 

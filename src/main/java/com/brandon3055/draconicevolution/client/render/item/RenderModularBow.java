@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
@@ -25,17 +26,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -79,7 +79,7 @@ public class RenderModularBow extends ToolRenderBase {
         @Override
         public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int i) {
             RenderModularBow.this.entity = entity;
-            RenderModularBow.this.world = world == null ? entity == null ? null : (ClientLevel) entity.level : null;
+            RenderModularBow.this.world = world == null ? entity == null ? null : (ClientLevel) entity.level() : null;
             return originalModel;
         }
     };
@@ -90,23 +90,23 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.46, 0.54, 0.5, gui ? 0.9 : 1.125);
         double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getDeltaFrameTime());
 
-        basePart.render(transform, buffers, mat);
+        basePart.render(context, buffers, mat);
 
         Matrix4 bottomMat = mat.copy();
         bottomMat.rotate(MathHelper.torad * 180, Vector3.Y_POS);
 
-        materialPart.render(transform, buffers, mat);
-        materialPart.render(transform, buffers, bottomMat);
+        materialPart.render(context, buffers, mat);
+        materialPart.render(context, buffers, bottomMat);
 
         boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= EnergyUtils.getEnergyStored(stack));
-        drawStrings(ccrs, transform, mat, bottomMat, buffers, drawAngle, hasPower);
+        drawStrings(ccrs, context, mat, bottomMat, buffers, drawAngle, hasPower);
     }
 
-    private void drawStrings(CCRenderState ccrs, TransformType transform, Matrix4 topMat, Matrix4 bottomMat, MultiBufferSource buffers, double drawAngle, boolean isCharged) {
+    private void drawStrings(CCRenderState ccrs, ItemDisplayContext context, Matrix4 topMat, Matrix4 bottomMat, MultiBufferSource buffers, double drawAngle, boolean isCharged) {
         glUniformStringBaseColor(DEShaders.BOW_STRING_SHADER);
         VertexConsumer builder = new TransformingVertexConsumer(buffers.getBuffer(bowStringType), topMat);
 
@@ -128,8 +128,8 @@ public class RenderModularBow extends ToolRenderBase {
 
         topMat = topMat.copy().apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
         bottomMat = bottomMat.copy().apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
-        gemPart.render(transform, buffers, topMat);
-        gemPart.render(transform, buffers, bottomMat);
+        gemPart.render(context, buffers, topMat);
+        gemPart.render(context, buffers, bottomMat);
     }
 
     private void renderBeam(VertexConsumer buffer, Vector3 source, Vector3 target, int packedLight) {
@@ -206,7 +206,7 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BOW;
     }
 

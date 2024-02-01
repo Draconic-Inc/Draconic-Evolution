@@ -55,7 +55,7 @@ public class PlacedItem extends EntityBlockBCore {
     public PlacedItem(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
-        setBlockEntity(() -> DEContent.tile_placed_item, true);
+        setBlockEntity(DEContent.TILE_PLACED_ITEM::get, true);
     }
 
     private static VoxelShape computeShape(int stackCount, boolean tool, boolean[] isBlock, Direction facing, boolean getCollisionShape) {
@@ -157,9 +157,6 @@ public class PlacedItem extends EntityBlockBCore {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {

@@ -36,7 +36,7 @@ public class EnergyPylon extends EntityBlockBCore {
     public EnergyPylon(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(MODE, Mode.OUTPUT).setValue(FACING, Direction.UP));
-        setBlockEntity(() -> DEContent.tile_energy_pylon, true);
+        setBlockEntity(DEContent.TILE_ENERGY_PYLON::get, true);
     }
 
     @Override

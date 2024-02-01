@@ -31,7 +31,6 @@ import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -206,7 +205,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.device_invalid").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.device_invalid").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
@@ -217,45 +216,45 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (getLinks().contains(te.getBlockPos())) {
             breakLink(te.getBlockPos());
             target.breakLink(worldPosition);
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
             return true;
         }
         //endregion
 
         //region Check if both devices to see if ether of them have reached their connection limit.
         if (getLinks().size() >= maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_limit_reached_this").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_limit_reached_this").withStyle(ChatFormatting.RED), 99);
             return false;
         } else if (target.getLinks().size() >= target.maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_limit_reached_target").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_limit_reached_target").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region Check both devices are in range
         if (!Utils.inRangeSphere(worldPosition, linkTarget, maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.this_range_limit").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.this_range_limit").withStyle(ChatFormatting.RED), 99);
             return false;
         } else if (!Utils.inRangeSphere(worldPosition, linkTarget, target.maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.target_range_limit").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.target_range_limit").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region All checks have passed. Make the link!
         if (!target.createLink(this)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
         if (!createLink(target)) {
             //Ensure we don't leave a half linked device if this fails.
             target.breakLink(worldPosition);
-            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
-        ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
+        ChatHelper.sendDeDupeIndexed(player, Component.translatable("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
         return true;
         //endregion
     }
@@ -461,8 +460,8 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     public void addDisplayData(List<Component> displayList) {
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
-        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_charge").append(": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]").withStyle(ChatFormatting.BLUE));
-        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_links").append(": " + getLinks().size() + " / " + maxLinks()).withStyle(ChatFormatting.GREEN));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.hud_charge").append(": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]").withStyle(ChatFormatting.BLUE));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.hud_links").append(": " + getLinks().size() + " / " + maxLinks()).withStyle(ChatFormatting.GREEN));
     }
 
     @Override

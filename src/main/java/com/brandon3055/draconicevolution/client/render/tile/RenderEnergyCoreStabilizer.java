@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
-import com.brandon3055.draconicevolution.client.DEShaders;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Quaternionf;
 
 import java.util.Map;
 
@@ -62,11 +63,11 @@ public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnerg
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-            poseStack.mulPose(new Quaternion(facing.getStepY() * 90, facing.getStepX() * -90, 0, true));
+            poseStack.mulPose(new Quaternionf().rotationXYZ(facing.getStepY() * 90 * (float)MathHelper.torad, facing.getStepX() * -90 * (float)MathHelper.torad, 0));
         } else if (facing == Direction.SOUTH) {
-            poseStack.mulPose(new Quaternion(0, 180F, 0, true));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180F));
         }
-        poseStack.mulPose(new Quaternion(0, 0F, tile.rotation + (coreActive ? partialTicks : 0), true));
+        poseStack.mulPose(Axis.YP.rotationDegrees(tile.rotation + (coreActive ? partialTicks : 0)));
         poseStack.translate(0, -1.5, 0);
         ccrs.bind(coreActive ? MODEL_TYPE_ACTIVE : MODEL_TYPE, getter, poseStack);
         model.render(ccrs);

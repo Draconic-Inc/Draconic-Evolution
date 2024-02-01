@@ -43,7 +43,7 @@ public class TileChaosCrystal extends TileBCore {
     private int soundTimer;
 
     public TileChaosCrystal(BlockPos pos, BlockState state) {
-        super(DEContent.tile_chaos_crystal, pos, state);
+        super(DEContent.TILE_CHAOS_CRYSTAL.get(), pos, state);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class TileChaosCrystal extends TileBCore {
             posLock.set(worldPosition.asLong());
             dimLock.set(level.dimension().location().toString());
             for (int i = 1; i <= 2; i++) {
-                level.setBlockAndUpdate(worldPosition.above(i), DEContent.chaos_crystal_part.defaultBlockState());
-                level.setBlockAndUpdate(worldPosition.below(i), DEContent.chaos_crystal_part.defaultBlockState());
+                level.setBlockAndUpdate(worldPosition.above(i), DEContent.CHAOS_CRYSTAL_PART.get().defaultBlockState());
+                level.setBlockAndUpdate(worldPosition.below(i), DEContent.CHAOS_CRYSTAL_PART.get().defaultBlockState());
                 BlockEntity tile = level.getBlockEntity(worldPosition.above(i));
                 if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(worldPosition);
                 tile = level.getBlockEntity(worldPosition.below(i));
@@ -62,7 +62,7 @@ public class TileChaosCrystal extends TileBCore {
             validatePlacement = false;
         }
 
-        if (getBlockState().getBlock() != DEContent.chaos_crystal) return;
+        if (!getBlockState().is(DEContent.CHAOS_CRYSTAL.get())) return;
         tick++;
 
         if (tick > 1 && !level.isClientSide && hasBeenMoved()) {
@@ -72,7 +72,7 @@ public class TileChaosCrystal extends TileBCore {
         if (!level.isClientSide && soundTimer-- <= 0) {
             soundTimer = 3600 + level.random.nextInt(1200);
 //            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
-            BCoreNetwork.sendSound(level, worldPosition, DESounds.chaosChamberAmbient, SoundSource.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
+            BCoreNetwork.sendSound(level, worldPosition, DESounds.CHAOS_CHAMBER_AMBIENT.get(), SoundSource.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
         }
 
         if (!level.isClientSide && level instanceof ServerLevel && guardianDefeated.get() && level.random.nextInt(50) == 0) {
@@ -114,14 +114,14 @@ public class TileChaosCrystal extends TileBCore {
             Level world = level;
             BlockPos pos = worldPosition;
             ProcessHandler.addProcess(new DelayedTask.Task(1, () -> {
-                world.setBlock(pos, DEContent.chaos_crystal.defaultBlockState(), 3);
+                world.setBlock(pos, DEContent.CHAOS_CRYSTAL.get().defaultBlockState(), 3);
                 TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getBlockEntity(pos);
                 tileChaosShard.onValidPlacement();
             }));
             return;
         }
 
-        Block.popResource(level, worldPosition, new ItemStack(DEContent.chaos_shard, DEConfig.chaosDropCount));
+        Block.popResource(level, worldPosition, new ItemStack(DEContent.CHAOS_SHARD.get(), DEConfig.chaosDropCount));
         level.removeBlock(worldPosition, false);
 
         if (DEOldConfig.disableChaosIslandExplosion || hasBeenMoved()) {

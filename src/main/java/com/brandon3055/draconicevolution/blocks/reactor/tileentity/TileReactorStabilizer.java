@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileReactorStabilizer extends TileReactorComponent {
 
     public TileReactorStabilizer(BlockPos pos, BlockState state) {
-        super(DEContent.tile_reactor_stabilizer, pos, state);
+        super(DEContent.TILE_REACTOR_STABILIZER.get(), pos, state);
         OPExtractor opExtractor = new OPExtractor(this);
         capManager.set(CapabilityOP.OP, opExtractor);
         capManager.setCapSideValidator(opExtractor, face -> face == this.facing.get().getOpposite());

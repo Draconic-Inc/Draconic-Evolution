@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.power.IOInfo;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -14,11 +14,9 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.SlotDisableable;
-import com.brandon3055.brandonscore.inventory.SlotMover;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +52,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     @Override
     public void addElements(GuiElementManager manager) {
         TBasicMachine temp = new TModularMachine(this, tile);
-        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);
         temp.title.setDisplaySupplier(() -> toolkit.i18n("title", tile.tier.get()));

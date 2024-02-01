@@ -1,21 +1,17 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -32,7 +28,7 @@ public class ChaosCrystal extends EntityBlockBCore {
 
     public ChaosCrystal(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_chaos_crystal, true);
+        setBlockEntity(DEContent.TILE_CHAOS_CRYSTAL::get, true);
     }
 
     @Override
@@ -54,9 +50,6 @@ public class ChaosCrystal extends EntityBlockBCore {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
-
-    @Override
     public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {}
 
     @Override
@@ -74,19 +67,17 @@ public class ChaosCrystal extends EntityBlockBCore {
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (placer instanceof Player && ((Player) placer).getAbilities().instabuild) {
-            BlockEntity tile = world.getBlockEntity(pos);
-            if (!world.isClientSide && tile instanceof TileChaosCrystal) {
+            BlockEntity tile = level.getBlockEntity(pos);
+            if (!level.isClientSide && tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).onValidPlacement();
                 ((TileChaosCrystal) tile).guardianDefeated.set(true);
             }
         } else {
-            placer.hurt(punishment, Float.MAX_VALUE);
+            placer.hurt(DEDamage.chaosImplosion(level), Float.MAX_VALUE);
         }
     }
-
-    private static DamageSource punishment = new DamageSource("crystalMoved").bypassInvul().bypassArmor().bypassMagic();
 
 //    @Override
 //    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
@@ -106,7 +97,7 @@ public class ChaosCrystal extends EntityBlockBCore {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 
-        if (state.getBlock() == DEContent.chaos_crystal) {
+        if (state.is(DEContent.CHAOS_CRYSTAL.get())) {
             return SHAPE;
         } else {
             BlockEntity tile = world.getBlockEntity(pos);

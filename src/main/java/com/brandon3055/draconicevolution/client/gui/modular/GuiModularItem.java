@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modular;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -18,14 +18,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,7 +61,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
     public void addElements(GuiElementManager manager) {
         TGuiBase template = new TGuiBase(this);
         //Custom background must be set before template is loaded.
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 
         SupportedModulesIcon supportedModules = new SupportedModulesIcon(container.getModuleHost())
@@ -92,7 +90,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         itemConfig.setHoverText(I18n.get("gui.draconicevolution.modular_item.open_item_config.info"));
         itemConfig.onPressed(() -> DraconicNetwork.sendOpenItemConfig(false));
 
-        GuiButton hudConfig = toolkit.createIconButton(template.background, 16, 9, 16, 8, BCGuiSprites.themedGetter("hud_button"));
+        GuiButton hudConfig = toolkit.createIconButton(template.background, 16, 9, 16, 8, BCGuiTextures.themedGetter("hud_button"));
         hudConfig.onReload(e -> e.setPos(itemConfig.maxXPos() + 1, itemConfig.yPos()));
         hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
         hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));

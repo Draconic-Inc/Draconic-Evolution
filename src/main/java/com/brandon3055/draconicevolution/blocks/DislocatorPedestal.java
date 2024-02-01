@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -11,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +24,7 @@ public class DislocatorPedestal extends EntityBlockBCore {
 
     public DislocatorPedestal(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_dislocator_pedestal, false);
+        setBlockEntity(DEContent.TILE_DISLOCATOR_PEDESTAL::get, false);
     }
 
     @Override

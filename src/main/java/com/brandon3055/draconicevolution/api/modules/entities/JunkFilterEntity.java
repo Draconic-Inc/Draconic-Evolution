@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import codechicken.lib.gui.modular.sprite.Material;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
-import net.minecraft.client.resources.model.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,6 +37,6 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected Material getSlotOverlay() {
-        return BCGuiSprites.get("slots/trash");
+        return BCGuiTextures.get("slots/trash");
     }
 }

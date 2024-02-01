@@ -11,7 +11,7 @@ import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -35,14 +35,14 @@ public class CommandRespawnGuardian {
         }
         Vec3 pos = ctx.getSource().getPosition();
 //        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
-        TileChaosCrystal tile = BlockPos.betweenClosedStream(new BlockPos(pos).offset(-60, -60, -60), new BlockPos(pos).offset(60, 60, 60))
+        TileChaosCrystal tile = BlockPos.betweenClosedStream(BlockPos.containing(pos).offset(-60, -60, -60), BlockPos.containing(pos).offset(60, 60, 60))
                 .filter(e -> ctx.getSource().getLevel().getBlockEntity(e) instanceof TileChaosCrystal)
                 .map(e -> (TileChaosCrystal) ctx.getSource().getLevel().getBlockEntity(e))
                 .findAny()
                 .orElse(null);
 
         if (tile == null) {
-            throw new CommandRuntimeException(new TextComponent("Chaos crystal not detected! Please run this command within 60 blocks of an islands chaos crystal."));
+            throw new CommandRuntimeException(Component.literal("Chaos crystal not detected! Please run this command within 60 blocks of an islands chaos crystal."));
         }
 
         if (tile.parentPos.notNull()) {
@@ -50,7 +50,7 @@ public class CommandRespawnGuardian {
             if (parent instanceof TileChaosCrystal) {
                 tile = (TileChaosCrystal) parent;
             } else {
-                throw new CommandRuntimeException(new TextComponent("Found invalid chaos crystal at this location"));
+                throw new CommandRuntimeException(Component.literal("Found invalid chaos crystal at this location"));
             }
         }
 
@@ -64,12 +64,12 @@ public class CommandRespawnGuardian {
                 .orElse(null);
 
         if (existingFight != null) {
-            throw new CommandRuntimeException(new TextComponent("There should already be a guardian in this area"));
+            throw new CommandRuntimeException(Component.literal("There should already be a guardian in this area"));
         }
 
         tile.guardianDefeated.set(false);
         WorldEntityHandler.addWorldEntity(tile.getLevel(), new GuardianFightManager(tile.getBlockPos()));
-        ctx.getSource().sendSuccess(new TextComponent("Reset Successful. Go to center of island to trigger spawning sequence.").withStyle(ChatFormatting.GREEN), true);
+        ctx.getSource().sendSuccess(() -> Component.literal("Reset Successful. Go to center of island to trigger spawning sequence.").withStyle(ChatFormatting.GREEN), true);
         return 0;
     }
 

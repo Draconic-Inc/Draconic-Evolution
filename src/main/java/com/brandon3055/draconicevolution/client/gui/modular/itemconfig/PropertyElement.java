@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
@@ -12,7 +12,6 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSelectD
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -103,7 +102,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueLabel.setMidTrim(true);
 
         if (advanced && data.propUniqueName == null) {
-            globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCGuiSprites.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
+            globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCGuiTextures.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
             globalButton.setHoverText(I18n.get("gui.draconicevolution.item_config.global.info"));
             globalButton.addChild(new GuiBorderedRect().setColours(0, 0xFF409040, 0xFFBBFFBB).setRelPos(globalButton, -1, -1).setSize(10, 10).setEnabledCallback(() -> data.isGlobal));
             globalButton.onReload(e -> e.setPos(xPos() + 1, yPos() + 1));
@@ -191,7 +190,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         if (isMouseOver(mouseX, mouseY) && !data.isProviderAvailable && !data.isGlobal) {
             PoseStack poseStack = new PoseStack();
             poseStack.translate(0, 0, getRenderZLevel());
-            renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.provider_unavailable"), mouseX, mouseY);
+            renderTooltip(poseStack, Component.translatable("gui.draconicevolution.item_config.provider_unavailable"), mouseX, mouseY);
             return true;
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);

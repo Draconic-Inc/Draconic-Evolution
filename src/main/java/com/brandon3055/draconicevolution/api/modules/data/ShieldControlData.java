@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public record ShieldControlData(int coolDownTicks) implements ModuleData<ShieldC
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        map.put(new TranslatableComponent("module.draconicevolution.shield_control.name"),
-                new TranslatableComponent("module.draconicevolution.shield_control.value", ModuleData.round((coolDownTicks / 20D), 10)));
+        map.put(Component.translatable("module.draconicevolution.shield_control.name"),
+                Component.translatable("module.draconicevolution.shield_control.value", ModuleData.round((coolDownTicks / 20D), 10)));
     }
 }

@@ -21,7 +21,7 @@ import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -106,7 +106,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             Magnet.toggleEnabled(stack, player);
             boolean enabled = Magnet.isEnabled(stack);
 //            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
-            player.displayClientMessage(new TranslatableComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED), true);
+            player.displayClientMessage(Component.translatable("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED), true);
         }
     }
 
@@ -215,7 +215,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     private void jeiFusionTransfer(ServerPlayer sender, PacketCustom packet) {
         ResourceLocation id = packet.readResourceLocation();
         boolean maxTransfer = packet.readBoolean();
-        Recipe<?> recipe = sender.level.getRecipeManager().byKey(id).orElse(null);
+        Recipe<?> recipe = sender.level().getRecipeManager().byKey(id).orElse(null);
         if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof ContainerFusionCraftingCore) {
             FusionRecipeTransferHelper.doServerSideTransfer(sender, (ContainerFusionCraftingCore) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
         }
@@ -229,16 +229,16 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
         HitResult traceResult = player.pick(5, 0, false);
         if (traceResult.getType() == HitResult.Type.BLOCK) {
-            Level world = player.level;
+            Level level = player.level();
             BlockHitResult blockTrace = (BlockHitResult) traceResult;
             BlockPos posHit = blockTrace.getBlockPos();
             if (!com.brandon3055.brandonscore.network.ServerPacketHandler.verifyPlayerPermission(player, posHit)) {
                 return;
             }
 
-            BlockEntity tileHit = world.getBlockEntity(posHit);
+            BlockEntity tileHit = level.getBlockEntity(posHit);
             BlockPos posOnSide = posHit.relative(blockTrace.getDirection());
-            BlockEntity tileOnSide = world.getBlockEntity(posOnSide);
+            BlockEntity tileOnSide = level.getBlockEntity(posOnSide);
 
             if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, true).isEmpty()) {
                 InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, false);
@@ -248,10 +248,10 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).itemHandler, stack, false);
                 player.getInventory().removeItem(stack);
 
-            } else if (world.isEmptyBlock(posOnSide)) {
-                if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(player.level.dimension(), world, posHit), blockTrace.getDirection())) {
-                    world.setBlockAndUpdate(posOnSide, DEContent.placed_item.defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
-                    BlockEntity tile = world.getBlockEntity(posOnSide);
+            } else if (level.isEmptyBlock(posOnSide)) {
+                if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, posHit), blockTrace.getDirection())) {
+                    level.setBlockAndUpdate(posOnSide, DEContent.placed_item.defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
+                    BlockEntity tile = level.getBlockEntity(posOnSide);
 
                     if (tile instanceof TilePlacedItem) {
                         ((TilePlacedItem) tile).itemHandler.setStackInSlot(0, stack);

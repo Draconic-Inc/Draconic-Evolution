@@ -3,111 +3,58 @@ package com.brandon3055.draconicevolution.handlers;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 25/3/2016.
- * This stores all sound events for Brandon's Core
+ * This stores all sound events for Draconic Evolution
  */
-@ObjectHolder(DraconicEvolution.MODID)
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DESounds {
-    @ObjectHolder("energy_bolt")
-    public static SoundEvent energyBolt;
-    @ObjectHolder("fusion_complete")
-    public static SoundEvent fusionComplete;
-    @ObjectHolder("fusion_rotation")
-    public static SoundEvent fusionRotation;
-    @ObjectHolder("charge")
-    public static SoundEvent charge;
-    @ObjectHolder("discharge")
-    public static SoundEvent discharge;
-    @ObjectHolder("boom")
-    public static SoundEvent boom;
-    @ObjectHolder("beam")
-    public static SoundEvent beam;
-    @ObjectHolder("portal")
-    public static SoundEvent portal;
+    private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
+
+    public static void init() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        SOUNDS.register(eventBus);
+    }
+
 //    @ObjectHolder("shield_up")
 //    public static SoundEvent shieldUp;
-    @ObjectHolder("fusion_explosion")
-    public static SoundEvent fusionExplosion;
-    @ObjectHolder("chaos_chamber_ambient")
-    public static SoundEvent chaosChamberAmbient;
-    @ObjectHolder("core_sound")
-    public static SoundEvent coreSound;
-    @ObjectHolder("shield_strike")
-    public static SoundEvent shieldStrike;
-    @ObjectHolder("electric_buzz")
-    public static SoundEvent electricBuzz;
-    @ObjectHolder("sun_dial_effect")
-    public static SoundEvent sunDialEffect;
-    @ObjectHolder("generator1")
-    public static SoundEvent generator1;
-    @ObjectHolder("generator2")
-    public static SoundEvent generator2;
-    @ObjectHolder("generator3")
-    public static SoundEvent generator3;
-    @ObjectHolder("blink")
-    public static SoundEvent blink;
-    @ObjectHolder("staff_charge_electric")
-    public static SoundEvent staffChargeElectric;
-    @ObjectHolder("staff_charge_fire")
-    public static SoundEvent staffChargeFire;
-    @ObjectHolder("staff_hit_default")
-    public static SoundEvent staffHitDefault;
-    @ObjectHolder("staff_hit_electric")
-    public static SoundEvent staffHitElectric;
 //    @ObjectHolder("bow_second_charge")
 //    public static SoundEvent bowSecondCharge;
 //    @ObjectHolder("bow_charge_shot")
 //    public static SoundEvent bowChargeShot;
-    @ObjectHolder("crystal_unstable")
-    public static SoundEvent crystalUnstable;
-    @ObjectHolder("crystal_beam")
-    public static SoundEvent crystalBeam;
-    @ObjectHolder("crystal_destabilize")
-    public static SoundEvent crystalDestabilize;
-    @ObjectHolder("crystal_restore")
-    public static SoundEvent crystalRestore;
-    @ObjectHolder("guardian_thonk")
-    public static SoundEvent guardianThonk;
 
-
-    @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "energy_bolt")).setRegistryName("energy_bolt"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_complete")).setRegistryName("fusion_complete"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_rotation")).setRegistryName("fusion_rotation"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "charge")).setRegistryName("charge"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "discharge")).setRegistryName("discharge"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "boom")).setRegistryName("boom"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "beam")).setRegistryName("beam"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "portal")).setRegistryName("portal"));
-//        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "shield_up")).setRegistryName("shield_up"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_explosion")).setRegistryName("fusion_explosion"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "chaos_chamber_ambient")).setRegistryName("chaos_chamber_ambient"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "core_sound")).setRegistryName("core_sound"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "shield_strike")).setRegistryName("shield_strike"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "electric_buzz")).setRegistryName("electric_buzz"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "sun_dial_effect")).setRegistryName("sun_dial_effect"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "generator1")).setRegistryName("generator1"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "generator2")).setRegistryName("generator2"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "generator3")).setRegistryName("generator3"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "blink")).setRegistryName("blink"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_electric")).setRegistryName("staff_charge_electric"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_fire")).setRegistryName("staff_charge_fire"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_default")).setRegistryName("staff_hit_default"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_electric")).setRegistryName("staff_hit_electric"));
-//        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_second_charge")).setRegistryName("bow_second_charge"));
-//        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_charge_shot")).setRegistryName("bow_charge_shot"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_unstable")).setRegistryName("crystal_unstable"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_beam")).setRegistryName("crystal_beam"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_destabilize")).setRegistryName("crystal_destabilize"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_restore")).setRegistryName("crystal_restore"));
-        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "guardian_thonk")).setRegistryName("guardian_thonk"));
-    }
+    public static final RegistryObject<SoundEvent> ENERGY_BOLT              = SOUNDS.register("energy_bolt",                () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "energy_bolt"), 16F));
+    public static final RegistryObject<SoundEvent> FUSION_COMPLETE          = SOUNDS.register("fusion_complete",            () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_complete"), 16F));
+    public static final RegistryObject<SoundEvent> FUSION_ROTATION          = SOUNDS.register("fusion_rotation",            () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_rotation"), 16F));
+    public static final RegistryObject<SoundEvent> CHARGE                   = SOUNDS.register("charge",                     () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "charge"), 16F));
+    public static final RegistryObject<SoundEvent> DISCHARGE                = SOUNDS.register("discharge",                  () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "discharge"), 16F));
+    public static final RegistryObject<SoundEvent> BOOM                     = SOUNDS.register("boom",                       () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "boom"), 16F));
+    public static final RegistryObject<SoundEvent> BEAM                     = SOUNDS.register("beam",                       () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "beam"), 16F));
+    public static final RegistryObject<SoundEvent> PORTAL                   = SOUNDS.register("portal",                     () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "portal"), 16F));
+    public static final RegistryObject<SoundEvent> FUSION_EXPLOSION         = SOUNDS.register("fusion_explosion",           () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "fusion_explosion"), 16F));
+    public static final RegistryObject<SoundEvent> CHAOS_CHAMBER_AMBIENT    = SOUNDS.register("chaos_chamber_ambient",      () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "chaos_chamber_ambient"), 16F));
+    public static final RegistryObject<SoundEvent> CORE_SOUND               = SOUNDS.register("core_sound",                 () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "core_sound"), 16F));
+    public static final RegistryObject<SoundEvent> SHIELD_STRIKE            = SOUNDS.register("shield_strike",              () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "shield_strike"), 16F));
+    public static final RegistryObject<SoundEvent> ELECTRIC_BUZZ            = SOUNDS.register("electric_buzz",              () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "electric_buzz"), 16F));
+    public static final RegistryObject<SoundEvent> SUN_DIAL_EFFECT          = SOUNDS.register("sun_dial_effect",            () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "sun_dial_effect"), 16F));
+    public static final RegistryObject<SoundEvent> GENERATOR1               = SOUNDS.register("generator1",                 () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "generator1"), 16F));
+    public static final RegistryObject<SoundEvent> GENERATOR2               = SOUNDS.register("generator2",                 () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "generator2"), 16F));
+    public static final RegistryObject<SoundEvent> GENERATOR3               = SOUNDS.register("generator3",                 () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "generator3"), 16F));
+    public static final RegistryObject<SoundEvent> BLINK                    = SOUNDS.register("blink",                      () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "blink"), 16F));
+    public static final RegistryObject<SoundEvent> STAFF_CHARGE_ELECTRIC    = SOUNDS.register("staff_charge_electric",      () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_electric"), 16F));
+    public static final RegistryObject<SoundEvent> STAFF_CHARGE_FIRE        = SOUNDS.register("staff_charge_fire",          () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_fire"), 16F));
+    public static final RegistryObject<SoundEvent> STAFF_HIT_DEFAULT        = SOUNDS.register("staff_hit_default",          () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_default"), 16F));
+    public static final RegistryObject<SoundEvent> STAFF_HIT_ELECTRIC       = SOUNDS.register("staff_hit_electric",         () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_electric"), 16F));
+    public static final RegistryObject<SoundEvent> CRYSTAL_UNSTABLE         = SOUNDS.register("crystal_unstable",           () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_unstable"), 16F));
+    public static final RegistryObject<SoundEvent> CRYSTAL_BEAM             = SOUNDS.register("crystal_beam",               () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_beam"), 16F));
+    public static final RegistryObject<SoundEvent> CRYSTAL_DESTABILIZE      = SOUNDS.register("crystal_destabilize",        () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_destabilize"), 16F));
+    public static final RegistryObject<SoundEvent> CRYSTAL_RESTORE          = SOUNDS.register("crystal_restore",            () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_restore"), 16F));
+    public static final RegistryObject<SoundEvent> GUARDIAN_THONK           = SOUNDS.register("guardian_thonk",             () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(DraconicEvolution.MODID, "guardian_thonk"), 16F));
 }

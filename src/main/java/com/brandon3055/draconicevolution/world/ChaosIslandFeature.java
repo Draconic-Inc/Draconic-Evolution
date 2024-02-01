@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.init.DEWorldGen;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.ChunkPos;
@@ -49,7 +50,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         WorldGenLevel level = context.level();
-        Random rand = context.random();
+        RandomSource rand = context.random();
         BlockPos islandOrigin = closestSpawn.getBlockAt(0, islandYPos, 0);
 
         if (islandOrigin.distSqr(origin) > (islandSize * 5) * (islandSize * 5)) {
@@ -64,7 +65,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         if (inChunk(origin, islandOrigin)) {
-            level.setBlock(islandOrigin, DEContent.chaos_crystal.defaultBlockState(), 3);
+            level.setBlock(islandOrigin, DEContent.CHAOS_CRYSTAL.get().defaultBlockState(), 3);
             if (level.getBlockEntity(islandOrigin) instanceof TileChaosCrystal tile) {
                 tile.onValidPlacement();
             }
@@ -75,7 +76,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return chunkModified;
     }
 
-    public boolean genIslandChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, Random rand) {
+    public boolean genIslandChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, RandomSource rand) {
         boolean chunkModified = false;
         int minY = islandYPos - 40;
         int maxY = islandYPos + 40;
@@ -140,7 +141,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return chunkModified;
     }
 
-    public boolean genCoreChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, Random rand) {
+    public boolean genCoreChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, RandomSource rand) {
         boolean chunkModified = false;
 
         int coreHeight = 10;
@@ -174,7 +175,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return chunkModified;
     }
 
-    public boolean genCoreSlice(WorldGenLevel level, double distSq, double distXZSq, BlockPos pos, int ringRadius, int coreRadious, boolean fillIn, Random rand) {
+    public boolean genCoreSlice(WorldGenLevel level, double distSq, double distXZSq, BlockPos pos, int ringRadius, int coreRadious, boolean fillIn, RandomSource rand) {
         int yOffset = Math.abs(islandYPos - pos.getY());
         double oRad = coreRadious - (yOffset * yOffset) / 10D;
 
@@ -185,7 +186,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         //Fills the inner core section
         if (fillIn && Math.sqrt(distXZSq) <= ringRadius) {
             if (Math.sqrt(distSq) < 9) {
-                level.setBlock(pos, DEContent.infused_obsidian.defaultBlockState(), 3);
+                level.setBlock(pos, DEContent.INFUSED_OBSIDIAN.get().defaultBlockState(), 3);
             } else {
                 level.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 3);
             }
@@ -207,7 +208,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return false;
     }
 
-    public boolean genRingChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, Random rand) {
+    public boolean genRingChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, RandomSource rand) {
         boolean chunkModified = false;
         int outerRadius = islandSize * 4;
         int rings = 4;
@@ -228,7 +229,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
                             chunkModified = true;
                         }
                         if (0.001F > rand.nextFloat() && DEWorldGen.DRACONIUM_ORE_PLACED_END != null) {
-                            level.setBlock(setPos, DEContent.ore_draconium_end.defaultBlockState(), 3);
+                            level.setBlock(setPos, DEContent.END_DRACONIUM_ORE.get().defaultBlockState(), 3);
                             chunkModified = true;
                         }
                     }
@@ -249,7 +250,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return test.getX() >= x && test.getZ() >= z && test.getX() <= x + 15 && test.getZ() <= z + 15;
     }
 
-    public static void generateObelisk(ServerLevel world, BlockPos genPos, Random rand) {
+    public static void generateObelisk(ServerLevel world, BlockPos genPos, RandomSource rand) {
         for (int i = 0; i < 20; i += 3) {
             LightningBolt entity = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
             entity.setPos(genPos.getX() - 2 + rand.nextInt(5), genPos.getY() - rand.nextInt(20), genPos.getZ() - 2 + rand.nextInt(5));
@@ -266,7 +267,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
                     if (1D - pct > rand.nextDouble()) {
                         float block = rand.nextFloat();
                         if (block < 0.1) {
-                            world.setBlock(pos, DEContent.infused_obsidian.defaultBlockState(), 3);
+                            world.setBlock(pos, DEContent.INFUSED_OBSIDIAN.get().defaultBlockState(), 3);
                         } else if (block < 0.4) {
                             world.setBlock(pos, Blocks.NETHER_BRICKS.defaultBlockState(), 3);
                         } else {

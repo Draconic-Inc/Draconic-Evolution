@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,11 +10,11 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class ContainerFusionCraftingCore extends ContainerDETile<TileFusionCraftingCore> {
 
-    public ContainerFusionCraftingCore(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore> factory) {
-        super(DEContent.container_fusion_crafting_core, windowId, player, extraData, factory);
+    public ContainerFusionCraftingCore(int windowId, Inventory player, FriendlyByteBuf extraData) {
+        super(DEContent.container_fusion_crafting_core, windowId, player, extraData);
     }
 
-    public ContainerFusionCraftingCore(int windowId, Inventory player, TileFusionCraftingCore tile, ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore> factory) {
-        super(DEContent.container_fusion_crafting_core, windowId, player, tile, factory);
+    public ContainerFusionCraftingCore(int windowId, Inventory player, TileFusionCraftingCore tile) {
+        super(DEContent.container_fusion_crafting_core, windowId, player, tile);
     }
 }

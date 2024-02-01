@@ -6,7 +6,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
-import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -17,12 +17,9 @@ import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -63,7 +60,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
         //Storage Renderer
         template.background.addChild(new StorageRenderer().setPos(guiLeft(), guiTop()));
-        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCGuiSprites.get("slots/fuel"));
+        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCGuiTextures.get("slots/fuel"));
         fuelSlots.zOffset += 100; //Offset so that this element renders above the chest model in the background
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
 

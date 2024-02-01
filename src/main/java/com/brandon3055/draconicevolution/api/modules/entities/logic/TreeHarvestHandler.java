@@ -71,7 +71,7 @@ public class TreeHarvestHandler implements IHarvestHandler {
 
         if (!scanQue.isEmpty()) {
             for (int i = 0; i < speed && !scanQue.isEmpty(); i++) {
-                updateTreeHarvest(player.level, player, stack, storage, stackCollector);
+                updateTreeHarvest(player.level(), player, stack, storage, stackCollector);
             }
             return;
         }
@@ -82,7 +82,7 @@ public class TreeHarvestHandler implements IHarvestHandler {
             } else {
                 LinkedList<Long> que = leavesWait.get(leavesWaitIndex);
                 for (int i = 0; i < speed && que != null && !que.isEmpty(); i++) {
-                    updateLeavesHarvest(player.level, que, player, stack, storage, stackCollector);
+                    updateLeavesHarvest(player.level(), que, player, stack, storage, stackCollector);
                 }
 
                 if (que == null || que.isEmpty()) {
@@ -93,7 +93,7 @@ public class TreeHarvestHandler implements IHarvestHandler {
         }
 
         harvestComplete();
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.7F + 1.8F));
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.8F));
     }
 
     private void updateTreeHarvest(Level level, Player player, ItemStack stack, IOPStorage storage, InventoryDynamic stackCollector) {

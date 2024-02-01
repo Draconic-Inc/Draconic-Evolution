@@ -28,7 +28,7 @@ public class TilePortal extends TileBCore {
     private Player player = null;
 
     public TilePortal(BlockPos pos, BlockState state) {
-        super(DEContent.tile_portal, pos, state);
+        super(DEContent.TILE_PORTAL.get(), pos, state);
     }
 
     public void setControllerPos(BlockPos controllerPos) {
@@ -52,11 +52,11 @@ public class TilePortal extends TileBCore {
     // Client Stiff
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void tick() {
         if (hidden && player != null) {
             BlockState state = getBlockState();
-            if (state.getBlock() != DEContent.portal) {
+            if (!state.is(DEContent.PORTAL.get())) {
                 hidden = false;
                 player = null;
                 level.setBlock(getBlockPos(), state.setValue(Portal.VISIBLE, true), 0, 0);
@@ -78,7 +78,7 @@ public class TilePortal extends TileBCore {
         double distanceMod = Utils.getDistance(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, player.getX(), player.getY(), player.getZ());
         if (level.random.nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
             BlockState state = level.getBlockState(worldPosition);
-            if (state.getBlock() != DEContent.portal) {
+            if (!state.is(DEContent.PORTAL.get())) {
                 return;
             }
             Direction.Axis axis = state.getValue(Portal.AXIS);
@@ -106,7 +106,7 @@ public class TilePortal extends TileBCore {
 
     public void clientArrived(Player player) {
         BlockState state = getBlockState();
-        if (state.getBlock() == DEContent.portal && level != null) {
+        if (state.is(DEContent.PORTAL.get()) && level != null) {
             level.setBlock(getBlockPos(), state.setValue(Portal.VISIBLE, false), 0, 0);
             hidden = true;
             this.player = player;

@@ -75,7 +75,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     public OPStorage opStorage = new ModularOPStorage(this, 8000000, 4000000, 4000000);
 
     public TileCelestialManipulator(BlockPos pos, BlockState state) {
-        super(DEContent.tile_celestial_manipulator, pos, state);
+        super(DEContent.TILE_CELESTIAL_MANIPULATOR.get(), pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         weatherMode.setCCSCS();
     }
@@ -198,18 +198,18 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         if (active.get()) {
-            sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning"), player);
+            sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning"), player);
             return;
         }
 
         switch (action) {
             case "STOP_RAIN":
                 if (!level.isRaining()) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -218,11 +218,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 return;
             case "START_RAIN":
                 if (level.isRaining()) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -231,11 +231,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 return;
             case "START_STORM":
                 if (level.isRaining() && level.isThundering()) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-384000);
@@ -275,7 +275,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     private void sendMessage(Component message, Player player) {
         if (player != null) {
-            player.sendMessage(message, Util.NIL_UUID);
+            player.sendSystemMessage(message);
         }
     }
 
@@ -304,10 +304,10 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         Vec3D vec = Vec3D.getCenter(worldPosition.offset(0, 1, 0));
-        sound = new CelestialModifierSound(DESounds.electricBuzz, worldPosition);
+        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition);
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
-        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
+        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -385,7 +385,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         if (timer == riseEnd) {
 //            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 1F, false);
         } else if (timer == ascendStart) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 2F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
                     //                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
@@ -424,7 +424,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         if (timer >= 220) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundSource.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.BOOM.get(), SoundSource.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -458,7 +458,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESounds.sunDialEffect, worldPosition);
+        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition);
         sound.updateSound(Vec3D.getCenter(worldPosition), getSoundVolume(), 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
     }
@@ -656,13 +656,13 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.container_celestial_manipulator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.CELESTIAL_MANIPULATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.CELESTIAL_MANIPULATOR_LAYOUT);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }

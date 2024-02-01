@@ -41,7 +41,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
             .createCompositeState(false));
 
     private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.BLOCK, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeCutoutShader)) //TODO Figure out shader
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/chaos_crystal.png"), false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)

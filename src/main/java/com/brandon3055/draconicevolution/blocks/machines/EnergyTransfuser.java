@@ -51,7 +51,7 @@ public class EnergyTransfuser extends EntityBlockBCore {
 
     public EnergyTransfuser(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_energy_transfuser, true);
+        setBlockEntity(DEContent.TILE_ENERGY_TRANSFUSER::get, true);
     }
 
     @Override

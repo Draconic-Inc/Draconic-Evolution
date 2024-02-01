@@ -102,7 +102,7 @@ public class SupportedModulesIcon extends GuiElement<SupportedModulesIcon> {
         }
 
         hoverElement = modularGui.getManager().addChild(new GuiTooltipBackground(), 100, false);
-        hoverElement.addChild(new GuiLabel(new TranslatableComponent("gui.draconicevolution.modular_item.supported_modules").withStyle(GOLD).withStyle(UNDERLINE)))
+        hoverElement.addChild(new GuiLabel(Component.translatable("gui.draconicevolution.modular_item.supported_modules").withStyle(GOLD).withStyle(UNDERLINE)))
                 .setAlignment(GuiAlign.LEFT)
                 .setSize(12, 8)
                 .setTrim(false)

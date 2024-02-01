@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.entity.guardian;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -44,7 +45,7 @@ public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntit
       return this == entityIn || this.dragon == entityIn;
    }
 
-   public Packet<?> getAddEntityPacket() {
+   public Packet<ClientGamePacketListener> getAddEntityPacket() {
       throw new UnsupportedOperationException();
    }
 

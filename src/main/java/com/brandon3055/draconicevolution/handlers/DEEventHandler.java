@@ -1,66 +1,32 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
-import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.event.TileBCoreInitEvent;
-import com.brandon3055.brandonscore.capability.CapabilityProviderSerializable;
-import com.brandon3055.brandonscore.lib.DelayedTask;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.achievements.Achievements;
-import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
-import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
-import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleHost;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
-import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerChangeGameTypeEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.WeakHashMap;
 
 @SuppressWarnings("unused")
 public class DEEventHandler {
@@ -110,9 +76,9 @@ public class DEEventHandler {
 
     @SubscribeEvent
     public void itemToss(ItemTossEvent event) {
-        ItemEntity item = event.getEntityItem();
+        ItemEntity item = event.getEntity();
         Player player = event.getPlayer();
-        if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getThrower() == null)) {
+        if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getOwner() == null)) {
             item.setThrower(player.getUUID());
         }
     }
@@ -125,7 +91,7 @@ public class DEEventHandler {
             return;
         }
 
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         ItemStack stack = event.getItemStack();
 
         //region Hacky check to compensate for the completely f***ing stupid interact event handling.
@@ -155,24 +121,24 @@ public class DEEventHandler {
             return;
         }
 
-        if (BinderHandler.onBinderUse(event.getPlayer(), event.getHand(), event.getWorld(), event.getPos(), stack, event.getFace())) {
+        if (BinderHandler.onBinderUse(event.getEntity(), event.getHand(), event.getLevel(), event.getPos(), stack, event.getFace())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void rightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getWorld().isClientSide || event.isCanceled() || !event.getPlayer().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
+        if (event.getLevel().isClientSide || event.isCanceled() || !event.getEntity().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
             return;
         }
 
-        BlockHitResult traceResult = RayTracer.retrace(event.getPlayer());
+        BlockHitResult traceResult = RayTracer.retrace(event.getEntity());
 
         if (traceResult.getType() == HitResult.Type.BLOCK) {
             return;
         }
 
-        if (BinderHandler.clearBinder(event.getPlayer(), event.getItemStack())) {
+        if (BinderHandler.clearBinder(event.getEntity(), event.getItemStack())) {
             event.setCanceled(true);
         }
     }
@@ -217,7 +183,7 @@ public class DEEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
-        if (event.getPlayer() != null) {
+        if (event.getEntity() != null) {
             float newDigSpeed = event.getOriginalSpeed();
 //            ModularArmorEventHandler.ArmorSummery summery = new ModularArmorEventHandler.ArmorSummery().getSummery(event.getPlayer());
 //            if (summery == null) {
@@ -258,7 +224,7 @@ public class DEEventHandler {
 //            }
 //        }
 
-        if (!event.getPlayer().isOnGround()) {
+        if (!event.getEntity().onGround()) {
 //            ModularArmorEventHandler.ArmorSummery summery = new ModularArmorEventHandler.ArmorSummery().getSummery(event.getPlayer());
 //            if (summery != null && summery.flight[0]) {
 //                event.getPlayer().abilities.isFlying = true;

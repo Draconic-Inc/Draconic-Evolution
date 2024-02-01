@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -20,9 +18,9 @@ public record EnergyLinkData(long activationEnergy, long operationEnergy, long t
 
     @Override
     public void addInformation(Map<Component, Component> map, @Nullable ModuleContext context) {
-        map.put(new TranslatableComponent("module.draconicevolution.energy_link.activation"), new TranslatableComponent("module.draconicevolution.energy_link.activation.value", ModuleData.formatNumber(activationEnergy())));
-        map.put(new TranslatableComponent("module.draconicevolution.energy_link.operation"), new TranslatableComponent("module.draconicevolution.energy_link.operation.value", ModuleData.formatNumber((long) (operationEnergy() * 0.1)), ModuleData.formatNumber(operationEnergy())));
-        map.put(new TranslatableComponent("module.draconicevolution.energy_link.transfer"), new TranslatableComponent("module.draconicevolution.energy_link.transfer.value", ModuleData.formatNumber(transferLimit())));
-        map.put(new TranslatableComponent("module.draconicevolution.energy_link.dimensional"), new TranslatableComponent("module.draconicevolution.energy_link.dimensional." + (xDimensional() ? "true" : "false")));
+        map.put(Component.translatable("module.draconicevolution.energy_link.activation"), Component.translatable("module.draconicevolution.energy_link.activation.value", ModuleData.formatNumber(activationEnergy())));
+        map.put(Component.translatable("module.draconicevolution.energy_link.operation"), Component.translatable("module.draconicevolution.energy_link.operation.value", ModuleData.formatNumber((long) (operationEnergy() * 0.1)), ModuleData.formatNumber(operationEnergy())));
+        map.put(Component.translatable("module.draconicevolution.energy_link.transfer"), Component.translatable("module.draconicevolution.energy_link.transfer.value", ModuleData.formatNumber(transferLimit())));
+        map.put(Component.translatable("module.draconicevolution.energy_link.dimensional"), Component.translatable("module.draconicevolution.energy_link.dimensional." + (xDimensional() ? "true" : "false")));
     }
 }

@@ -2,12 +2,14 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -29,9 +31,9 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
         poseStack.pushPose();
         poseStack.translate(0.5, 0.73, 0.5);
         poseStack.scale(scale, scale, scale);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(pitch));
-        mc.getItemRenderer().renderStatic(getRenderStack(advanced), ItemTransforms.TransformType.FIXED, packedLight, packedLight, poseStack, buffers, te.posSeed());
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
+        mc.getItemRenderer().renderStatic(getRenderStack(advanced), ItemDisplayContext.FIXED, packedLight, packedLight, poseStack, buffers, te.getLevel(), te.posSeed());
         poseStack.popPose();
     }
 

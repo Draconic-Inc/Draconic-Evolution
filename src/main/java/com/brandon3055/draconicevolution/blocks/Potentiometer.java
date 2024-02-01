@@ -1,19 +1,15 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -42,7 +38,7 @@ public class Potentiometer extends EntityBlockBCore {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
         this.canProvidePower = true;
-        setBlockEntity(() -> DEContent.tile_potentiometer, false);
+        setBlockEntity(DEContent.TILE_POTENTIOMETER::get, false);
     }
 
     @Override
@@ -86,22 +82,14 @@ public class Potentiometer extends EntityBlockBCore {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Direction enumfacing = state.getValue(FACING);
-
-        switch (enumfacing) {
-            case EAST:
-                return AABB_EAST;
-            case WEST:
-                return AABB_WEST;
-            case SOUTH:
-                return AABB_SOUTH;
-            case UP:
-                return AABB_UP;
-            case DOWN:
-                return AABB_DOWN;
-            case NORTH:
-            default:
-                return AABB_NORTH;
-        }
+        return switch (enumfacing) {
+            case EAST -> AABB_EAST;
+            case WEST -> AABB_WEST;
+            case SOUTH -> AABB_SOUTH;
+            case UP -> AABB_UP;
+            case DOWN -> AABB_DOWN;
+            default -> AABB_NORTH;
+        };
     }
 
     //endregion
