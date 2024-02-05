@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -15,33 +15,39 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Sets;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by brandon3055 on 7/7/20
  */
-public class ShieldControlEntity extends ModuleEntity {
-    private static final Set<DamageSource> UNBLOCKABLE = Sets.newHashSet(DamageSource.DROWN, DamageSource.STARVE, DamageSource.IN_WALL);
-    private static final HashMap<DamageSource, Double> ENV_SOURCES = new HashMap<>();
+public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
+    public static final Set<ResourceKey<DamageType>> UNBLOCKABLE = Sets.newHashSet(DamageTypes.DROWN, DamageTypes.STARVE, DamageTypes.IN_WALL, DamageTypes.GENERIC_KILL);
+    public static final HashMap<ResourceKey<DamageType>, Double> ENV_SOURCES = new HashMap<>();
 
     static {
-        ENV_SOURCES.put(DamageSource.IN_FIRE, 1D);
-        ENV_SOURCES.put(DamageSource.ON_FIRE, 0.5D);
-        ENV_SOURCES.put(DamageSource.LAVA, 4D);
-        ENV_SOURCES.put(DamageSource.HOT_FLOOR, 1D);
-        ENV_SOURCES.put(DamageSource.IN_WALL, 1D);
-        ENV_SOURCES.put(DamageSource.CRAMMING, 0D);
-        ENV_SOURCES.put(DamageSource.CACTUS, 1D);
+        ENV_SOURCES.put(DamageTypes.IN_FIRE, 1D);
+        ENV_SOURCES.put(DamageTypes.ON_FIRE, 0.5D);
+        ENV_SOURCES.put(DamageTypes.LAVA, 4D);
+        ENV_SOURCES.put(DamageTypes.HOT_FLOOR, 1D);
+        ENV_SOURCES.put(DamageTypes.IN_WALL, 1D);
+        ENV_SOURCES.put(DamageTypes.CRAMMING, 0D);
+        ENV_SOURCES.put(DamageTypes.CACTUS, 1D);
     }
 
     private BooleanProperty shieldEnabled;
@@ -66,7 +72,7 @@ public class ShieldControlEntity extends ModuleEntity {
     private float shieldHitIndicator;
     private int shieldColour;
 
-    public ShieldControlEntity(Module<?> module) {
+    public ShieldControlEntity(Module<ShieldControlData> module) {
         super(module);
         this.shieldColour = getDefaultShieldColour(module.getModuleTechLevel());
         addProperty(shieldEnabled = new BooleanProperty("shield_mod.enabled", true).setFormatter(BooleanFormatter.ENABLED_DISABLED));
@@ -78,19 +84,14 @@ public class ShieldControlEntity extends ModuleEntity {
 
     @Override
     public void tick(ModuleContext moduleContext) {
-        if (host == null) {
-            LogHelper.bigDev("Host can be null????");
-            return;
-        }
-        IOPStorageModifiable storage = moduleContext.getOpStorage();
-        if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+        IOPStorage storage = moduleContext.getOpStorage();
+        if (!(moduleContext instanceof StackModuleContext context && EffectiveSide.get().isServer() && storage != null)) {
             return;
         }
 
-        StackModuleContext context = (StackModuleContext) moduleContext;
         ShieldData data = getShieldData();
-        shieldCapacity = data.getShieldCapacity();
-        double chargeRate = data.getShieldRecharge();
+        shieldCapacity = data.shieldCapacity();
+        double chargeRate = data.shieldRecharge();
         boolean enabled = shieldEnabled.getValue() && getShieldPoints() > 0;
 
         if (shieldPoints > shieldCapacity) {
@@ -170,7 +171,11 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     public int getMaxShieldCoolDown() {
-        return ((ShieldControlData) module.getData()).getCoolDownTicks() * 100;
+        return module.getData().coolDownTicks() * 100;
+    }
+
+    public void setShieldCoolDown(int shieldCoolDown) {
+        this.shieldCoolDown = shieldCoolDown;
     }
 
     /**
@@ -182,7 +187,7 @@ public class ShieldControlEntity extends ModuleEntity {
      */
     public void tryBlockDamage(LivingAttackEvent event) {
         DamageSource source = event.getSource();
-        if (!shieldEnabled.getValue() || UNBLOCKABLE.contains(source)) return;
+        if (!shieldEnabled.getValue() || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || FastStream.of(UNBLOCKABLE).anyMatch(source::is)) return;
 
         if (blockEnvironmentalDamage(event, source)) {
             return;
@@ -190,7 +195,7 @@ public class ShieldControlEntity extends ModuleEntity {
 
         float damage = applyDamageModifiers(source, event.getAmount());
         if (damage <= getShieldPoints()) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
             event.setCanceled(true);
             subtractShieldPoints(damage);
             onShieldHit(entity, true);
@@ -198,13 +203,14 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     private boolean blockEnvironmentalDamage(LivingAttackEvent event, DamageSource source) {
-        LivingEntity entity = event.getEntityLiving();
-        if (source.isFire() && getShieldPoints() > 10) {
+        LivingEntity entity = event.getEntity();
+        if (source.is(DamageTypeTags.IS_FIRE) && getShieldPoints() > 10) {
             entity.clearFire();
         }
-        if (ENV_SOURCES.containsKey(source)) {
-            ENV_SOURCES.put(DamageSource.LAVA, 4D);
-            double value = ENV_SOURCES.get(source) / 20;
+
+        double value = FastStream.of(ENV_SOURCES.entrySet()).filter(e -> source.is(e.getKey())).map(Map.Entry::getValue).firstOrDefault(0D);
+        if (value != 0) {
+            value /= 20;
             if (value <= getShieldPoints()) {
                 subtractShieldPoints(value);
                 event.setCanceled(true);
@@ -213,7 +219,7 @@ public class ShieldControlEntity extends ModuleEntity {
                 shieldCoolDown = getMaxShieldCoolDown();
                 if (envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+                    entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
                     envDmgCoolDown = 40;
                 }
                 return true;
@@ -236,7 +242,7 @@ public class ShieldControlEntity extends ModuleEntity {
         if (!shieldEnabled.getValue() || UNBLOCKABLE.contains(source)) return;
         float damage = applyDamageModifiers(source, event.getAmount());
 
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (damage <= getShieldPoints()) {
             event.setCanceled(true);
             subtractShieldPoints(damage);
@@ -256,7 +262,7 @@ public class ShieldControlEntity extends ModuleEntity {
         if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
             shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 1F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+            entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 1F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
         }
     }
 
@@ -268,8 +274,8 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     private float applyDamageModifiers(DamageSource source, float damage) {
-        if (source.isBypassArmor()) damage *= 3;
-        if (source.isMagic()) damage *= 2;
+        if (source.is(DamageTypeTags.BYPASSES_ARMOR)) damage *= 3;
+        if (source.is(DamageTypes.MAGIC)) damage *= 2;
         return damage;
     }
 
@@ -307,17 +313,12 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     private static int getDefaultShieldColour(TechLevel techLevel) {
-        switch (techLevel) {
-            case DRACONIUM:
-                return 0x0080cc;
-            case WYVERN:
-                return 0x8C00A5;
-            case DRACONIC:
-                return 0xff9000;
-            case CHAOTIC:
-                return 0xBF0C0C;
-        }
-        return 0;
+        return switch (techLevel) {
+            case DRACONIUM -> 0x0080cc;
+            case WYVERN -> 0x8C00A5;
+            case DRACONIC -> 0xff9000;
+            case CHAOTIC -> 0xBF0C0C;
+        };
     }
 
     //endregion
@@ -329,34 +330,12 @@ public class ShieldControlEntity extends ModuleEntity {
         shieldCache = null;
     }
 
-    @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putInt("cap", shieldCapacity);
-        nbt.putDouble("points", shieldPoints);
-        nbt.putInt("cooldwn", shieldCoolDown);
-    }
-
-    @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            CompoundTag nbt = stack.getOrCreateTag();
-            shieldCapacity = nbt.getInt("cap");
-            shieldPoints = nbt.getDouble("points");
-            shieldCoolDown = nbt.getInt("cooldwn");
-        }
-    }
 
     @Override
     public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
-        compound.putInt("cap", shieldCapacity);
-        compound.putDouble("points", shieldPoints);
         compound.putDouble("boost", shieldBoost);
         compound.putDouble("max_boost", maxBoost);
-        compound.putInt("cooldwn", shieldCoolDown);
         compound.putInt("boost_time", boostTime);
         compound.putByte("env_cdwn", envDmgCoolDown);
         compound.putBoolean("visible", shieldVisible);
@@ -367,16 +346,28 @@ public class ShieldControlEntity extends ModuleEntity {
     @Override
     public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
-        shieldCapacity = compound.getInt("cap");
-        shieldPoints = compound.getDouble("points");
         shieldBoost = compound.getDouble("boost");
         maxBoost = compound.getDouble("max_boost");
-        shieldCoolDown = compound.getInt("cooldwn");
         boostTime = compound.getInt("boost_time");
         envDmgCoolDown = compound.getByte("env_cdwn");
         shieldVisible = compound.getBoolean("visible");
         shieldAnim = compound.getFloat("anim");
         shieldHitIndicator = compound.getFloat("hit");
+    }
+
+    @Override
+    protected void readExtraData(CompoundTag nbt) {
+        shieldCapacity = nbt.getInt("cap");
+        shieldPoints = nbt.getDouble("points");
+        shieldCoolDown = nbt.getInt("cooldwn");
+    }
+
+    @Override
+    protected CompoundTag writeExtraData(CompoundTag nbt) {
+        nbt.putInt("cap", shieldCapacity);
+        nbt.putDouble("points", shieldPoints);
+        nbt.putInt("cooldwn", shieldCoolDown);
+        return nbt;
     }
 
     //endregion

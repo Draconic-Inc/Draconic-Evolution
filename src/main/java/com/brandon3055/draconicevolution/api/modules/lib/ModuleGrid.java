@@ -2,15 +2,16 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
-import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,14 +20,14 @@ import java.util.Objects;
  */
 public class ModuleGrid {
 
-    private int xPos = 0;
-    private int yPos = 0;
-    public ContainerModuleHost<?> container;
-    private Inventory player;
-    private int cellSize = 16;
-    private Runnable onGridChange;
+    protected int xPos = 0;
+    protected int yPos = 0;
+    public ModuleHostContainer container;
+    protected Inventory player;
+    protected int cellSize = 16;
+    protected Runnable onGridChange;
 
-    public ModuleGrid(ContainerModuleHost<?> container, Inventory player) {
+    public ModuleGrid(ModuleHostContainer container, Inventory player) {
         this.container = container;
         this.player = player;
     }
@@ -35,7 +36,7 @@ public class ModuleGrid {
         this.onGridChange = onGridChange;
     }
 
-    private void onGridChange() {
+    protected void onGridChange() {
         if (onGridChange != null) {
             onGridChange.run();;
         }
@@ -67,26 +68,32 @@ public class ModuleGrid {
         this.cellSize = cellSize;
     }
 
-    public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
+    public InstallResult cellClicked(GridPos pos, double x, double y, int button, ClickType clickType) {
         ItemStack stack = player.player.containerMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
+
+        ModuleEntity<?> posEntity = pos.getEntity();
+        if (posEntity != null && posEntity.moduleClicked(player.player, x, y, button, clickType)) {
+            return null;
+        }
 
         //Sanity Checks
         if ((holdingStack && module == null) || !pos.isValidCell()) {
             return null; //Player tried to insert an item that is not a valid module
         }
 
+        ModuleHost host = getModuleHost();
         //Really this could be pick up or drop off
         if (clickType == ClickType.PICKUP) {
             if (holdingStack) { //Try to insert module
-                ModuleEntity entity = module.createEntity();
+                ModuleEntity<?> entity = module.createEntity();
                 entity.setPos(pos.gridX, pos.gridY);
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
                     entity.readFromItemStack(stack, context);
-                    getModuleHost().addModule(entity, context);
+                    host.addModule(entity, context);
                     stack.shrink(1);
                     onGridChange();
                     return null;
@@ -94,33 +101,45 @@ public class ModuleGrid {
                 return result;
             }
             else if (pos.hasEntity()) { //Try to extract module
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
-                getModuleHost().removeModule(entity, context);
+                List<Component> error = new ArrayList<>();
+                if (!host.checkRemoveModule(entity, error)) {
+                    return new InstallResult(InstallResultType.NO, null, null, error);
+                }
+                host.removeModule(entity, context);
                 player.player.containerMenu.setCarried(extracted);
                 onGridChange();
             }
         }
         else if (clickType == ClickType.QUICK_MOVE) {
             if (pos.hasEntity()) { //Try to transfer module
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
+                List<Component> error = new ArrayList<>();
+                if (!host.checkRemoveModule(entity, error)) {
+                    return new InstallResult(InstallResultType.NO, null, null, error);
+                }
                 if (player.add(extracted)) {
-                    getModuleHost().removeModule(entity, context);
+                    host.removeModule(entity, context);
                     onGridChange();
                 }
             }
         }
         else if (clickType == ClickType.PICKUP_ALL && module != null) {
-            for (ModuleEntity entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
+            for (ModuleEntity<?> entity : ImmutableList.copyOf(host.getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack, context);
+                    List<Component> error = new ArrayList<>();
+                    if (!host.checkRemoveModule(entity, error)) {
+                        return new InstallResult(InstallResultType.NO, null, null, error);
+                    }
                     if (ItemStack.isSameItemSameTags(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
-                        getModuleHost().removeModule(entity, context);
+                        host.removeModule(entity, context);
                     }
                 }
                 onGridChange();
@@ -128,7 +147,7 @@ public class ModuleGrid {
         }
         else if (clickType == ClickType.CLONE) {
             if (player.player.getAbilities().instabuild && player.player.inventoryMenu.getCarried().isEmpty() && pos.hasEntity()) {
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
                 entity.writeToItemStack(modStack, context);
                 player.player.containerMenu.setCarried(modStack);
@@ -140,8 +159,8 @@ public class ModuleGrid {
     /**
      * This will attempt to install the module entity in the first available grid cell.
      */
-    public boolean attemptInstall(ModuleEntity entity) {
-        for (int y = 0; y < getWidth(); y++) {
+    public boolean attemptInstall(ModuleEntity<?> entity) {
+        for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 entity.setPos(x, y);
                 if (checkInstall(entity).resultType == InstallResultType.YES) {
@@ -154,23 +173,23 @@ public class ModuleGrid {
         return false;
     }
 
-    public InstallResult checkInstall(ModuleEntity entity) {
+    public InstallResult checkInstall(ModuleEntity<?> entity) {
         ModuleHost host = getModuleHost();
         if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.level_high"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.level_high"));
         }
         if (!host.isModuleSupported(entity)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.not_supported"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.not_supported"));
         }
         if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, Component.translatable("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {
-            return new InstallResult(InstallResultType.YES, entity.module, null, null);
+            return new InstallResult(InstallResultType.YES, entity.module, null, (List<Component>) null);
         }
         return result;
     }
@@ -194,7 +213,7 @@ public class ModuleGrid {
         private final int gridX;
         private final int gridY;
         private final ModuleGrid grid;
-        private final ModuleEntity entity;
+        private final ModuleEntity<?> entity;
 
         GridPos(ModuleGrid grid) {
             this.grid = grid;
@@ -220,7 +239,7 @@ public class ModuleGrid {
         /**
          * @return The entity occupying this cell.
          */
-        public ModuleEntity getEntity() {
+        public ModuleEntity<?> getEntity() {
             return entity;
         }
 
@@ -257,16 +276,4 @@ public class ModuleGrid {
             return gridX != -1 && gridY != -1;
         }
     }
-
-    //    /**
-//     * Returns the {@link GridModule} occupying the specified grid position (if there is one)
-//     * @param x grid x coord
-//     * @param y grid y coord
-//     * @return the module occupying this position if there is one.
-//     */
-//    @Nullable
-//    public GridModule getModule(int x, int y) {
-//        return gridModules.parallelStream().filter(module -> module.contains(x, y)).findFirst().orElse(null);
-//    }
-
 }

@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
+import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -22,12 +23,15 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
@@ -71,17 +75,19 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             case DraconicNetwork.C_DISLOCATOR_TELEPORTED:
                 handleDislocatorTeleported(mc);
                 break;
+            case DraconicNetwork.C_CHUNK_RELIGHT:
+                handleChunkRelight(mc, packet.readInt(), packet.readInt());
+                break;
         }
     }
-
 
     public static void handleExplosionEffect(Minecraft mc, BlockPos pos, int radius, boolean reload) {
         if (reload) {
             mc.levelRenderer.allChanged();
-        } else {
-            ExplosionFX explosionFX = new ExplosionFX((ClientLevel) BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(pos), radius);
-            mc.particleEngine.add(explosionFX);
         }
+        if (radius == 0) return;
+        ExplosionFX explosionFX = new ExplosionFX((ClientLevel) BrandonsCore.proxy.getClientWorld(), Vector3.fromBlockPosCenter(pos), radius);
+        mc.particleEngine.add(explosionFX);
     }
 
     public static void handleImpactEffect(Minecraft mc, BlockPos pos, int type) {
@@ -92,12 +98,12 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.5;
             double z = pos.getZ() + 0.5;
-            for(int i = -size; i <= size; ++i) {
-                for(int j = -size; j <= size; ++j) {
-                    for(int k = -size; k <= size; ++k) {
-                        double d3 = (double)j + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d4 = (double)i + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d5 = (double)k + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+            for (int i = -size; i <= size; ++i) {
+                for (int j = -size; j <= size; ++j) {
+                    for (int k = -size; k <= size; ++k) {
+                        double d3 = (double) j + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+                        double d4 = (double) i + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+                        double d5 = (double) k + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
                         double d6 = (double) Math.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.random.nextGaussian() * 6D;
                         createParticle(mc, x, y, z, d3 / d6, d4 / d6, d5 / d6);
                         if (i != -size && i != size && j != -size && j != size) {
@@ -111,7 +117,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private static void createParticle(Minecraft mc, double x, double y, double z, double motionX, double motionY, double motionZ) {
-        mc.particleEngine.createParticle(DEParticles.guardian_projectile, x, y, z, motionX, motionY, motionZ);
+        mc.particleEngine.createParticle(DEParticles.GUARDIAN_PROJECTILE.get(), x, y, z, motionX, motionY, motionZ);
 
 //        FireworkParticle.Spark particle = (FireworkParticle.Spark)mc.particles.addParticle(ParticleTypes.FIREWORK, x, y, z, motionX, motionY, motionZ);
 //        particle.canCollide = false;
@@ -121,12 +127,13 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private static void handleUndyingActivation(Minecraft mc, int id, Item item) {
-        if (mc.level == null) return;;
+        if (mc.level == null) return;
+        ;
         Entity entity = mc.level.getEntity(id);
         if (entity != null) {
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
-                ClientProxy.hudElement.popTotem();
+                ClientInit.SHIELD_HUD.get().popTotem();
             }
         }
     }
@@ -139,7 +146,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         Vec3 pos = entity.getEyePosition(1);
 
         for (int i = 0; i < 100; i++) {
-            float offset = mc.level.random.nextFloat() ;
+            float offset = mc.level.random.nextFloat();
             float speed = (1F - offset) * distance;
             speed *= speed;
             Vec3 spawnPos = pos.add(vec.multiply(speed * 10, speed * 10, speed * 10));
@@ -148,7 +155,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             double y = spawnPos.y + (mc.level.random.nextGaussian() - 0.5) * offset;
             double z = spawnPos.z + (mc.level.random.nextGaussian() - 0.5) * offset;
 
-            mc.level.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
+            mc.level.addParticle(DEParticles.BLINK.get(), x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
         }
     }
 
@@ -183,14 +190,15 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (mc.level == null) return;
         for (double d = 0; d < dist; d += 2) {
             Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.random.nextDouble() * 2) / dist);
-            mc.level.addParticle(DEParticles.guardian_beam, true, pos.x, pos.y, pos.z, power, 0, 0);
+            mc.level.addParticle(DEParticles.GUARDIAN_BEAM.get(), true, pos.x, pos.y, pos.z, power, 0, 0);
         }
     }
 
     private static void handleGuardianPacket(Minecraft mc, MCDataInput data) {
         if (mc.level == null) return;
         Entity e = mc.level.getEntity(data.readInt());
-        if (!(e instanceof DraconicGuardianEntity)) return;;
+        if (!(e instanceof DraconicGuardianEntity)) return;
+        ;
         DraconicGuardianEntity guardian = (DraconicGuardianEntity) e;
         int phaseID = data.readByte();
         PhaseManager phaseManager = guardian.getPhaseManager();
@@ -202,13 +210,23 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 
     private void handleDislocatorTeleported(Minecraft mc) {
         Player player = mc.player;
-        if (player == null) return;;
+        if (player == null) return;
+        ;
         BlockPos playerPos = player.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(playerPos.offset(-1, -1, -1), playerPos.offset(1, 1, 1))) {
-            BlockEntity tile = player.level.getBlockEntity(pos);
+            BlockEntity tile = player.level().getBlockEntity(pos);
             if (tile instanceof TilePortal) {
-                ((TilePortal)tile).clientArrived(player);
+                ((TilePortal) tile).clientArrived(player);
             }
+        }
+    }
+
+    private void handleChunkRelight(Minecraft mc, int chunkX, int chunkZ) {
+        if (mc.level == null) return;
+        LevelChunk chunk = mc.level.getChunk(chunkX, chunkZ);
+        if (chunk != null) {
+//            LevelLightEngine lightManager = mc.level.getLightEngine();
+//            lightManager.lightChunk(chunk, false);
         }
     }
 }

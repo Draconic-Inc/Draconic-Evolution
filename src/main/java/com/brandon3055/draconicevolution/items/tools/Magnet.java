@@ -74,7 +74,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                     continue;
                 }
 
-                if (itemEntity.getThrower() != null && itemEntity.getThrower().equals(entity.getUUID()) && itemEntity.pickupDelay > 0) {
+                if (itemEntity.getOwner() != null && itemEntity.getOwner().equals(entity.getUUID()) && itemEntity.pickupDelay > 0) {
                     continue;
                 }
 
@@ -86,7 +86,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                 BlockPos pos = itemEntity.blockPosition();
                 boolean blocked = false;
                 for (BlockPos checkPos : BlockPos.betweenClosed(pos.offset(-5, -5, -5), pos.offset(5, 5, 5))) {
-                    if (world.getBlockState(checkPos).getBlock() == DEContent.dislocation_inhibitor) {
+                    if (world.getBlockState(checkPos).getBlock() == DEContent.DISLOCATION_INHIBITOR.get()) {
                         blocked = true;
                         break;
                     }
@@ -173,7 +173,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
 
     public static void toggleEnabled(ItemStack stack, Player player) {
         ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
     }
 
 //    @Optional.Method(modid = "baubles")

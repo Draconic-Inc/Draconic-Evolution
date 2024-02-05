@@ -38,11 +38,11 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
     /**
      * @return a list of module entities for all installed modules.
      */
-    List<ModuleEntity> getModuleEntities();
+    List<ModuleEntity<?>> getModuleEntities();
 
-    void addModule(ModuleEntity entity, ModuleContext context);
+    void addModule(ModuleEntity<?> entity, ModuleContext context);
 
-    void removeModule(ModuleEntity entity, ModuleContext context);
+    void removeModule(ModuleEntity<?> entity, ModuleContext context);
 
     /**
      * This is where the main "does this host support this module" check is done.
@@ -50,7 +50,7 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
      * @param entity the module entity.
      * @return true if this module entity is supported bu this host.
      */
-    default boolean isModuleSupported(ModuleEntity entity) {
+    default boolean isModuleSupported(ModuleEntity<?> entity) {
         Module<?> module = entity.getModule();
         ModuleType<?> type = module.getType();
         if (getTypeBlackList().contains(type)) {
@@ -111,7 +111,7 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
         return data == null ? fallback : data;
     }
 
-    default Stream<ModuleEntity> getEntitiesByType(ModuleType<?> moduleType) {
+    default Stream<ModuleEntity<?>> getEntitiesByType(ModuleType<?> moduleType) {
         return getModuleEntities().stream().filter(e -> e.getModule().getType() == moduleType);
     }
 
@@ -119,16 +119,16 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
      * @return a stream containing all of the module types that are currently installed in this host.
      */
     default Stream<ModuleType<?>> getInstalledTypes() {
-        return getModules().map(Module::getType);
+        return getModules().<ModuleType<?>>map(Module::getType).distinct();
     }
 
     /**
      * This method exists so that a module host can select which information from a given module will be displayed. <br>
      * This is useful for module types like Speed which have different effects depending on what they are installed in.
      */
-    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<Component, Component> map, ModuleContext context, boolean stack) {
+    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<Component, Component> map, ModuleContext context) {
         if (moduleData == null) return;
-        moduleData.addInformation(map, context, stack);
+        moduleData.addInformation(map, context);
     }
 
     /**
@@ -138,14 +138,23 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
      *
      * @param map the map to which information will be added.
      */
-    default void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(SneakyUtils.unsafeCast(data), map, context, stack));
+    default void addInformation(Map<Component, Component> map, ModuleContext context) {
+        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(SneakyUtils.unsafeCast(data), map, context));
     }
 
     static InstallResult checkAddModule(ModuleHost host, Module<?> newModule) {
         return newModule.doInstallationCheck(host.getModules());
         //Moved this check to the module because i needed more control in cases like the arrow velocity module where specific modules within a module type have a module installation limit.
     }
+
+    /**
+     * Called before module is removed from the module grid to verify the module can be removed.
+     *
+     * @param module The module being removed.
+     * @param reason In the event the module can not be removed you can specify a message to be displayed to the user by adding a text component to this list.
+     * @return false to prevent the module from being removed.
+     */
+    boolean checkRemoveModule(ModuleEntity<?> module, List<Component> reason);
 
 //    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);
 

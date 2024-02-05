@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:celestial_manipulator"
+    ]
+  },
+  "criteria": {
+    "has_ingot_draconium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/draconium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:celestial_manipulator"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_draconium",
+      "has_the_recipe"
+    ]
+  ]
+}

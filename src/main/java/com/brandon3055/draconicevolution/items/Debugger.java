@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -46,7 +46,7 @@ public class Debugger extends Item {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        Level world = player.level;
+        Level world = player.level();
 //        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
 //        if (guardian != null) {
 //            guardian.removePassengers();
@@ -767,7 +767,7 @@ public class Debugger extends Item {
                 mode = 0;
             }
             if (!world.isClientSide) {
-                player.sendMessage(new TextComponent(MODES.get(mode)), Util.NIL_UUID);
+                player.sendSystemMessage(Component.literal(MODES.get(mode)));
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

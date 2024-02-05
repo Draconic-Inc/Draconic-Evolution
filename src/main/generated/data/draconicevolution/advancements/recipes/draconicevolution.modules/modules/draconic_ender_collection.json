@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:modules/draconic_ender_collection"
+    ]
+  },
+  "criteria": {
+    "has_module_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "draconicevolution:module_core"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:modules/draconic_ender_collection"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_module_core",
+      "has_the_recipe"
+    ]
+  ]
+}

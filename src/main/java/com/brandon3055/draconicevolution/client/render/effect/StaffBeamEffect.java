@@ -7,9 +7,7 @@ import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -21,7 +19,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/4/21
@@ -96,7 +93,7 @@ public class StaffBeamEffect extends Particle {
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float dist = 0.2F * (float) Utils.getDistance(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
 
         Vector3 p1 = source.copy().add(planeA);
@@ -122,8 +119,6 @@ public class StaffBeamEffect extends Particle {
         p3 = source.copy().subtract(planeD);
         p4 = target.copy().subtract(planeD);
         bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
-
-
     }
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
@@ -136,17 +131,14 @@ public class StaffBeamEffect extends Particle {
     }
 
     private static ParticleRenderType renderType = new ParticleRenderType() {
-        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, DETextures.ENERGY_BEAM_DRACONIC);
+        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
             textureManager.bindForSetup(texture);
-//            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         }
 

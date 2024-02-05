@@ -7,8 +7,8 @@ import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
@@ -35,14 +35,14 @@ public class RenderModularPickaxe extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.27, 0.27, 0.5, 1.125);
 
-        basePart.render(transform, buffers, mat);
-        materialPart.render(transform, buffers, mat);
-        tracePart.render(transform, buffers, mat);
-        gemPart.render(transform, buffers, mat);
-        bladePart.render(transform, buffers, mat);
+        basePart.render(context, buffers, mat);
+        materialPart.render(context, buffers, mat);
+        tracePart.render(context, buffers, mat);
+        gemPart.render(context, buffers, mat);
+        bladePart.render(context, buffers, mat);
     }
 
     @Override

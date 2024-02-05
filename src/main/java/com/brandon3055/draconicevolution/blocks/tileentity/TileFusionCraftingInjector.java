@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nullable;
 
@@ -37,8 +37,8 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
     private TechLevel techLevelCache = null;
 
     public TileFusionCraftingInjector(BlockPos pos, BlockState state) {
-        super(DEContent.tile_crafting_injector, pos, state);
-        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
+        super(DEContent.TILE_CRAFTING_INJECTOR.get(), pos, state);
+        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
         itemHandler.setContentsChangeListener(i -> inventoryChange());
         capManager.set(CapabilityOP.OP, new OPStorage(0) {

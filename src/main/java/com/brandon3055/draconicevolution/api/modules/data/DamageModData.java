@@ -10,13 +10,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 8/4/21
  */
-public class DamageModData implements ModuleData<DamageModData> {
-
-    private IDamageModifier modifier;
-
-    public DamageModData(IDamageModifier modifier) {
-        this.modifier = modifier;
-    }
+public record DamageModData(IDamageModifier modifier) implements ModuleData<DamageModData> {
 
     @Override
     public DamageModData combine(DamageModData other) {
@@ -26,9 +20,5 @@ public class DamageModData implements ModuleData<DamageModData> {
     @Override
     public void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack) {
         modifier.addInformation(map, context, stack);
-    }
-
-    public IDamageModifier getModifier() {
-        return modifier;
     }
 }

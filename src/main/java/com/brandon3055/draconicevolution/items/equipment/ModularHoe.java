@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -8,6 +9,7 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +57,9 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        return new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "hoe", ModuleCfg.removeInvalidModules);
+        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "hoe", ModuleCfg.removeInvalidModules);
+        host.addCategories(ModuleCategory.TOOL_HOE);
+        return host;
     }
 
     @Nullable
@@ -97,7 +101,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

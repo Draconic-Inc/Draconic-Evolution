@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -18,6 +17,7 @@ import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee, IDraconicDamage {
+public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -57,11 +57,6 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     }
 
     @Override
-    public TechLevel getTechLevel(@Nullable ItemStack stack) {
-        return techLevel;
-    }
-
-    @Override
     public double getSwingSpeedMultiplier() {
         return EquipCfg.staffSwingSpeedMultiplier;
     }
@@ -74,8 +69,12 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
-        host.addCategories(ModuleCategory.RANGED_WEAPON);
+//        host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
+        host.addCategories(ModuleCategory.TOOL_AXE);
+        host.addCategories(ModuleCategory.TOOL_HOE);
+        host.addCategories(ModuleCategory.TOOL_SHOVEL);
+
         return host;
     }
 
@@ -113,7 +112,12 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentCategory.DIGGER || enchantment.category == EnchantmentCategory.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment.category == EnchantmentCategory.DIGGER ||
+                enchantment.category == EnchantmentCategory.WEAPON ||
+                enchantment.category.name().equals("PICKAXE_OR_SHOVEL") ||
+                enchantment.category.name().equals("SWORD_OR_AXE") ||
+                enchantment.category.name().equals("SWORD_OR_AXE_OR_CROSSBOW") ||
+                super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
@@ -133,7 +137,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

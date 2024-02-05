@@ -3,10 +3,9 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,7 +30,7 @@ public class TileFluxGate extends TileFlowGate {
     private OPRegulator outputReg = new OPRegulator(this, false);
 
     public TileFluxGate(BlockPos pos, BlockState state) {
-        super(DEContent.tile_flux_gate, pos, state);
+        super(DEContent.TILE_FLUX_GATE.get(), pos, state);
     }
 
     @Override
@@ -67,13 +66,13 @@ public class TileFluxGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerBCTile<TileFlowGate>(DEContent.container_flow_gate, id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
@@ -202,6 +201,11 @@ public class TileFluxGate extends TileFlowGate {
         @Override
         public int getMaxEnergyStored() {
             return (int) Math.min(Integer.MAX_VALUE, getMaxOPStored());
+        }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
         }
 
         @Override

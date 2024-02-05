@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,10 +23,6 @@ public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 
     public ContainerDummy(MenuType<?> type, int windowId, Inventory player, T tile) {
         super(type, windowId, player, tile);
-    }
-
-    public ContainerDummy(MenuType<?> type, int windowId, Inventory player, T tile, ContainerSlotLayout.LayoutFactory<T> factory) {
-        super(type, windowId, player, tile, factory);
     }
 
 //    public ContainerDummy(TileBCBase tile, PlayerEntity player, int invX, int invY) {

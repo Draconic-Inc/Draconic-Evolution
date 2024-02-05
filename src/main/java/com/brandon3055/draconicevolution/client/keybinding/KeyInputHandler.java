@@ -22,7 +22,7 @@ public class KeyInputHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onKeyInput(InputEvent.Key event) {
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
@@ -32,7 +32,7 @@ public class KeyInputHandler {
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onMouseInput(InputEvent.MouseInputEvent event) {
+    public void onMouseInput(InputEvent.MouseButton event) {
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
@@ -72,7 +72,7 @@ public class KeyInputHandler {
                     player.onUpdateAbilities();
                 } else {
                     player.getAbilities().flying = true;
-                    if (player.isOnGround()) {
+                    if (player.onGround()) {
                         player.setPos(player.getX(), player.getY() + 0.05D, player.getZ());
                         player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
                     }
@@ -92,7 +92,7 @@ public class KeyInputHandler {
         } else if (KeyBindings.dislocatorGui.consumeClick()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
-                Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
+                Minecraft.getInstance().setScreen(new GuiDislocator.Screen(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.consumeClick()) {
             DraconicNetwork.sendPlaceItem();
@@ -118,7 +118,7 @@ public class KeyInputHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void priorityKeyInput(InputEvent.KeyInputEvent event) {
+    public void priorityKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && event.getAction() == 1) {
             GuiConfigurableItem.checkKeybinding(event.getKey(), event.getScanCode());

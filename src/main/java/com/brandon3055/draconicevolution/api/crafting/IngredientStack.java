@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,11 +40,10 @@ public class IngredientStack extends Ingredient {
         if (stack == null) {
             return false;
         } else {
-            this.dissolve();
-            if (this.itemStacks.length == 0) {
+            if (getItems().length == 0) {
                 return stack.isEmpty();
             } else {
-                for (ItemStack itemstack : this.itemStacks) {
+                for (ItemStack itemstack : getItems()) {
                     if (itemstack.getItem() == stack.getItem() && stack.getCount() >= count) {
                         return true;
                     }
@@ -59,11 +57,10 @@ public class IngredientStack extends Ingredient {
         if (stack == null) {
             return false;
         } else {
-            this.dissolve();
-            if (this.itemStacks.length == 0) {
+            if (getItems().length == 0) {
                 return stack.isEmpty();
             } else {
-                for(ItemStack itemstack : this.itemStacks) {
+                for(ItemStack itemstack : getItems()) {
                     if (itemstack.getItem() == stack.getItem()) {
                         return true;
                     }
@@ -74,7 +71,7 @@ public class IngredientStack extends Ingredient {
     }
 
     @Override
-    protected void dissolve() {
+    public ItemStack[] getItems() {
         if (this.itemStacks == null) {
             this.itemStacks = Arrays.stream(this.values)
                     .flatMap((itemList) -> itemList.getItems().stream())
@@ -82,6 +79,8 @@ public class IngredientStack extends Ingredient {
                     .distinct()
                     .toArray(ItemStack[]::new);
         }
+
+        return itemStacks;
     }
 
     @Override
@@ -125,7 +124,6 @@ public class IngredientStack extends Ingredient {
     }
 
     public static class Serializer implements IIngredientSerializer<IngredientStack> {
-
         @Override
         public IngredientStack parse(FriendlyByteBuf buffer) {
             int count = buffer.readShort();

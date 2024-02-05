@@ -2,12 +2,11 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.brandon3055.draconicevolution.client.DEMiscSprites;
+import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -16,6 +15,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -48,7 +48,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
-        if (!renderEnabled || DEMiscSprites.ENERGY_PARTICLE == null || DEMiscSprites.ENERGY_PARTICLE[0] == null) {
+        if (!renderEnabled || AtlasTextureHelper.ENERGY_PARTICLE == null || AtlasTextureHelper.ENERGY_PARTICLE[0] == null) {
             return;
         }
 
@@ -105,8 +105,8 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             float drawZ = viewZ + (float) oz;
             //endregion
 
-            int texIndex = (ClientEventHandler.elapsedTicks) % DEMiscSprites.ENERGY_PARTICLE.length;
-            TextureAtlasSprite sprite = DEMiscSprites.ENERGY_PARTICLE[texIndex];
+            int texIndex = (ClientEventHandler.elapsedTicks) % AtlasTextureHelper.ENERGY_PARTICLE.length;
+            TextureAtlasSprite sprite = AtlasTextureHelper.ENERGY_PARTICLE[texIndex];
             float minU = sprite.getU0();
             float maxU = sprite.getU1();
             float minV = sprite.getV0();
@@ -134,10 +134,10 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             g = wierless ? 0 : 1;
             b = wierless ? 0 : 1;
 
-            minU = DEMiscSprites.ORB_PARTICLE.getU0();
-            maxU = DEMiscSprites.ORB_PARTICLE.getU1();
-            minV = DEMiscSprites.ORB_PARTICLE.getV0();
-            maxV = DEMiscSprites.ORB_PARTICLE.getV1();
+            minU = AtlasTextureHelper.ORB_PARTICLE.getU0();
+            maxU = AtlasTextureHelper.ORB_PARTICLE.getU1();
+            minV = AtlasTextureHelper.ORB_PARTICLE.getV0();
+            maxV = AtlasTextureHelper.ORB_PARTICLE.getV1();
             renderVector = getRenderVectors(camera, drawX, drawY, drawZ, scale);
             buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).uv2(240, 240).endVertex();
             buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).uv2(240, 240).endVertex();
@@ -159,13 +159,13 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, DEMiscSprites.ATLAS_LOCATION);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
         @Override
         public void end(Tesselator tessellator) {
-            tessellator.getBuilder().setQuadSortOrigin(0, 0, 0);
+            tessellator.getBuilder().setQuadSorting(VertexSorting.byDistance(0, 0, 0));//TODO is this valid?
             tessellator.end();
         }
     };

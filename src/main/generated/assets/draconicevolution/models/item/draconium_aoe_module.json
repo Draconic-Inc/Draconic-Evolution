@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "draconicevolution:item/modules/draconium_aoe"
+    "layer0": "draconicevolution:item/module/draconium",
+    "layer1": "draconicevolution:module/draconium_aoe"
   }
 }

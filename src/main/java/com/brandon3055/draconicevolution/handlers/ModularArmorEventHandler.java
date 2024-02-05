@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -12,24 +10,27 @@ import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
+import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,22 +38,90 @@ import java.util.stream.Collectors;
 /**
  * Created by Brandon on 13/11/2014.
  */
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModularArmorEventHandler {
     private static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
     public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
-    private static final DamageSource KILL_COMMAND = new DamageSource("administrative.kill").bypassInvul().bypassArmor().bypassMagic();
-    public static Map<Player, Boolean> playersWithFlight = new WeakHashMap<>();
-    public static List<UUID> playersWithUphillStep = new ArrayList<>();
+    public static final UUID STEP_HEIGHT_UUID = UUID.fromString("f4ccc2d7-477a-4610-bac0-b4de1a20e12f");
+    public static final UUID FLY_SPEED_UUID = UUID.fromString("364320fe-5cba-48db-a28f-7f4f57422bf5");
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onEntityAttacked(LivingAttackEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide || event.getSource() == KILL_COMMAND) {
+    public static final EntityAttributeHandler<ArmorAbilities> ATTRIBUTE_HANDLER = new EntityAttributeHandler<>();
+
+    public static Map<Player, Boolean> playersWithFlight = new WeakHashMap<>();
+
+
+    public static void init() {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityAttacked);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityDamaged);
+        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onEntityFall);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ModularArmorEventHandler::onEntityDeath);
+        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::livingTick);
+        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
+
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight);
+    }
+
+    @Nullable
+    private static AttributeModifier getWalkSpeedAttribute(LivingEntity entity, ArmorAbilities abilities) {
+        if (abilities.data == null) return null;
+
+        double speedModifier = abilities.data.speedMultiplier();
+        if (entity.isSprinting() && abilities.speedSettingRun != -1) {
+            speedModifier = Math.min(speedModifier, abilities.speedSettingRun);
+        } else if (abilities.speedSetting != -1) {
+            speedModifier = Math.min(speedModifier, abilities.speedSetting);
+        }
+        if (speedModifier > 0) {
+            return new AttributeModifier(WALK_SPEED_UUID, Attributes.MOVEMENT_SPEED.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static AttributeModifier getFlightSpeedAttribute(LivingEntity entity, ArmorAbilities abilities) {
+        if (abilities.data == null) return null;
+
+        double speedModifier = abilities.data.speedMultiplier();
+        if (entity.isSprinting() && abilities.speedSettingRun != -1) {
+            speedModifier = Math.min(speedModifier, abilities.speedSettingRun);
+        } else if (abilities.speedSetting != -1) {
+            speedModifier = Math.min(speedModifier, abilities.speedSetting);
+        }
+        if (speedModifier > 0) {
+            //TODO test this modifier
+            return new AttributeModifier(FLY_SPEED_UUID, Attributes.FLYING_SPEED.getDescriptionId(), speedModifier / 2, AttributeModifier.Operation.MULTIPLY_BASE);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static AttributeModifier getStepHeight(LivingEntity entity, ArmorAbilities abilities) {
+        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
+        boolean hasHighStep = hasHost && optional.orElseThrow(WTFException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
+        AttributeInstance instance = entity.getAttribute(ForgeMod.STEP_HEIGHT.get());
+
+        if (hasHighStep && instance != null) {
+            double stepHeight = instance.getValue();
+            //If someone else is already boosting step height then lets not make things dumb.
+            if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_UUID) == null) {
+                return null;
+            }
+            return new AttributeModifier(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT.get().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
+        }
+        return null;
+    }
+
+
+    private static void onEntityAttacked(LivingAttackEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
-        LivingEntity entity = event.getEntityLiving();
         ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
@@ -61,9 +130,9 @@ public class ModularArmorEventHandler {
         }
 
         //Allows /kill to completely bypass all protections
-        if (event.getAmount() == Float.MAX_VALUE && event.getSource() == DamageSource.OUT_OF_WORLD) {
+        if (event.getAmount() == Float.MAX_VALUE && event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) {
             event.setCanceled(true);
-            event.getEntityLiving().hurt(KILL_COMMAND, Float.MAX_VALUE);
+            entity.hurt(DEDamage.killDamage(entity.level()), Float.MAX_VALUE / 5);
             return;
         }
 
@@ -81,13 +150,12 @@ public class ModularArmorEventHandler {
         shieldControl.tryBlockDamage(event);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onEntityDamaged(LivingDamageEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide || event.getSource() == KILL_COMMAND) {
+    private static void onEntityDamaged(LivingDamageEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
-        LivingEntity entity = event.getEntityLiving();
         ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
@@ -109,9 +177,8 @@ public class ModularArmorEventHandler {
         shieldControl.tryBlockDamage(event);
     }
 
-    @SubscribeEvent
-    public static void onEntityFall(LivingFallEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+    private static void onEntityFall(LivingFallEvent event) {
+        LivingEntity entity = event.getEntity();
         float jumpBoost = getJumpBoost(entity, true);
         if (jumpBoost > 0) {
             jumpBoost *= 2;
@@ -119,13 +186,12 @@ public class ModularArmorEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onEntityDeath(LivingDeathEvent event) {
-        if (event.isCanceled() || event.getEntityLiving().level.isClientSide) {
+    private static void onEntityDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (event.isCanceled() || entity.level().isClientSide) {
             return;
         }
 
-        LivingEntity entity = event.getEntityLiving();
         List<UndyingEntity> undyingModules = new ArrayList<>();
 
         if (entity instanceof Player) {
@@ -151,7 +217,7 @@ public class ModularArmorEventHandler {
             }
         }
 
-        if (undyingModules.isEmpty() || event.getSource() == KILL_COMMAND) {
+        if (undyingModules.isEmpty() || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -178,10 +244,8 @@ public class ModularArmorEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void livingTick(LivingEvent.LivingUpdateEvent event) {
-        LivingEntity entity = event.getEntityLiving();
-//        if (!(entity instanceof PlayerEntity)) return;
+    private static void livingTick(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
 
         ArmorAbilities armorAbilities = new ArmorAbilities();
         if (entity instanceof Player) {
@@ -207,60 +271,7 @@ public class ModularArmorEventHandler {
             }
         }
 
-        //region/*---------------- HillStep -----------------*/
-
-        if (entity.level.isClientSide) {
-            ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
-            LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-            boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
-            boolean highStepListed = playersWithUphillStep.contains(entity.getUUID()) && entity.maxUpStep >= 1f;
-            boolean hasHighStep = hasHost && optional.orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
-
-            if (hasHighStep && !highStepListed) {
-                playersWithUphillStep.add(entity.getUUID());
-                entity.maxUpStep = 1.0625f;
-            }
-
-            if (!hasHighStep && highStepListed) {
-                playersWithUphillStep.remove(entity.getUUID());
-                entity.maxUpStep = 0.6F;
-            }
-        }
-
-        //endregion
-
-        //region/*---------------- Movement Speed ----------------*/
-
-        Attribute speedAttr = Attributes.MOVEMENT_SPEED;
-        double speedModifier = 0;
-        if (armorAbilities.data != null) {
-            speedModifier = armorAbilities.data.getSpeedMultiplier();
-            if (entity.isSprinting() && armorAbilities.speedSettingRun != -1) {
-                speedModifier = Math.min(speedModifier, armorAbilities.speedSettingRun);
-            } else if (armorAbilities.speedSetting != -1) {
-                speedModifier = Math.min(speedModifier, armorAbilities.speedSetting);
-            }
-        }
-
-        AttributeModifier currentModifier = entity.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID);
-        if (speedModifier > 0) {
-            if (currentModifier == null) {
-                entity.getAttribute(speedAttr).addTransientModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
-            } else if (currentModifier.getAmount() != speedModifier) {
-                entity.getAttribute(speedAttr).removeModifier(currentModifier);
-                entity.getAttribute(speedAttr).addTransientModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
-            }
-
-            if (!entity.isOnGround() && entity.getVehicle() == null) {
-                entity.flyingSpeed = 0.02F + (0.02F * (float) speedModifier);
-            }
-        } else {
-            if (currentModifier != null) {
-                entity.getAttribute(speedAttr).removeModifier(currentModifier);
-            }
-        }
-
-        //endregion
+        ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
 
         //region/*----------------- Flight ------------------*/
 
@@ -268,15 +279,11 @@ public class ModularArmorEventHandler {
             Player player = (Player) entity;
             boolean canFly = true;
             boolean noPower = false;
-            if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.getAbilities().instabuild) {
+            if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.getAbilities().instabuild && !player.isSpectator()) {
                 canFly = armorAbilities.flightPower.getOPStored() >= EquipCfg.creativeFlightEnergy;
                 noPower = !canFly;
-                if (canFly && player.getAbilities().flying && !entity.level.isClientSide) {
-                    if (armorAbilities.flightPower instanceof IOPStorageModifiable) {
-                        ((IOPStorageModifiable) armorAbilities.flightPower).modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
-                    } else {
-                        armorAbilities.flightPower.extractOP(EquipCfg.creativeFlightEnergy, false);
-                    }
+                if (canFly && player.getAbilities().flying && !entity.level().isClientSide) {
+                    armorAbilities.flightPower.modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
                 }
             }
             if (armorAbilities.creativeFlight && canFly) {
@@ -287,10 +294,10 @@ public class ModularArmorEventHandler {
                     playersWithFlight.put(player, false);
                 }
 
-                if (playersWithFlight.get(player) && !entity.level.isClientSide) {
+                if (playersWithFlight.get(player) && !entity.level().isClientSide) {
                     playersWithFlight.put(player, false);
 
-                    if (!player.getAbilities().instabuild) {
+                    if (!player.getAbilities().instabuild && !player.isSpectator()) {
                         boolean wasFlying = player.getAbilities().flying;
                         player.getAbilities().mayfly = false;
                         player.getAbilities().flying = false;
@@ -301,7 +308,7 @@ public class ModularArmorEventHandler {
                     }
                 }
 
-                if (player.level.isClientSide && playersWithFlight.get(player)) {
+                if (player.level().isClientSide && playersWithFlight.get(player)) {
                     playersWithFlight.put(player, false);
                     if (!player.getAbilities().instabuild) {
                         player.getAbilities().mayfly = false;
@@ -362,7 +369,7 @@ public class ModularArmorEventHandler {
             ModuleHost host = optional.orElseThrow(IllegalStateException::new);
             JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jumpData != null) {
-                double jump = jumpData.getMultiplier();
+                double jump = jumpData.multiplier();
                 if (max) return (float) jump;
                 if (entity.isSprinting()) {
                     if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost_run")) {
@@ -392,16 +399,15 @@ public class ModularArmorEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+    private static void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
+        LivingEntity entity = event.getEntity();
         float jumpBoost = getJumpBoost(entity, false);
         if (jumpBoost > 0 && !entity.isShiftKeyDown()) {
             entity.push(0, 0.1F * (jumpBoost + 1), 0);
         }
     }
 
-    public static void gatherArmorProps(ItemStack stack, ModuleHost host, LivingEntity entity, ArmorAbilities abilities) {
+    private static void gatherArmorProps(ItemStack stack, ModuleHost host, LivingEntity entity, ArmorAbilities abilities) {
         SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
         if (speed != null) {
             abilities.addSpeedData(speed, host);
@@ -414,9 +420,9 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static class ArmorAbilities {
-        private float speedSetting = -1;
-        private float speedSettingRun = -1;
+    public static class ArmorAbilities {
+        private double speedSetting = -1;
+        private double speedSettingRun = -1;
         private SpeedData data;
         private boolean elytraFlight = false;
         private boolean creativeFlight = false;

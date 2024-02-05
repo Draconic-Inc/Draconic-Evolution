@@ -2,7 +2,7 @@
 
 #moj_import <fog.glsl>
 #moj_import <brandonscore:math.glsl>
-#moj_import <draconicevolution:chaos.glsl>
+#moj_import <brandonscore:chaos.glsl>
 
 uniform sampler2D Sampler0;
 

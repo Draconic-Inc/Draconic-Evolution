@@ -43,7 +43,7 @@ public class DefaultStaffDmgMod implements IDamageModifier {
 
     @Override
     public SoundEvent chargeSound() {
-        return DESounds.staffChargeFire;
+        return DESounds.STAFF_CHARGE_FIRE.get();
     }
 
     @Override
@@ -71,9 +71,9 @@ public class DefaultStaffDmgMod implements IDamageModifier {
     @OnlyIn(Dist.CLIENT)
     public static void handleEffect(LivingEntity source, MCDataInput data) {
         Vector3 pos = data.readVector();
-        ClientLevel world = (ClientLevel) source.level;
+        ClientLevel world = (ClientLevel) source.level();
         Minecraft mc = Minecraft.getInstance();
-        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.staffHitDefault, SoundSource.PLAYERS, 10, 1, pos.pos()));
+        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.STAFF_HIT_DEFAULT.get(), SoundSource.PLAYERS, 10, 1, world.random, pos.pos()));
         mc.particleEngine.add(new StaffBeamEffect(world, source, pos));
     }
 }

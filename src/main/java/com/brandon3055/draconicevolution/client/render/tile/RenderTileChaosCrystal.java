@@ -41,14 +41,14 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
             .createCompositeState(false));
 
     private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.BLOCK, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeCutoutShader)) //TODO Figure out shader
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/chaos_crystal.png"), false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .createCompositeState(false));
 
     private static final RenderType CHAOS_CRYSTAL_SHIELD = RenderType.create(MODID + ":chaos_shield_type", DefaultVertexFormat.POSITION_TEX, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.armorShieldShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.shieldShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setCullState(RenderStateShard.NO_CULL)
@@ -72,7 +72,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
 
     @Override
     public void render(TileChaosCrystal te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        if (te.parentPos.get().getY() != -1) return;
+        if (te.parentPos.notNull()) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
@@ -95,8 +95,9 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
         model.render(ccrs, mat);
 
         if (!te.guardianDefeated.get()) {
-            DEShaders.armorShieldActivation.glUniform1f(1F);
-            DEShaders.armorShieldColour.glUniform4f(1F, 0F, 0F, 1F);
+            DEShaders.shieldBarMode.glUniform1i(0);
+            DEShaders.shieldActivation.glUniform1f(1F);
+            DEShaders.shieldColour.glUniform4f(1F, 0F, 0F, 1F);
             ccrs.bind(CHAOS_CRYSTAL_SHIELD, getter);
             model.render(ccrs, mat);
         }

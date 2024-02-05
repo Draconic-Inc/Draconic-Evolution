@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.entity.guardian;
 
-import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -28,19 +28,17 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
     private Vec3 target;
     private double splashRange = 15;
     private double power = 10;
-    private DamageSource damageSource = new DamageSource("damage.draconicevolution.guardian_projectile").bypassMagic().bypassArmor().setMagic().setExplosion();
     private double closestApproach;
 
     public GuardianProjectileEntity(EntityType<?> type, Level world) {
-        super(DEContent.guardianProjectile, world);
+        super(DEContent.ENTITY_GUARDIAN_PROJECTILE.get(), world);
     }
 
     public GuardianProjectileEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, Vec3 target, double splashRange, double power) {
-        super(DEContent.guardianProjectile, shooter, accelX, accelY, accelZ, worldIn);
+        super(DEContent.ENTITY_GUARDIAN_PROJECTILE.get(), shooter, accelX, accelY, accelZ, worldIn);
         this.target = target;
         this.splashRange = splashRange;
         this.power = power;
-        this.damageSource = new DraconicIndirectEntityDamage("draconicevolution.guardian_projectile", this, shooter, TechLevel.CHAOTIC).bypassMagic().bypassArmor().setMagic().setExplosion();
         if (target != null) {
             closestApproach = distanceToSqr(target);
         }
@@ -57,7 +55,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
         super.onHit(result);
         Entity shooter = this.getOwner();
         if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(shooter)) {
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 detonate();
             }
         }
@@ -79,7 +77,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
     }
 
     private void detonate() {
-        List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(splashRange), EntitySelector.NO_CREATIVE_OR_SPECTATOR);
+        List<LivingEntity> list = level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(splashRange), EntitySelector.NO_CREATIVE_OR_SPECTATOR);
         Entity shooter = this.getOwner();
         for (LivingEntity entity : list) {
             if (entity == shooter) continue;
@@ -90,7 +88,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
             }
             df *= Explosion.getSeenPercent(position(), entity);
             float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
-            entity.hurt(damageSource, damage);
+            entity.hurt(DEDamage.guardianProjectile(level(), this, shooter), damage);
         }
         boolean destroy = false;
         if (shooter instanceof DraconicGuardianEntity) {
@@ -100,8 +98,8 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
             }
         }
 //                BCoreNetwork.sendSound(level, blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.HOSTILE, 10, random.nextFloat() * 0.1F + 0.9F, false);
-        level.explode(shooter, blockPosition().getX(), blockPosition().getY(), blockPosition().getZ(), 8, destroy ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
-        DraconicNetwork.sendImpactEffect(level, blockPosition(), 0);
+        level().explode(shooter, blockPosition().getX(), blockPosition().getY(), blockPosition().getZ(), 8, destroy ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+        DraconicNetwork.sendImpactEffect(level(), blockPosition(), 0);
 
         this.discard();
     }
@@ -127,7 +125,7 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -1,12 +1,15 @@
 package com.brandon3055.draconicevolution.lib;
 
+import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -19,10 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 16/03/2017.
@@ -32,27 +32,26 @@ public class ExplosionHelper {
 
     private final ServerLevel serverWorld;
     private BlockPos start;
-    private ShortPos shortPos;
     private HashSet<LevelChunk> modifiedChunks = new HashSet<>();
-    private HashSet<Integer> blocksToUpdate = new HashSet<>();
-    private HashSet<Integer> lightUpdates = new HashSet<>();
-    private HashSet<Integer> tilesToRemove = new HashSet<>();
+    private HashSet<Long> blocksToUpdate = new HashSet<>();
+    private HashSet<Long> lightUpdates = new HashSet<>();
+    private HashSet<Long> tilesToRemove = new HashSet<>();
     private HashMap<ChunkPos, LevelChunk> chunkCache = new HashMap<>();
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
+    public BlockPos.MutableBlockPos mPos = new BlockPos.MutableBlockPos();
     //    private Map<Integer, LinkedHashList<Integer>> radialRemovalMap = new HashMap<>();
-    public LinkedList<HashSet<Integer>> toRemove = new LinkedList<>();
+    public LinkedList<HashSet<Long>> toRemove = new LinkedList<>();
 
-    public ExplosionHelper(ServerLevel serverWorld, BlockPos start, ShortPos shortPos) {
+    public ExplosionHelper(ServerLevel serverWorld, BlockPos start) {
         this.serverWorld = serverWorld;
         this.start = start;
-        this.shortPos = shortPos;
     }
 
-    public void setBlocksForRemoval(LinkedList<HashSet<Integer>> list) {
+    public void setBlocksForRemoval(LinkedList<HashSet<Long>> list) {
         this.toRemove = list;
     }
 
-    public void addBlocksForUpdate(Collection<Integer> blocksToUpdate) {
+    public void addBlocksForUpdate(Collection<Long> blocksToUpdate) {
         this.blocksToUpdate.addAll(blocksToUpdate);
     }
 
@@ -103,7 +102,7 @@ public class ExplosionHelper {
 
     private LevelChunkSection getBlockStorage(BlockPos pos) {
         LevelChunk chunk = getChunk(pos);
-        return chunk.getSections()[pos.getY() >> 4];
+        return chunk.getSection(chunk.getSectionIndex(pos.getY()));
     }
 
     /**
@@ -133,6 +132,7 @@ public class ExplosionHelper {
         private ExplosionHelper helper;
         int index = 0;
         private MinecraftServer server;
+        public BlockPos.MutableBlockPos mPos = new BlockPos.MutableBlockPos();
 
         public RemovalProcess(ExplosionHelper helper) {
             this.helper = helper;
@@ -144,9 +144,9 @@ public class ExplosionHelper {
             server.nextTickTime = Util.getMillis();
             while (Util.getMillis() - server.nextTickTime < 50 && helper.toRemove.size() > 0) {
                 LogHelper.dev("Processing chunks at rad: " + index);
-                HashSet<Integer> set = helper.toRemove.removeFirst();
-                for (int pos : set) {
-                    helper.removeBlock(helper.shortPos.getActualPos(pos));
+                HashSet<Long> set = helper.toRemove.removeFirst();
+                for (long pos : set) {
+                    helper.removeBlock(mPos.set(pos));
                 }
                 index++;
             }
@@ -161,14 +161,21 @@ public class ExplosionHelper {
 
         public void finishChunks() {
             for (LevelChunk chunk : helper.modifiedChunks) {
-                chunk.setUnsaved(true);
+                chunk.setLightCorrect(false);
                 ThreadedLevelLightEngine lightManager = (ThreadedLevelLightEngine) helper.serverWorld.getLightEngine();
-                lightManager.lightChunk(chunk, false);//todo???
-//                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
-//                        .forEach(e -> e.connection.send(new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true))));
 
-                ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true);
+//                lightManager.runUpdates()
+                lightManager.lightChunk(chunk, true)
+                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
+                                .forEach(e -> e.connection.send(new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null))));
+
+//                ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true);
+//                helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false).forEach(e -> e.connection.send(packet));
+
+//                ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true);
+                ClientboundLevelChunkWithLightPacket packet = new ClientboundLevelChunkWithLightPacket(chunk, helper.serverWorld.getLightEngine(), null, null);
                 helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false).forEach(e -> e.connection.send(packet));
+//                DraconicNetwork.sendChunkRelight(chunk);
             }
 
             helper.modifiedChunks.clear();
@@ -179,13 +186,19 @@ public class ExplosionHelper {
 
             try {
                 LogHelper.dev("Updating " + helper.blocksToUpdate.size() + " Blocks");
-                for (int pos : helper.blocksToUpdate) {
-                    BlockState state = helper.serverWorld.getBlockState(helper.shortPos.getActualPos(pos));
+                int i = 0;
+                List<Vector3> list = new ArrayList<>();
+                for (long pos : helper.blocksToUpdate) {
+                    BlockState state = helper.serverWorld.getBlockState(mPos.set(pos));
                     if (state.getBlock() instanceof FallingBlock) {
-                        state.getBlock().tick(state, helper.serverWorld, helper.shortPos.getActualPos(pos), helper.serverWorld.random);
+//                        i++;
+                        state.getBlock().tick(state, helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.random);
                     }
-                    state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR, helper.shortPos.getActualPos(pos).above(), false);
+//                    list.add(Vector3.fromBlockPos(mPos.set(pos)));
+                    state.neighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, mPos.set(pos).above(), false);
                 }
+//                BCClientEventHandler.debugBlockList = list;
+                LogHelper.dev("Total Falling Blocks " + i);
             } catch (Throwable e) {
                 e.printStackTrace();
             }

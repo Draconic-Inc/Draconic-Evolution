@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -11,6 +10,7 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool, IDraconicDamage {
+public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -47,11 +47,6 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     }
 
     @Override
-    public TechLevel getTechLevel(@Nullable ItemStack stack) {
-        return techLevel;
-    }
-
-    @Override
     public double getSwingSpeedMultiplier() {
         return EquipCfg.axeSwingSpeedMultiplier;
     }
@@ -65,6 +60,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "axe", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.MELEE_WEAPON);
+        host.addCategories(ModuleCategory.TOOL_AXE);
         return host;
     }
 
@@ -92,7 +88,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     public int getReaperLevel(ItemStack stack) {
-        return 0;
+        return techLevel.index;
     }
 
     @Override
@@ -112,7 +108,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

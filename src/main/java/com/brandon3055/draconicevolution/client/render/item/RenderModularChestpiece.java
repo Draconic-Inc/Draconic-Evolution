@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
@@ -20,11 +21,11 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
@@ -51,13 +52,13 @@ public class RenderModularChestpiece extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         mat.translate(0.5, 1.05, 0.5);
         mat.rotate(MathHelper.torad * 180, Vector3.Z_POS);
         mat.scale(1.95);
 
-        basePart.render(transform, buffers, mat);
-        materialPart.render(transform, buffers, mat);
+        basePart.render(context, buffers, mat);
+        materialPart.render(context, buffers, mat);
 
         int shieldColour = 0xFFFFFFFF;
         LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
@@ -68,18 +69,18 @@ public class RenderModularChestpiece extends ToolRenderBase {
                 shieldColour = shieldControl.getShieldColour();
             }
         }
-        gemPart.render(transform, buffers, mat);
+        gemPart.render(context, buffers, mat);
         coreGemPart.render(buffers, mat, shieldColour);
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     protected CoreGemPart coreGemPart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -91,7 +92,6 @@ public class RenderModularChestpiece extends ToolRenderBase {
     }
 
     private class CoreGemPart extends SimpleToolPart {
-
         private final ToolShader shader;
 
         public CoreGemPart(CCModel model, RenderType baseType, ToolShader shader) {
@@ -100,13 +100,13 @@ public class RenderModularChestpiece extends ToolRenderBase {
         }
 
         @Override
-        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
+        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
             render(buffers, mat, 0xFFFFFFFF);
         }
 
         public void render(MultiBufferSource buffers, Matrix4 mat, int color) {
-            buffers.getBuffer(vboType.withCallback(() -> {
-                shader.getBaseColorUniform().glUniform4f(((color >> 24) & 0xFF) / 255F, ((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F);
+            buffers.getBuffer(vboType.get().withCallback(() -> {
+                shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
             }));
         }

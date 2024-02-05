@@ -170,7 +170,10 @@ public abstract class TileReactorComponent extends TileBCore {
 
     public void setRSMode(Player player, RSMode rsMode) {
         if (level.isClientSide) {
-            sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
+            TileReactorCore core = tryGetCore();
+            if (core != null) {
+                core.sendPacketToServer(output -> output.writeString(rsMode.name()).writePos(getBlockPos()), 99);
+            }
         }
         else {
             this.rsMode.set(rsMode);
@@ -235,7 +238,7 @@ public abstract class TileReactorComponent extends TileBCore {
             BlockPos corePos = getCorePos();
             LevelChunk coreChunk = level.getChunkAt(corePos);
 
-            if (!Utils.isAreaLoaded(level, corePos, ChunkHolder.FullChunkStatus.TICKING)) {
+            if (!level.isLoaded(corePos)) {
                 cachedCore = null;
                 return null;
             }

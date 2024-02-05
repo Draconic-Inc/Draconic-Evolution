@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.MobSoul;
@@ -18,12 +19,12 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class StabilizedSpawner extends BlockBCore implements EntityBlock {
+public class StabilizedSpawner extends EntityBlockBCore {
 
     public StabilizedSpawner(Properties properties) {
         super(properties);
         setMobResistant();
-        setBlockEntity(() -> DEContent.tile_stabilized_spawner, true);
+        setBlockEntity(DEContent.TILE_STABILIZED_SPAWNER::get, true);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class StabilizedSpawner extends BlockBCore implements EntityBlock {
     //TODO
     public void setStackDataEntity(ItemStack stack, String entityString) {
         if (entityString != null) {
-            ItemStack soul = new ItemStack(DEContent.mob_soul);
-            DEContent.mob_soul.setEntity(MobSoul.getCachedRegName(entityString), soul);
+            ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
+            DEContent.MOB_SOUL.get().setEntity(MobSoul.getCachedRegName(entityString), soul);
             CompoundTag managedData = stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
             stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
             managedData.put("mob_soul", soul.serializeNBT());

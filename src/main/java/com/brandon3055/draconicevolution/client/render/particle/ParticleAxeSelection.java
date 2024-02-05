@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by brandon3055 on 25/08/2016.
@@ -15,7 +16,7 @@ public class ParticleAxeSelection extends BCParticle {
 //    private IBakedModel model;
 //    private BlockState state;
 
-    public ParticleAxeSelection(ClientLevel worldIn, Vec3D pos) {
+    public ParticleAxeSelection(ClientLevel worldIn, Vec3 pos) {
         super(worldIn, pos);
 //        this.particleMaxAge = 50;
 //        state = worldIn.getBlockState(pos.getPos());
@@ -92,7 +93,7 @@ public class ParticleAxeSelection extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+        public Particle getEntityFX(int particleID, Level world, Vec3 pos, Vec3 speed, int... args) {
             ParticleAxeSelection particle = new ParticleAxeSelection((ClientLevel)world, pos);
             return particle;
         }

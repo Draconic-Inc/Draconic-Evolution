@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 
 /**
  * The primary purpose of this class is to allow a TileStructureBlock to check the status of its controller
@@ -42,7 +42,7 @@ public interface MultiBlockController {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    default boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return true;
     }
 }

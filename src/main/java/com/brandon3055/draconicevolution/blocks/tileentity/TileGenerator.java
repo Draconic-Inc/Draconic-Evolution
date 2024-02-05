@@ -2,9 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -16,16 +14,19 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,7 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -68,23 +69,23 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     public float rotationSpeed = 0;
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(4);
-    public OPStorage opStorage = new OPStorage(100000, 0, 32000);
+//    public SimpleModuleHost moduleHost = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
+    public OPStorage opStorage = new ModularOPStorage(this, 100000, 0, 32000);
 
     public TileGenerator(BlockPos pos, BlockState state) {
-        super(DEContent.tile_generator, pos, state);
+        super(DEContent.TILE_GENERATOR.get(), pos, state);
+
+//        capManager.setManaged("module_host", DECapabilities.MODULE_HOST_CAPABILITY, moduleHost).saveBoth().syncContainer();
 
         //Power Cap
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", DECapabilities.OP_STORAGE, opStorage).saveBoth().syncContainer();
 
         //Inventory Cap
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         itemHandler.setStackValidator((slot, stack) -> slot > 2 || ForgeHooks.getBurnTime(stack, null) > 0);
         setupPowerSlot(itemHandler, 3, opStorage, true);
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
-
-
-//        animHandler = new SimpleAnimHandler(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"));
     }
 
     @Override
@@ -138,7 +139,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
             tryRefuel();
         }
 
-        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.getMaxExtract(), opStorage.getOPStored()));
+        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.maxExtract(), opStorage.getOPStored()));
     }
 
     public void tryRefuel() {
@@ -149,7 +150,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
 
                 if (itemBurnTime > 0) {
                     if (stack.getCount() == 1) {
-                        stack = stack.getItem().getContainerItem(stack);
+                        stack = stack.getItem().getCraftingRemainingItem(stack);
                     } else {
                         stack.shrink(1);
                     }
@@ -174,7 +175,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         if (!active.get() || worldPosition.distSqr(Minecraft.getInstance().player.blockPosition()) > 16 * 16) {
             return;
         }
-        Random rand = level.random;
+        RandomSource rand = level.random;
 
         double p = 0.0625;
         if (rand.nextInt(17 - (mode.get().index * 4)) == 0) {
@@ -225,33 +226,33 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnGrillParticle(Random rand, double x, double y, double z) {
+    private void spawnGrillParticle(RandomSource rand, double x, double y, double z) {
         level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         if (mode.get() != Mode.PERFORMANCE_PLUS && rand.nextInt(8) == 0) {
-            level.addParticle(new IntParticleData(DEParticles.flame, 127), x, y, z, 0, 0, 0);
+            level.addParticle(new IntParticleData(DEParticles.FLAME.get(), 127), x, y, z, 0, 0, 0);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnExhaustParticle(Random rand, double x, double y, double z, Vec3D velocity) {
+    private void spawnExhaustParticle(RandomSource rand, double x, double y, double z, Vec3D velocity) {
         if (rand.nextBoolean()) {
             level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
             level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
         } else {
-            level.addParticle(new IntParticleData(DEParticles.flame, 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
+            level.addParticle(new IntParticleData(DEParticles.FLAME.get(), 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
         }
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_generator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.GENERATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_GENERATOR.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }

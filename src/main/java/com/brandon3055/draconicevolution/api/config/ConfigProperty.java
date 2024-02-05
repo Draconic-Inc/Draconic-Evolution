@@ -7,12 +7,12 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyD
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 2/5/20.
@@ -23,7 +23,8 @@ import java.util.function.Function;
  */
 public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
     private String name;
-    private Component displayName;
+    private Supplier<Component> displayName;
+    private Supplier<Component> toolTip;
     private boolean showOnHud = true;
     private String modid = "draconicevolution";
     private UUID uniqueName = null;
@@ -34,18 +35,26 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
 
     public ConfigProperty(String name, Component displayName) {
         this.name = name;
+        this.displayName = () -> displayName;
+    }
+
+    public void setDisplayName(Supplier<Component> displayName) {
         this.displayName = displayName;
+    }
+
+    public void setToolTip(Supplier<Component> toolTip) {
+        this.toolTip = toolTip;
     }
 
     /**
      * @return the display name for this config property. e.g. Mining AOE
      */
     public Component getDisplayName() {
-        return displayName == null ? new TranslatableComponent("item_prop.draconicevolution." + name) : displayName;
+        return displayName == null ? Component.translatable("item_prop.draconicevolution." + name) : displayName.get();
     }
 
     public Component getToolTip() {
-        return new TranslatableComponent("item_prop.draconicevolution." + name + ".info");
+        return toolTip == null ? Component.translatable("item_prop.draconicevolution." + name + ".info") : toolTip.get();
     }
 
     /**
@@ -163,7 +172,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
 
     public enum IntegerFormatter {
         RAW(String::valueOf),
-        AOE(e -> String.format("%sx%s", 1 + (e * 2), 1 + (e * 2)));
+        AOE(e -> String.format("%sx%s", 1 + (e * 2), 1 + (e * 2))); //Input is radius
         //Will add formatters as needed
 
         private Function<Integer, String> formatter;

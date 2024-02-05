@@ -35,6 +35,9 @@ public class ModuleCategory {
     public static final ModuleCategory MELEE_WEAPON     = new ModuleCategory();
     public static final ModuleCategory RANGED_WEAPON    = new ModuleCategory();
     public static final ModuleCategory MINING_TOOL      = new ModuleCategory();
+    public static final ModuleCategory TOOL_AXE         = new ModuleCategory();
+    public static final ModuleCategory TOOL_SHOVEL      = new ModuleCategory();
+    public static final ModuleCategory TOOL_HOE         = new ModuleCategory();
     //@formatter:on
 
 

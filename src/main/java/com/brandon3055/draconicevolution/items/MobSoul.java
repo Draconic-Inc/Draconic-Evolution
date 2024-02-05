@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -82,11 +81,11 @@ public class MobSoul extends ItemBCore {
     @Override
     public Component getName(ItemStack stack) {
         String eName = getEntityString(stack);
-        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(eName));
+        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(getCachedRegName(eName));
         if (type == null){
             return super.getName(stack);
         }
-        return new TranslatableComponent(type.getDescriptionId()).append(" ").append(super.getName(stack));
+        return Component.translatable(type.getDescriptionId()).append(" ").append(super.getName(stack));
     }
 
     public String getEntityString(ItemStack stack) {
@@ -116,7 +115,7 @@ public class MobSoul extends ItemBCore {
         try {
             String eName = getEntityString(stack);
             CompoundTag entityData = getEntityData(stack);
-            EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(eName));
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(getCachedRegName(eName));
             Entity entity;
 
             if (type == null) {
@@ -144,9 +143,9 @@ public class MobSoul extends ItemBCore {
     }
 
     public ItemStack getSoulFromEntity(Entity entity, boolean saveEntityData) {
-        ItemStack soul = new ItemStack(DEContent.mob_soul);
+        ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
 
-        String registryName = entity.getType().getRegistryName().toString();
+        String registryName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString();
         ItemNBTHelper.setString(soul, "EntityName", registryName);
 
         if (saveEntityData) {
@@ -167,7 +166,7 @@ public class MobSoul extends ItemBCore {
         if (name.equals("[Random-Display]")) {
             if (randomDisplayList == null) {
                 randomDisplayList = new ArrayList<>();
-                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(type.getRegistryName().toString()));
+                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(ForgeRegistries.ENTITY_TYPES.getKey(type).toString()));
             }
 
             if (randomDisplayList.size() > 0) {
@@ -176,22 +175,22 @@ public class MobSoul extends ItemBCore {
         }
 
         if (!renderEntityMap.containsKey(name)) {
-            Level world = Minecraft.getInstance().level;
+            Level level = Minecraft.getInstance().level;
             Entity entity;
             try {
-                EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(name));
+                EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(getCachedRegName(name));
                 if (type != null) {
-                    entity = type.create(world);
+                    entity = type.create(level);
                     if (entity == null) {
-                        entity = EntityType.PIG.create(world);
+                        entity = EntityType.PIG.create(level);
                     }
                 }
                 else {
-                    entity = EntityType.PIG.create(world);
+                    entity = EntityType.PIG.create(level);
                 }
             }
             catch (Throwable e) {
-                entity = EntityType.PIG.create(world);
+                entity = EntityType.PIG.create(level);
             }
             renderEntityMap.put(name, entity);
         }

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:gems/lapis"
+    },
+    "B": {
+      "item": "minecraft:ender_eye"
+    },
+    "C": {
+      "tag": "forge:dusts/redstone"
+    },
+    "D": {
+      "tag": "forge:ingots/draconium"
+    },
+    "E": {
+      "tag": "forge:ingots/iron"
+    },
+    "F": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:entity_detector"
+  }
+}

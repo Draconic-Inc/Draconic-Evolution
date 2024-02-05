@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -10,6 +9,7 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularSword extends SwordItem implements IReaperItem, IModularMelee, IDraconicDamage {
+public class ModularSword extends SwordItem implements IReaperItem, IModularMelee {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -42,11 +42,6 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     @Override
     public DETier getItemTier() {
         return itemTier;
-    }
-
-    @Override
-    public TechLevel getTechLevel(@Nullable ItemStack stack) {
-        return techLevel;
     }
 
     @Override
@@ -72,7 +67,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -99,7 +94,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override

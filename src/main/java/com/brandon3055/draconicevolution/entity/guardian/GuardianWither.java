@@ -27,7 +27,7 @@ public class GuardianWither extends WitherBoss {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 600).add(Attributes.MOVEMENT_SPEED, 1.6F).add(Attributes.FOLLOW_RANGE, 200.0D).add(Attributes.ARMOR, 4.0D);
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 600D).add(Attributes.MOVEMENT_SPEED, 1.6F).add(Attributes.FOLLOW_RANGE, 200.0D).add(Attributes.ARMOR, 4.0D).add(Attributes.FLYING_SPEED, 1.6F);
     }
 
     @Override

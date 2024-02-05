@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
@@ -20,14 +21,12 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.SimpleModelState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -40,20 +39,20 @@ import java.util.Map;
 public class RenderModularStaff extends ToolRenderBase {
 
     private static final StaffModelEffect effectRenderer = new StaffModelEffect();
-    private static final ModelState TRANSFORMATION;
+    private static final PerspectiveModelState TRANSFORMATION;
 
     static {
         // @formatter:off
-        Map<TransformType, Transformation> map = new HashMap<>();
-        map.put(TransformType.GROUND,                   TransformUtils.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
-        map.put(TransformType.FIXED,                    TransformUtils.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
+        Map<ItemDisplayContext, Transformation> map = new HashMap<>();
+        map.put(ItemDisplayContext.GROUND,                   TransformUtils.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
+        map.put(ItemDisplayContext.FIXED,                    TransformUtils.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
 
-        map.put(TransformType.THIRD_PERSON_RIGHT_HAND,  TransformUtils.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
-        map.put(TransformType.THIRD_PERSON_LEFT_HAND,   TransformUtils.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,  TransformUtils.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
+        map.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND,   TransformUtils.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
 
-        map.put(TransformType.FIRST_PERSON_RIGHT_HAND,  TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
-        map.put(TransformType.FIRST_PERSON_LEFT_HAND,   TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
-        TRANSFORMATION = new SimpleModelState(ImmutableMap.copyOf(map));
+        map.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,  TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
+        map.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND,   TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
+        TRANSFORMATION = new PerspectiveModelState(ImmutableMap.copyOf(map));
         // @formatter:on
     }
 
@@ -96,7 +95,7 @@ public class RenderModularStaff extends ToolRenderBase {
         @Override
         public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int light) {
             RenderModularStaff.this.entity = entity;
-            RenderModularStaff.this.world = world == null ? entity == null ? null : (ClientLevel) entity.level : null;
+            RenderModularStaff.this.world = world == null ? entity == null ? null : (ClientLevel) entity.level() : null;
             return originalModel;
         }
     };
@@ -107,13 +106,13 @@ public class RenderModularStaff extends ToolRenderBase {
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TRANSFORMATION;
     }
 
     //TODO want to combine the swing and equip animation somehow so the 'draw back / return' after a stab corresponds to the equip cooldown
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         float flair = 0F;
         if (entity != null && entity.getMainHandItem() == stack) {
             flair = MathHelper.interpolate(entity.oAttackAnim, entity.attackAnim, Minecraft.getInstance().getFrameTime());
@@ -132,11 +131,11 @@ public class RenderModularStaff extends ToolRenderBase {
             return;
         }
 
-        if (transform == TransformType.FIXED || transform == TransformType.GROUND || transform == TransformType.NONE) {
+        if (transform == ItemDisplayContext.FIXED || transform == ItemDisplayContext.GROUND || transform == ItemDisplayContext.NONE) {
             transform(mat, 0.6, 0.6, 0.5, 0.75);
         } else {
             transform(mat, 0.27, 0.27, 0.5, 1.125);
-            if (transform == TransformType.FIRST_PERSON_LEFT_HAND || transform == TransformType.THIRD_PERSON_LEFT_HAND) {
+            if (transform == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transform == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
                 mat.rotate(45 * -MathHelper.torad, Vector3.Z_NEG);
             } else {
                 mat.rotate(45 * MathHelper.torad, Vector3.Z_NEG);
@@ -158,9 +157,9 @@ public class RenderModularStaff extends ToolRenderBase {
         effectRenderer.renderEffect(mat, buffers, mc.getFrameTime(), techLevel);
     }
 
-    private void handleArmPose(ItemStack stack, TransformType transform, Matrix4 mat) {
+    private void handleArmPose(ItemStack stack, ItemDisplayContext transform, Matrix4 mat) {
         if (isThirdPerson(transform)) {
-            if (transform == TransformType.THIRD_PERSON_RIGHT_HAND) {
+            if (transform == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
                 mat.rotate(torad(-15), new Vector3(-0.5, 0.5, 0));
             } else {
                 mat.rotate(torad(15), new Vector3(-0.5, 0.5, 0));
@@ -173,8 +172,8 @@ public class RenderModularStaff extends ToolRenderBase {
         }
     }
 
-    private boolean isThirdPerson(TransformType transform) {
-        return transform == TransformType.THIRD_PERSON_RIGHT_HAND || transform == TransformType.THIRD_PERSON_LEFT_HAND;
+    private boolean isThirdPerson(ItemDisplayContext transform) {
+        return transform == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || transform == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
     }
 
     public static void doMixinStuff(LivingEntity entity, PlayerModel<?> model) {

@@ -3,10 +3,8 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.raytracer.SubHitBlockHitResult;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
@@ -15,7 +13,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkHooks;
@@ -54,18 +52,18 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     public ManagedBool balancedMode = register(new ManagedBool("balance_mode", DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
 
     public TileEnergyTransfuser(BlockPos pos, BlockState state) {
-        super(DEContent.tile_energy_transfuser, pos, state);
-        capManager.setInternalManaged("item_north", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemNorth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_east", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemEast).syncTile().saveBoth();
-        capManager.setInternalManaged("item_south", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemSouth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_west", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemWest).syncTile().saveBoth();
+        super(DEContent.TILE_ENERGY_TRANSFUSER.get(), pos, state);
+        capManager.setInternalManaged("item_north", ForgeCapabilities.ITEM_HANDLER, itemNorth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_east", ForgeCapabilities.ITEM_HANDLER, itemEast).syncTile().saveBoth();
+        capManager.setInternalManaged("item_south", ForgeCapabilities.ITEM_HANDLER, itemSouth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_west", ForgeCapabilities.ITEM_HANDLER, itemWest).syncTile().saveBoth();
         capManager.set(CapabilityOP.OP, opStorage, Direction.UP, Direction.DOWN, null);
 
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(1, itemEast), Direction.EAST);
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(3, itemWest), Direction.WEST);
-        capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(1, itemEast), Direction.EAST);
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(3, itemWest), Direction.WEST);
+        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
 
         for (int i = 0; i < 4; i++) {
             ioModes[i] = register(new ManagedEnum<>("item_mode_" + i, ItemIOMode.CHARGE, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
@@ -88,11 +86,11 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
                 boolean canExtract = sourceStorage.canExtract();
                 //I want to be able to discharge DE tools, armor, etc but i dont want them to be usable as buffer items.
-                boolean extractOverride = !canExtract && sourcemode == ItemIOMode.DISCHARGE && sourceStorage instanceof IOPStorageModifiable;
+                boolean extractOverride = !canExtract && sourcemode == ItemIOMode.DISCHARGE;
                 if (canExtract || extractOverride) {
                     long maxExtract;
                     if (extractOverride) {
-                        maxExtract = Math.min(((IOPStorageModifiable) sourceStorage).maxExtract(), sourceStorage.getOPStored());
+                        maxExtract = Math.min(sourceStorage.maxExtract(), sourceStorage.getOPStored());
                     } else {
                         maxExtract = sourceStorage.extractOP(sourceStorage.getOPStored(), true);
                     }
@@ -120,7 +118,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
                     }
 
                     if (extractOverride) {
-                        ((IOPStorageModifiable) sourceStorage).modifyEnergyStored(-totalSent);
+                        sourceStorage.modifyEnergyStored(-totalSent);
                     } else {
                         sourceStorage.extractOP(totalSent, false);
                     }
@@ -161,7 +159,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         }
 
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
@@ -169,7 +167,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_transfuser, id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
+        return null;//new ContainerDETile<>(DEContent.MENU_ENERGY_TRANSFUSER.get(), id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
     }
 
     public enum ItemIOMode {
@@ -222,14 +220,11 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         }
 
         public boolean canExtract(IOPStorage storage) {
-            switch (this) {
-                case CHARGE:
-                    return storage.getOPStored() >= storage.getMaxOPStored();
-                case DISCHARGE:
-                    return storage.getOPStored() == 0 || (!storage.canExtract() && !(storage instanceof IOPStorageModifiable));
-                default:
-                    return false;
-            }
+            return switch (this) {
+                case CHARGE -> storage.getOPStored() >= storage.getMaxOPStored();
+                case DISCHARGE -> storage.getOPStored() == 0;
+                default -> false;
+            };
         }
 
         public int getColour() {
@@ -310,6 +305,11 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
                 if (mode.get().charge) return true;
             }
             return false;
+        }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
         }
     }
 

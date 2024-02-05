@@ -25,7 +25,7 @@ public class GroundTarget extends DislocatorTarget {
     private UUID entityUUID;
 
     public GroundTarget(ItemEntity entity) {
-        super(entity.level.dimension());
+        super(entity.level().dimension());
         this.entityUUID = entity.getUUID();
         this.entityPos = Vector3.fromEntity(entity);
     }

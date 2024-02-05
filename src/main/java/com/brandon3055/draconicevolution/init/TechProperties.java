@@ -23,7 +23,6 @@ public class TechProperties extends Item.Properties {
         copy.maxStackSize = this.maxStackSize;
         copy.maxDamage = this.maxDamage;
         copy.craftingRemainingItem = this.craftingRemainingItem;
-        copy.category = this.category;
         copy.rarity = this.rarity;
         copy.foodProperties = this.foodProperties;
         copy.isFireResistant = this.isFireResistant;

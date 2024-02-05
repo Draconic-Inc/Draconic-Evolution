@@ -26,6 +26,7 @@ import java.util.function.Predicate;
  * This class is meant to provide a 'safe' interface for interacting with equipment mods such as Curio
  * Safe as in the DE will still run if no such mod is installed.
  * This currently only supports Curio but may also add support for baubles at some point if that's still a thing in 1.16.
+ * //TODO overhaul and move to BC?
  */
 public abstract class EquipmentManager implements IEquipmentManager {
     private static boolean curiosLoaded;

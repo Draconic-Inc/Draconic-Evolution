@@ -4,8 +4,10 @@
       "model": "draconicevolution:block/crafting/crafting_injector_wyvern",
       "x": 180
     },
-    "facing=up": {
-      "model": "draconicevolution:block/crafting/crafting_injector_wyvern"
+    "facing=east": {
+      "model": "draconicevolution:block/crafting/crafting_injector_wyvern",
+      "x": 90,
+      "y": 90
     },
     "facing=north": {
       "model": "draconicevolution:block/crafting/crafting_injector_wyvern",
@@ -16,15 +18,13 @@
       "x": 90,
       "y": 180
     },
+    "facing=up": {
+      "model": "draconicevolution:block/crafting/crafting_injector_wyvern"
+    },
     "facing=west": {
       "model": "draconicevolution:block/crafting/crafting_injector_wyvern",
       "x": 90,
       "y": 270
-    },
-    "facing=east": {
-      "model": "draconicevolution:block/crafting/crafting_injector_wyvern",
-      "x": 90,
-      "y": 90
     }
   }
 }

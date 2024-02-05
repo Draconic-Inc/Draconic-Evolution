@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class ParticleCustom extends BCParticle {
 
@@ -13,7 +14,7 @@ public class ParticleCustom extends BCParticle {
     public int fadeAge = 0;
     public float spawnAlpha = 0;
 
-    public ParticleCustom(ClientLevel worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleCustom(ClientLevel worldIn, Vec3 pos, Vec3 speed) {
         super(worldIn, pos, speed);
 
         xd = speed.x;
@@ -49,7 +50,7 @@ public class ParticleCustom extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+        public Particle getEntityFX(int particleID, Level world, Vec3 pos, Vec3 speed, int... args) {
             ParticleCustom particle = new ParticleCustom((ClientLevel)world, pos, speed);
 
             if (args.length >= 10) {

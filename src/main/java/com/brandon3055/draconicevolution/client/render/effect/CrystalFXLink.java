@@ -7,13 +7,10 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -23,7 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.opengl.GL11;
+import org.joml.Vector3f;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -74,7 +71,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float dist = 0.2F * (float) Utils.getDistance(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
 
         Vector3 p1 = source.copy().add(planeA);
@@ -113,10 +110,10 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
             float viewY = (float) (this.y - viewVec.y());
             float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(1F, 0F, 0F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(1F, 0F, 0F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(1F, 0F, 0F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(1F, 0F, 0F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
         }
 
         if (terminateTarget) {
@@ -133,10 +130,10 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     }
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
-        buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
-        buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
-        buffer.vertex(p4.x, p4.y, p4.z).uv(1.0F, dist + anim).endVertex();
-        buffer.vertex(p3.x, p3.y, p3.z).uv(1.0F, anim).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).color(1F, 0F, 0F, 1F).uv(0.5F, anim).uv2(240, 240).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).color(1F, 0F, 0F, 1F).uv(0.5F, dist + anim).uv2(240, 240).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).color(1F, 0F, 0F, 1F).uv(1.0F, dist + anim).uv2(240, 240).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).color(1F, 0F, 0F, 1F).uv(1.0F, anim).uv2(240, 240).endVertex();
     }
 
     @Override
@@ -147,7 +144,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     private static final ParticleRenderType HANDLER = new FXHandler();
 
     public static class FXHandler implements ParticleRenderType {
-        public static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, DETextures.ENERGY_BEAM_BASIC);
+        private static final ResourceLocation highlightTexture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 
         public FXHandler() {}
 
@@ -158,7 +155,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, texture);
+            RenderSystem.setShaderTexture(0, highlightTexture);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

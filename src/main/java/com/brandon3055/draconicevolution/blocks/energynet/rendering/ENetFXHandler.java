@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * The server side is responsible for monitoring the crystal and sending any needed updates to the client via {@link com.brandon3055.draconicevolution.network.CrystalUpdateBatcher}
  * The client side is responsible for creating and updating the render FX.
  */
-@Deprecated //Want to switch to ITileFXHandler
+@Deprecated //Want to switch to ~ITileFXHandler~ Actually just nuke this and do something better
 public abstract class ENetFXHandler<T extends BlockEntity & IENetEffectTile> {
 
     protected final T tile;

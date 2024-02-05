@@ -12,7 +12,7 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -31,7 +31,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkHooks;
 
 /**
@@ -49,7 +49,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public TileItemStackHandler craftingItems = new TileItemStackHandler(9);
     public TileItemStackHandler furnaceItems = new TileItemStackHandler(5);
     public TileItemStackHandler capacitorInv = new TileItemStackHandler(1);
-    public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
+    public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 
     public SmeltingLogic smeltingLogic = new SmeltingLogic(this, furnaceItems, mainInventory, opStorage);
 
@@ -57,12 +57,12 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public TileItemStackHandler old_item_handler = new TileItemStackHandler(267);
 
     public TileDraconiumChest(BlockPos pos, BlockState state) {
-        super(DEContent.tile_draconium_chest, pos, state);
+        super(DEContent.TILE_DRACONIUM_CHEST.get(), pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
-        capManager.setManaged("main_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, mainInventory).saveBoth();
-        capManager.setInternalManaged("crafting_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, craftingItems).saveBoth();
-        capManager.setInternalManaged("furnace_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, furnaceItems).saveBoth();
-        capManager.setInternalManaged("energy_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, capacitorInv).saveBoth();
+        capManager.setManaged("main_inv", ForgeCapabilities.ITEM_HANDLER, mainInventory).saveBoth();
+        capManager.setInternalManaged("crafting_inv", ForgeCapabilities.ITEM_HANDLER, craftingItems).saveBoth();
+        capManager.setInternalManaged("furnace_inv", ForgeCapabilities.ITEM_HANDLER, furnaceItems).saveBoth();
+        capManager.setInternalManaged("energy_inv", ForgeCapabilities.ITEM_HANDLER, capacitorInv).saveBoth();
 
         furnaceItems.setStackValidator(stack -> smeltingLogic.isSmeltable(stack));
         furnaceItems.setContentsChangeListener(e -> smeltingLogic.inputInventoryChanged());
@@ -73,7 +73,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
         smeltingLogic.setFeedSourceInv(mainInventory);
         installIOTracker(opStorage);
 
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, old_item_handler).saveBoth();
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, old_item_handler).saveBoth();
 
         /*
          * Ok so the plan for IO control
@@ -112,14 +112,14 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     @Override
     public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDraconiumChest(DEContent.container_draconium_chest, currentWindowIndex, playerInventory, this);
+        return new ContainerDraconiumChest(DEContent.MENU_DRACONIUM_CHEST.get(), currentWindowIndex, playerInventory, this);
     }
 
     @Override
@@ -131,10 +131,10 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     @Override
     public void readExtraTileAndStack(CompoundTag compound) {
         smeltingLogic.loadAdditionalNBT(compound);
-        DraconicEvolution.LOGGER.info("readExtraTileAndStack");
+//        DraconicEvolution.LOGGER.info("readExtraTileAndStack");
         if (!compound.contains("inv_migrated")) {
-            DraconicEvolution.LOGGER.info("Chest Not Migrated!");
-            DraconicEvolution.LOGGER.info(compound);
+//            DraconicEvolution.LOGGER.info("Chest Not Migrated!");
+//            DraconicEvolution.LOGGER.info(compound);
             for (int i = 0; i < old_item_handler.getSlots(); i++) {
                 ItemStack stack = old_item_handler.getStackInSlot(i);
                 if (stack.isEmpty()) {
@@ -153,12 +153,12 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
             }
 
             if (compound.contains("CraftingItems", 9)) {
-                DraconicEvolution.LOGGER.info("Migrating Crafting Items");
+//                DraconicEvolution.LOGGER.info("Migrating Crafting Items");
                 ListTag nbttaglist = compound.getList("CraftingItems", 10);
-                DraconicEvolution.LOGGER.info(nbttaglist);
+//                DraconicEvolution.LOGGER.info(nbttaglist);
                 for (int i = 1; i < nbttaglist.size(); ++i) {
                     CompoundTag nbttagcompound = nbttaglist.getCompound(i);
-                    DraconicEvolution.LOGGER.info(nbttagcompound);
+//                    DraconicEvolution.LOGGER.info(nbttagcompound);
 //                    int j = nbttagcompound.getByte("Slot") & 255;
                     if (i < craftingItems.getSlots()) {
                         craftingItems.setStackInSlot(i - 1, ItemStack.of(nbttagcompound));

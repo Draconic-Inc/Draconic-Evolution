@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/redstone"
+    },
+    "B": {
+      "item": "minecraft:clock"
+    },
+    "C": {
+      "tag": "forge:ingots/draconium"
+    },
+    "D": {
+      "item": "minecraft:dragon_egg"
+    },
+    "E": {
+      "tag": "forge:ingots/iron"
+    },
+    "F": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:celestial_manipulator"
+  }
+}

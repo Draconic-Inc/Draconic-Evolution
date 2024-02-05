@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class EnergyCore extends BlockBCore implements EntityBlock {
+public class EnergyCore extends EntityBlockBCore {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
@@ -28,7 +29,7 @@ public class EnergyCore extends BlockBCore implements EntityBlock {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
         dontSpawnOnMe();
-        setBlockEntity(() -> DEContent.tile_storage_core, true);
+        setBlockEntity(DEContent.TILE_STORAGE_CORE::get, true);
         setLightTransparent();
     }
 
@@ -40,5 +41,13 @@ public class EnergyCore extends BlockBCore implements EntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return state.getValue(ACTIVE) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (level.getBlockEntity(pos) instanceof TileEnergyCore tile && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
+            tile.onRemoved();
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,12 +19,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DislocatorPedestal extends BlockBCore implements EntityBlock {
+public class DislocatorPedestal extends EntityBlockBCore {
     protected static final VoxelShape SHAPE = Block.box(5.6f, 0f, 5.6f, 10.4f, 12.8f, 10.4f);
 
     public DislocatorPedestal(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_dislocator_pedestal, false);
+        setBlockEntity(DEContent.TILE_DISLOCATOR_PEDESTAL::get, false);
     }
 
     @Override

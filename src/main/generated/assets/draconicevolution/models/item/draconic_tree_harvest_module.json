@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "draconicevolution:item/module/draconic",
+    "layer1": "draconicevolution:module/draconic_tree_harvest"
+  }
+}

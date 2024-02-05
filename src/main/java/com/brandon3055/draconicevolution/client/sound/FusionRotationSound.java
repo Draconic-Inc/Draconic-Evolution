@@ -13,7 +13,7 @@ public class FusionRotationSound extends SimpleSoundInstance implements Tickable
     private TileFusionCraftingCore tile;
 
     public FusionRotationSound(TileFusionCraftingCore tile) {
-        super(DESounds.fusionRotation, SoundSource.BLOCKS, 1.5F, 1, tile.getBlockPos());
+        super(DESounds.FUSION_ROTATION.get(), SoundSource.BLOCKS, 1.5F, 1, tile.getLevel().random, tile.getBlockPos());
         this.tile = tile;
         looping = true;
     }

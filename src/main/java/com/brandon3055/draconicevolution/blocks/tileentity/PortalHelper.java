@@ -207,7 +207,7 @@ public class PortalHelper {
     }
 
     private boolean isFrame(BlockPos pos) {
-        return pos.equals(tile.getBlockPos()) || tile.getLevel().getBlockState(pos).getBlock() == DEContent.infused_obsidian;
+        return pos.equals(tile.getBlockPos()) || tile.getLevel().getBlockState(pos).is(DEContent.INFUSED_OBSIDIAN.get());
     }
 
     public void abort() {
@@ -250,7 +250,7 @@ public class PortalHelper {
             return;
         }
 
-        BlockState portalState = DEContent.portal.defaultBlockState().setValue(Portal.AXIS, buildAxis);
+        BlockState portalState = DEContent.PORTAL.get().defaultBlockState().setValue(Portal.AXIS, buildAxis);
         tile.getLevel().setBlockAndUpdate(nextPos, Portal.getPlacementState(portalState, tile.getLevel(), nextPos));
         builtList.add(nextPos);
         BlockEntity placedTile = tile.getLevel().getBlockEntity(nextPos);
@@ -271,7 +271,7 @@ public class PortalHelper {
             tile.onBuildFail();
             for (BlockPos pos : builtList) {
                 BlockState state = tile.getLevel().getBlockState(pos);
-                if (state.getBlock() == DEContent.portal) {
+                if (state.is(DEContent.PORTAL.get())) {
                     tile.getLevel().removeBlock(pos, false);
                 }
             }

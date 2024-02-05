@@ -1,9 +1,5 @@
 package com.rwtema.funkylocomotion.compat;
 
-import net.minecraft.util.StringUtils;
-
-import java.util.Map;
-
 public abstract class CompatHandler {
 //	public static void initCompat(ASMDataTable asmData) {
 //		for (ASMDataTable.ASMData data : asmData.getAll(ModCompat.class.getName())) {

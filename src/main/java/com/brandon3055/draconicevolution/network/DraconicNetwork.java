@@ -18,7 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.event.EventNetworkChannel;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -44,6 +46,7 @@ public class DraconicNetwork {
     public static final int S_DISLOCATOR_MESSAGE =      9;
     public static final int S_JEI_FUSION_TRANSFER =     10;
     public static final int S_PLACE_ITEM =              11;
+    public static final int S_MODULE_ENTITY_MESSAGE =   12;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -57,6 +60,7 @@ public class DraconicNetwork {
     public static final int C_GUARDIAN_PACKET =         9;
     public static final int C_BOSS_SHIELD_INFO =        10;
     public static final int C_DISLOCATOR_TELEPORTED =   11;
+    public static final int C_CHUNK_RELIGHT =           12;
 
     //@formatter:on
 
@@ -82,12 +86,22 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendModuleContainerClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
+    public static void sendModuleContainerClick(ModuleGrid.GridPos cell, float mouseX, float mouseY, int mouseButton, ClickType type) {
         PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONTAINER_CLICK);
         packet.writeByte(cell.getGridX());
         packet.writeByte(cell.getGridY());
+        packet.writeFloat(mouseX);
+        packet.writeFloat(mouseY);
         packet.writeByte(mouseButton);
         packet.writeEnum(type);
+        packet.sendToServer();
+    }
+
+    public static void sendModuleMessage(int gridX, int gridY, Consumer<MCDataOutput> dataConsumer) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_ENTITY_MESSAGE);
+        packet.writeByte(gridX);
+        packet.writeByte(gridY);
+        dataConsumer.accept(packet);
         packet.sendToServer();
     }
 
@@ -125,8 +139,8 @@ public class DraconicNetwork {
     public static void sendUndyingActivation(LivingEntity target, Item item) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_UNDYING_ACTIVATION);
         packet.writeVarInt(target.getId());
-        packet.writeRegistryId(item);
-        packet.sendToChunk(target.level, target.blockPosition());
+        packet.writeRegistryId(ForgeRegistries.ITEMS, item);
+        packet.sendToChunk(target.level(), target.blockPosition());
     }
 
     public static void sendDislocatorMessage(int id, Consumer<MCDataOutput> callback) {
@@ -140,7 +154,7 @@ public class DraconicNetwork {
         PacketCustom packet = new PacketCustom(CHANNEL, C_BLINK);
         packet.writeVarInt(player.getId());
         packet.writeFloat(distance);
-        packet.sendToChunk(player.level, player.blockPosition());
+        packet.sendToChunk(player.level(), player.blockPosition());
     }
 
     public static void sendStaffEffect(LivingEntity source, int damageType, Consumer<MCDataOutput> callback) {
@@ -148,7 +162,7 @@ public class DraconicNetwork {
         packet.writeByte(damageType);
         packet.writeVarInt(source.getId());
         callback.accept(packet);
-        packet.sendToChunk(source.level, source.blockPosition());
+        packet.sendToChunk(source.level(), source.blockPosition());
     }
 
     public static void sendFusionRecipeMove(IFusionRecipe recipe, boolean maxTransfer) {
@@ -172,7 +186,7 @@ public class DraconicNetwork {
         packet.writeByte(phase.getType().getId());
         packet.writeByte(func);
         if (callBack != null) callBack.accept(packet);
-        packet.sendToChunk(entity.level, entity.blockPosition());
+        packet.sendToChunk(entity.level(), entity.blockPosition());
     }
 
     public static void sendBossShieldPacket(ServerPlayer player, UUID id, int operation, Consumer<MCDataOutput> callBack) {
@@ -189,6 +203,13 @@ public class DraconicNetwork {
 
     public static void sendPlaceItem() {
         new PacketCustom(CHANNEL, S_PLACE_ITEM).sendToServer();
+    }
+
+    public static void sendChunkRelight(LevelChunk chunk) {
+        new PacketCustom(CHANNEL, C_CHUNK_RELIGHT)
+                .writeInt(chunk.getPos().x)
+                .writeInt(chunk.getPos().z)
+                .sendToChunk(chunk.getLevel(), chunk.getPos());
     }
 
     public static void init() {

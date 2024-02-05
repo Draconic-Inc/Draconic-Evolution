@@ -62,6 +62,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
                     valueStorage = Long.MAX_VALUE;
                     overflowCount = overflowCount.subtract(BigInteger.ONE);
                 }
+                if (ioTracker != null) {
+                    ioTracker.energyExtracted(maxExtract);
+                }
             }
             return maxExtract;
         }
@@ -104,6 +107,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             } else {
                 valueStorage += maxReceive;
             }
+            if (ioTracker != null) {
+                ioTracker.energyInserted(maxReceive);
+            }
         }
 
         return maxReceive;
@@ -112,10 +118,21 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     //This is capped at Long.MAX_VALUE / 2 to account for senders that preemptively check available space before sending energy.
     @Override
     public long getOPStored() {
-        if (!overflowCount.equals(BigInteger.ZERO)) {
-            return Long.MAX_VALUE / 2;
+        if (capacity.get() == -1) {
+            if (!overflowCount.equals(BigInteger.ZERO)) {
+                return Long.MAX_VALUE / 2;
+            }
+            return Math.min(valueStorage, Long.MAX_VALUE / 2);
         }
-        return Math.min(valueStorage, Long.MAX_VALUE / 2);
+        return valueStorage;
+    }
+
+    //Version of getOPStored for internal use that does not cap out at Long.MAX_VALUE / 2
+    public long getUncappedStored() {
+        if (!overflowCount.equals(BigInteger.ZERO)) {
+            return Long.MAX_VALUE;
+        }
+        return valueStorage;
     }
 
     @Override
@@ -196,6 +213,15 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     }
 
     @Override
+    public long modifyEnergyStored(long amount) {
+        if (amount > 0) {
+            return receiveOP(amount, false);
+        } else {
+            return extractOP(-amount, false);
+        }
+    }
+
+    @Override
     public ComparableValue getValueHash() {
         return new ComparableValue(this);
     }
@@ -211,6 +237,10 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
         }
 
         return false;
+    }
+
+    public boolean isUnlimited() {
+        return capacity.get() == -1;
     }
 
     protected static class ComparableValue {
@@ -235,19 +265,39 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
 
     public String getReadable() {
         if (overflowCount.compareTo(prefixEnd) > 0) {
-            return decimalFormat.format(overflowCount) + " x (2^64) OP";
+            return decimalFormat.format(overflowCount) + " x (2^64)";
         }
 
         BigInteger value = BigInteger.valueOf(valueStorage).add(overflowCount.multiply(BigInteger.valueOf(Long.MAX_VALUE)));
+        if (value.equals(BigInteger.ZERO)) {
+            return "0";
+        }
         int digits = BigIntegerMath.log10(value, RoundingMode.DOWN);
         int prefixStep = (digits / 3) * 3;
 
         if (digits < 6) {
-            return Utils.addCommas(value.longValue()) + " OP";
+            return Utils.addCommas(value.longValue());
         }
 
         BigDecimal decimal = new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-        return decimal + " " + I18n.get("numprefix.draconicevolution.10-" + prefixStep);
+        return decimal.doubleValue() + I18n.get("numprefix.draconicevolution.10-" + prefixStep);
+    }
+
+    public String getReadableCapacity() {
+        if (capacity.get() == -1) {
+            return "~1x10^1300000000";
+        } else {
+            long cap = capacity.get();
+            int digits = (int)Math.log10(cap);
+            int prefixStep = (digits / 3) * 3;
+
+            if (digits < 6) {
+                return Utils.addCommas(cap) + " OP";
+            }
+
+            double decimal = cap / Math.pow(10, prefixStep);//new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
+            return (Math.round(decimal * 1000) / 1000D) + I18n.get("numprefix.draconicevolution.10-" + prefixStep);
+        }
     }
 
     public String getScientific() {
@@ -255,7 +305,10 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             return decimalFormat.format(overflowCount) + " x (2^64) OP";
         }
 
-        BigInteger value = BigInteger.valueOf(valueStorage).add(overflowCount.multiply(BigInteger.valueOf(Long.MAX_VALUE)));
-        return decimalFormat.format(value);
+        return decimalFormat.format(getStoredBig());
+    }
+
+    public BigInteger getStoredBig() {
+        return BigInteger.valueOf(valueStorage).add(overflowCount.multiply(BigInteger.valueOf(Long.MAX_VALUE)));
     }
 }

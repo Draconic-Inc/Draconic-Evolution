@@ -35,7 +35,7 @@ public class ArialBombardPhase extends ChargeUpPhase {
         Vector3 guardianPos = Vector3.fromEntity(guardian);
         if ((attackTarget == null || !isValidTarget(attackTarget)) && getChargeProgress() > 0.75) {
             Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
-            List<Player> targetOptions = guardian.level.players()
+            List<Player> targetOptions = guardian.level().players()
                     .stream()
                     .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
                     .filter(e -> StartPhase.AGRO_TARGETS.test(guardian, e))
@@ -47,7 +47,7 @@ public class ArialBombardPhase extends ChargeUpPhase {
             } else {
                 for (int i = 0; i < targetOptions.size() * 2; i++) {
                     Player target = targetOptions.get(random.nextInt(targetOptions.size()));
-                    HitResult result = guardian.level.clip(new ClipContext(guardianPos.vec3(), Vector3.fromEntityCenter(target).vec3(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, guardian));
+                    HitResult result = guardian.level().clip(new ClipContext(guardianPos.vec3(), Vector3.fromEntityCenter(target).vec3(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, guardian));
                     if (result.getType() == HitResult.Type.MISS) {
                         attackTarget = target;
                         break;
@@ -85,10 +85,10 @@ public class ArialBombardPhase extends ChargeUpPhase {
 
         double randMult = 0.1;
         Vector3 randVec = targetVec.copy().add((random.nextDouble() - 0.5) * randMult, (random.nextDouble() - 0.5) * randMult, (random.nextDouble() - 0.5) * randMult);
-        GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, randVec.x, randVec.y, randVec.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
+        GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level(), this.guardian, randVec.x, randVec.y, randVec.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
         projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
-        guardian.level.addFreshEntity(projectile);
-        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+        guardian.level().addFreshEntity(projectile);
+        BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
 
         if (volleyRounds > 0) {
             volleyRounds -= 1;

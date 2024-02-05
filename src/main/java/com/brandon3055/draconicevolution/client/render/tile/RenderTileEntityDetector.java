@@ -1,42 +1,39 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.render.CCModel;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityDetector> {
 
-    private static CCModel model;
-
-    public RenderTileEntityDetector(BlockEntityRendererProvider.Context context) {
-    }
-
-
-    //    @Override
-    public void render(TileEntityDetector te, double x, double y, double z, float partialTicks, int destroyStage) {
-//        RenderSystem.pushMatrix();
-//        RenderSystem.translated(x + 0.5, y + 0.73, z + 0.5);
-//        double scale = te.isAdvanced() ? 0.5 : 0.35;
-//        RenderSystem.scaled(scale, scale, scale);
-//
-//        float h = te.lthRot + (te.hRot - te.lthRot) * partialTicks;
-//
-//        RenderSystem.rotatef(-h * (180F / (float) Math.PI) - 90, 0.0F, 1.0F, 0.0F);
-//        RenderSystem.rotatef(-te.yRot * (180F / (float) Math.PI) + 90, 1, 0, 0);
-////        RenderSystem.rotate(180, 0, 1, 0);
-//
-////        renderItem(getRenderStack(te.isAdvanced()));
-//
-//        RenderSystem.popMatrix();
-    }
-
     private ItemStack eye = ItemStack.EMPTY;
     private ItemStack skull = ItemStack.EMPTY;
+
+    public RenderTileEntityDetector(BlockEntityRendererProvider.Context context) {}
+
+    @Override
+    public void render(TileEntityDetector te, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedoverlay) {
+        Minecraft mc = Minecraft.getInstance();
+        boolean advanced = te.isAdvanced();
+        float scale = advanced ? 0.5F : 0.35F;
+        float yaw = te.lastLookYaw + (te.lookYaw - te.lastLookYaw) * partialTicks;
+        float pitch = te.lastLookPitch + (te.lookPitch - te.lastLookPitch) * partialTicks;
+
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.73, 0.5);
+        poseStack.scale(scale, scale, scale);
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
+        mc.getItemRenderer().renderStatic(getRenderStack(advanced), ItemDisplayContext.FIXED, packedLight, packedLight, poseStack, buffers, te.getLevel(), te.posSeed());
+        poseStack.popPose();
+    }
 
     private ItemStack getRenderStack(boolean advanced) {
         if (advanced) {
@@ -50,11 +47,5 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
             }
             return eye;
         }
-
-    }
-
-    @Override
-    public void render(TileEntityDetector p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
-
     }
 }

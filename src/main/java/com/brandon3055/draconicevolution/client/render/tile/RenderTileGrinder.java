@@ -72,7 +72,7 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     @Override
     public void render(TileGrinder tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
-        if (state.getBlock() != DEContent.grinder) return;
+        if (!state.is(DEContent.GRINDER.get())) return;
         Direction facing = state.getValue(Grinder.FACING);
 
         Matrix4 mat = new Matrix4(mStack);

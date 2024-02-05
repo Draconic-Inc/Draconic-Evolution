@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.brandonscore.utils.TargetPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +61,7 @@ public abstract class DislocatorTarget {
     public static DislocatorTarget load(CompoundTag nbt) {
         try {
             TargetType type = TargetType.values()[nbt.getByte("target_type")];
-            ResourceKey<Level> worldKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world_key")));
+            ResourceKey<Level> worldKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world_key")));
             DislocatorTarget target = type.createInstance(worldKey);
             target.loadInternal(nbt);
             return target;

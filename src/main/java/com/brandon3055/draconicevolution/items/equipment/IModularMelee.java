@@ -31,7 +31,7 @@ public interface IModularMelee extends IModularTieredItem {
         long energyPerHit = (long) (EquipCfg.energyAttack * damage);
         extractEnergy(player, stack, energyPerHit);
 
-        double aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE() * 1.5;
+        double aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe() * 1.5;
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("attack_aoe")) {
             aoe = ((PropertyProvider) host).getDecimal("attack_aoe").getValue();
         }
@@ -45,7 +45,7 @@ public interface IModularMelee extends IModularTieredItem {
     }
 
     default void dealAOEDamage(Player player, Entity target, ItemStack stack, long energyPerHit, float damage, double aoe) {
-        List<LivingEntity> entities = player.level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(aoe, 0.25D, aoe));
+        List<LivingEntity> entities = player.level().getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(aoe, 0.25D, aoe));
         double aoeAngle = 100;
         double yaw = player.getYRot() - 180;
         int fireAspect = EnchantmentHelper.getFireAspect(player);
@@ -64,7 +64,7 @@ public interface IModularMelee extends IModularTieredItem {
                     entity.setSecondsOnFire(1);
                 }
 
-                if (entity.hurt(DamageSource.playerAttack(player), damage)) {
+                if (entity.hurt(entity.level().damageSources().playerAttack(player), damage)) {
                     float damageDealt = health - entity.getHealth();
                     entity.knockback(0.4F, MathHelper.sin(player.getYRot() * MathHelper.torad), (-MathHelper.cos(player.getYRot() * MathHelper.torad)));
 
@@ -72,15 +72,15 @@ public interface IModularMelee extends IModularTieredItem {
                         entity.setSecondsOnFire(fireAspect * 4);
                     }
 
-                    if (player.level instanceof ServerLevel && damageDealt > 2.0F) {
+                    if (player.level() instanceof ServerLevel && damageDealt > 2.0F) {
                         int k = (int)((double)damage * 0.5D);
-                        ((ServerLevel)player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                        ((ServerLevel)player.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                     }
 
                     player.awardStat(Stats.DAMAGE_DEALT, Math.round(damageDealt * 10.0F));
-                    if (player.level instanceof ServerLevel && damageDealt > 2.0F) {
+                    if (player.level() instanceof ServerLevel && damageDealt > 2.0F) {
                         int k = (int) ((double) damageDealt * 0.5D);
-                        ((ServerLevel) player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                        ((ServerLevel) player.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                     }
                 } else if (lit) {
                     entity.clearFire();

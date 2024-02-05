@@ -11,28 +11,31 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCor
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.common.util.Translator;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,18 +53,22 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
     }
 
     @Override
-    public Class<ContainerFusionCraftingCore> getContainerClass() {
+    public @NotNull Class<ContainerFusionCraftingCore> getContainerClass() {
         return ContainerFusionCraftingCore.class;
     }
 
     @Override
-    public Class<IFusionRecipe> getRecipeClass() {
-        return IFusionRecipe.class;
+    public Optional<MenuType<ContainerFusionCraftingCore>> getMenuType() {
+        return Optional.empty(); //TODO FusionRecipeTransferHelper.getMenuType
     }
 
-    @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(ContainerFusionCraftingCore container, IFusionRecipe recipe, IRecipeLayout recipeLayout, Player player, boolean maxTransfer, boolean doTransfer) {
+    public RecipeType<IFusionRecipe> getRecipeType() {
+        return DEJEIPlugin.FUSION_RECIPE_TYPE;
+    }
+
+    @Override
+    public @Nullable IRecipeTransferError transferRecipe(@NotNull ContainerFusionCraftingCore container, @NotNull IFusionRecipe recipe, @NotNull IRecipeSlotsView recipeSlots, @NotNull Player player, boolean maxTransfer, boolean doTransfer) {
         TileFusionCraftingCore core = container.tile;
         core.updateInjectors();
 
@@ -71,7 +78,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
                 .filter(e -> e.getInjectorTier().index >= recipe.getRecipeTier().index)
                 .count();
         if (validInjectors < recipe.fusionIngredients().size()) {
-            return handlerHelper.createUserErrorWithTooltip(new TranslatableComponent("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
+            return handlerHelper.createUserErrorWithTooltip(Component.translatable("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
         }
 
         //Do... Pretty much everything else
@@ -86,9 +93,9 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         coreStacks.add(core.getOutputStack());
 
         int inputCount = 0;
-        IGuiItemStackGroup itemStackGroup = recipeLayout.getItemStacks();
-        for (IGuiIngredient<ItemStack> ingredient : itemStackGroup.getGuiIngredients().values()) {
-            if (ingredient.isInput() && !ingredient.getAllIngredients().isEmpty()) {
+        List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews();
+        for (IRecipeSlotView view : slotViews) {
+            if (view.getRole() == RecipeIngredientRole.INPUT && !view.isEmpty()) {
                 inputCount++;
             }
         }
@@ -116,14 +123,14 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
 
         // check if we have enough inventory space to shuffle items around to their final locations
         if (filledCraftSlotCount - inputCount > emptySlotCount) {
-            String message = Translator.translateToLocal("jei.tooltip.error.recipe.transfer.inventory.full");
-            return handlerHelper.createUserErrorWithTooltip(new TextComponent(message));
+            String message = I18n.get("jei.tooltip.error.recipe.transfer.inventory.full");
+            return handlerHelper.createUserErrorWithTooltip(Component.literal(message));
         }
 
-        List<Integer> missingStacks = checkForMissingIngredients(stackHelper, availableItemStacks, itemStackGroup.getGuiIngredients());
+        List<IRecipeSlotView> missingStacks = checkForMissingIngredients(stackHelper, availableItemStacks, slotViews);
         if (missingStacks.size() > 0) {
-            String message = Translator.translateToLocal("jei.tooltip.error.recipe.transfer.missing");
-            return handlerHelper.createUserErrorForSlots(new TextComponent(message), missingStacks);
+            String message = I18n.get("jei.tooltip.error.recipe.transfer.missing");
+            return handlerHelper.createUserErrorForMissingSlots(Component.literal(message), missingStacks);
         }
 
         if (doTransfer) {
@@ -133,52 +140,43 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         return null;
     }
 
-    private List<Integer> checkForMissingIngredients(IStackHelper stackhelper, Map<Integer, ItemStack> availableItemStacks, Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredientsMap) {
-        List<Integer> missing = new ArrayList<>();
-        SortedSet<Integer> keys = new TreeSet<>(ingredientsMap.keySet());
-        for (Integer key : keys) {
-            IGuiIngredient<ItemStack> ingredient = ingredientsMap.get(key);
-            if (!ingredient.isInput()) {
-                continue;
-            }
-            List<ItemStack> requiredStacks = ingredient.getAllIngredients();
+    private List<IRecipeSlotView> checkForMissingIngredients(IStackHelper stackhelper, Map<Integer, ItemStack> availableItemStacks, List<IRecipeSlotView> slotViews) {
+        List<IRecipeSlotView> missing = new ArrayList<>();
+        for (IRecipeSlotView slotView : slotViews) {
+            if (slotView.isEmpty() || slotView.getRole() != RecipeIngredientRole.INPUT) continue;
+
+            List<ItemStack> requiredStacks = slotView.getAllIngredients()
+                    .map(e -> e.getIngredient(VanillaTypes.ITEM_STACK).orElse(ItemStack.EMPTY))
+                    .filter(e -> !e.isEmpty())
+                    .toList();
             if (requiredStacks.isEmpty()) {
                 continue;
             }
 
             boolean foundIngredient = false;
+            //Stacks that will satisfy this ingredient.
             for (ItemStack stack : requiredStacks) {
-                boolean hasItems = false;
-                do {
-                    boolean removing = hasItems;
-                    int required = stack.getCount();
-                    hasItems = false;
-                    int found = 0;
-                    for (ItemStack available : availableItemStacks.values()) {
-                        if (stackhelper.isEquivalent(available, stack, UidContext.Ingredient)) {
-                            if (removing) {
-                                required -= available.getCount();
-                                available.shrink(Math.min(required, available.getCount()));
-                                if (required <= 0) break;
-                            } else {
-                                found += available.getCount();
-                                if (found >= stack.getCount()) {
-                                    hasItems = true;
-                                    foundIngredient = true;
-                                    break;
-                                }
-                            }
+                int required = stack.getCount();
+                for (ItemStack available : availableItemStacks.values()) {
+                    if (stackhelper.isEquivalent(available, stack, UidContext.Ingredient)) {
+                        int consume = Math.min(required, available.getCount());
+                        available.shrink(consume);
+                        required -= consume;
+                        if (required <= 0) {
+                            foundIngredient = true;
+                            break;
                         }
                     }
-                    availableItemStacks.entrySet().removeIf(e -> e.getValue().getCount() <= 0);
                 }
-                while (hasItems);
+
+                availableItemStacks.entrySet().removeIf(e -> e.getValue().getCount() <= 0);
                 if (foundIngredient) {
                     break;
                 }
             }
+
             if (!foundIngredient) {
-                missing.add(key);
+                missing.add(slotView);
             }
         }
         return missing;
@@ -186,7 +184,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
 
     public static void doServerSideTransfer(ServerPlayer player, ContainerFusionCraftingCore container, IFusionRecipe recipe, boolean maxTransfer) {
         TileFusionCraftingCore tile = container.tile;
-        LazyOptional<IItemHandler> optionalHandler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
+        LazyOptional<IItemHandler> optionalHandler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP);
         if (!optionalHandler.isPresent()) {
             DraconicEvolution.LOGGER.error("FusionRecipeTransferHelper: Player has no inventory capability");
             return;
@@ -251,7 +249,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         List<IFusionInjector> injectors = fusionInv.getInjectors()
                 .stream()
                 .sorted(Comparator.comparing(e -> ((IFusionInjector) e).getInjectorTier().index).reversed())
-                .collect(Collectors.toList());
+                .toList();
 
         List<IFusionIngredient> ingredients = recipe.fusionIngredients();
         ;

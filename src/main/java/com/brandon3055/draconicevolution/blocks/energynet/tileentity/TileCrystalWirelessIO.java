@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -57,11 +56,11 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalWirelessIO(BlockPos pos, BlockState state) {
-        super(DEContent.tile_crystal_wireless, pos, state);
+        super(DEContent.TILE_WIRELESS_CRYSTAL.get(), pos, state);
     }
 
     public TileCrystalWirelessIO(TechLevel techLevel, BlockPos pos, BlockState state) {
-        super(DEContent.tile_crystal_wireless, techLevel, pos, state);
+        super(DEContent.TILE_WIRELESS_CRYSTAL.get(), techLevel, pos, state);
     }
 
     //region Energy Update
@@ -222,14 +221,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
             return true;
         }
 
         if (inputMode.get()) {
             if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.side_can_not_extract").withStyle(ChatFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.side_can_not_extract").withStyle(ChatFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -238,7 +237,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         else {
             if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.side_can_not_receive").withStyle(ChatFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.side_can_not_receive").withStyle(ChatFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -246,12 +245,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.max_receivers").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.max_receivers").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
+        ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
 
         return true;
     }
@@ -346,11 +345,11 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public void addDisplayData(List<Component> displayList) {
         super.addDisplayData(displayList);
-        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(ChatFormatting.GREEN));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(ChatFormatting.GREEN));
 
         //TODO. I dont think i need to tell myself to stop this shit when i re write but... I need to stop this shit when i re write! (Injecting colours into translations like this)
         ChatFormatting colour = !inputMode.get() ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
-        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
     }
 
     //endregion
@@ -498,7 +497,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(Level world) {
             tileCache = world.getBlockEntity(pos);
 
-            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && Utils.isAreaLoaded(world, pos, ChunkHolder.FullChunkStatus.TICKING)) {
+            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && level.isLoaded(pos)) {
                 return false;
             }
 

@@ -14,14 +14,14 @@ import java.util.Optional;
 @Deprecated //These need to be registered to ForgeRegistries.DATA_SERIALIZERS
 public class Serializers {
 
-    public static final EntityDataSerializer<Optional<Module<?>>> OPT_MODULE_SERIALIZER = new EntityDataSerializer<Optional<Module<?>>>() {
+    public static final EntityDataSerializer<Optional<Module<?>>> OPT_MODULE_SERIALIZER = new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buf, Optional<Module<?>> value) {
             buf.writeBoolean(value.isPresent());
-            value.ifPresent(module -> buf.writeResourceLocation(module.getRegistryName()));
+            value.ifPresent(module -> buf.writeResourceLocation(DEModules.REGISTRY.getKey(module)));
         }
 
         public Optional<Module<?>> read(FriendlyByteBuf buf) {
-            Module<?> module = DEModules.MODULE_REGISTRY.getValue(buf.readResourceLocation());
+            Module<?> module = DEModules.REGISTRY.getValue(buf.readResourceLocation());
             return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
         }
 

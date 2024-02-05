@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.VBORenderType;
@@ -9,22 +10,26 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.shader.BCShader;
+import com.brandon3055.brandonscore.client.shader.BCShaders;
+import com.brandon3055.brandonscore.client.shader.ChaosEntityShader;
 import com.brandon3055.draconicevolution.client.DEShaders;
-import com.brandon3055.draconicevolution.client.shader.ChaosEntityShader;
-import com.brandon3055.draconicevolution.client.shader.DEShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.covers1624.quack.util.LazyValue;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -42,7 +47,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public void renderItem(ItemStack stack, TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
@@ -52,10 +57,10 @@ public abstract class ToolRenderBase implements IItemRenderer {
         DEShaders.TOOL_BASE_SHADER.getUv1OverrideUniform().glUniform2i(packedOverlay & 0xFFFF, (packedOverlay >> 16) & 0xFFFF);
         DEShaders.TOOL_BASE_SHADER.getUv2OverrideUniform().glUniform2i(packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
 
-        renderTool(ccrs, stack, transformType, mat, getter, transformType == TransformType.GUI);
+        renderTool(ccrs, stack, transformType, mat, getter, transformType == ItemDisplayContext.GUI);
     }
 
-    public abstract void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui);
+    public abstract void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, MultiBufferSource buffers, boolean gui);
 
     public void transform(Matrix4 mat, double x, double y, double z, double scale) {
         mat.translate(x, y, z);
@@ -65,7 +70,8 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public ModelState getModelTransform() {
+    @Nullable
+    public PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_TOOL;
     }
 
@@ -91,7 +97,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
             { 0.75F, 0.05F, 0.05F, 0.2F }
     };
 
-    protected static void glUniformBaseColor(DEShader<?> shader, TechLevel techLevel, float pulse) {
+    public static void glUniformBaseColor(BCShader<?> shader, TechLevel techLevel, float pulse) {
         if (!(shader instanceof ToolShader toolShader) || !toolShader.hasBaseColorUniform()) return;
         float[] baseColour = baseColours[techLevel.index];
         float r = baseColour[0];
@@ -135,13 +141,13 @@ public abstract class ToolRenderBase implements IItemRenderer {
         if (techLevel != TechLevel.CHAOTIC) return basePart(model);
 
         RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
+                .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
         );
-        return new ChaoticToolPart(model, chaoticType, DEShaders.CHAOS_ENTITY_SHADER);
+        return new ChaoticToolPart(model, chaoticType, BCShaders.CHAOS_ENTITY_SHADER);
     }
 
     protected ToolPart gemPart(CCModel model) {
@@ -186,67 +192,67 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     protected abstract static class ToolPart {
 
-        protected final DEShader<?> shader;
+        protected final BCShader<?> shader;
 
-        protected ToolPart(DEShader<?> shader) {
+        protected ToolPart(BCShader<?> shader) {
             this.shader = shader;
         }
 
-        public final void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat) {
+        public final void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat) {
             render(transformType, buffers, mat, 1F);
         }
 
-        public abstract void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse);
+        public abstract void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse);
     }
 
     protected static class BaseToolPart extends ToolPart {
 
-        private final VBORenderType vboType;
-        private final VBORenderType guiVboType;
+        private final Supplier<VBORenderType> vboType;
+        private final Supplier<VBORenderType> guiVboType;
 
-        public BaseToolPart(CCModel model, RenderType type, RenderType guiType, DEShader<?> shader) {
+        public BaseToolPart(CCModel model, RenderType type, RenderType guiType, BCShader<?> shader) {
             super(shader);
-            vboType = new VBORenderType(type, (format, builder) -> {
+            vboType = new LazyValue<>(() -> new VBORenderType(type, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();
                 ccrs.reset();
                 ccrs.bind(builder, format);
                 model.render(ccrs);
-            });
-            guiVboType = new VBORenderType(guiType, (format, builder) -> {
+            }));
+            guiVboType = new LazyValue<>(() -> new VBORenderType(guiType, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();
                 ccrs.reset();
                 ccrs.bind(builder, format);
                 model.render(ccrs);
-            });
+            }));
         }
 
         @Override
-        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            if (transformType == TransformType.GUI) {
-                buffers.getBuffer(guiVboType.withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
+        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
+            if (transformType == ItemDisplayContext.GUI) {
+                buffers.getBuffer(guiVboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
             } else {
-                buffers.getBuffer(vboType.withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
+                buffers.getBuffer(vboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
             }
         }
     }
 
     protected class SimpleToolPart extends ToolPart {
 
-        protected final VBORenderType vboType;
+        protected final Supplier<VBORenderType> vboType;
 
-        public SimpleToolPart(CCModel model, RenderType baseType, DEShader<?> shader) {
+        public SimpleToolPart(CCModel model, RenderType baseType, BCShader<?> shader) {
             super(shader);
-            vboType = new VBORenderType(baseType, (format, builder) -> {
+            vboType = new LazyValue<>(() -> new VBORenderType(baseType, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();
                 ccrs.reset();
                 ccrs.bind(builder, format);
                 model.render(ccrs);
-            });
+            }));
         }
 
         @Override
-        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            buffers.getBuffer(vboType.withCallback(() -> {
+        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
+            buffers.getBuffer(vboType.get().withCallback(() -> {
                 glUniformBaseColor(shader, techLevel, pulse);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
             }));
@@ -264,8 +270,8 @@ public abstract class ToolRenderBase implements IItemRenderer {
         }
 
         @Override
-        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            buffers.getBuffer(vboType.withCallback(() -> {
+        public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
+            buffers.getBuffer(vboType.get().withCallback(() -> {
                 shader.getDisableLightUniform().glUniform1b(true);
                 shader.getDisableOverlayUniform().glUniform1b(true);
                 shader.getAlphaUniform().glUniform1f(0.7F);

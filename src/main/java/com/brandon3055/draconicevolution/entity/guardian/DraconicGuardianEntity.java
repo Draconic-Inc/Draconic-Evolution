@@ -10,12 +10,14 @@ import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseType;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -26,7 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -41,7 +43,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BinaryHeap;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
@@ -74,8 +75,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     private final DraconicGuardianPartEntity dragonPartTail3;
     private final DraconicGuardianPartEntity dragonPartRightWing;
     private final DraconicGuardianPartEntity dragonPartLeftWing;
-    public float prevAnimTime;
-    public float animTime;
+    public float oFlapTime;
+    public float flapTime;
     public boolean slowed;
     public int deathTicks;
     public float yRotA;
@@ -93,7 +94,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     private int hitCoolDown;
 
     public DraconicGuardianEntity(EntityType<?> type, Level world) {
-        super(DEContent.draconicGuardian, world);
+        super(DEContent.ENTITY_DRACONIC_GUARDIAN.get(), world);
         this.dragonPartHead = new DraconicGuardianPartEntity(this, "head", 1.0F, 1.0F);
         this.dragonPartNeck = new DraconicGuardianPartEntity(this, "neck", 3.0F, 3.0F);
         this.dragonPartBody = new DraconicGuardianPartEntity(this, "body", 5.0F, 3.0F);
@@ -159,7 +160,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide && getShieldPower() < DEConfig.guardianShield) {
+        if (!level().isClientSide && getShieldPower() < DEConfig.guardianShield) {
             GuardianFightManager manager = getFightManager();
             if (manager != null && manager.getNumAliveCrystals() > 0) {
                 setShieldPower(Math.min(DEConfig.guardianShield, getShieldPower() + (DEConfig.guardianShield / (20F * 10F))));
@@ -170,7 +171,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         }
     }
 
-    public double[] getMovementOffsets(int index, float partialTicks) {
+    public double[] getLatencyPos(int index, float partialTicks) {
         if (this.isDeadOrDying()) {
             partialTicks = 0.0F;
         }
@@ -193,17 +194,17 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     public void aiStep() {
         speedMult = codechicken.lib.math.MathHelper.approachLinear(speedMult, phaseManager.getCurrentPhase().getGuardianSpeed(), 0.1);
 //        phaseManager.setPhase(PhaseType.START);
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             this.setHealth(this.getHealth());
             if (!this.isSilent()) {
-                float f = Mth.cos(this.animTime * ((float) Math.PI * 2F));
-                float f1 = Mth.cos(this.prevAnimTime * ((float) Math.PI * 2F));
+                float f = Mth.cos(this.flapTime * ((float) Math.PI * 2F));
+                float f1 = Mth.cos(this.oFlapTime * ((float) Math.PI * 2F));
                 if (f1 <= -0.3F && f >= -0.3F) {
-                    this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENDER_DRAGON_FLAP, this.getSoundSource(), 5.0F, 0.8F + this.random.nextFloat() * 0.3F, false);
+                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENDER_DRAGON_FLAP, this.getSoundSource(), 5.0F, 0.8F + this.random.nextFloat() * 0.3F, false);
                 }
 
                 if (!this.phaseManager.getCurrentPhase().getIsStationary() && --this.growlTime < 0) {
-                    this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENDER_DRAGON_GROWL, this.getSoundSource(), 2.5F, 0.8F + this.random.nextFloat() * 0.3F, false);
+                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENDER_DRAGON_GROWL, this.getSoundSource(), 2.5F, 0.8F + this.random.nextFloat() * 0.3F, false);
                     this.growlTime = 200 + this.random.nextInt(200);
                 }
             }
@@ -211,28 +212,28 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 //            updateShieldState();
         }
 
-        this.prevAnimTime = this.animTime;
+        this.oFlapTime = this.flapTime;
         if (this.isDeadOrDying()) {
             float randX = (this.random.nextFloat() - 0.5F) * 8.0F;
             float randY = (this.random.nextFloat() - 0.5F) * 4.0F;
             float randZ = (this.random.nextFloat() - 0.5F) * 8.0F;
-            this.level.addParticle(ParticleTypes.EXPLOSION, this.getX() + (double) randX, this.getY() + 2.0D + (double) randY, this.getZ() + (double) randZ, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(ParticleTypes.EXPLOSION, this.getX() + (double) randX, this.getY() + 2.0D + (double) randY, this.getZ() + (double) randZ, 0.0D, 0.0D, 0.0D);
         } else {
             this.updateDragonEnderCrystal();
             Vec3 vec3 = this.getDeltaMovement();
             float f = 0.2F / ((float) vec3.horizontalDistance() * 10.0F + 1.0F);
             f = f * (float) Math.pow(2.0D, vec3.y);
             if (this.phaseManager.getCurrentPhase().getIsStationary()) {
-                this.animTime += 0.1F;
+                this.flapTime += 0.1F;
             } else if (this.slowed) {
-                this.animTime += f * 0.5F;
+                this.flapTime += f * 0.5F;
             } else {
-                this.animTime += f;
+                this.flapTime += f;
             }
 
             this.setYRot(Mth.wrapDegrees(this.getYRot()));
             if (this.isNoAi()) {
-                this.animTime = 0.5F;
+                this.flapTime = 0.5F;
             } else {
                 if (this.ringBufferIndex < 0) {
                     for (int i = 0; i < this.ringBuffer.length; ++i) {
@@ -247,7 +248,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
                 this.ringBuffer[this.ringBufferIndex][0] = this.getYRot();
                 this.ringBuffer[this.ringBufferIndex][1] = this.getY();
-                if (this.level.isClientSide) {
+                if (this.level().isClientSide) {
                     if (this.lerpSteps > 0) {
                         double d7 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
                         double d0 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
@@ -327,7 +328,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     avector3d[j] = new Vec3(this.dragonParts[j].getX(), this.dragonParts[j].getY(), this.dragonParts[j].getZ());
                 }
 
-                float f15 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1]) * 10.0F * ((float) Math.PI / 180F);
+                float f15 = (float) (this.getLatencyPos(5, 1.0F)[1] - this.getLatencyPos(10, 1.0F)[1]) * 10.0F * ((float) Math.PI / 180F);
                 float f16 = Mth.cos(f15);
                 float f2 = Mth.sin(f15);
                 float f17 = this.getYRot() * ((float) Math.PI / 180F);
@@ -336,11 +337,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 this.setPartPosition(this.dragonPartBody, f3 * 0.5F, 0.0D, -f18 * 0.5F);
                 this.setPartPosition(this.dragonPartRightWing, f18 * 4.5F, 2.0D, f3 * 4.5F);
                 this.setPartPosition(this.dragonPartLeftWing, f18 * -4.5F, 2.0D, f3 * -4.5F);
-                if (!this.level.isClientSide && this.hurtTime == 0) {
-                    this.collideWithEntities(this.level.getEntities(this, this.dragonPartRightWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.collideWithEntities(this.level.getEntities(this, this.dragonPartLeftWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.attackEntitiesInList(this.level.getEntities(this, this.dragonPartHead.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.attackEntitiesInList(this.level.getEntities(this, this.dragonPartNeck.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                if (!this.level().isClientSide && this.hurtTime == 0) {
+                    this.collideWithEntities(this.level().getEntities(this, this.dragonPartRightWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.collideWithEntities(this.level().getEntities(this, this.dragonPartLeftWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartHead.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartNeck.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                 }
 
                 float f4 = Mth.sin(this.getYRot() * ((float) Math.PI / 180F) - this.yRotA * 0.01F);
@@ -348,7 +349,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 float f5 = this.getHeadAndNeckYOffset();
                 this.setPartPosition(this.dragonPartHead, f4 * 6.5F * f16, f5 + f2 * 6.5F, -f19 * 6.5F * f16);
                 this.setPartPosition(this.dragonPartNeck, f4 * 5.5F * f16, f5 + f2 * 5.5F, -f19 * 5.5F * f16);
-                double[] adouble = this.getMovementOffsets(5, 1.0F);
+                double[] adouble = this.getLatencyPos(5, 1.0F);
 
                 for (int k = 0; k < 3; ++k) {
                     DraconicGuardianPartEntity enderdragonpartentity = null;
@@ -364,7 +365,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                         enderdragonpartentity = this.dragonPartTail3;
                     }
 
-                    double[] adouble1 = this.getMovementOffsets(12 + k * 2, 1.0F);
+                    double[] adouble1 = this.getLatencyPos(12 + k * 2, 1.0F);
                     float f7 = this.getYRot() * ((float) Math.PI / 180F) + this.simplifyAngle(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F);
                     float f20 = Mth.sin(f7);
                     float f21 = Mth.cos(f7);
@@ -373,7 +374,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     this.setPartPosition(enderdragonpartentity, -(f3 * 1.5F + f20 * f23) * f16, adouble1[1] - adouble[1] - (double) ((f23 + 1.5F) * f2) + 1.5D, (f18 * 1.5F + f21 * f23) * f16);
                 }
 
-                if (!this.level.isClientSide) {
+                if (!this.level().isClientSide) {
                     this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartNeck.getBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getBoundingBox());
                     if (this.fightManager != null) {
                         this.fightManager.guardianUpdate(this);
@@ -401,8 +402,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (this.phaseManager.getCurrentPhase().getIsStationary()) {
             return -1.0F;
         } else {
-            double[] adouble = this.getMovementOffsets(5, 1.0F);
-            double[] adouble1 = this.getMovementOffsets(0, 1.0F);
+            double[] adouble = this.getLatencyPos(5, 1.0F);
+            double[] adouble1 = this.getLatencyPos(0, 1.0F);
             return (float) (adouble[1] - adouble1[1]);
         }
     }
@@ -416,11 +417,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             }
         }
 
-        if (this.random.nextInt(10) == 0 && !level.isClientSide) {
+        if (this.random.nextInt(10) == 0 && !level().isClientSide) {
             if (fightManager != null) {
                 closestGuardianCrystal = fightManager.getCrystals().stream().min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
             } else {
-                List<GuardianCrystalEntity> list = this.level.getEntitiesOfClass(GuardianCrystalEntity.class, this.getBoundingBox().inflate(32.0D));
+                List<GuardianCrystalEntity> list = this.level().getEntitiesOfClass(GuardianCrystalEntity.class, this.getBoundingBox().inflate(32.0D));
                 GuardianCrystalEntity crystal = null;
                 double d0 = Double.MAX_VALUE;
                 for (GuardianCrystalEntity endercrystalentity1 : list) {
@@ -434,7 +435,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             }
             getEntityData().set(CRYSTAL_ID, closestGuardianCrystal == null ? -1 : closestGuardianCrystal.getId());
         }
-
     }
 
     private void collideWithEntities(List<Entity> entities) {
@@ -448,22 +448,20 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
                 entity.push(d2 / d4 * 4.0D, 0.2F, d3 / d4 * 4.0D);
                 if (!this.phaseManager.getCurrentPhase().getIsStationary() && ((LivingEntity) entity).getLastHurtByMobTimestamp() < entity.tickCount - 2) {
-                    entity.hurt(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", this), 15.0F);
+                    entity.hurt(DEDamage.guardian(level(), this), 15.0F);
                     this.doEnchantDamageEffects(this, entity);
                 }
             }
         }
-
     }
 
     private void attackEntitiesInList(List<Entity> entities) {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity) {
-                entity.hurt(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", this), 20.0F);
+                entity.hurt(DEDamage.guardian(level(), this), 20.0F);
                 this.doEnchantDamageEffects(this, entity);
             }
         }
-
     }
 
     private float simplifyAngle(double angle) {
@@ -484,11 +482,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             for (int l1 = j; l1 <= i1; ++l1) {
                 for (int i2 = k; i2 <= j1; ++i2) {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
-                    BlockState blockstate = this.level.getBlockState(blockpos);
+                    BlockState blockstate = this.level().getBlockState(blockpos);
                     Block block = blockstate.getBlock();
-                    if (!blockstate.isAir() && blockstate.getMaterial() != Material.FIRE) {
-                        if (net.minecraftforge.common.ForgeHooks.canEntityDestroy(this.level, blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
-                            flag1 = this.level.removeBlock(blockpos, false) || flag1;
+                    if (!blockstate.isAir() && !blockstate.is(BlockTags.FIRE)) {
+                        if (net.minecraftforge.common.ForgeHooks.canEntityDestroy(this.level(), blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
+                            flag1 = this.level().removeBlock(blockpos, false) || flag1;
                         } else {
                             flag = true;
                         }
@@ -499,19 +497,19 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
         if (flag1) {
             BlockPos blockpos1 = new BlockPos(i + this.random.nextInt(l - i + 1), j + this.random.nextInt(i1 - j + 1), k + this.random.nextInt(j1 - k + 1));
-            this.level.levelEvent(2008, blockpos1, 0);
+            this.level().levelEvent(2008, blockpos1, 0);
         }
 
         return flag;
     }
 
     public boolean attackEntityPartFrom(DraconicGuardianPartEntity part, DamageSource source, float damage) {
-        if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING) {
+        if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING || source.getEntity() == this) {
             return false;
         } else {
             float shieldPower = getShieldPower();
             if (shieldPower > 0) {
-                BCoreNetwork.sendSound(level, blockPosition(), DESounds.shieldStrike, SoundSource.HOSTILE, 20, random.nextFloat() * 0.2F + 0.9F, false);
+                BCoreNetwork.sendSound(level(), blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.HOSTILE, 20, random.nextFloat() * 0.2F + 0.9F, false);
             }
 
             if (hitCoolDown > 0 && damage < lastDamage * 1.1F) {
@@ -546,7 +544,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             if (damage < 0.01F) {
                 return false;
             } else {
-                if (source.getEntity() instanceof Player || source.isExplosion()) {
+                if (source.getEntity() instanceof Player || source.is(DamageTypes.EXPLOSION)) {
                     this.attackDragonFrom(source, damage);
                     if (this.isDeadOrDying() && !this.phaseManager.getCurrentPhase().getIsStationary()) {
                         this.setHealth(1.0F);
@@ -561,10 +559,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source instanceof EntityDamageSource && ((EntityDamageSource) source).isThorns()) {
-            this.attackEntityPartFrom(this.dragonPartBody, source, amount);
-        }
-        return false;
+        return level().isClientSide ? false : this.attackEntityPartFrom(this.dragonPartBody, source, amount);
     }
 
     protected boolean attackDragonFrom(DamageSource source, float amount) {
@@ -591,26 +586,26 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             float f = (this.random.nextFloat() - 0.5F) * 8.0F;
             float f1 = (this.random.nextFloat() - 0.5F) * 4.0F;
             float f2 = (this.random.nextFloat() - 0.5F) * 8.0F;
-            this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double) f, this.getY() + 2.0D + (double) f1, this.getZ() + (double) f2, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double) f, this.getY() + 2.0D + (double) f1, this.getZ() + (double) f2, 0.0D, 0.0D, 0.0D);
         }
 
-        boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT);
+        boolean flag = this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT);
         int xpAmount = 24000;
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.deathTicks > 150 && this.deathTicks % 5 == 0 && flag) {
                 this.dropExperience(Mth.floor((float) xpAmount * 0.08F));
             }
 
             if (this.deathTicks == 1 && !this.isSilent()) {
-                this.level.globalLevelEvent(1028, this.blockPosition(), 0);
+                this.level().globalLevelEvent(1028, this.blockPosition(), 0);
             }
         }
 
         this.move(MoverType.SELF, new Vec3(0.0D, 0.1F, 0.0D));
         this.setYRot(this.getYRot() + 20.0F);
         this.yBodyRot = this.getYRot();
-        if (this.deathTicks == 200 && !this.level.isClientSide) {
+        if (this.deathTicks == 200 && !this.level().isClientSide) {
             if (flag) {
                 this.dropExperience(Mth.floor((float) xpAmount * 0.2F));
             }
@@ -628,7 +623,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         while (xp > 0) {
             int i = ExperienceOrb.getExperienceValue(xp);
             xp -= i;
-            this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), i));
+            this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), i));
         }
 
     }
@@ -647,7 +642,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 float angle = loopPos * 360;
                 int pointX = codechicken.lib.math.MathHelper.floor((GuardianFightManager.CRYSTAL_DIST_FROM_CENTER - 20) * Math.cos(angle * codechicken.lib.math.MathHelper.torad));
                 int pointZ = codechicken.lib.math.MathHelper.floor((GuardianFightManager.CRYSTAL_DIST_FROM_CENTER - 20) * Math.sin(angle * codechicken.lib.math.MathHelper.torad));
-                int pointY = Math.max(arenaOrigin.getY() + GuardianFightManager.CRYSTAL_HEIGHT_FROM_ORIGIN, this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pointX, 0, pointZ)).getY());
+                int pointY = Math.max(arenaOrigin.getY() + GuardianFightManager.CRYSTAL_HEIGHT_FROM_ORIGIN, this.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pointX, 0, pointZ)).getY());
                 pathPoints[i] = new Node(arenaOrigin.getX() + pointX, pointY, arenaOrigin.getZ() + pointZ);
             }
         }
@@ -797,7 +792,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (compound.contains("arena_origin")) {
             setArenaOrigin(NbtUtils.readBlockPos(compound.getCompound("arena_origin")));
         }
-        if (level instanceof ServerLevel) {
+        if (level() instanceof ServerLevel) {
             fightManager = WorldEntityHandler.getWorldEntities()
                     .stream()
                     .filter(e -> e instanceof GuardianFightManager)
@@ -864,7 +859,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             d0 = headPartOffsets[1] - spineEndOffsets[1];
         }
 //        } else {
-//            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
+//            BlockPos blockpos = this.level().getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
 //            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
 //            d0 = (float) p_184667_1_ / f;
 //        }
@@ -887,7 +882,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             vector3d = this.getViewVector(partialTicks);
         }
 //        } else {
-//            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
+//            BlockPos blockpos = this.level().getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
 //            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
 //            float f1 = 6.0F / f;
 //            float f2 = this.xRot;
@@ -905,11 +900,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (dmgSrc.getEntity() instanceof Player) {
             playerentity = (Player) dmgSrc.getEntity();
         } else {
-            playerentity = this.level.getNearestPlayer(PLAYER_INVADER_CONDITION, pos.getX(), pos.getY(), pos.getZ());
+            playerentity = this.level().getNearestPlayer(PLAYER_INVADER_CONDITION, pos.getX(), pos.getY(), pos.getZ());
         }
 
         if (crystal == this.closestGuardianCrystal && destroyed) {
-            this.attackEntityPartFrom(this.dragonPartHead, DamageSource.explosion(playerentity), 10.0F);
+            this.attackEntityPartFrom(this.dragonPartHead, damageSources().explosion(crystal, playerentity), 20.0F);
         }
 
         this.phaseManager.getCurrentPhase().onCrystalAttacked(crystal, pos, dmgSrc, playerentity, damage, destroyed);
@@ -917,14 +912,14 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (PHASE.equals(key) && this.level.isClientSide) {
+        if (PHASE.equals(key) && this.level().isClientSide) {
             this.phaseManager.setPhase(PhaseType.getById(getEntityData().get(PHASE)));
-        } else if (CRYSTAL_ID.equals(key) && level.isClientSide) {
+        } else if (CRYSTAL_ID.equals(key) && level().isClientSide) {
             int id = getEntityData().get(CRYSTAL_ID);
             if (id == -1) {
                 closestGuardianCrystal = null;
             } else {
-                Entity entity = level.getEntity(id);
+                Entity entity = level().getEntity(id);
                 closestGuardianCrystal = entity instanceof GuardianCrystalEntity ? (GuardianCrystalEntity) entity : null;
             }
         }
@@ -971,7 +966,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return super.getAddEntityPacket();
     }
 }

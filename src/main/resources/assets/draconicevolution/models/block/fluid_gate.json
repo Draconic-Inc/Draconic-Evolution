@@ -1,5 +1,5 @@
 {
-    "parent":   "block/block",
+    "parent": "block/block",
     "textures": {
         "texture":  "draconicevolution:block/fluid_gate",
         "particle": "draconicevolution:block/fluid_gate"

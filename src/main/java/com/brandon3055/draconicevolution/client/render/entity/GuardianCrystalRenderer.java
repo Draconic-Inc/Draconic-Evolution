@@ -1,9 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -15,120 +20,117 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntity> {
-   private static ResourceLocation ENDER_CRYSTAL_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
-   private static RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ENDER_CRYSTAL_TEXTURES);
-   private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
-//   private final ModelPart cube;
-//   private final ModelPart glass;
-//   private final ModelPart base;
+    private static ResourceLocation ENDER_CRYSTAL_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
+    private static RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ENDER_CRYSTAL_TEXTURES);
+    private static final float SIN_45 = (float) Math.sin((Math.PI / 4D));
+    private final ModelPart cube;
+    private final ModelPart glass;
+    private final ModelPart base;
 
-   public GuardianCrystalRenderer(EntityRendererProvider.Context context) {
-      super(context);
-      this.shadowRadius = 0.5F;
-//      this.glass = new ModelPart(64, 32, 0, 0);
-//      this.glass.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
-//      this.cube = new ModelPart(64, 32, 32, 0);
-//      this.cube.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
-//      this.base = new ModelPart(64, 32, 0, 16);
-//      this.base.addBox(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F);
-   }
+    public GuardianCrystalRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        this.shadowRadius = 0.5F;
+        ModelPart modelpart = context.bakeLayer(ModelLayers.END_CRYSTAL);
+        this.glass = modelpart.getChild("glass");
+        this.cube = modelpart.getChild("cube");
+        this.base = modelpart.getChild("base");
+    }
 
-   @Override
-   public void render(GuardianCrystalEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource getter, int packedLightIn) {
-      matrixStackIn.pushPose();
-      float yBob = getY(entityIn, partialTicks);
-      float f1 = ((float)entityIn.innerRotation + partialTicks) * 3.0F;
-      VertexConsumer ivertexbuilder = getter.getBuffer(RENDER_TYPE);
-      matrixStackIn.pushPose();
-      matrixStackIn.scale(2.0F, 2.0F, 2.0F);
-      matrixStackIn.translate(0.0D, -0.5D, 0.0D);
-      int i = OverlayTexture.NO_OVERLAY;
-//      if (entityIn.shouldShowBottom()) {
-//         this.base.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-//      }
-//
-//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//      matrixStackIn.translate(0.0D, (double)(1.5F + yBob / 2.0F), 0.0D);
-//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-//      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-//      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//      this.cube.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-//      matrixStackIn.popPose();
-//
-//      float shieldPower = entityIn.getShieldPower() / (float) Math.max(20, DEConfig.guardianCrystalShield);
-//      if (shieldPower > 0) {
-//         UniformCache uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
-//         uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F * shieldPower);
-//         VertexConsumer shaderBuilder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
-//
-//         matrixStackIn.pushPose();
-//         matrixStackIn.scale(2.0F, 2.0F, 2.0F);
-//         matrixStackIn.translate(0.0D, -0.5D, 0.0D);
-//         if (entityIn.shouldShowBottom()) {
-//            this.base.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-//         }
-//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//         matrixStackIn.translate(0.0D, 1.5F + yBob / 2.0F, 0.0D);
-//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-//         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-//         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-//         this.cube.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-//         matrixStackIn.popPose();
-//
-//      }
-      matrixStackIn.popPose();
+    @Override
+    public void render(GuardianCrystalEntity crystal, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int packedLight) {
+        poseStack.pushPose();
+        float yBob = getY(crystal, partialTicks);
+        float anim = ((float) crystal.time + partialTicks) * 3.0F;
+        VertexConsumer vertexconsumer = buffers.getBuffer(RENDER_TYPE);
+        poseStack.scale(2.0F, 2.0F, 2.0F);
+        poseStack.translate(0.0D, -0.5D, 0.0D);
+        int overlayTex = OverlayTexture.NO_OVERLAY;
+        if (crystal.showsBottom()) {
+            this.base.render(poseStack, vertexconsumer, packedLight, overlayTex);
+        }
 
-      BlockPos blockpos = entityIn.getBeamTarget();
-      if (blockpos != null) {
-         float posX = (float)blockpos.getX() + 0.5F;
-         float posY = (float)blockpos.getY() + 0.5F;
-         float posZ = (float)blockpos.getZ() + 0.5F;
-         float relX = (float)((double)posX - entityIn.getX());
-         float relY = (float)((double)posY - entityIn.getY());
-         float relZ = (float)((double)posZ - entityIn.getZ());
-         //Translate to target
-         matrixStackIn.translate(relX, relY - 2, relZ);
-         //Render from target to self
-         float beamPower = entityIn.getBeamPower();
-         if (beamPower < 1) {
-            DraconicGuardianRenderer.renderBeam(-relX, -relY + yBob + 2, -relZ, partialTicks, entityIn.innerRotation, matrixStackIn, getter, packedLightIn, beamPower);
-         }else {
-            DraconicGuardianRenderer.renderBeam(-relX, -relY + yBob + 2, -relZ, partialTicks, entityIn.innerRotation, matrixStackIn, getter, packedLightIn);
-         }
-      }
+        poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+        poseStack.translate(0.0D, 1.5F + yBob / 2.0F, 0.0D);
+        poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+        this.glass.render(poseStack, vertexconsumer, packedLight, overlayTex);
+        float scale = 0.875F;
+        poseStack.scale(scale, scale, scale);
+        poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+        poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+        this.glass.render(poseStack, vertexconsumer, packedLight, overlayTex);
+        poseStack.scale(scale, scale, scale);
+        poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+        poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+        this.cube.render(poseStack, vertexconsumer, packedLight, overlayTex);
+        poseStack.popPose();
 
-      super.render(entityIn, entityYaw, partialTicks, matrixStackIn, getter, packedLightIn);
-   }
+        float shieldPower = crystal.getShieldPower() / (float) Math.max(20, DEConfig.guardianCrystalShield);
+        if (shieldPower > 0) {
+            DEShaders.shieldBarMode.glUniform1i(0);
+            DEShaders.shieldColour.glUniform4f(1F, 0F, 0F, 1.5F * shieldPower);
+            DEShaders.shieldActivation.glUniform1f(1F);
+            VertexConsumer shaderBuilder = buffers.getBuffer(DraconicGuardianRenderer.SHIELD_TYPE);
 
-   public static float getY(GuardianCrystalEntity p_229051_0_, float p_229051_1_) {
-      float f = (float)p_229051_0_.innerRotation + p_229051_1_;
-      float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
-      f1 = (f1 * f1 + f1) * 0.4F;
-      return f1 - 1.4F;
-   }
+            poseStack.pushPose();
+            poseStack.scale(2.0F, 2.0F, 2.0F);
+            poseStack.translate(0.0D, -0.5D, 0.0D);
+            if (crystal.showsBottom()) {
+                this.base.render(poseStack, shaderBuilder, packedLight, overlayTex);
+            }
+            poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+            poseStack.translate(0.0D, 1.5F + yBob / 2.0F, 0.0D);
+            poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+            this.glass.render(poseStack, shaderBuilder, packedLight, overlayTex);
+            poseStack.scale(scale, scale, scale);
+            poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+            poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+            this.glass.render(poseStack, shaderBuilder, packedLight, overlayTex);
+            poseStack.scale(scale, scale, scale);
+            poseStack.mulPose((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SIN_45, 0.0F, SIN_45));
+            poseStack.mulPose(Axis.YP.rotationDegrees(anim));
+            this.cube.render(poseStack, shaderBuilder, packedLight, overlayTex);
+            poseStack.popPose();
+        }
 
-   @Override
-   public ResourceLocation getTextureLocation(GuardianCrystalEntity entity) {
-      return ENDER_CRYSTAL_TEXTURES;
-   }
+        BlockPos blockpos = crystal.getBeamTarget();
+        if (blockpos != null) {
+            float targetX = (float) blockpos.getX() + 0.5F;
+            float targetY = (float) blockpos.getY() + 0.5F;
+            float targetZ = (float) blockpos.getZ() + 0.5F;
+            float xRel = (float) ((double) targetX - crystal.getX());
+            float yRel = (float) ((double) targetY - crystal.getY());
+            float zRel = (float) ((double) targetZ - crystal.getZ());
+            poseStack.translate(xRel, yRel - 2, zRel);
 
-   @Override
-   public boolean shouldRender(GuardianCrystalEntity livingEntityIn, Frustum camera, double camX, double camY, double camZ) {
-      return super.shouldRender(livingEntityIn, camera, camX, camY, camZ) || livingEntityIn.getBeamTarget() != null;
-   }
+            float beamPower = crystal.getBeamPower();
+            if (beamPower < 1) {
+                DraconicGuardianRenderer.renderBeam(-xRel, -yRel + yBob + 2, -zRel, partialTicks, crystal.time, poseStack, buffers, packedLight, beamPower);
+            } else {
+                DraconicGuardianRenderer.renderBeam(-xRel, -yRel + yBob + 2, -zRel, partialTicks, crystal.time, poseStack, buffers, packedLight);
+            }
+        }
+
+        super.render(crystal, entityYaw, partialTicks, poseStack, buffers, packedLight);
+    }
+
+    public static float getY(GuardianCrystalEntity crystal, float partialTicks) {
+        float f = (float) crystal.time + partialTicks;
+        float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
+        f1 = (f1 * f1 + f1) * 0.4F;
+        return f1 - 1.4F;
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(GuardianCrystalEntity entity) {
+        return ENDER_CRYSTAL_TEXTURES;
+    }
+
+    @Override
+    public boolean shouldRender(GuardianCrystalEntity entity, Frustum camera, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, camera, camX, camY, camZ) || entity.getBeamTarget() != null;
+    }
 }

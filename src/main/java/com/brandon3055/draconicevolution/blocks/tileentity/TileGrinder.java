@@ -18,10 +18,12 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
@@ -46,12 +48,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -69,7 +72,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     public final ManagedInt storedXP = register(new ManagedInt("stored_xp", DataFlags.SAVE_BOTH_SYNC_CONTAINER));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
     public EntityFilter entityFilter;
-    public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
+    public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 
     //Client side rendering fields
     public Entity targetA = null;
@@ -89,20 +92,20 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     private int killRate = 5; //Number of ticks between kills
 
     public TileGrinder(BlockPos pos, BlockState state) {
-        super(DEContent.tile_grinder, pos, state);
+        super(DEContent.TILE_GRINDER.get(), pos, state);
         enablePlayerAccessTracking(true);
 
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         installIOTracker(opStorage);
 
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
         entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
         entityFilter.setDirtyHandler(this::setChanged);
-        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEOldConfig.allowGrindingPlayers);
+        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
         setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);
@@ -110,6 +113,8 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         aoe.setValidator(value -> (byte) MathHelper.clip(value, 1, getMaxAOE()));
         aoe.addValueListener(e -> killZone = null);
+
+        enableTileDebug();
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
@@ -157,6 +162,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             }
 
             if (coolDown > 0) {
+                debug("Cool down: " + coolDown);
                 coolDown--;
                 return;
             }
@@ -168,11 +174,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     }
 
     private boolean updateActiveState() {
-        int eph = DEOldConfig.grinderEnergyPerHeart;
+        int eph = DEConfig.grinderEnergyPerHeart;
         boolean isActive = isTileEnabled();
 
         //Only run if there is a reasonable energy buffer
-        if (isActive && opStorage.getOPStored() < eph * 50) {
+        if (isActive && opStorage.getOPStored() < eph * 50L) {
             isActive = false;
         }
 
@@ -184,18 +190,19 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         if (forceReCalc || killZone == null) {
             BlockState state = level.getBlockState(worldPosition);
             Direction facing = state.getValue(Grinder.FACING);
-//            LogHelper.dev("Update Kill Zone: " + facing);
             int aoe = this.aoe.get();
             BlockPos pos1 = worldPosition.offset(-(aoe - 1), -(aoe - 1), -(aoe - 1));
             BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
             pos1 = pos1.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             pos2 = pos2.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             killZone = new AABB(pos1, pos2);
+            debug("Kill zone updated: " + killZone);
         }
     }
 
     private boolean attackTarget() {
         if (nextTarget == null || !nextTarget.isAlive()) {
+            debug("Next target is null or dead: " + nextTarget);
             return true;
         }
 
@@ -205,7 +212,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
         getFakePlayer().setItemInHand(InteractionHand.MAIN_HAND, weapon);
 
-        int eph = DEOldConfig.grinderEnergyPerHeart;
+        int eph = DEConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
 
         //Ensure teh minimum damage dealt is 5 hearts. This is to help prevent endless hurt loops due to mobs with armor.
@@ -226,7 +233,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         //Dont mess around. If we know the mob should die lets just make it die!
         float damage = willKill ? Float.MAX_VALUE : ((float) cost / (float) eph) * 1.1F;
-        DamageSource source = DamageSource.playerAttack(getFakePlayer());
+        DamageSource source = level.damageSources().playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
         if (nextTarget.hurt(source, damage)) {
@@ -236,12 +243,12 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
                 weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
             }
 
-            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
+            debug("Dealt " + damage + " damage to entity: " + nextTarget);
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
+        debug("Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }
@@ -251,14 +258,16 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     private void queNextTarget() {
         List<LivingEntity> entitiesInRange = level.getEntitiesOfClass(LivingEntity.class, killZone, entityFilter.predicate());
+        debug("Searching for next target, " + entitiesInRange.size() + " targets in range");
         boolean foundInvulnerable = false;
 
         while (!entitiesInRange.isEmpty()) {
             LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
+            debug("Checking Target: " + randEntity);
             if (isValidEntity(randEntity)) {
-                LogHelper.dev("Grinder: Found next target: " + randEntity);
+                debug("Found valid target: " + randEntity);
                 if (randEntity.isInvulnerable()) {
-                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
+                    debug("Target is invulnerable! searching for softer target...");
                     foundInvulnerable = true;
                 } else {
                     nextTarget = randEntity;
@@ -272,19 +281,27 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         coolDown = foundInvulnerable ? 5 : 100;
+        debug("No attachable target found. Will check again in " + coolDown + " Ticks");
         nextTarget = null;
     }
 
     private boolean isValidEntity(LivingEntity livingBase) {
-        if (!livingBase.isAlive()) return false;
-        if (livingBase instanceof Player && !DEOldConfig.allowGrindingPlayers) return false;
-        if (DEOldConfig.grinderBlacklist.isEmpty()) return true;
-        ResourceLocation reg = livingBase.getType().getRegistryName();
-        return !(reg != null && DEOldConfig.grinderBlacklist.contains(reg.toString()));
+        if (!livingBase.isAlive()) {
+            debug("Target Invalid: " + livingBase + ", [Already Dead]");
+            return false;
+        }
+        if (livingBase instanceof Player && !DEConfig.allowGrindingPlayers) {
+            debug("Target Invalid: " + livingBase + ", [Is Player]");
+            return false;
+        }
+        if (DEConfig.grinderBlackList.isEmpty()) return true;
+        ResourceLocation reg = ForgeRegistries.ENTITY_TYPES.getKey(livingBase.getType());
+        return !(reg != null && DEConfig.grinderBlackList.contains(reg.toString()));
     }
 
     private void handleLootCollection() {
         List<ExperienceOrb> xp = level.getEntitiesOfClass(ExperienceOrb.class, killZone.inflate(4, 4, 4));
+        debug("Detected: " + xp.size() + " XP entities");
         for (ExperienceOrb orb : xp) {
             if (!orb.isAlive()) continue;
             if (collectXP.get() && storedXP.get() + orb.value <= getXPStorageCapacity()) {
@@ -297,10 +314,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         if (collectItems.get()) {
             List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, killZone.inflate(1, 1, 1));
+            debug("Detected: " + items.size() + " Item entities");
             for (Direction dir : Direction.values()) {
                 BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
-                    LazyOptional<IItemHandler> opCap = target.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
+                    LazyOptional<IItemHandler> opCap = target.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
                     opCap.ifPresent(iItemHandler -> {
                         Iterator<ItemEntity> i = items.iterator();
                         while (i.hasNext()) {
@@ -403,13 +421,13 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_GRINDER.get(), currentWindowIndex, playerInventory, this);
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }

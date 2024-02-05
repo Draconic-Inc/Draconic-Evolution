@@ -5,8 +5,6 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.Capabilities;
-import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -103,14 +101,15 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-            if (self == null) self = LazyOptional.of(() -> this);
-            return self.cast();
-        }
+		//TODO Does CC still have caps?
+//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
+//            if (self == null) self = LazyOptional.of(() -> this);
+//            return self.cast();
+//        }
         return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-        self = CapabilityUtil.invalidate(self);
+//        self = CapabilityUtil.invalidate(self);
     }
 }

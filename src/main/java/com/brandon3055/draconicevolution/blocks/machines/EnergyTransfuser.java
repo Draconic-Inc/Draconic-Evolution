@@ -8,6 +8,7 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class EnergyTransfuser extends BlockBCore implements EntityBlock {
+public class EnergyTransfuser extends EntityBlockBCore {
     private static final VoxelShape SHAPE;
 
     private static final IndexedVoxelShape BASE_SHAPE;
@@ -31,7 +32,7 @@ public class EnergyTransfuser extends BlockBCore implements EntityBlock {
     static {
         double p = 1D / 16D, hp = p / 2D;
 
-        BASE_SHAPE = new IndexedVoxelShape(Shapes.create(hp, hp, hp, 1 - hp, 1 - hp, 1 - hp), 0);
+        BASE_SHAPE = new IndexedVoxelShape(Shapes.create(hp, hp, hp, 1 - hp, 1 - hp, 1 - hp), -1);
         Cuboid6 interactFace = new Cuboid6(p * 3, p * 3, hp / 2, 1 - (p * 3), 1 - (p * 3), p);
 
         Direction[] dirs = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
@@ -50,12 +51,11 @@ public class EnergyTransfuser extends BlockBCore implements EntityBlock {
 
     public EnergyTransfuser(Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_energy_transfuser, true);
+        setBlockEntity(DEContent.TILE_ENERGY_TRANSFUSER::get, true);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
-//
 }

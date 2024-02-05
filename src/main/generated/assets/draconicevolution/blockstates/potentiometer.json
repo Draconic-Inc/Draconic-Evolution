@@ -4,8 +4,10 @@
       "model": "draconicevolution:block/potentiometer",
       "x": 180
     },
-    "facing=up": {
-      "model": "draconicevolution:block/potentiometer"
+    "facing=east": {
+      "model": "draconicevolution:block/potentiometer",
+      "x": 90,
+      "y": 90
     },
     "facing=north": {
       "model": "draconicevolution:block/potentiometer",
@@ -16,15 +18,13 @@
       "x": 90,
       "y": 180
     },
+    "facing=up": {
+      "model": "draconicevolution:block/potentiometer"
+    },
     "facing=west": {
       "model": "draconicevolution:block/potentiometer",
       "x": 90,
       "y": 270
-    },
-    "facing=east": {
-      "model": "draconicevolution:block/potentiometer",
-      "x": 90,
-      "y": 90
     }
   }
 }

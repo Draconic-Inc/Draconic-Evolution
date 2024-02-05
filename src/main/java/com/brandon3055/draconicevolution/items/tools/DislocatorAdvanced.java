@@ -22,18 +22,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket.RelativeArgument;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -46,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -62,24 +64,27 @@ public class DislocatorAdvanced extends Dislocator {
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
+        return super.onEntityItemUpdate(stack, entity);
     }
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (player.level.isClientSide) {
+        if (player.level().isClientSide) {
             return true;
         }
-        TargetPos location = getTargetPos(stack, player.level);
+        TargetPos location = getTargetPos(stack, player.level());
         int fuel = getFuel(stack);
 
         if (!player.getAbilities().instabuild && fuel <= 0) {
-            messageUser(player, new TranslatableComponent("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
+            messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
             return true;
         }
 
@@ -89,7 +94,7 @@ public class DislocatorAdvanced extends Dislocator {
                     dislocateEntity(stack, player, entity, location);
                 }
             } else {
-                messageUser(player, new TranslatableComponent("dislocate.draconicevolution.player_allow"));
+                messageUser(player, Component.translatable("dislocate.draconicevolution.player_allow"));
             }
             return true;
         }
@@ -100,7 +105,7 @@ public class DislocatorAdvanced extends Dislocator {
 
         if (useFuel(stack, player)) {
             dislocateEntity(stack, player, entity, location);
-            messageUser(player, new TextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
+            messageUser(player, Component.literal(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
         }
 
         return true;
@@ -109,7 +114,7 @@ public class DislocatorAdvanced extends Dislocator {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        TargetPos location = getTargetPos(stack, player.level);
+        TargetPos location = getTargetPos(stack, player.level());
 
         boolean blink = getBlinkMode(stack);
         if (player.isShiftKeyDown() || (location == null && !blink)) {
@@ -128,17 +133,18 @@ public class DislocatorAdvanced extends Dislocator {
 
     @OnlyIn(Dist.CLIENT)
     private void openGui(ItemStack stack, Player player) {
-        Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
+        throw new NotImplementedException("");//TODO
+//        Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
     }
 
     private void handleTeleport(Player player, ItemStack stack, TargetPos targetPos, boolean showFuel) {
         int fuel = getFuel(stack);
         if (!player.getAbilities().instabuild && fuel <= 0) {
-            messageUser(player, new TranslatableComponent("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
+            messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
         } else if (useFuel(stack, player)) {
             dislocateEntity(stack, player, player, targetPos);
             if (showFuel){
-                player.displayClientMessage(new TranslatableComponent("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
+                player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
         }
     }
@@ -148,7 +154,7 @@ public class DislocatorAdvanced extends Dislocator {
             int blinkFuel = stack.getOrCreateTag().getByte("blink_fuel");
             if (blinkFuel <= 0) {
                 if (!useFuel(stack, player)) {
-                    messageUser(player, new TranslatableComponent("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
+                    messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
                     return;
                 }else {
                     blinkFuel = DEConfig.dislocatorBlinksPerPearl;
@@ -157,7 +163,7 @@ public class DislocatorAdvanced extends Dislocator {
             blinkFuel--;
             stack.getOrCreateTag().putByte("blink_fuel", (byte) blinkFuel);
             if (showFuel){
-                player.displayClientMessage(new TranslatableComponent("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
+                player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
         }
 
@@ -165,18 +171,18 @@ public class DislocatorAdvanced extends Dislocator {
         double range = DEConfig.dislocatorBlinkRange;
         Vec3 endVec = playerVec.add(player.getLookAngle().multiply(range, range, range));
         ClipContext context = new ClipContext(playerVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
-        BlockHitResult result = player.level.clip(context);
+        BlockHitResult result = player.level().clip(context);
 
-        player.level.playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.blink, SoundSource.PLAYERS, 1F, 1F);
+        player.level().playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.BLINK.get(), SoundSource.PLAYERS, 1F, 1F);
 
         DraconicNetwork.sendBlinkEffect(player, (float) (playerVec.distanceTo(endVec) / range));
 
         if (result.getType() == HitResult.Type.MISS) {
             if (player.isFallFlying()) { //Maintain momentum if elytra flying
-                player.connection.teleport(endVec.x, endVec.y, endVec.z, player.getYRot(), player.getXRot(), Sets.newHashSet(RelativeArgument.X, RelativeArgument.Y, RelativeArgument.Z));
+                player.connection.teleport(endVec.x, endVec.y, endVec.z, player.getYRot(), player.getXRot(), Sets.newHashSet(RelativeMovement.X, RelativeMovement.Y, RelativeMovement.Z));
                 player.setYHeadRot(player.getYRot());
             } else {
-                TeleportUtils.teleportEntity(player, player.level.dimension(), endVec.x, endVec.y, endVec.z);
+                TeleportUtils.teleportEntity(player, player.level().dimension(), endVec.x, endVec.y, endVec.z);
             }
         } else {
             BlockPos pos = result.getBlockPos().relative(result.getDirection());
@@ -186,14 +192,14 @@ public class DislocatorAdvanced extends Dislocator {
                 case UP:
                     break;
                 default:
-                    if (player.level.getBlockState(pos.below()).isPathfindable(player.level, pos.below(), PathComputationType.AIR)) {
+                    if (player.level().getBlockState(pos.below()).isPathfindable(player.level(), pos.below(), PathComputationType.AIR)) {
                         vec.y -= 1;
                     }
             }
-            TeleportUtils.teleportEntity(player, player.level.dimension(), vec.x, vec.y, vec.z);
+            TeleportUtils.teleportEntity(player, player.level().dimension(), vec.x, vec.y, vec.z);
         }
 
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.blink, SoundSource.PLAYERS, 1F, 1F);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.BLINK.get(), SoundSource.PLAYERS, 1F, 1F);
     }
 
     @Override
@@ -207,20 +213,20 @@ public class DislocatorAdvanced extends Dislocator {
         DislocatorTarget selected = getTargetPos(stack, world);
         int fuel = getFuel(stack);
         if (selected != null) {
-            tooltip.add(new TextComponent(selected.getName()).withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.literal(selected.getName()).withStyle(ChatFormatting.GOLD));
         }
-        tooltip.add(new TranslatableComponent("dislocate.draconicevolution.fuel").append(" " + fuel).withStyle(ChatFormatting.WHITE));
-        tooltip.add(new TranslatableComponent("dislocate.draconicevolution.to_open_gui").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable("dislocate.draconicevolution.fuel").append(" " + fuel).withStyle(ChatFormatting.WHITE));
+        tooltip.add(Component.translatable("dislocate.draconicevolution.to_open_gui").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
 //        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
     }
 
     @Override
     public void generateHudText(ItemStack stack, Player player, List<Component> displayList) {
-        DislocatorTarget location = getTargetPos(stack, player.level);
+        DislocatorTarget location = getTargetPos(stack, player.level());
         if (location != null) {
-            displayList.add(new TextComponent(location.getName()));
+            displayList.add(Component.literal(location.getName()));
         }
-        displayList.add(new TranslatableComponent("dislocate.draconicevolution.fuel").append(" " + getFuel(stack)));
+        displayList.add(Component.translatable("dislocate.draconicevolution.fuel").append(" " + getFuel(stack)));
     }
 
     @Override
@@ -276,7 +282,6 @@ public class DislocatorAdvanced extends Dislocator {
     public void setBlinkMode(ItemStack stack, boolean blink) {
         stack.getOrCreateTag().putBoolean("blink", blink);
     }
-
 
     //Interaction Handling
 
@@ -353,9 +358,9 @@ public class DislocatorAdvanced extends Dislocator {
                 if (selected != null) {
                     DislocatorTarget up = DataUtils.safeGet(list, Math.floorMod(selectIndex - 1, list.size()));
                     DislocatorTarget down = DataUtils.safeGet(list, Math.floorMod(selectIndex + 1, list.size()));
-                    if (up != null) ChatHelper.sendIndexed(player, new TextComponent(up.getName()).withStyle(ChatFormatting.GRAY), 391);
-                    ChatHelper.sendIndexed(player, new TextComponent(ChatFormatting.GREEN + ">" + ChatFormatting.GOLD + selected.getName() + ChatFormatting.GREEN + "<"), 392);
-                    if (down != null) ChatHelper.sendIndexed(player, new TextComponent(down.getName()).withStyle(ChatFormatting.GRAY), 393);
+                    if (up != null) ChatHelper.sendIndexed(player, Component.literal(up.getName()).withStyle(ChatFormatting.GRAY), 391);
+                    ChatHelper.sendIndexed(player, Component.literal(ChatFormatting.GREEN + ">" + ChatFormatting.GOLD + selected.getName() + ChatFormatting.GREEN + "<"), 392);
+                    if (down != null) ChatHelper.sendIndexed(player, Component.literal(down.getName()).withStyle(ChatFormatting.GRAY), 393);
                 }
                 break;
             default:
@@ -392,19 +397,19 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     public static ItemStack findDislocator(Player player) {
-        ItemStack stack = HandHelper.getItem(player, DEContent.dislocator_advanced);
+        ItemStack stack = HandHelper.getItem(player, DEContent.DISLOCATOR_ADVANCED.get());
         if (!stack.isEmpty()) {
             return stack;
         }
 
-        stack = EquipmentManager.findItem(DEContent.dislocator_advanced, player);
+        stack = EquipmentManager.findItem(DEContent.DISLOCATOR_ADVANCED.get(), player);
         if (!stack.isEmpty()) {
             return stack;
         }
 
         for (int i = 0; i < player.getInventory().getContainerSize() - player.getInventory().offhand.size(); i++) {
             stack = player.getInventory().getItem(i);
-            if (stack.getItem() == DEContent.dislocator_advanced) {
+            if (stack.getItem() == DEContent.DISLOCATOR_ADVANCED.get()) {
                 return stack;
             }
         }

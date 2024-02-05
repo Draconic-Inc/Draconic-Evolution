@@ -232,7 +232,7 @@ public class ModuleCfg {
         moduleStats.setComment("All of the values in this file are the defaults as of the time the file was generated.",
                 "If you wish to set custom values you must set the \"override\" field to true then specify your custom values.");
         moduleStats.syncTagToClient();
-        moduleStats.onSync((configTag, syncType) -> DEModules.moduleItemMap.keySet().forEach(BaseModule::reloadData));
+        moduleStats.onSync((configTag, syncType) -> DEModules.REGISTRY.getValues().forEach(e -> ((BaseModule<?>) e).reloadData()));
     }
 
     public static void saveStateConfig(){
@@ -256,7 +256,7 @@ public class ModuleCfg {
     }
 
     public static long getModuleLong(Module<?> module, String tagName, long defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue longTag = tag.getValue(tagName).setDefaultLong(defaultValue);
         if (!override) {
@@ -266,7 +266,7 @@ public class ModuleCfg {
     }
 
     public static int getModuleInt(Module<?> module, String tagName, int defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue valueTag = tag.getValue(tagName).setDefaultInt(defaultValue);
         if (!override) {
@@ -276,12 +276,22 @@ public class ModuleCfg {
     }
 
     public static double getModuleDouble(Module<?> module, String tagName, double defaultValue) {
-        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
         boolean override = getOverride(tag);
         ConfigValue valueTag = tag.getValue(tagName).setDefaultDouble(defaultValue);
         if (!override) {
             valueTag.setDouble(defaultValue);
         }
         return valueTag.getDouble();
+    }
+
+    public static boolean getModuleBoolean(Module<?> module, String tagName, boolean defaultValue) {
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(DEModules.REGISTRY.getKey(module)));
+        boolean override = getOverride(tag);
+        ConfigValue valueTag = tag.getValue(tagName).setDefaultBoolean(defaultValue);
+        if (!override) {
+            valueTag.setBoolean(defaultValue);
+        }
+        return valueTag.getBoolean();
     }
 }

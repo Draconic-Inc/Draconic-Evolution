@@ -28,17 +28,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ChunkHolder.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -136,17 +135,19 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     //endregion ======================================
 
     public TileReactorCore(BlockPos pos, BlockState state) {
-        super(DEContent.tile_reactor_core, pos, state);
+        super(DEContent.TILE_REACTOR_CORE.get(), pos, state);
         for (int i = 0; i < componentPositions.length; i++) {
             componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
+        shaderAnimationState.setCCSCS();
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
+        dataManager.setMaxSaveInterval(10);
     }
 
     @Override
     public int getAccessDistanceSq() {
-        return 16*16;
+        return 16 * 16;
     }
 
     //region Update Logic
@@ -154,6 +155,9 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Override
     public void tick() {
 //        if (explosionProcess != null) {
+////            if (explosionProcess.isCalculationComplete()) {
+////                explosionCountdown.set(Math.min(explosionCountdown.get(), 100));
+////            }
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
 //        }
@@ -168,7 +172,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 ////                reactorState.set(ReactorState.WARMING_UP);
 //            } else if (reactorState.get() == ReactorState.WARMING_UP && saturation.get() >= maxSaturation.get() / 3) {
 //                reactorState.set(ReactorState.RUNNING);
-//            }
+//            }e
 ////            shieldCharge.set(maxShieldCharge.get() / 2);
 ////            if (reactorState.get() == ReactorState.RUNNING || saturation.get() > maxSaturation.get() * .1) {
 ////                temperature.set(2000);
@@ -178,12 +182,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 //        }
 
 
-
-//        reactorState.set(ReactorState.COLD);
-//        if (explosionProcess != null) {
-//            explosionProcess.isDead = true;
-//            explosionProcess = null;
-//        }
         super.tick();
         updateCoreLogic();
         frameMoveContactPoints = 0;
@@ -409,16 +407,11 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
                 ManagedVec3I v = componentPositions[i];
                 if (v.get().sum() > 0) {
                     BlockPos p = getOffsetPos(v.get()).relative(Direction.from3DDataValue(i).getOpposite());
-                    level.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.BlockInteraction.DESTROY);
+                    level.explode((Entity) null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Level.ExplosionInteraction.BLOCK);
                 }
             }
         }
         //endregion ======
-
-        //Worst case it rolls back a second
-        if (tick % 20 == 0) {
-            setChanged();
-        }
     }
 
     public void updateCriticalState() {
@@ -568,7 +561,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     public void onComponentClicked(Player player, TileReactorComponent component) {
         if (!level.isClientSide) {
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
             sendPacketToClient((ServerPlayer) player, output -> output.writePos(component.getBlockPos()), 1);
         }
     }
@@ -576,11 +569,22 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.getInventory(), this);
+        return new ContainerReactor(DEContent.MENU_REACTOR.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override
     public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
+        //Quick work around for the fact that due to recent changes to packet security in BCore client>server packets must go through the container for the tile the player is accessing.
+        if (id == 99) {
+            TileReactorComponent.RSMode mode = TileReactorComponent.RSMode.valueOf(data.readString());
+            BlockPos pos = data.readPos();
+            BlockEntity tile = level.getBlockEntity(pos);
+            if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).tryGetCore() == this) {
+                ((TileReactorComponent) tile).setRSMode(client, mode);
+            }
+            return;
+        }
+
         byte func = data.readByte();
         if (id == 0 && func == ID_CHARGE) {
             chargeReactor();
@@ -593,22 +597,22 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
             BlockPos pos = data.readPos();
             BlockEntity tile = level.getBlockEntity(pos);
             Screen screen = Minecraft.getInstance().screen;
-            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
-                ((GuiReactor) screen).component = (TileReactorComponent) tile;
+            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor.Screen) {
+                ((GuiReactor.Screen) screen).component = (TileReactorComponent) tile;
             }
         }
     }
 
     private void checkPlayerCollision() {
         Player player = BrandonsCore.proxy.getClientPlayer();
-        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(worldPosition)));
+        double distance = Math.min(Utils.getDistance(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistance(new Vec3D(player), Vec3D.getCenter(worldPosition)));
         if (distance < (getCoreDiameter() / 2) + 0.5 && !player.isSpectator()) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
             double offsetX = player.getX() - worldPosition.getX() + 0.5;
@@ -618,7 +622,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             player.push(offsetX * m, offsetY * m, offsetZ * m);
         }
     }
-
 
 
     //endregion ############################################
@@ -693,11 +696,11 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
 
         if (tick % 100 == 0) {
-            double rad = (getCoreDiameter() * 1.05) / 2;
+            int rad = (int) ((getCoreDiameter() * 1.05) / 2);
             Iterable<BlockPos> inRange = BlockPos.betweenClosed(worldPosition.offset(-rad, -rad, -rad), worldPosition.offset(rad + 1, rad + 1, rad + 1));
 
             for (BlockPos p : inRange) {
-                if (p.equals(worldPosition) || Utils.getDistanceAtoB(p.getX(), p.getY(), p.getZ(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) - 0.5 >= rad) {
+                if (p.equals(worldPosition) || Utils.getDistance(p.getX(), p.getY(), p.getZ(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) - 0.5 >= rad) {
                     continue;
                 }
 
@@ -862,7 +865,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         LogHelper.dev("Reactor: Validate Structure");
         for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
             BlockPos pos = getOffsetPos(componentPositions[facing.get3DDataValue()].get());
-            if (!Utils.isAreaLoaded(level, pos, FullChunkStatus.TICKING)) {
+            if (!level.isLoaded(pos)) {
                 return true;
             }
 
@@ -907,7 +910,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
         Vec3D vec = Vec3D.getCenter(worldPosition);
         level.removeBlock(worldPosition, false);
-        level.explode(null, vec.x, vec.y, vec.z, 8, Explosion.BlockInteraction.BREAK);
+        level.explode(null, vec.x, vec.y, vec.z, 8, Level.ExplosionInteraction.BLOCK);
         int c = 25 + level.random.nextInt(25);
         for (int i = 0; i < c; i++) {
             FallingBlockEntity entity = FallingBlockEntity.fall(level, vec.getPos(), lava);
@@ -1032,8 +1035,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             double z = Math.sin(direction);
 
             BlockPos p = pos.getPos();
-            if (world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) {
-                while ((world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) && p.getY() > 0) {
+            if (world.isEmptyBlock(p) || world.getBlockState(p).is(DEContent.REACTOR_CORE.get())) {
+                while ((world.isEmptyBlock(p) || world.getBlockState(p).is(DEContent.REACTOR_CORE.get())) && p.getY() > 0) {
                     p = p.below();
                 }
             } else {
@@ -1108,7 +1111,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             return shieldActive;
         }
 
-        @OnlyIn(Dist.CLIENT)
+        @OnlyIn (Dist.CLIENT)
         public String localize() {
             ChatFormatting[] colours = {ChatFormatting.RED, ChatFormatting.DARK_AQUA, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.LIGHT_PURPLE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_RED};
             return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");

@@ -3,12 +3,11 @@ package com.brandon3055.draconicevolution.items;
 import com.brandon3055.brandonscore.integration.PIHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -42,12 +41,12 @@ public class InfoTablet extends Item {
             PIHelper.openMod(null, DraconicEvolution.MODID);
         } else {
             Player player = Minecraft.getInstance().player;
-            MutableComponent message = new TextComponent("Project Intelligence is required to view DE documentation. ").withStyle(ChatFormatting.RED);
-            MutableComponent link = new TextComponent("[Click here to view curse page]").withStyle(ChatFormatting.BLUE);
+            MutableComponent message = Component.literal("Project Intelligence is required to view DE documentation. ").withStyle(ChatFormatting.RED);
+            MutableComponent link = Component.literal("[Click here to view curse page]").withStyle(ChatFormatting.BLUE);
             link.setStyle(link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/project-intelligence")));
-            link.setStyle(link.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("https://www.curseforge.com/minecraft/mc-mods/project-intelligence"))));
+            link.setStyle(link.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("https://www.curseforge.com/minecraft/mc-mods/project-intelligence"))));
             message.append(link);
-            player.sendMessage(message, Util.NIL_UUID);
+            player.sendSystemMessage(message);
         }
     }
 }

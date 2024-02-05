@@ -1,6 +1,21 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/block",
   "textures": {
-    "all": "draconicevolution:block/overworld_draconium_ore"
+    "particle": "minecraft:block/stone"
+  },
+  "loader": "forge:multi-layer",
+  "layers": {
+    "solid": {
+      "parent": "minecraft:block/cube_all",
+      "textures": {
+        "all": "minecraft:block/stone"
+      }
+    },
+    "cutout_mipped": {
+      "parent": "minecraft:block/cube_all",
+      "textures": {
+        "all": "draconicevolution:block/draconium_ore_overlay"
+      }
+    }
   }
 }

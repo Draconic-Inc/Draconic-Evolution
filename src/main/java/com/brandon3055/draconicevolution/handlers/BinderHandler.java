@@ -6,15 +6,14 @@ import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Matrix4;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
+import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
@@ -25,7 +24,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +60,7 @@ public class BinderHandler {
         if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
             bind(binder, blockClicked);
             if (world.isClientSide) {
-                ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), 99);
                 player.swing(hand);
             }
             return true;
@@ -70,7 +69,7 @@ public class BinderHandler {
         //If the tool is not bound but the player clicked on a linkable block then give them a hint.
         //Note: We don't want to do this if they did not click on a linkable block because that would break other mods that implement ICrystalBinder in their tools.
         if (tile instanceof ICrystalLink && !isBound) {
-            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.tool_not_bound").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.tool_not_bound").withStyle(ChatFormatting.RED), 99);
             return true;
         }
 
@@ -78,7 +77,7 @@ public class BinderHandler {
         if (isBound) {
             BlockPos boundLinkable = getBound(binder);
             if (boundLinkable.equals(blockClicked)) {
-                ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_to_self").withStyle(ChatFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_to_self").withStyle(ChatFormatting.RED), 99);
                 return true;
             }
             BlockEntity boundTile = world.getBlockEntity(boundLinkable);
@@ -87,7 +86,7 @@ public class BinderHandler {
                     player.swing(hand);
                 }
             } else {
-                ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.bound_to_invalid").withStyle(ChatFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.bound_to_invalid").withStyle(ChatFormatting.RED), 99);
             }
             return true;
         }
@@ -111,7 +110,7 @@ public class BinderHandler {
     public static boolean clearBinder(Player player, @Nonnull ItemStack stack) {
         if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
             stack.getTag().remove(ICrystalBinder.BINDER_TAG);
-            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.pos_cleared"), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_cleared"), 99);
             return true;
         }
         return false;
@@ -140,10 +139,9 @@ public class BinderHandler {
             shape = Shapes.block();
         }
 
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = com.brandon3055.brandonscore.client.render.RenderUtils.getGuiBuffers();
 
         Cuboid6 cuboid6 = new Cuboid6(shape.bounds());
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();
@@ -151,7 +149,7 @@ public class BinderHandler {
         CCRenderState ccrs = CCRenderState.instance();
         mat.translate((double) pos.getX() - projectedX, (double) pos.getY() - projectedY, (double) pos.getZ() - projectedZ);
 
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiElement.transColourType), mat);
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(DERenderTypes.TRANS_COLOUR_TYPE), mat);
         RenderUtils.bufferCuboidSolid(builder, cuboid6, valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
         ccrs.draw();
 
@@ -161,7 +159,7 @@ public class BinderHandler {
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
+        getter.endBatch();
     }
 
     private static CCModel modelForAABB(AABB aabb) {

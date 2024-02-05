@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class FusionRecipe implements IFusionRecipe {
 
-    private ResourceLocation id;
+    private final ResourceLocation id;
     private final ItemStack result;
     private final Ingredient catalyst;
     private final long totalEnergy;
@@ -69,7 +69,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack assemble(IFusionInventory inv) {
+    public ItemStack assemble(IFusionInventory inv, RegistryAccess registryAccess) {
         ItemStack stack = result.copy();
         if (stack.getItem() instanceof IFusionDataTransfer){
             ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
@@ -78,7 +78,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return result;
     }
 
@@ -89,7 +89,7 @@ public class FusionRecipe implements IFusionRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return DraconicAPI.FUSION_RECIPE_SERIALIZER;
+        return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
     }
 
     public static class FusionIngredient implements IFusionIngredient {
@@ -123,20 +123,20 @@ public class FusionRecipe implements IFusionRecipe {
         }
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FusionRecipe> {
+    public static class Serializer implements RecipeSerializer<FusionRecipe> {
         @Override
         public FusionRecipe fromJson(ResourceLocation id, JsonObject json) {
             ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
-            Ingredient catalyst = CraftingHelper.getIngredient(GsonHelper.getAsJsonObject(json, "catalyst"));
+            Ingredient catalyst = CraftingHelper.getIngredient(GsonHelper.getAsJsonObject(json, "catalyst"), false);
 
             List<FusionIngredient> fusionIngredients = new ArrayList<>();
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             for (JsonElement element : ingredients) {
                 Ingredient ingredient;
                 if (element.isJsonObject() && element.getAsJsonObject().has("ingredient")) {
-                    ingredient = CraftingHelper.getIngredient(element.getAsJsonObject().get("ingredient"));
+                    ingredient = CraftingHelper.getIngredient(element.getAsJsonObject().get("ingredient"), false);
                 } else {
-                    ingredient = CraftingHelper.getIngredient(element);
+                    ingredient = CraftingHelper.getIngredient(element, false);
                 }
                 boolean isConsumed = !element.isJsonObject() || GsonHelper.getAsBoolean(element.getAsJsonObject(), "consume", true);
                 fusionIngredients.add(new FusionIngredient(ingredient, isConsumed));

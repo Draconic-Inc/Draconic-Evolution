@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.shader;
 
 import codechicken.lib.render.shader.CCUniform;
+import com.brandon3055.brandonscore.client.shader.BCShader;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,7 +11,7 @@ import java.util.Objects;
 /**
  * Created by covers1624 on 1/10/22.
  */
-public final class ToolShader extends DEShader<ToolShader> {
+public final class ToolShader extends BCShader<ToolShader> {
 
     private CCUniform uv1OverrideUniform;
     private CCUniform uv2OverrideUniform;
@@ -17,7 +19,7 @@ public final class ToolShader extends DEShader<ToolShader> {
     private CCUniform baseColorUniform;
 
     public ToolShader(String path, VertexFormat format) {
-        super(path, format);
+        super(new ResourceLocation(DraconicEvolution.MODID, path), format);
     }
 
     public ToolShader(ResourceLocation location, VertexFormat format) {

@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.machines;
 import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -11,7 +11,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -38,7 +36,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingInjector extends BlockBCore implements IHudBlock, EntityBlock {
+public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static VoxelShape SHAPE_DOWN = Shapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
@@ -53,7 +51,7 @@ public class CraftingInjector extends BlockBCore implements IHudBlock, EntityBlo
         super(properties);
         this.techLevel = techLevel;
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
-        setBlockEntity(() -> DEContent.tile_crafting_injector, false);
+        setBlockEntity(DEContent.TILE_CRAFTING_INJECTOR::get, false);
     }
 
     public TechLevel getTechLevel() {
@@ -100,7 +98,7 @@ public class CraftingInjector extends BlockBCore implements IHudBlock, EntityBlo
 
         if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
-            ChatHelper.sendIndexed(player, new TranslatableComponent("fusion_inj.draconicevolution." + (craftingPedestal.singleItem.get() ? "single_item" : "multi_item")), 98);
+            ChatHelper.sendIndexed(player, Component.translatable("fusion_inj.draconicevolution." + (craftingPedestal.singleItem.get() ? "single_item" : "multi_item")), 98);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return InteractionResult.SUCCESS;
         }
@@ -146,7 +144,7 @@ public class CraftingInjector extends BlockBCore implements IHudBlock, EntityBlo
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof TileFusionCraftingInjector) {
             boolean single = ((TileFusionCraftingInjector) te).singleItem.get();
-            displayList.add(new TranslatableComponent("fusion_inj.draconicevolution." + (single ? "single_item" : "multi_item")).withStyle(ChatFormatting.ITALIC, ChatFormatting.GOLD));
+            displayList.add(Component.translatable("fusion_inj.draconicevolution." + (single ? "single_item" : "multi_item")).withStyle(ChatFormatting.ITALIC, ChatFormatting.GOLD));
         }
     }
 }

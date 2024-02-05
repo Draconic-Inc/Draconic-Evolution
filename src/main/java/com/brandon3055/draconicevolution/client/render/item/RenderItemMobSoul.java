@@ -1,19 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.math.MathHelper;
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -91,29 +92,28 @@ public class RenderItemMobSoul implements IItemRenderer {
 //    }
 
     @Override
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        Entity mob = DEContent.mob_soul.getRenderEntity(stack);
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+        Entity mob = DEContent.MOB_SOUL.get().getRenderEntity(stack);
         if (brokenMobs.contains(mob)) return;
-
-//        mStack.translate(0.5, -0.5, 0.5);
 
         float scale = 1F / Math.max(mob.getBbWidth(), mob.getBbHeight());
         mStack.translate(0.5, 0, 0.5);
         mStack.scale(scale, scale, scale);
 
-        if (transformType != ItemTransforms.TransformType.GROUND && transformType != ItemTransforms.TransformType.FIXED) {
-            mStack.mulPose(new Quaternion(new Vector3f(1, 0, -0.5F), (float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 50F) * 15F, true));
-            mStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) * 3, true));
+        if (transformType != ItemDisplayContext.GROUND && transformType != ItemDisplayContext.FIXED) {
+            float rotA = (float) Math.sin((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 50F) * 15F;
+            float rotB = (TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) * 3;
+
+            mStack.mulPose(new Quaternionf().rotationXYZ(1 * rotA * (float) MathHelper.torad, 0, -0.5F * rotA * (float) MathHelper.torad));
+            mStack.mulPose(new Quaternionf().rotationXYZ(0, 1 * rotB * (float) MathHelper.torad, 0));
         }
 
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
         manager.render(mob, 0, 0, 0, 0, 0, mStack, getter, packedLight);
-
-
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

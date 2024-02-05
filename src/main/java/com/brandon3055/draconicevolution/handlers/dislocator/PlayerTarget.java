@@ -21,7 +21,7 @@ public class PlayerTarget extends DislocatorTarget {
     private UUID playerID;
 
     public PlayerTarget(Player player) {
-        super(player.level.dimension());
+        super(player.level().dimension());
         this.playerID = player.getUUID();
     }
 
@@ -46,7 +46,7 @@ public class PlayerTarget extends DislocatorTarget {
     protected ServerLevel getTargetWorld(MinecraftServer server) {
         ServerPlayer player = server.getPlayerList().getPlayer(playerID);
         if (player != null) {
-            return (ServerLevel) player.level;
+            return (ServerLevel) player.level();
         }
         return super.getTargetWorld(server);
     }

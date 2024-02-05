@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +28,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
     public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_NBT_SYNC_TILE));
 
     public TilePotentiometer(BlockPos pos, BlockState state) {
-        super(DEContent.tile_potentiometer, pos, state);
+        super(DEContent.TILE_POTENTIOMETER.get(), pos, state);
     }
 
     public Direction getRotation() {
@@ -66,7 +66,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
         }
 
         if (level.isClientSide) {
-            ChatHelper.sendIndexed(player, new TextComponent(String.valueOf(power.get())), 41);
+            ChatHelper.sendIndexed(player, Component.literal(String.valueOf(power.get())), 41);
         }
         else {
             level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));

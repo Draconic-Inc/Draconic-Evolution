@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -23,8 +23,10 @@ import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +63,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host;
-        if (this == DEContent.capacitor_creative) {
+        if (this == DEContent.CAPACITOR_CREATIVE.get()) {
             host = new ModuleHostImpl(techLevel, 1, 1, "capacitor", ModuleCfg.removeInvalidModules);
         } else {
             host = new ModuleHostImpl(techLevel, ModuleCfg.capacitorWidth(techLevel), ModuleCfg.capacitorHeight(techLevel), "capacitor", ModuleCfg.removeInvalidModules);
@@ -81,7 +83,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     @Override
     public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         MultiCapabilityProvider prov = IModularItem.super.initCapabilities(stack, nbt);
-        if (this == DEContent.capacitor_creative && prov != null) {
+        if (this == DEContent.CAPACITOR_CREATIVE.get() && prov != null) {
             ModuleHost host = prov.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(WTFException::new);
             host.getModuleCategories().remove(ModuleCategory.ENERGY);
         }
@@ -91,8 +93,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     @Nullable
     @Override
     public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        if (this == DEContent.capacitor_creative) {
-            return new ModularOPStorage(host, Long.MAX_VALUE, Long.MAX_VALUE, true) {
+        if (this == DEContent.CAPACITOR_CREATIVE.get()) {
+            return new ModularOPStorage(host, Long.MAX_VALUE, Long.MAX_VALUE) {
                 @Override
                 public long getOPStored() {
                     return Long.MAX_VALUE / 2;
@@ -112,13 +114,15 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
                 public boolean canExtract() {
                     return true;
                 }
-            };
+            }.setIOMode(true, true);
         }
-        return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel), true);
+        return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel)).setIOMode(true, true);
     }
 
     @Override
     public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
+        IModularItem.super.handleTick(stack, entity, slot, inEquipModSlot);
+
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
         stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).ifPresent(props -> {
@@ -166,7 +170,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     public void updateEnergy(ItemStack capacitor, LivingEntity player, List<ItemStack> stacks) {
         capacitor.getCapability(DECapabilities.OP_STORAGE).ifPresent(e -> {
-            IOPStorageModifiable storage = (IOPStorageModifiable) e;
+            IOPStorage storage = (IOPStorage)e;
             for (ItemStack stack : stacks) {
                 if (EnergyUtils.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
@@ -212,11 +216,14 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
+        return super.onEntityItemUpdate(stack, entity);
     }
 }

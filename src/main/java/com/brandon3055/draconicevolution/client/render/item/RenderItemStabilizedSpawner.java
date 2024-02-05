@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -8,7 +9,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -16,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class RenderItemStabilizedSpawner implements IItemRenderer {
 
-    private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.core_draconium), new ItemStack(DEContent.core_wyvern), new ItemStack(DEContent.core_awakened), new ItemStack(DEContent.core_chaotic)};
+    private static ItemStack[] CORE_RENDER_ITEMS = new ItemStack[]{new ItemStack(DEContent.CORE_DRACONIUM.get()), new ItemStack(DEContent.CORE_WYVERN.get()), new ItemStack(DEContent.CORE_AWAKENED.get()), new ItemStack(DEContent.CORE_CHAOTIC.get())};
     private BakedModel baseModel;
 
     public RenderItemStabilizedSpawner() {
@@ -42,12 +45,12 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
     //endregion
 
     @Override
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
 
     }
 
     @Override
-    public ModelState getModelTransform() {
+    public @Nullable PerspectiveModelState getModelState() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

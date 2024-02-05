@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 18/4/20.
@@ -17,12 +18,14 @@ public abstract class ModuleContext {
 //        return moduleHost;
 //    }
 
-    public abstract IOPStorageModifiable getOpStorage();
+    @Nullable
+    public abstract IOPStorage getOpStorage();
 
     public abstract Type getType();
 
     public enum Type {
         ITEM_STACK,
-        TILE_ENTITY;
+        TILE_ENTITY,
+        LIMITED;
     }
 }

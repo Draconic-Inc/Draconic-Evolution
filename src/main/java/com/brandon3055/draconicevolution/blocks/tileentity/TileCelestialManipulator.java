@@ -1,48 +1,59 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.IChangeListener;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileCelestialManipulator extends TileBCore implements IChangeListener {
+public class TileCelestialManipulator extends TileBCore implements IChangeListener, MenuProvider, IInteractTile {
 
-    public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool weatherToggleRunning = register(new ManagedBool("weather_toggle_running", DataFlags.SYNC_TILE));
     public final ManagedBool timeWarpRunning = register(new ManagedBool("time_warp_running", DataFlags.SYNC_TILE));
@@ -54,11 +65,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     public boolean rain = false;
     public long targetTime;
 
-    public OPStorage opStorage = new OPStorage(8000000, 4000000, 4000000);
+    public OPStorage opStorage = new ModularOPStorage(this, 8000000, 4000000, 4000000);
 
     public TileCelestialManipulator(BlockPos pos, BlockState state) {
-        super(DEContent.tile_celestial_manipulator, pos, state);
+        super(DEContent.TILE_CELESTIAL_MANIPULATOR.get(), pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        weatherMode.setCCSCS();
     }
 
     @Override
@@ -85,23 +97,21 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
             if (level.isClientSide) {
                 updateSunEffect();
             }
-//            else {
-//                energyStored.value = energyStorage.getEnergyStored();
-//                energyStored.detectAndSendChanges(this, null, false);
-//            }
-
             if (timer > 100) {
                 if (opStorage.getEnergyStored() > 320) {
                     int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
-                    opStorage.extractEnergy(ticks * 320, false);
-                    ((ServerLevelData) level.getLevelData()).setGameTime(level.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
-                }
-
-                if (!level.isClientSide) {
-                    if (level.getGameTime() >= targetTime) {
-                        stopTimeWarp();
+                    if (level.isClientSide) {
+                        ClientLevel cLevel = (ClientLevel) level;
+                        cLevel.setDayTime(cLevel.getDayTime() + ticks);
+                    } else {
+                        ServerLevel sLevel = (ServerLevel) level;
+                        sLevel.setDayTime(sLevel.getDayTime() + ticks);
+                        opStorage.extractEnergy(ticks * 320, false);
                     }
+                }
+                if (!level.isClientSide && level.getDayTime() >= targetTime) {
+                    stopTimeWarp();
                 }
             }
         } else if (timeWarpStopping.get()) {
@@ -141,7 +151,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         this.rain = rain;
         timer = 0;
         weatherToggleRunning.set(true);
-//        sendPacketToClients(new PacketTileMessage(this, (byte) 0, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
+        //        sendPacketToClients(new PacketTileMessage(this, (byte) 0, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
         active.set(true);
     }
 
@@ -150,11 +160,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         this.targetTime = targetTime;
         timer = 0;
         timeWarpRunning.set(true);
-//        sendPacketToClients(new PacketTileMessage(this, (byte) 1, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
+        //        sendPacketToClients(new PacketTileMessage(this, (byte) 1, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
     }
 
     public void stopTimeWarp() {
-//        sendPacketToClients(new PacketTileMessage(this, (byte) 2, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
+        //        sendPacketToClients(new PacketTileMessage(this, (byte) 2, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
         timeWarpRunning.set(false);
         timeWarpStopping.set(true);
     }
@@ -181,24 +191,18 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         if (active.get()) {
-            sendMessage(new TranslatableComponent("msg.de.alreadyRunning.txt"), player);
+            sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning"), player);
             return;
         }
 
         switch (action) {
-            case "WEATHER_MODE":
-                weatherMode.set(true);
-                return;
-            case "SUN_MODE":
-                weatherMode.set(false);
-                return;
             case "STOP_RAIN":
                 if (!level.isRaining()) {
-                    sendMessage(new TranslatableComponent("msg.de.notRaining.txt"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -207,11 +211,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 return;
             case "START_RAIN":
                 if (level.isRaining()) {
-                    sendMessage(new TranslatableComponent("msg.de.alreadyRaining.txt"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -220,11 +224,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 return;
             case "START_STORM":
                 if (level.isRaining() && level.isThundering()) {
-                    sendMessage(new TranslatableComponent("msg.de.alreadyStorm.txt"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (384000RF)"), player);
+                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-384000);
@@ -232,31 +236,31 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 LogHelper.info("Started storm! Cause: " + worldPosition);
                 return;
             case "SUN_RISE":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(0));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(0));
                 LogHelper.info("Set time to sunrise! Cause: " + worldPosition);
                 break;
             case "MID_DAY":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(5900));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(5900));
                 LogHelper.info("Set time to midday! Cause: " + worldPosition);
                 break;
             case "SUN_SET":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(12000));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(12000));
                 LogHelper.info("Set time to sunset! Cause: " + worldPosition);
                 break;
             case "MOON_RISE":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(13000));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(13000));
                 LogHelper.info("Set time to moonrise! Cause: " + worldPosition);
                 break;
             case "MIDNIGHT":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(17900));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(17900));
                 LogHelper.info("Set time to midnight! Cause: " + worldPosition);
                 break;
             case "MOON_SET":
-                startTimeWarp(level.getGameTime() + calculateTimeTill(22500));
+                startTimeWarp(level.getDayTime() + calculateTimeTill(22500));
                 LogHelper.info("Set time to moonset! Cause: " + worldPosition);
                 break;
             case "SKIP_24":
-                startTimeWarp(level.getGameTime() + 24000);
+                startTimeWarp(level.getDayTime() + 24000);
                 LogHelper.info("Skipped one day! Cause: " + worldPosition);
                 break;
         }
@@ -264,12 +268,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     private void sendMessage(Component message, Player player) {
         if (player != null) {
-            player.sendMessage(message, Util.NIL_UUID);
+            player.sendSystemMessage(message);
         }
     }
 
     private int calculateTimeTill(int time) {
-        int currentTime = (int) (level.getGameTime() % 24000);
+        int currentTime = (int) (level.getDayTime() % 24000);
         return currentTime > time ? (24000 - (currentTime - time)) : time - currentTime;
     }
 
@@ -293,10 +297,10 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         Vec3D vec = Vec3D.getCenter(worldPosition.offset(0, 1, 0));
-        sound = new CelestialModifierSound(DESounds.electricBuzz, worldPosition);
+        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition, level.random);
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
-        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
+        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -327,18 +331,61 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
         Vec3D effectFocus = Vec3D.getCenter(worldPosition).add(0, height, 0);
 
+
+//        if (timer < )
+
+
+        double scaleTime = (timer - expandStart) / (ascendStart - expandStart);
+        if (timer > expandStart && timer < ascendStart) {
+            for (int i = 0; i < 10; i++) {
+                Direction dir = Direction.values()[2 + level.random.nextInt(4)];
+                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                        0, //R
+                        127,  //G
+                        255,  //B
+                        (int) (1F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                        (int) (5D * scaleTime * 100), //Spark scale
+                        10, 0, //Max Age, Additional random age
+                        (int) (0), //Gravity
+                        (int) (1F * 1000), //Friction
+                        1 //Set velocity direct
+                );
+                double speed = 0.3 / 10;
+                Vector3 pos = Vector3.fromTileCenter(this).add(dir.getStepX() * -0.3, 0, dir.getStepZ() * -0.3);
+                level.addParticle(data, pos.x, pos.y, pos.z, speed * dir.getStepX(), 0, speed * dir.getStepZ());
+            }
+        }
+
+        if (timer == ascendStart) {
+            for (int i = 0; i < 100; i++) {
+                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                        0, //R
+                        127,  //G
+                        255,  //B
+                        (int) (5F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                        (int) (100 * 100), //Spark scale
+                        80, 0, //Max Age, Additional random age
+                        (int) (-0.5 * 1000), //Gravity
+                        (int) (1F * 1000) //Friction
+                        //Set velocity direct
+                );
+                Vector3 pos = Vector3.fromTileCenter(this);
+                level.addParticle(data, pos.x, pos.y, pos.z, 0.5 * level.random.nextGaussian(), 0, 0.5 * level.random.nextGaussian());
+            }
+        }
+
+
         if (timer == riseEnd) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 1F, false);
+//            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 1F, false);
         } else if (timer == ascendStart) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 2F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
-//                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
-//                    particle.setScale(2);
+                    //                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
+                    //                    particle.setScale(2);
                     //TODO particles
-//                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
-                }
-                catch (Exception e) {
+                    //                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -370,7 +417,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         if (timer >= 220) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundSource.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.BOOM.get(), SoundSource.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -404,18 +451,18 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESounds.sunDialEffect, worldPosition);
+        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition, level.random);
         sound.updateSound(Vec3D.getCenter(worldPosition), getSoundVolume(), 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void stopSunEffect() {
-//        timeWarpRunning.value = false;
-//        timeWarpStopping.value = true;
-//        if (timer > 100) {
-//            timer = 100;
-//        }
+        timeWarpRunning.set(false);
+        timeWarpStopping.set(true);
+        if (timer > 100) {
+            timer = 100;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -430,15 +477,43 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         Vec3D focus = Vec3D.getCenter(worldPosition).add(0, 5.5 * depProg, 0);
         sound.updateSound(focus, (float) depProg, 0.5F + (float) depProg);
 
-        if (timer % 4 == 0) {
-            for (int i = 0; i < (timer % 20 <= 10 ? 10 : 2); i++) {
-                //TODO particles
-                //                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(world, focus, effects.get(i % 2)), 128, true);
-            }
-        }
+//		if (timer % 4 == 0) {
+//			for (int i = 0; i < (timer % 20 <= 10 ? 10 : 2); i++) {
+//				//TODO particles
+//				//                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerCelestialManipulator.SubParticle2(world, focus, effects.get(i % 2)), 128, true);
+//			}
+//		}
+
+        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                255, //R
+                127,  //G
+                0,  //B
+                (int) (1.2F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.5F * 100), //Spark scale
+                30, 10, //Max Age, Additional random age
+                (int) (0) //Gravity
+        );
+        Vector3 pos = Vector3.fromTileCenter(this);
+        level.addParticle(data, pos.x, pos.y, pos.z, 0.002D, 0.04, 0.002D);
+
+        Direction dir = Direction.values()[2 + level.random.nextInt(4)];
+        data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                255, //R
+                127,  //G
+                255,  //B
+                (int) (1F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.5F * 100), //Spark scale
+                10, 0, //Max Age, Additional random age
+                (int) (0), //Gravity
+                (int) (1F * 1000), //Friction
+                1 //Set velocity direct
+        );
+        double speed = 0.3 / 10;
+        pos = Vector3.fromTileCenter(this).add(dir.getStepX() * -0.3, 0, dir.getStepZ() * -0.3);
+        level.addParticle(data, pos.x, pos.y, pos.z, speed * dir.getStepX(), 0, speed * dir.getStepZ());
 
 
-        double rotation = (level.getGameTime() % 24000) / 24000D;
+        double rotation = (level.getDayTime() % 24000) / 24000D;
         double offset;
         double offsetX;
         double offsetY;
@@ -489,10 +564,23 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
-//        SubParticle particle = new SubParticle(world, Vec3D.getCenter(pos));
-//        particle.setScale(0.2F);
+        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                76, //R
+                0,  //G
+                255,  //B
+                (int) (0.4F * (level.random.nextFloat() + 0.1) * 100), //Scale
+                (int) (0.15F * 100), //Spark scale
+                30, 10, //Max Age, Additional random age
+                (int) (0) //Gravity
+        );
+        Vector3 pos = Vector3.fromTileCenter(this);
+        level.addParticle(data, pos.x, pos.y, pos.z, 0.002D, 0.01, 0.002D);
+
+
+        //        SubParticle particle = new SubParticle(world, Vec3D.getCenter(pos));
+        //        particle.setScale(0.2F);
         //TODO particles
-//        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
+        //        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
         if (effects != null) {
             effects = null;
         }
@@ -502,28 +590,28 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     public void renderEffects(float partialTicks) {
         if (effects != null) {
             if (weatherToggleRunning.get()) {
-//                ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
+                //                ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
             } else {
-//                ResourceHelperDE.bindTexture(DETextures.CELESTIAL_PARTICLE);
+                //                ResourceHelperDE.bindTexture(DETextures.CELESTIAL_PARTICLE);
             }
 
             Tesselator tessellator = Tesselator.getInstance();
 
-//            //Pre-Render
-//            RenderSystem.enableBlend();
-//            RenderSystem.disableLighting();
-//            RenderSystem.depthMask(true);
-//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
-//
-//            for (EffectTrackerCelestialManipulator effect : effects) {
-//                effect.renderEffect(tessellator, partialTicks);
-//            }
-//
-//            //Post-Render
-//            RenderSystem.disableBlend();
-//            RenderSystem.enableLighting();
-//            RenderSystem.depthMask(true);
-//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+            //            //Pre-Render
+            //            RenderSystem.enableBlend();
+            //            RenderSystem.disableLighting();
+            //            RenderSystem.depthMask(true);
+            //            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+            //
+            //            for (EffectTrackerCelestialManipulator effect : effects) {
+            //                effect.renderEffect(tessellator, partialTicks);
+            //            }
+            //
+            //            //Post-Render
+            //            RenderSystem.disableBlend();
+            //            RenderSystem.enableLighting();
+            //            RenderSystem.depthMask(true);
+            //            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
     }
 
@@ -556,5 +644,19 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     private float getSoundVolume() {
         return DEOldConfig.disableLoudCelestialManipulator ? 1 : 10;
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
+        return new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), currentWindowIndex, player.getInventory(), this);
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+        }
+        return true;
     }
 }

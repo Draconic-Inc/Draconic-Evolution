@@ -67,11 +67,11 @@ public class BombardPlayerPhase extends Phase {
                 double targetRelY = targetPos.y - headY;
                 double targetRelZ = targetPos.z - headZ;
                 if (!guardian.isSilent()) {
-                    BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+                    BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
                 }
-                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
+                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level(), this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
                 projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
-                guardian.level.addFreshEntity(projectile);
+                guardian.level().addFreshEntity(projectile);
             }
         }
 

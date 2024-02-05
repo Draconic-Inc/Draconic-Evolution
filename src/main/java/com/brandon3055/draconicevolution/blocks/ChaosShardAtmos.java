@@ -2,15 +2,11 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -20,12 +16,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class ChaosShardAtmos extends BlockBCore {
     public ChaosShardAtmos() {
-        super(Properties.of(Material.AIR).randomTicks().noCollission());
+        super(Properties.of().air().randomTicks().noCollission());
 
     }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
 //    @Override
 //    public void updateTick(World world, BlockPos pos, BlockState state, Random rand) {

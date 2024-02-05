@@ -3,9 +3,8 @@ package com.brandon3055.draconicevolution.entity;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.lib.DEDamageSources;
+import com.brandon3055.draconicevolution.init.DEDamage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -17,8 +16,6 @@ import java.util.Random;
  * Created by brandon3055 on 12/8/2015.
  */
 public class ProcessChaosImplosion implements IProcess {
-
-    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().bypassArmor().bypassMagic();
 
     private Level world;
     private int xCoord;
@@ -46,7 +43,7 @@ public class ProcessChaosImplosion implements IProcess {
 
         for (int x = xCoord - size; x < xCoord + size; x++) {
             for (int z = zCoord - size; z < zCoord + size; z++) {
-                double dist = Utils.getDistanceAtoB(x, z, xCoord, zCoord);
+                double dist = Utils.getDistance(x, z, xCoord, zCoord);
                 if (dist < OD && dist >= ID) {
                     float tracePower = power - (float) (expansion / 10D);
                     tracePower *= 1F + ((random.nextFloat() - 0.5F) * 0.2);
@@ -68,15 +65,15 @@ public class ProcessChaosImplosion implements IProcess {
 
     public class ChaosImplosionTrace implements IProcess {
 
-        private Level world;
+        private Level level;
         private int xCoord;
         private int yCoord;
         private int zCoord;
         private float power;
         private Random random;
 
-        public ChaosImplosionTrace(Level world, int x, int y, int z, float power, Random random) {
-            this.world = world;
+        public ChaosImplosionTrace(Level level, int x, int y, int z, float power, Random random) {
+            this.level = level;
             this.xCoord = x;
             this.yCoord = y;
             this.zCoord = z;
@@ -90,26 +87,26 @@ public class ProcessChaosImplosion implements IProcess {
             float energy = power * 10;
 
             for (int y = yCoord; y >= 0 && energy > 0; y--) {
-                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
-                for (Entity entity : entities) entity.hurt(ProcessChaosImplosion.chaosImplosion, power * 100);
+                List<Entity> entities = level.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                for (Entity entity : entities) entity.hurt(DEDamage.chaosImplosion(level), power * 100);
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
-                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
+                if (energy >= 0) level.removeBlock(new BlockPos(xCoord, y, zCoord), false);
                 energy -= 0.5F + (0.1F * (yCoord - y));
             }
 
             energy = power * 20;
             yCoord++;
             for (int y = yCoord; y < 255 && energy > 0; y++) {
-                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = level.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 
                 for (Entity entity : entities) {
-                    entity.hurt(DEDamageSources.CHAOS_ISLAND_IMPLOSION, power * 100);
+                    entity.hurt(DEDamage.chaosImplosion(level), power * 100);
                 }
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
-                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
+                if (energy >= 0) level.removeBlock(new BlockPos(xCoord, y, zCoord), false);
 
                 energy -= 0.5F + (0.1F * (y - yCoord));
             }

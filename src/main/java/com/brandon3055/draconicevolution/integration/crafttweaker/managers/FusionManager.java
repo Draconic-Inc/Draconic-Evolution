@@ -29,6 +29,6 @@ public class FusionManager implements IRecipeManager {
 
     @Override
     public RecipeType<IFusionRecipe> getRecipeType() {
-        return DraconicAPI.FUSION_RECIPE_TYPE;
+        return DraconicAPI.FUSION_RECIPE_TYPE.get();
     }
 }

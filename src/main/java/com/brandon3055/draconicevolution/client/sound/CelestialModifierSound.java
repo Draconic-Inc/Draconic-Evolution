@@ -6,6 +6,7 @@ import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 
 /**
  * Created by brandon3055 on 24/06/2016.
@@ -15,8 +16,8 @@ public class CelestialModifierSound extends SimpleSoundInstance implements Ticka
     private int timer = 0;
     private boolean done = false;
 
-    public CelestialModifierSound(SoundEvent soundEvent, BlockPos pos) {
-        super(soundEvent, SoundSource.BLOCKS, 1, 1, pos);
+    public CelestialModifierSound(SoundEvent soundEvent, BlockPos pos, RandomSource random) {
+        super(soundEvent, SoundSource.BLOCKS, 1, 1, random, pos);
         looping = true;
     }
 

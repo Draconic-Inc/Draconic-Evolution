@@ -29,7 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +56,13 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     public TileItemStackHandler itemHandler = new TileItemStackHandler(MAX_STACKS);
 
     public TilePlacedItem(BlockPos pos, BlockState state) {
-        super(DEContent.tile_placed_item, pos, state);
+        super(DEContent.TILE_PLACED_ITEM.get(), pos, state);
         for (int i = 0; i < MAX_STACKS; i++) {
             rotation[i] = register(new ManagedByte("rotation_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
             isBlock[i] = register(new ManagedBool("is_block_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
-        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
+        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> updatePlacedItem());
     }
 
@@ -125,13 +125,20 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
 
     @Override
     public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (player.level.isClientSide()) return InteractionResult.SUCCESS;
+        if (player.level().isClientSide()) return InteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
         if (!(hit instanceof SubHitBlockHitResult)){
             return InteractionResult.PASS;
         }
 
         int index = ((SubHitBlockHitResult) hit).subHit - 1;
+
+        ItemStack held = player.getItemInHand(hand);
+        if (!held.isEmpty() && held.getItem() == DEContent.CRYSTAL_BINDER.get() && getStacksInOrder().size() == 1) {
+            toolMode.invert();
+            tick();
+            return InteractionResult.SUCCESS;
+        }
 
         if (player.isShiftKeyDown()) {
             if (index >= 0 && index < rotation.length) {

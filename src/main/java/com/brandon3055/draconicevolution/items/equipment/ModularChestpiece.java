@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.client.render.EquippedItemModel;
+import com.brandon3055.brandonscore.items.EquippedModelItem;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
@@ -11,18 +13,16 @@ import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
+import com.brandon3055.draconicevolution.client.model.ModularChestpieceModel;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
-import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,21 +35,20 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.ForgeHooksClient;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment {
+public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment, EquippedModelItem {
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechProperties props) {
-        super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, props);
+        super(ArmorMaterials.DIAMOND, Type.CHESTPLATE, props);
         this.techLevel = props.getTechLevel();
     }
 
@@ -62,8 +61,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     }
 
     @Override
-    public boolean canEquip(LivingEntity livingEntity, String identifier) {
-        if (!identifier.equals("body") || !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity).isEmpty()) {
+    public boolean canEquip(ItemStack stack, LivingEntity livingEntity, String slotID) {
+        if (!slotID.equals("body") || !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity).isEmpty()) {
             return false;
         }
 
@@ -84,7 +83,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             if (speed != null) {
                 Supplier<Double> speedGetter = () -> {
                     SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-                    double maxSpeed = data == null ? 0 : data.getSpeedMultiplier();
+                    double maxSpeed = data == null ? 0 : data.speedMultiplier();
                     if (DEConfig.armorSpeedLimit != -1) {
                         maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
                     }
@@ -99,7 +98,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             if (jump != null) {
                 Supplier<Double> jumpGetter = () -> {
                     JumpData data = host.getModuleData(ModuleTypes.JUMP_BOOST);
-                    return data == null ? 0 : data.getMultiplier();
+                    return data == null ? 0 : data.multiplier();
                 };
 
                 props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
@@ -126,37 +125,31 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private HumanoidModel<?> model;
+//    @Override
+//    @OnlyIn(Dist.CLIENT)
+//    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+//        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
+//    }
 
     @OnlyIn(Dist.CLIENT)
-    private HumanoidModel<?> model_on_armor;
+    private ModularChestpieceModel<?> model;
+
+    @OnlyIn(Dist.CLIENT)
+    private ModularChestpieceModel<?> model_on_armor;
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
-            @Nullable
-            @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-                if (model == null) {
-                    model = new ModularArmorModel(1F, techLevel, false);
-                }
-                return SneakyUtils.unsafeCast(model);
-            }
-        });
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public <A extends HumanoidModel<?>> A getChestPieceModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, boolean onArmor) {
+    public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
+        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        boolean onArmor = slot == null && !chest.isEmpty() && chest.getItem() instanceof ArmorItem;
         if (model == null || model_on_armor == null) {
-            model = new ModularArmorModel(1F, techLevel, false);
-            model_on_armor = new ModularArmorModel(1F, techLevel, true);
+            model = new ModularChestpieceModel<>(techLevel, false);
+            model_on_armor = new ModularChestpieceModel<>(techLevel, true);
         }
-
-        return SneakyUtils.unsafeCast(onArmor ? model_on_armor : model);
+        ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
+        ForgeHooksClient.copyModelProperties(parentModel, activeModel);
+        return activeModel;
     }
-
 
     public static ItemStack getChestpiece(LivingEntity entity) {
         ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
@@ -168,7 +161,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
     @Override
@@ -182,5 +175,20 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     @Override
     public boolean isEnchantable(ItemStack p_41456_) {
         return true;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
     }
 }

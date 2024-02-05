@@ -8,13 +8,10 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -25,7 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.opengl.GL11;
+import org.joml.Vector3f;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -94,7 +91,7 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float dist = 0.2F * (float) Utils.getDistance(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
         float red = 1F;
         float green = tile.getTier() == 1 ? 0.3F : 1F;
@@ -172,27 +169,32 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
 
     public static class FXHandler implements ParticleRenderType {
+        private static final ResourceLocation highlightTexture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
         private ResourceLocation texture;
         private float green;
 
-        public FXHandler(String texture) {
-            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
-            this.green = texture.endsWith(DETextures.ENERGY_BEAM_WYVERN) ? 0.3F : 1F;
+        public FXHandler(ResourceLocation texture) {
+            this.texture = texture;
+            this.green = texture.getPath().contains("energy_beam_wyvern") ? 0.3F : 1F;
         }
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, texture);
+            if (ClientEventHandler.playerHoldingWrench) {
+                RenderSystem.setShaderTexture(0, highlightTexture);
+            } else {
+                RenderSystem.setShaderTexture(0, texture);
+            }
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

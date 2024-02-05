@@ -1,29 +1,27 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.math.MathHelper;
-import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.power.IOTracker;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.multiblock.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
-import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
-import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
 import com.brandon3055.draconicevolution.lib.OPStorageOP;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -32,8 +30,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -43,14 +39,15 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
@@ -65,22 +62,44 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public static final int ADV_STABILIZER_TIER = 5;
     public static final int MAX_STABILIZER_DIST = 16;
 
+    public static final int DEFAULT_FRAME_COLOUR = 0x191919;
+    public static final int DEFAULT_TRIANGLE_COLOUR = 0x660099;
+    public static final int DEFAULT_EFFECT_COLOUR = 0x00f2f2;
+
+    public static final int DEFAULT_FRAME_COLOUR_T8 = 0x191919;
+    public static final int DEFAULT_TRIANGLE_COLOUR_T8 = 0xa52600;
+    public static final int DEFAULT_EFFECT_COLOUR_T8 = 0xff7f00;
+
     public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
     public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE)); //The core structure is valid
     public final ManagedBool stabilizersValid = register(new ManagedBool("stabilizers_valid", SAVE_NBT_SYNC_TILE)); //The stabilizer configuration is valid.
-    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
     public final ManagedPos[] stabilizerPositions = new ManagedPos[4]; //Relative stabilizer positions
 
-    protected OPStorageOP energy = new OPStorageOP(this::getCapacity);
+    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedFloat fillPercent = register(new ManagedFloat("fill_percent", 0, SYNC_TILE)); //Not saved just for rendering.
+    public final ManagedString energyTarget = register(new ManagedString("user_target", SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
+
+    //Custom Rendering
+    public final ManagedBool legacyRender = register(new ManagedBool("legacy_render", false, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedBool customColour = register(new ManagedBool("custom_colour", false, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt frameColour = register(new ManagedInt("frame_colour", DEFAULT_FRAME_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt innerColour = register(new ManagedInt("inner_colour", DEFAULT_TRIANGLE_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt effectColour = register(new ManagedInt("effect_colour", DEFAULT_EFFECT_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+
+    public final ManagedUUID linkUUID = register(new ManagedUUID("link_uuid", (UUID) null, SAVE_NBT));
+
+    public OPStorageOP energy = new OPStorageOP(this::getCapacity);
 
     private MultiBlockDefinition definitionCache = null;
     private MultiBlockBuilder activeBuilder = null;
     private int defCacheLastTier = 1;
 
     public TileEnergyCore(BlockPos pos, BlockState state) {
-        super(DEContent.tile_storage_core, pos, state);
+        super(DEContent.TILE_STORAGE_CORE.get(), pos, state);
+        capManager.setInternalManaged("energy", CapabilityOP.OP, energy).saveTile().syncContainer();
+        energy.setIOTracker(addTickable(new IOTracker()));
+
         for (int i = 0; i < stabilizerPositions.length; i++) {
             stabilizerPositions[i] = register(new ManagedPos("stabilizer_pos_" + i, (BlockPos) null, SAVE_NBT_SYNC_TILE));
         }
@@ -88,6 +107,18 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             stabilizersValid.set(false);
             validateStructure();
         });
+
+        energyTarget.setCCSCS();
+    }
+
+    @Override
+    public void writeExtraNBT(CompoundTag nbt) {
+        super.writeExtraNBT(nbt);
+    }
+
+    @Override
+    public void readExtraNBT(CompoundTag nbt) {
+        super.readExtraNBT(nbt);
     }
 
     @Override
@@ -101,6 +132,12 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                     activeBuilder.updateProcess();
                 }
             }
+
+            if (tier.get() == 8) {
+                fillPercent.set(0F);
+            } else {
+                fillPercent.set(((float) energy.getOPStored() / (float) energy.getMaxOPStored()));
+            }
         }
     }
 
@@ -110,7 +147,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             validateStructure();
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
             return InteractionResult.SUCCESS;
         }
 
@@ -134,7 +171,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_ENERGY_CORE.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override
@@ -166,11 +203,18 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                     continue;
                 }
 
-                BlockState state = level.getBlockState(pos);
-                level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                BlockState originalState = level.getBlockState(pos);
+                //Fixes edge case where core can deactivate without reverting structure blocks,
+                //Only ever happened once due to a crash that is now fixed, but just to be safe...
+                if (originalState.is(DEContent.STRUCTURE_BLOCK.get())) {
+                    deactivateCore();
+                    LOGGER.error("Detected existing structure block when attempting to activate core...");
+                    return;
+                }
+                level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                 BlockEntity tile = level.getBlockEntity(pos);
                 if (tile instanceof TileStructureBlock) {
-                    ((TileStructureBlock) tile).blockName.set(state.getBlock().getRegistryName());
+                    ((TileStructureBlock) tile).blockName.set(ForgeRegistries.BLOCKS.getKey(originalState.getBlock()));
                     ((TileStructureBlock) tile).setController(this);
                 }
             }
@@ -180,6 +224,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             updateStabilizers(true);
             energy.validateStorage();
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, true));
+            linkUUID.set(UUID.randomUUID());
         }
     }
 
@@ -198,11 +243,11 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         }
     }
 
-    //
     public void deactivateCore() {
         if (level.isClientSide) {
             return;
         }
+        linkUUID.set(null);
         level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, false));
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {
@@ -237,6 +282,10 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         }
     }
 
+    public void onRemoved() {
+        releaseStabilizers();
+    }
+
     // ### Validate Multi-block
 
     /**
@@ -255,10 +304,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             deactivateCore();
         }
 
-        if (structureValid) {
-            invalidMessage.set("");
-        }
-
         return structureValid;
     }
 
@@ -270,7 +315,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     private boolean isCoreValidForTier(int tier) {
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {
-            invalidMessage.set("Error loading MultiBlock Definition. (This is probably a bug)");
             DraconicEvolution.LOGGER.error("Unable to find multi block definition for tier " + tier + " energy core. Something is broken...");
             return false;
         }
@@ -393,8 +437,8 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
 //    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
 
-    @Deprecated //Not sure how i'm going to handle this yet
-    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
+//    @Deprecated //Not sure how i'm going to handle this yet
+//    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
 
 //    public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", DataFlags.SYNC_CONTAINER));
 //    public final ManagedDouble outputRate = register(new ManagedDouble("output_rate", DataFlags.SYNC_CONTAINER));
@@ -584,14 +628,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //    //endregion
 //
 //    //region Rendering
-//    public int getColour() {
-//        if (tier.get() == 8) {
-//            return Colour.packRGBA(1F, 0.28F, 0.05F, 1F);
-//        }
-//
-//        float colour = 1F - ((float) getExtendedStorage() / (float) getExtendedCapacity());
-//        return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
-//    }
+
 //
 //    //endregion
 
@@ -609,7 +646,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
     private void attemptAutoBuild(ServerPlayer player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslatableComponent("msg.draconicevolution.energy_core.already_building").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("msg.draconicevolution.energy_core.already_building").withStyle(ChatFormatting.RED));
         } else {
             MultiBlockDefinition definition = getMultiBlockDef();
             if (definition != null) {
@@ -620,6 +657,15 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
     // ### Rendering
 
+    public int getColour() {
+        if (tier.get() == 8) {
+            return Colour.packRGBA(1F, 0.28F, 0.05F, 1F);
+        }
+
+        float colour = 1F - fillPercent.get();
+        return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public AABB getRenderBoundingBox() {
@@ -627,8 +673,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return false;
     }
 

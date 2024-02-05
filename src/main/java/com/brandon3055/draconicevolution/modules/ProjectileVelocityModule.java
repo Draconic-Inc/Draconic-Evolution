@@ -5,13 +5,12 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ProjectileData;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 
 import java.util.*;
@@ -70,22 +69,22 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
                             .filter(e -> e instanceof ProjectileVelocityModule && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
                             .count();
                     if (installed > max) {
-                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslatableComponent("modular_item.draconicevolution.error.module_install_limit"));
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, Component.translatable("modular_item.draconicevolution.error.module_install_limit"));
                     }
                     return null;
                 })//
                 .filter(Objects::nonNull)//
                 .findFirst();
-        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, null));
+        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, (List<Component>)null));
     }
 
     @Override
-    public void addInformation(List<Component> toolTip) {
-        super.addInformation(toolTip);
-        toolTip.add(new TranslatableComponent("module.draconicevolution.max_installable")
+    public void addInformation(List<Component> toolTip, ModuleContext context) {
+        super.addInformation(toolTip, context);
+        toolTip.add(Component.translatable("module.draconicevolution.max_installable")
                 .withStyle(ChatFormatting.GRAY)
                 .append(": ")
-                .append(new TextComponent(String.valueOf(maxInstall))
+                .append(Component.literal(String.valueOf(maxInstall))
                         .withStyle(ChatFormatting.DARK_GREEN)));
     }
 }

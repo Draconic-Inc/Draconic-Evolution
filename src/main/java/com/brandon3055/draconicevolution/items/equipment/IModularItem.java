@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -16,6 +15,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormat
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.crafting.IFusionDataTransfer;
+import com.brandon3055.draconicevolution.api.event.ModularItemInitEvent;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
@@ -31,7 +31,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,11 +43,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.extensions.IForgeItem;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -67,7 +69,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         provider.addCapability(host, "module_host", DECapabilities.MODULE_HOST_CAPABILITY, DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
         ModularOPStorage opStorage = createOPStorage(stack, host);
         if (opStorage != null) {
-            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, CapabilityEnergy.ENERGY);
+            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, ForgeCapabilities.ENERGY);
             host.addCategories(ModuleCategory.ENERGY);
         }
 
@@ -77,7 +79,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
                 props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(DecimalFormatter.PERCENT_1));
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new IntegerProperty("mining_aoe", aoe.getAOE()).range(0, aoe.getAOE()).setFormatter(IntegerFormatter.AOE));
+                    props.add(new IntegerProperty("mining_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(IntegerFormatter.AOE));
                     props.add(new BooleanProperty("aoe_safe", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
                 }
             });
@@ -88,12 +90,13 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             host.addPropertyBuilder(props -> {
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new DecimalProperty("attack_aoe", aoe.getAOE() * 1.5).range(0, aoe.getAOE() * 1.5).setFormatter(DecimalFormatter.AOE_1));
+                    props.add(new DecimalProperty("attack_aoe", aoe.aoe() * 1.5).range(0, aoe.aoe() * 1.5).setFormatter(DecimalFormatter.AOE_1));
                 }
             });
         }
 
         initCapabilities(stack, host, provider);
+        MinecraftForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
         return provider;
     }
 
@@ -107,13 +110,20 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     @OnlyIn(Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("[Modular Item]").withStyle(ChatFormatting.BLUE));
+            tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
+
+        if (DECapabilities.MODULE_HOST_CAPABILITY != null) {
+            LazyOptional<ModuleHost> opt = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+            opt.ifPresent(host -> host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, worldIn, tooltip, flagIn)));
+            opt.ifPresent(host -> host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, worldIn, tooltip, flagIn)));
+        }
+
         EnergyUtils.addEnergyInfo(stack, tooltip);
         if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
-            tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));
+            tooltip.add(Component.translatable("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));
             if (KeyBindings.toolModules != null && KeyBindings.toolModules.getTranslatedKeyMessage() != null) {
-                tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
             }
         }
     }
@@ -150,7 +160,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     default float getDestroySpeed(ItemStack stack, BlockState state) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-        float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
+        float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
         float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
         float propVal = 1F;
@@ -160,7 +170,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             propVal *= propVal; //Make this exponential
         }
 
-        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
+        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
             aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
         }
@@ -211,10 +221,8 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             return amount;
         }
         IOPStorage storage = EnergyUtils.getStorage(stack);
-        if (storage instanceof IOPStorageModifiable) {
-            return ((IOPStorageModifiable) storage).modifyEnergyStored(-amount);
-        } else if (storage != null) {
-            return storage.extractOP(amount, false);
+        if (storage != null) {
+            return storage.modifyEnergyStored(-amount);
         }
         return 0;
     }
@@ -234,5 +242,10 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         float energy = EnergyUtils.getEnergyStored(stack);
         float f = Math.max(0.0F, (energy) / maxEnergy);
         return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    default boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return oldStack.getItem() != newStack.getItem() || slotChanged;
     }
 }

@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "draconicevolution:block/awakened_draconium_block_side",
     "bottom": "draconicevolution:block/awakened_draconium_block",
+    "side": "draconicevolution:block/awakened_draconium_block_side",
     "top": "draconicevolution:block/awakened_draconium_block"
   }
 }

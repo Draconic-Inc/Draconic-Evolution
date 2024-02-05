@@ -6,9 +6,9 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.DEMiscSprites;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.render.EffectLib;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler.IngredFX;
@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
@@ -24,15 +24,22 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static com.brandon3055.draconicevolution.client.AtlasTextureHelper.*;
 
 public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFusionCraftingCore> {
 
@@ -40,7 +47,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
 
     private RenderType particleType = RenderType.create("particle_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexLightmapShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(DEMiscSprites.ATLAS_LOCATION, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
             .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
             .createCompositeState(false)
     );
@@ -64,8 +71,8 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
             mStack.pushPose();
             mStack.translate(0.5, 0.5, 0.5);
             mStack.scale(0.5F, 0.5F, 0.5F);
-            mStack.mulPose(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0, true));
-            mc.getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, packetLight, packetOverlay, mStack, getter, te.posSeed());
+            mStack.mulPose(Axis.XP.rotationDegrees((TimeKeeper.getClientTick() + partialTicks) * 0.8F));
+            mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, getter, te.getLevel(), te.posSeed());
             mStack.popPose();
         }
     }
@@ -75,7 +82,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
         Camera renderInfo = mc.gameRenderer.getMainCamera();
         mStack.translate(0.5, 0.5, 0.5);
 
-        ParticleStatus pStatus = mc.options.particles;
+        ParticleStatus pStatus = mc.options.particles().get();
         double particleSetting = pStatus == ParticleStatus.ALL ? 1 : pStatus == ParticleStatus.DECREASED ? 2 / 3D : 1 / 3D;
         //Total particle allocation for ingredient effects
         int maxParticles = (int) (1000 * particleSetting);
@@ -105,7 +112,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
                 double x = radius * Mth.cos(rotX) * Mth.sin(rotY);
                 double y = radius * Mth.sin(rotX) * Mth.sin(rotY);
                 double z = radius * Mth.cos(rotY);
-                EffectLib.drawParticle(cameraRotation, builder, DEMiscSprites.MIXED_PARTICLE[(TimeKeeper.getClientTick() + rand.nextInt(6423)) % DEMiscSprites.MIXED_PARTICLE.length], 1F, 0, 0, x, y, z, scale, 240);
+                EffectLib.drawParticle(cameraRotation, builder, MIXED_PARTICLE[(TimeKeeper.getClientTick() + rand.nextInt(6423)) % MIXED_PARTICLE.length], 1F, 0, 0, x, y, z, scale, 240);
             }
         }
 
@@ -120,7 +127,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
                     double z = Mth.cos(rot) * 2;
                     double y = Mth.cos(rot + loopOffset) * 1;
                     float scale = 0.1F * (j / 8F);
-                    EffectLib.drawParticle(cameraRotation, builder, DEMiscSprites.ENERGY_PARTICLE[(TimeKeeper.getClientTick() + j) % DEMiscSprites.ENERGY_PARTICLE.length], 106 / 255F, 13 / 255F, 173 / 255F, x, y, z, scale, 240);
+                    EffectLib.drawParticle(cameraRotation, builder, ENERGY_PARTICLE[(TimeKeeper.getClientTick() + j) % ENERGY_PARTICLE.length], 106 / 255F, 13 / 255F, 173 / 255F, x, y, z, scale, 240);
                 }
             }
             if (handler.injectTime > 0 && TimeKeeper.getClientTick() % 5 == 0) {
@@ -157,7 +164,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
             double x = ingred.pos.x + radius * Mth.cos(rotX) * Mth.sin(rotY);
             double y = ingred.pos.y + radius * Mth.sin(rotX) * Mth.sin(rotY);
             double z = ingred.pos.z + radius * Mth.cos(rotY);
-            EffectLib.drawParticle(cameraRotation, builder, DEMiscSprites.ENERGY_PARTICLE[(TimeKeeper.getClientTick() + rand.nextInt(6423)) % DEMiscSprites.ENERGY_PARTICLE.length], 0F, 0.8F + (rand.nextFloat() * 0.2F), 1F, x, y, z, scale, 240);
+            EffectLib.drawParticle(cameraRotation, builder, ENERGY_PARTICLE[(TimeKeeper.getClientTick() + rand.nextInt(6423)) % ENERGY_PARTICLE.length], 0F, 0.8F + (rand.nextFloat() * 0.2F), 1F, x, y, z, scale, 240);
         }
 
         //Charge Conversion Particles
@@ -179,7 +186,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
             pos.normalize();
             pos.multiply(MathUtils.nextFloat() * 0.1875);
             pos.add(ingred.pos);
-            EffectLib.drawParticle(cameraRotation, builder, DEMiscSprites.SPELL_PARTICLE[(rand.nextInt(DEMiscSprites.SPELL_PARTICLE.length) + TimeKeeper.getClientTick()) % DEMiscSprites.SPELL_PARTICLE.length], 0.7F, 0F, 0F, pos.x, pos.y, pos.z, scale * pScale, 240);
+            EffectLib.drawParticle(cameraRotation, builder, SPELL_PARTICLE[(rand.nextInt(SPELL_PARTICLE.length) + TimeKeeper.getClientTick()) % SPELL_PARTICLE.length], 0.7F, 0F, 0F, pos.x, pos.y, pos.z, scale * pScale, 240);
         }
 
 
@@ -197,7 +204,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
                 Vector3 start = ingred.pos.copy().add((0.5 - rand.nextDouble()) * (randOffset * 2), (0.5 - rand.nextDouble()) * (randOffset * 2), (0.5 - rand.nextDouble()) * (randOffset * 2));
                 Vector3 end = new Vector3((0.5 - rand.nextDouble()) * (randOffset * 2), (0.5 - rand.nextDouble()) * (randOffset * 2), (0.5 - rand.nextDouble()) * (randOffset * 2));
                 pos = MathUtils.interpolateVec3(start, end, (anim / 10) % 1D);
-                EffectLib.drawParticle(cameraRotation, builder, DEMiscSprites.SPARK_PARTICLE[(rand.nextInt(DEMiscSprites.SPARK_PARTICLE.length) + TimeKeeper.getClientTick()) % DEMiscSprites.SPARK_PARTICLE.length], 0.7F + ((((float) anim / 10F) % 1F) * 0.3F), 0F, 0F, pos.x, pos.y, pos.z, scale, 240);
+                EffectLib.drawParticle(cameraRotation, builder, SPARK_PARTICLE[(rand.nextInt(SPARK_PARTICLE.length) + TimeKeeper.getClientTick()) % SPARK_PARTICLE.length], 0.7F + ((((float) anim / 10F) % 1F) * 0.3F), 0F, 0F, pos.x, pos.y, pos.z, scale, 240);
             }
         }
     }

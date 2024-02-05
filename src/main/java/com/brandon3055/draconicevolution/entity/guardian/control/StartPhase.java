@@ -109,7 +109,7 @@ public class StartPhase extends Phase {
         float maxAgro = maxAgroLevel * agroMod;
         targetAgroLevel = minAgro + (random.nextFloat() * (maxAgro - minAgro));
         agroLevel = 0;
-        if (guardian.level.getServer() != null) {
+        if (guardian.level().getServer() != null) {
             debug("Start Phase, Target Agro: " + (targetAgroLevel / 20F) + ", Agro: " + (agroLevel / 20F));
         }
     }
@@ -130,7 +130,7 @@ public class StartPhase extends Phase {
 //            return true;
 //        }
 
-        Player closeTarget = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
+        Player closeTarget = guardian.level().getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
 
         //Do close range / evasion strat (25% chance)
         if (closeTarget != null && ((guardian.getShieldPower() < DEConfig.guardianShield) || random.nextFloat() < 0.25F)) {
@@ -143,7 +143,7 @@ public class StartPhase extends Phase {
         SimpleWeightedRandomList<PhaseType<?>> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
 
         Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
-        List<Player> targetOptions = guardian.level.players()
+        List<Player> targetOptions = guardian.level().players()
                 .stream()
                 .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
                 .filter(e -> AGRO_TARGETS.test(guardian, e))
@@ -234,7 +234,7 @@ public class StartPhase extends Phase {
             agroLevel += (targetAgroLevel * 0.5F) * (damage / (DEConfig.guardianHealth / 10F));
         }
         agroModifier += maxAgroModifier * 0.1F;
-        if (guardian.level.getServer() != null) {
+        if (guardian.level().getServer() != null) {
             debug("Agro: " + agroLevel + ", Agro Target: " + targetAgroLevel + ", Modifier: " + agroModifier + " " + ((agroModifier / (float) maxAgroModifier) * 100) + "%");
         }
         return damage;
@@ -251,7 +251,7 @@ public class StartPhase extends Phase {
         } else {
             agroLevel += (targetAgroLevel * 0.25F) * (damage / 10F);
             agroModifier += (maxAgroModifier * 0.05F) * (damage / 10F);
-            if (guardian.level.getServer() != null) {
+            if (guardian.level().getServer() != null) {
                 debug("Agro: " + agroLevel + ", Agro Target: " + targetAgroLevel + ", Modifier: " + agroModifier + " " + ((agroModifier / (float) maxAgroModifier) * 100) + "%");
             }
         }
@@ -262,7 +262,7 @@ public class StartPhase extends Phase {
         if (manager != null) {
             return manager.getTrackedPlayers().size();
         }
-        return guardian.level.getNearbyPlayers(AGRO_TARGETS, guardian, guardian.getBoundingBox().inflate(244)).size();
+        return guardian.level().getNearbyPlayers(AGRO_TARGETS, guardian, guardian.getBoundingBox().inflate(244)).size();
     }
 
     public StartPhase prevAttackFailed() {

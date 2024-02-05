@@ -9,6 +9,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableSet;
@@ -46,7 +47,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore implements EntityBlock {
+public class PlacedItem extends EntityBlockBCore {
     private static final VoxelShape FALLBACK_SHAPE = Shapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
     private static Int2ObjectMap<VoxelShape> SHAPE_CACHE = new Int2ObjectOpenHashMap<>();
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -54,7 +55,7 @@ public class PlacedItem extends BlockBCore implements EntityBlock {
     public PlacedItem(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
-        setBlockEntity(() -> DEContent.tile_placed_item, true);
+        setBlockEntity(DEContent.TILE_PLACED_ITEM::get, true);
     }
 
     private static VoxelShape computeShape(int stackCount, boolean tool, boolean[] isBlock, Direction facing, boolean getCollisionShape) {
@@ -158,9 +159,6 @@ public class PlacedItem extends BlockBCore implements EntityBlock {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
-
-    @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return state.getFluidState().isEmpty();
     }
@@ -217,8 +215,8 @@ public class PlacedItem extends BlockBCore implements EntityBlock {
     }
 
     @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos blockPos, BlockState state) {
-        level.levelEvent(player, 2001, blockPos, getId(state));
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        level.levelEvent(player, 2001, pos, getId(state));
     }
 
     @Override

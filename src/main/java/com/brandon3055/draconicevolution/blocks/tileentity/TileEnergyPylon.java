@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
@@ -17,7 +16,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,24 +30,26 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileEnergyPylon extends TileBCore implements MultiBlockController {
+    private static final VoxelShape SPHERE_SHAPE = Shapes.box(0.2, 0.2, 0.2, 0.8, 0.8, 0.8);
+
     public final ManagedEnum<Mode> ioMode = register(new ManagedEnum<>("io_mode", Mode.OUTPUT, DataFlags.SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("io_mode", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("direction", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedPos coreOffset = register(new ManagedPos("core_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
-    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SYNC_TILE));
 
     private TileEnergyCore core = null;
     private int coreSelection = 0;
@@ -68,10 +69,10 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         @Override
         public long receiveOP(long maxReceive, boolean simulate) {
-            if (coreOffset.isNull() || !canReceive() || getCore() == null || !getCore().active.get()) {
+            if (coreOffset.isNull() || !canReceive() || getCore() == null || !core.active.get()) {
                 return 0;
             }
-            long received = getCore().energy.receiveOP(maxReceive, simulate);
+            long received = core.energy.receiveOP(maxReceive, simulate);
             if (!simulate && received > 0) {
                 particleRate.set((byte) Math.min(20, received < 500 ? 1 : received / 500));
             }
@@ -80,10 +81,10 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         @Override
         public long extractOP(long maxExtract, boolean simulate) {
-            if (coreOffset.isNull() || !canExtract() || getCore() == null || !getCore().active.get()) {
+            if (coreOffset.isNull() || !canExtract() || getCore() == null || !core.active.get()) {
                 return 0;
             }
-            long extracted = getCore().energy.extractOP(maxExtract, simulate);
+            long extracted = core.energy.extractOP(maxExtract, simulate);
             if (!simulate && extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
@@ -92,12 +93,12 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         @Override
         public long getOPStored() {
-            return coreOffset.notNull() && getCore() != null ? getCore().energy.getOPStored() : 0;
+            return coreOffset.notNull() && getCore() != null ? core.energy.getOPStored() : 0;
         }
 
         @Override
         public long getMaxOPStored() {
-            return coreOffset.notNull() && getCore() != null ? getCore().energy.getMaxOPStored() : 0;
+            return coreOffset.notNull() && getCore() != null ? core.energy.getMaxOPStored() : 0;
         }
 
         @Override
@@ -119,17 +120,24 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         public int getMaxEnergyStored() {
             return (int) Math.min(getMaxOPStored(), Integer.MAX_VALUE);
         }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
+        }
     };
 
+
     public TileEnergyPylon(BlockPos pos, BlockState state) {
-        super(DEContent.tile_energy_pylon, pos, state);
+        super(DEContent.TILE_ENERGY_PYLON.get(), pos, state);
         capManager.set(CapabilityOP.OP, opAdapter);
+        enableTileDebug();
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!structureValid.get() || coreOffset.isNull() || getCore() == null || !getCore().active.get()) {
+        if (!structureValid.get() || coreOffset.isNull() || getCore() == null || !core.active.get()) {
             return;
         }
 
@@ -138,7 +146,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
 
         if (!level.isClientSide && ioMode.get().canExtract()) {
-            long extracted = getCore().energy.extractOP(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
+            long extracted = core.energy.extractOP(sendEnergyToAll(core.energy.getUncappedStored(), core.energy.getUncappedStored()), false);
             if (extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
@@ -154,14 +162,17 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     public void updateComparators() {
-        int cOut = (int) (((double) opAdapter.getOPStored() / opAdapter.getMaxOPStored()) * 15D);
+        int cOut = 0;
+        if (getCore() != null) {
+            cOut = (int) (((double) core.energy.getUncappedStored() / core.energy.getMaxOPStored()) * 15D);
+        }
         if (cOut != lastCompOverride) {
             lastCompOverride = cOut;
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
-
     // ### Core Connection Handling
+
 
     @Override
     public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
@@ -172,6 +183,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         return InteractionResult.SUCCESS;
     }
 
+    @Nullable
     public TileEnergyCore getCore() {
         BlockPos pos = coreOffset.get();
         if (pos != null) {
@@ -208,7 +220,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         BlockPos max = worldPosition.offset(18, 18, 18).offset(offset);
 
         for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
-            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
+            if (level.getBlockState(blockPos).is(DEContent.ENERGY_CORE.get())) {
                 if (level.getBlockEntity(blockPos) instanceof TileEnergyCore tile && tile.active.get()) {
                     list.add(tile);
                 }
@@ -223,7 +235,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             return;
         }
         List<TileEnergyCore> cores = findActiveCores();
-        if (cores.size() == 0) {
+        if (cores.isEmpty()) {
             core = null;
             coreOffset.set(null);
             return;
@@ -241,11 +253,12 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         detectAndSendChanges(false);
         drawParticleBeam();
     }
-
     // ### MultiBlock Handling
+
 
     @Override
     public boolean validateStructure() {
+        debug("ValidateStructure, IsValid: " + structureValid.get());
         if (!structureValid.get()) {
             boolean found = false;
             for (Direction dir : Direction.values()) {
@@ -255,10 +268,10 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
                     colour.set(getGlassColour(testState));
                     StructureBlock.buildingLock = true;
                     level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, dir));
-                    level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                    level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                     StructureBlock.buildingLock = false;
                     if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
-                        tile.blockName.set(testState.getBlock().getRegistryName());
+                        tile.blockName.set(ForgeRegistries.BLOCKS.getKey(testState.getBlock()));
                         tile.setController(this);
                         direction.set(dir);
                         found = true;
@@ -267,6 +280,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
                 }
             }
 
+            debug("Glass block found: " + found);
             if (!found) {
                 level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, Direction.UP));
                 colour.set(null);
@@ -274,6 +288,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
 
         structureValid.set(isStructureValid());
+        debug("Validate Result: " + structureValid.get());
         if (structureValid.get() && coreOffset.isNull()) {
             selectNextCore();
         } else if (!structureValid.get() && coreOffset.notNull()) {
@@ -296,8 +311,8 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 0) drawParticleBeam();
     }
-
     // ### Rendering
+
 
     public void drawParticleBeam() {
         if (!level.isClientSide) {
@@ -307,8 +322,8 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         if (getCore() == null) return;
 
         BlockPos thisPos = worldPosition.relative(direction.get());
-        Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5));
-        double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
+        Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(core.getBlockPos()).add(0.5, 0.5, 0.5));
+        double coreDistance = Utils.getDistance(new Vec3D(thisPos).add(0.5, 0.5, 0.5), Vec3D.getCenter(core.getBlockPos()));
 
         for (int i = 0; i < 100; i++) {
             double location = i / 100D;
@@ -322,61 +337,70 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             double randZ = level.random.nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
-        Random rand = level.random;
+        RandomSource rand = level.random;
         if (getCore() == null || particleRate.get() <= 0) return;
         if (particleRate.get() > 20) particleRate.set((byte) 20);
 
         Vec3D spawn;
         Vec3D dest;
 
+        int r = 0;
+        int g = 200;
+        int b = 255;
+
+        if (colour.notNull()) {
+            r = (int) (colour.get().rF() * 255);
+            g = (int) (colour.get().gF() * 255);
+            b = (int) (colour.get().bF() * 255);
+        }
+
         if (particleRate.get() > 10) {
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+                level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Vec3D getParticleSpawn(Random random) {
+    private Vec3D getParticleSpawn(RandomSource random) {
         if (ioMode.get().canExtract()) {
-            double range = getCore().tier.get();
-            return new Vec3D(getCore().getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            double range = core.tier.get();
+            return new Vec3D(core.getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         } else {
             return Vec3D.getCenter(worldPosition.relative(direction.get()));
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Vec3D getParticleDest(Random random) {
+    private Vec3D getParticleDest(RandomSource random) {
         if (ioMode.get().canExtract()) {
             return Vec3D.getCenter(worldPosition.relative(direction.get()));
         } else {
-            double range = getCore().tier.get() / 2D;
-            return new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            double range = core.tier.get() / 2D;
+            return new Vec3D(core.getBlockPos()).add(0.5, 0.5, 0.5).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         }
     }
 
     @Override
     public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
-        return Shapes.block();
+        return SPHERE_SHAPE;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+    public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return false;
     }
 

@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -12,10 +11,8 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -47,16 +44,16 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     private Consumer<Boolean> onSelectionMade;
     private ItemStack stackCache = ItemStack.EMPTY;
 
-    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<Object> factory) {
-        super(DEContent.container_configurable_item, windowId, player, extraData, factory);
+    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
+        super(DEContent.MENU_CONFIGURABLE_ITEM.get(), windowId, player, extraData);
         PlayerSlot slot = PlayerSlot.fromBuff(extraData);
         UUID found = getProviderID(slot.getStackInSlot(player.player));
         if (found != null) stackCache = slot.getStackInSlot(player.player);
         this.selectedId = found == null ? DEFAULT_UUID : found;
     }
 
-    public ContainerConfigurableItem(int windowId, Inventory player, PlayerSlot itemSlot, ContainerSlotLayout.LayoutFactory<Object> factory) {
-        super(DEContent.container_configurable_item, windowId, player, factory);
+    public ContainerConfigurableItem(int windowId, Inventory player, PlayerSlot itemSlot) {
+        super(DEContent.MENU_CONFIGURABLE_ITEM.get(), windowId, player);
         sanitizeProviders();
         UUID found = getProviderID(itemSlot.getStackInSlot(player.player));
         if (found != null) stackCache = itemSlot.getStackInSlot(player.player);
@@ -249,17 +246,17 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
-            NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
+            NetworkHooks.openScreen(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
             return;
         } else {
             PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
             if (slot != null) {
-                NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
+                NetworkHooks.openScreen(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
                 return;
             }
         }
 
-        sender.sendMessage(new TranslatableComponent("gui.draconicevolution.item_config.no_configurable_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        sender.sendSystemMessage(Component.translatable("gui.draconicevolution.item_config.no_configurable_items").withStyle(ChatFormatting.RED));
     }
 
     public static class Provider implements MenuProvider {
@@ -271,13 +268,13 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
         @Override
         public Component getDisplayName() {
-            return new TranslatableComponent("gui.draconicevolution.item_config.name");
+            return Component.translatable("gui.draconicevolution.item_config.name");
         }
 
         @Nullable
         @Override
         public AbstractContainerMenu createMenu(int menuID, Inventory playerInventory, Player playerEntity) {
-            return new ContainerConfigurableItem(menuID, playerInventory, slot, GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT);
+            return new ContainerConfigurableItem(menuID, playerInventory, slot);
         }
     }
 }

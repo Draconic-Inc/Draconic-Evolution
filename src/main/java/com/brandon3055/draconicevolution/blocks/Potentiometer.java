@@ -1,18 +1,15 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -27,7 +24,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class Potentiometer extends BlockBCore implements EntityBlock {
+public class Potentiometer extends EntityBlockBCore {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected static final VoxelShape AABB_DOWN = Shapes.box(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
@@ -41,7 +38,7 @@ public class Potentiometer extends BlockBCore implements EntityBlock {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
         this.canProvidePower = true;
-        setBlockEntity(() -> DEContent.tile_potentiometer, false);
+        setBlockEntity(DEContent.TILE_POTENTIOMETER::get, false);
     }
 
     @Override
@@ -52,11 +49,6 @@ public class Potentiometer extends BlockBCore implements EntityBlock {
     protected static boolean canPlaceBlock(Level worldIn, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.relative(direction);
         return worldIn.getBlockState(blockpos).isFaceSturdy(worldIn, blockpos, direction.getOpposite());
-    }
-
-    @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.setPlacedBy(world, pos, state, placer, stack);
     }
 
     @Nullable
@@ -75,74 +67,29 @@ public class Potentiometer extends BlockBCore implements EntityBlock {
         if (!isMoving && !state.is(newState.getBlock())) {
             BlockEntity tile = worldIn.getBlockEntity(pos);
             if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
-                this.updateNeighbors(state, worldIn, pos, (TilePotentiometer)tile);
+                this.updateNeighbors(state, worldIn, pos);
             }
 
             super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
-    private void updateNeighbors(BlockState state, Level world, BlockPos pos, TilePotentiometer tile) {
+    private void updateNeighbors(BlockState state, Level world, BlockPos pos) {
         world.updateNeighborsAt(pos, this);
         world.updateNeighborsAt(pos.relative(state.getValue(FACING).getOpposite()), this);
     }
 
-    //    @Override
-//    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-//        if (this.checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((Direction) state.get(FACING)).getOpposite())) {
-//
-//            this.dropBlockAsItem(world, pos, state, 0);
-//            world.setBlockToAir(pos);
-//        }
-//    }
-
-//    private boolean checkForDrop(World worldIn, BlockPos pos, BlockState state) {
-//        if (this.canPlaceBlockAt(worldIn, pos)) {
-//            return true;
-//        }
-//        else {
-//            this.dropBlockAsItem(worldIn, pos, state, 0);
-//            worldIn.setBlockToAir(pos);
-//            return false;
-//        }
-//    }
-
-//    @Override
-//    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, Direction side) {
-//        return canPlaceBlock(worldIn, pos, side.getOpposite());
-//    }
-//
-//    @Override
-//    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-//        for (Direction enumfacing : Direction.values()) {
-//            if (canPlaceBlock(worldIn, pos, enumfacing)) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
-
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Direction enumfacing = state.getValue(FACING);
-
-        switch (enumfacing) {
-            case EAST:
-                return AABB_EAST;
-            case WEST:
-                return AABB_WEST;
-            case SOUTH:
-                return AABB_SOUTH;
-            case UP:
-                return AABB_UP;
-            case DOWN:
-                return AABB_DOWN;
-            case NORTH:
-            default:
-                return AABB_NORTH;
-        }
+        return switch (enumfacing) {
+            case EAST -> AABB_EAST;
+            case WEST -> AABB_WEST;
+            case SOUTH -> AABB_SOUTH;
+            case UP -> AABB_UP;
+            case DOWN -> AABB_DOWN;
+            default -> AABB_NORTH;
+        };
     }
 
     //endregion

@@ -37,7 +37,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -55,7 +54,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,8 +79,8 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     private List<Entity> teleportQ = new ArrayList<>();
 
     public TileDislocatorReceptacle(BlockPos pos, BlockState state) {
-        super(DEContent.tile_dislocator_receptacle, pos, state);
-        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
+        super(DEContent.TILE_DISLOCATOR_RECEPTACLE.get(), pos, state);
+        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> onInventoryChange());
         itemHandler.setSlotValidator(0, (stack) -> stack.getItem() instanceof Dislocator);
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
@@ -103,7 +102,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
             return InteractionResult.PASS;
         }
 
-        if (stack.getItem() == DEContent.infused_obsidian.asItem()) {
+        if (stack.getItem() == DEContent.INFUSED_OBSIDIAN.get().asItem()) {
             level.setBlockAndUpdate(worldPosition, state.setValue(DislocatorReceptacle.CAMO, !state.getValue(DislocatorReceptacle.CAMO)));
             return InteractionResult.SUCCESS;
         }
@@ -190,7 +189,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
                     return;
                 }
 
-                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
+                BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, entity.level().random.nextFloat() * 0.1F + 0.9F, false);
                 entity.setPortalCooldown();
                 target.teleport(entity);
                 if (entity instanceof ServerPlayer) {
@@ -200,7 +199,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
                     DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
                 }
                 entity.setPortalCooldown();
-                DelayedTask.run(1, () -> BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false));
+                DelayedTask.run(1, () -> BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, entity.level().random.nextFloat() * 0.1F + 0.9F, false));
             }
             teleportQ.clear();
         }
@@ -236,7 +235,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
         for (int level : levels) {
             List<BlockPos> blocks = levelMap.get(level);
             for (BlockPos pos : blocks) {
-                if (this.level.isEmptyBlock(pos.above()) || this.level.getBlockState(pos.above()).getBlock() == DEContent.portal) {
+                if (this.level.isEmptyBlock(pos.above()) || this.level.getBlockState(pos.above()).is(DEContent.PORTAL.get())) {
                     foundValid.add(pos);
                 }
             }
@@ -302,7 +301,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     }
 
     public void setActive(boolean active) {
-        if (level.getBlockState(getBlockPos()).getBlock() == DEContent.dislocator_receptacle) {
+        if (level.getBlockState(getBlockPos()).is(DEContent.DISLOCATOR_RECEPTACLE.get())) {
             level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(DislocatorReceptacle.ACTIVE, active));
         }
     }
@@ -315,7 +314,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
 
     @Override
     public void generateHudText(Level world, BlockPos pos, Player player, List<Component> displayList) {
-        displayList.add(new TextComponent(ignitionStage.get() == 1 ? "Scanning..." : "Activating..."));
+        displayList.add(Component.literal(ignitionStage.get() == 1 ? "Scanning..." : "Activating..."));
     }
 
     @Override

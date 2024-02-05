@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.lib.TeleportUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.particle.GuardianChargeParticle;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
@@ -14,13 +15,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class ChargeUpPhase extends Phase {
+    protected Map<Player, Vec3> trappedPlayers = new HashMap<>();
     protected int requiredChargeTime;
     protected int chargeTime;
     protected int chargedTime;
@@ -45,12 +51,18 @@ public abstract class ChargeUpPhase extends Phase {
         effectTimer = 0;
     }
 
+    @Override
+    public void removeAreaEffect() {
+        trappedPlayers.clear();
+    }
+
     public void resetCharge() {
         chargeTime = 0;
     }
 
     @Override
     public void serverTick() {
+        if (trappedPlayers == null) trappedPlayers = new HashMap<>();
         if (chargeTime < requiredChargeTime) {
             chargeTime++;
         } else {
@@ -60,8 +72,23 @@ public abstract class ChargeUpPhase extends Phase {
             GuardianFightManager manager = guardian.getFightManager();
             if (manager != null) {
                 for (Player player : manager.getTrackedPlayers()) {
+                    Vec3 pos = player.position();
+                    Vec3 lastPos = trappedPlayers.getOrDefault(player, player.position());
+                    Vec3 center = Vec3.atCenterOf(manager.getArenaOrigin().offset(0, 16, 0));
+                    double currentDist = pos.distanceToSqr(center);
+                    int threshold = 100*100;
+                    int breakAway = 1000*1000; //The player can still teleport away / out of the dimension
+
+                    if (currentDist > threshold && currentDist < breakAway && lastPos.distanceToSqr(center) <= threshold && player.level().dimension().equals(guardian.level().dimension())) {
+                        TeleportUtils.teleportEntity(player, player.level().dimension(), lastPos.x, lastPos.y, lastPos.z);
+                    }
+
                     if (isValidTarget(player) && player.getY() < manager.getArenaOrigin().getY() - 10) {
-                        TeleportUtils.teleportEntity(player, player.level.dimension(), player.getX(), manager.getArenaOrigin().getY() + 15, player.getZ());
+                        TeleportUtils.teleportEntity(player, player.level().dimension(), player.getX(), manager.getArenaOrigin().getY() + 15, player.getZ());
+                    }
+
+                    if (player.position().distanceToSqr(center) < threshold) {
+                        trappedPlayers.put(player, player.position());
                     }
                 }
             }
@@ -102,10 +129,10 @@ public abstract class ChargeUpPhase extends Phase {
         if (effectTimer == 0) {
             speedMod = (float) getChargeProgress();
             effectTime = effectTimer = (int) (20F - (speedMod * 10F));
-            guardian.level.playLocalSound(guardian.getX(), guardian.getY(), guardian.getZ(), DESounds.crystalBeam, SoundSource.HOSTILE, 64, 1F + speedMod, false);
+            guardian.level().playLocalSound(guardian.getX(), guardian.getY(), guardian.getZ(), DESounds.CRYSTAL_BEAM.get(), SoundSource.HOSTILE, 64, 1F + speedMod, false);
             if (origin != null) {
                 for (int i = 0; i < 32; i++) {
-                    Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientLevel) guardian.level, Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), i / 32D, effectTime, guardian.getPhaseManager()));
+                    Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientLevel) guardian.level(), Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), i / 32D, effectTime, guardian.getPhaseManager()));
                 }
             }
         } else {
@@ -120,7 +147,7 @@ public abstract class ChargeUpPhase extends Phase {
                 double z = guardian.getZ() + Mth.cos(randDir) * randDist;
                 double y = guardian.getY() - 8 - random.nextInt(32);
                 Vector3 motion = new Vector3(guardian.getX(), y, guardian.getZ()).subtract(x, y, z).normalize().multiply((1 + random.nextDouble()) * getChargeProgress());
-                guardian.level.addParticle(DEParticles.guardian_cloud, true, x, y, z, motion.x, motion.y, motion.z);
+                guardian.level().addParticle(DEParticles.GUARDIAN_CLOUD.get(), true, x, y, z, motion.x, motion.y, motion.z);
             }
 
             Vector3 center = new Vector3(guardian.getX(), guardian.getY() - 32, guardian.getZ());
@@ -150,7 +177,7 @@ public abstract class ChargeUpPhase extends Phase {
                 }
             }
 
-            if (player.isOnGround() || player.getY() < origin.getY() + 8) {
+            if (player.onGround() || player.getY() < origin.getY() + 8) {
                 offGroundTime = 0;
             } else {
                 offGroundTime++;
@@ -164,7 +191,7 @@ public abstract class ChargeUpPhase extends Phase {
                 double y = guardian.getY() - random.nextInt(35);
                 double z = guardian.getZ() - 95 + random.nextInt(95*2);
                 if (guardian.distanceToSqr(x, y, z) < 100 * 100) {
-                    guardian.level.addParticle(DEParticles.guardian_cloud, true, x, y, z, 0, 0, 0);
+                    guardian.level().addParticle(DEParticles.GUARDIAN_CLOUD.get(), true, x, y, z, 0, 0, 0);
                 }
             }
         }

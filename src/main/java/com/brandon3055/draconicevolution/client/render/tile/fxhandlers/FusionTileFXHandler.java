@@ -70,7 +70,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
         } else {
             float prevTick = rotationTick;
             if (runTick <= 0) {
-                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 0.5F, 0.5F, false);
+                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 0.5F, 0.5F, false);
             }
             if (runTick == -1) {
                 Vector3 corePos = Vector3.fromTileCenter(core);
@@ -80,7 +80,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             runTick++;
             rotationSpeed = ((float) baseCraftTime / Math.max(core.craftAnimLength.get(), 1));
             if (rotationTick + 3 >= rotStartTime && prevTick + 3 < rotStartTime + 3) {
-                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 2F, 0.5F, false);
+                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, 2F, 0.5F, false);
                 if (sound == null) {
                     sound = new FusionRotationSound(core);
                     sound.setPitch(0.5F + (1.5F * (rotationSpeed - 1F)));
@@ -90,7 +90,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             injectTime = Math.max(0, (rotationTick - beamStartTime) / (float) (baseCraftTime - beamStartTime));
             if (injectTime > 0) {
                 if (TimeKeeper.getClientTick() % 5 == 0) {
-                    core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.energyBolt, SoundSource.BLOCKS, 1F, 1F, false);
+                    core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.ENERGY_BOLT.get(), SoundSource.BLOCKS, 1F, 1F, false);
                 }
             }
         }
@@ -110,7 +110,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             if (ingreds.isEmpty()) return;
             coreDischarge = rand.nextInt(ingreds.size());
             Vector3 pos = Vector3.fromTileCenter(core).add(ingreds.get(coreDischarge).pos);
-            core.getLevel().playLocalSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundSource.BLOCKS, 2F, 1F, false);
+            core.getLevel().playLocalSound(pos.x, pos.y, pos.z, DESounds.ENERGY_BOLT.get(), SoundSource.BLOCKS, 2F, 1F, false);
         }
     }
 

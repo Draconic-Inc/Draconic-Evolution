@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.entity.guardian.GuardianWither;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -43,7 +43,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
     public void serverTick() {
         super.serverTick();
         if (summoned == null) {
-            guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
+            guardian.level().getEntities(DEContent.ENTITY_GUARDIAN_WITHER.get(), guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
             summoned = new ArrayList<>();
         }
 
@@ -78,7 +78,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
                 updateRandomFire();
                 if (actionTime >= actionDuration) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
-                    guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
+                    guardian.level().getEntities(DEContent.ENTITY_GUARDIAN_WITHER.get(), guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
                 }
                 break;
         }
@@ -111,7 +111,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
         }
 
         for (Mob wither : summoned) {
-            Player closeTarget = guardian.level.getNearestPlayer(wither.getX(), wither.getY(), wither.getZ(), 200, true);
+            Player closeTarget = guardian.level().getNearestPlayer(wither.getX(), wither.getY(), wither.getZ(), 200, true);
             if (closeTarget != null) {
                 wither.setTarget(closeTarget);
             }
@@ -119,7 +119,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
     }
 
     private void summonWither(boolean canLoot) {
-        GuardianWither wither = DEContent.guardianWither.create(guardian.level);
+        GuardianWither wither = DEContent.ENTITY_GUARDIAN_WITHER.get().create(guardian.level());
         Vector3 spawnPos = null;
         for (int i = 0; i < 10; i++) {
             spawnPos = Vector3.fromEntity(guardian).add(random.nextInt(80) - 40, random.nextInt(20) - 10, random.nextInt(80) - 40);
@@ -129,10 +129,10 @@ public class GroundEffectPhase extends ChargeUpPhase {
         }
 
         wither.setPos(spawnPos.x, spawnPos.y - 10, spawnPos.z);
-        wither.setCustomName(new TranslatableComponent("entity.draconicevolution.guardian_wither"));
+        wither.setCustomName(Component.translatable("entity.draconicevolution.guardian_wither"));
         wither.setInvulnerableTicks(3);
 
-        guardian.level.addFreshEntity(wither);
+        guardian.level().addFreshEntity(wither);
         summoned.add(wither);
         wither.destroyBlocksTick = 10000;
     }
@@ -152,11 +152,11 @@ public class GroundEffectPhase extends ChargeUpPhase {
         Vector3 aim = new Vector3(targetX, targetY, targetZ).subtract(headPos).normalize();
 
 
-        GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level, guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
+        GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level(), guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
         projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
-        guardian.level.addFreshEntity(projectile);
-        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
-        BCoreNetwork.sendParticle(guardian.level, ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
+        guardian.level().addFreshEntity(projectile);
+        BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+        BCoreNetwork.sendParticle(guardian.level(), ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
 
 
         guardian.setYRot(guardian.getYRot() + (1F + (((actionTime / (float) actionDuration)) * 10F)));
@@ -188,13 +188,13 @@ public class GroundEffectPhase extends ChargeUpPhase {
                 target.y = origin.getY() + 15;
             }
             Vector3 aim = target.subtract(headPos).normalize().multiply(3);
-            GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level, guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
+            GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level(), guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
             projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
-            guardian.level.addFreshEntity(projectile);
+            guardian.level().addFreshEntity(projectile);
         }
 
-        BCoreNetwork.sendParticle(guardian.level, ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
-        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+        BCoreNetwork.sendParticle(guardian.level(), ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
+        BCoreNetwork.sendSound(guardian.level(), guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
         guardian.setYRot(guardian.getYRot() + 1F);
     }
 

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.blocks.PropertyString;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
@@ -27,7 +28,7 @@ import java.util.Locale;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class EnergyPylon extends BlockBCore implements EntityBlock {
+public class EnergyPylon extends EntityBlockBCore {
 
     public static final EnumProperty<Mode> MODE = EnumProperty.create("mode", Mode.class);
     public static final DirectionProperty FACING = DirectionProperty.create("facing");
@@ -35,7 +36,7 @@ public class EnergyPylon extends BlockBCore implements EntityBlock {
     public EnergyPylon(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(MODE, Mode.OUTPUT).setValue(FACING, Direction.UP));
-        setBlockEntity(() -> DEContent.tile_energy_pylon, true);
+        setBlockEntity(DEContent.TILE_ENERGY_PYLON::get, true);
     }
 
     @Override

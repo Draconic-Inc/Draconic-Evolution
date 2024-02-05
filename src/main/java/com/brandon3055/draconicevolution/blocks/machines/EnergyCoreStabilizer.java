@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
+public class EnergyCoreStabilizer extends EntityBlockBCore {
 
     public static final BooleanProperty LARGE = BooleanProperty.create("large");
     public static VoxelShape SHAPE = box(0.98, 0.98, 0.98, 15.02, 15.02, 15.02);
@@ -34,7 +33,7 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
     public EnergyCoreStabilizer(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(LARGE, false));
-        setBlockEntity(() -> DEContent.tile_core_stabilizer, true);
+        setBlockEntity(DEContent.TILE_CORE_STABILIZER::get, true);
         dontSpawnOnMe();
         setLightTransparent();
     }
