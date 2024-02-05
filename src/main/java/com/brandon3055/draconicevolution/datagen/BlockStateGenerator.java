@@ -241,14 +241,14 @@ public class BlockStateGenerator extends BlockStateProvider {
     }
 
     public void multiLayerBlock(Supplier<? extends Block> block, ResourceLocation solid, ResourceLocation overlay) {
-        simpleBlock(block,
-                models().getBuilder(ForgeRegistries.BLOCKS.getKey(block.get()).getPath())
-                        .parent(models().getExistingFile(mcLoc("block/block"))).texture("particle", solid)
-//                        .customLoader(MultiLayerModelBuilder::begin)
-                        .
-                        .submodel(RenderType.solid(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", solid))
-                        .submodel(RenderType.cutoutMipped(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", overlay))
-                        .end());
+//        simpleBlock(block,
+//                models().getBuilder(ForgeRegistries.BLOCKS.getKey(block.get()).getPath())
+//                        .parent(models().getExistingFile(mcLoc("block/block"))).texture("particle", solid)
+////                        .customLoader(MultiLayerModelBuilder::begin)
+//                        .
+//                        .submodel(RenderType.solid(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", solid))
+//                        .submodel(RenderType.cutoutMipped(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", overlay))
+//                        .end());
     }
 
     public MultiPartBlockStateBuilder getMultipartBuilder(Supplier<? extends Block> b) {

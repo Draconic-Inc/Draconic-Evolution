@@ -3,8 +3,6 @@ package com.brandon3055.draconicevolution.integration.computers;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.Capabilities;
-import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;

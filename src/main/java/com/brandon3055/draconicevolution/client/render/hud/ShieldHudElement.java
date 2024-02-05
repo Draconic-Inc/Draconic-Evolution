@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.hud;
 
-import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiContextMenu;
 import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.sprite.Material;
+import codechicken.lib.math.MathHelper;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.BCGuiTextures;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -16,17 +16,18 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
+import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -68,17 +69,19 @@ public class ShieldHudElement extends AbstractHudElement {
     private int energyMode = 2;
     private float scale = 1;
 
+    private Material[] _effectMats = null;
+
     public ShieldHudElement() {
         super(new Vector2(0.0136, 0.9787));
         this.width = 119;
     }
 
     @Override
-    public void addConfigElements(List<GuiElement<?>> list, GuiElement<?> parent) {
-        super.addConfigElements(list, parent);
-        list.add(createButton(() -> I18n.get("hud_armor.draconicevolution.numeric." + numericEnergy), parent, runDirty(() -> numericEnergy = !numericEnergy)).setHoverText(I18n.get("hud_armor.draconicevolution.numeric.info")).setXSize(140));
-        list.add(createButton(() -> I18n.get("hud_armor.draconicevolution.undying." + showUndying), parent, runDirty(() -> showUndying = !showUndying)).setHoverText(I18n.get("hud_armor.draconicevolution.undying.info")));
-        list.add(createButton(() -> I18n.get("hud_armor.draconicevolution.energy." + energyMode), parent, runDirty(() -> energyMode = energyMode == 2 ? 0 : energyMode + 1)).setHoverText(I18n.get("hud_armor.draconicevolution.energy.info")));
+    public void addConfigElements(GuiContextMenu menu) {
+        super.addConfigElements(menu);
+        menu.addOption(() -> Component.translatable("hud_armor.draconicevolution.numeric." + numericEnergy), runDirty(() -> numericEnergy = !numericEnergy), Component.translatable("hud_armor.draconicevolution.numeric.info"));
+        menu.addOption(() -> Component.translatable("hud_armor.draconicevolution.undying." + showUndying), runDirty(() -> showUndying = !showUndying), Component.translatable("hud_armor.draconicevolution.undying.info"));
+        menu.addOption(() -> Component.translatable("hud_armor.draconicevolution.energy." + energyMode), runDirty(() -> energyMode = energyMode == 2 ? 0 : energyMode + 1), Component.translatable("hud_armor.draconicevolution.energy.info"));
 //        Scale needs work... Problem is i am scaling size and then scaling the elements that are rendered based on that size. So i am scaling twice.
 //        list.add(createButton(() -> I18n.get("Scale") + ": " + Math.round(scale * 100) + "%", parent, runDirty(() -> scale = scale <= 0.5F ? 1F : scale - 0.1F)).setHoverText(I18n.get("hud_armor.draconicevolution.scale.info")));
     }
@@ -257,30 +260,31 @@ public class ShieldHudElement extends AbstractHudElement {
         render.toolTipBackground(0, 0, width, height, backgroundColor, borderColor, borderColorEnd);
 
         //Draw Shield
-        double charge = shieldCharge >= 0 ? shieldCharge : 0;
+        float charge = (float) (shieldCharge >= 0 ? shieldCharge : 0);
         double bw = width - 4;
-        GuiHelper.drawPartialSprite(BCGuiTextures.builder(getter, mStack), 2, 2, bw * charge, shH, DEGuiTextures.getSprite("hud/ryg_bar"), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
-        GuiHelper.drawRect(getter, mStack, 2D + (bw * charge), 2, bw * (1D - charge), shH, scaleAlpha(0xFF01001b));
+        Material mat = DEGuiTextures.get("hud/ryg_bar");
+        render.partialSprite(mat.renderType(GuiRender::texColType), 2, 2, bw * charge, shH, mat.sprite(), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
+        render.rect(2D + (bw * charge), 2, bw * (1D - charge), shH, scaleAlpha(0xFF01001b));
 
-        GuiHelper.drawRect(getter, mStack, 2, 2 + shH, width - 4, divH, scaleAlpha(0xff22072b));
+        render.rect(2, 2 + shH, width - 4, divH, scaleAlpha(0xff22072b));
 
         //Draw Shield Cool Down
-        GuiHelper.drawRect(getter, mStack, 2D, 2 + shH + divH, bw * coolDown, reH, scaleAlpha(0xFF840000));
-        GuiHelper.drawRect(getter, mStack, 2D + (bw * coolDown), 2 + shH + divH, bw * (1D - coolDown), reH, scaleAlpha(0xFF00b014));
+        render.rect(2D, 2 + shH + divH, bw * coolDown, reH, scaleAlpha(0xFF840000));
+        render.rect(2D + (bw * coolDown), 2 + shH + divH, bw * (1D - coolDown), reH, scaleAlpha(0xFF00b014));
 
-        GuiHelper.drawRect(getter, mStack, 2, 2 + shH + divH + reH, width - 4, divH, scaleAlpha(0xff22072b));
+        render.rect(2, 2 + shH + divH + reH, width - 4, divH, scaleAlpha(0xff22072b));
 
         //Draw Energy Bar
-        GuiHelper.drawRect(getter, mStack, 2D, 2 + shH + divH + reH + divH, bw * energyBar, reH, scaleAlpha(0xFF07ced8));
-        GuiHelper.drawRect(getter, mStack, 2D + (bw * energyBar), 2 + shH + divH + reH + divH, bw * (1D - energyBar), reH, scaleAlpha(0xFF01001b));
+        render.rect(2D, 2 + shH + divH + reH + divH, bw * energyBar, reH, scaleAlpha(0xFF07ced8));
+        render.rect(2D + (bw * energyBar), 2 + shH + divH + reH + divH, bw * (1D - energyBar), reH, scaleAlpha(0xFF01001b));
 
         //Draw Totems
         if (totemStatus.length > 0) {
             double x = width - 8;
             for (double state : totemStatus) {
-                GuiHelper.drawSprite(BCGuiTextures.builder(getter, mStack), x, height + 1, 8, 8, DEGuiTextures.getSprite("hud/undying"), scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
+                render.tex(DEGuiTextures.get("hud/undying"), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
                 if (state != -1) {
-                    GuiHelper.drawPieProgress(getter, mStack, x, height + 1, 8, state, 0, 0x80FFFFFF);
+                    drawPieProgress(render, x, height + 1, 8, state, 0, 0x80FFFFFF);
                 }
                 x -= 9;
             }
@@ -288,26 +292,24 @@ public class ShieldHudElement extends AbstractHudElement {
 
         if (totemEffect > 0) {
             float progress = 1F - ((totemEffect - partialTicks) / (float) TOTEM_EFFECT_TIME);
-            particleExplosion(getter, mStack, width - 4 - (totemEffectIndex * 9), height + 5, progress, rand);
+            particleExplosion(render, width - 4 - (totemEffectIndex * 9), height + 5, progress, rand);
         }
 
         getter.endBatch();
 
         //Draw Text (after end batch otherwise font rendering will break)
         double tPos = width / 2D - mc.font.width(shieldText) / 2D;
-        mc.font.draw(mStack, shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
+//        mc.font.drawInBatch(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
+        render.drawString(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
         if (numericEnergy && !energyText.isEmpty()) {
-            mc.font.drawShadow(mStack, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF));
+//            mc.font.drawShadow(mStack, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF));
+            render.drawString(energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF), true);
         }
         render.pose().popPose();
     }
 
-    public void particleExplosion(MultiBufferSource getter, PoseStack mStack, double x, double y, float progress, Random rand) {
+    public void particleExplosion(GuiRender render, double x, double y, float progress, Random rand) {
         rand.setSeed(totemEffectSeed);
-        TextureAtlasSprite[] particles = new TextureAtlasSprite[8];
-        for (int i = 0; i < 8; i++) {
-            particles[i] = DEGuiTextures.getSprite("effect/glitter_" + i);
-        }
         int pCount = 128;
         int size = 100;
         double scale = 6;
@@ -326,7 +328,7 @@ public class ShieldHudElement extends AbstractHudElement {
             double ps = scale * (0.75 + rand.nextDouble() * 0.5) * fadeOut;
             int index = Math.min((int) (age * 8), 7);
             if (age >= 1) continue; //Still need to do the math above, so we don't throw off the seeded random
-            GuiHelper.drawSprite(BCGuiTextures.builder(getter, mStack), pX - (ps/2), pY-(ps/2), ps, ps, particles[index], red, green, blue, 1F);
+            render.tex(getEffectMats()[index], pX - (ps/2), pY-(ps/2), ps, ps, red, green, blue, 1F);
         }
     }
 
@@ -350,5 +352,33 @@ public class ShieldHudElement extends AbstractHudElement {
         numericEnergy = nbt.getBoolean("show_numeric");
         showUndying = nbt.getBoolean("show_undying");
         scale = nbt.getFloat("scale");
+    }
+
+    private Material[] getEffectMats() {
+        if (_effectMats == null) {
+            _effectMats = new Material[8];
+            for (int i = 0; i < 8; i++) {
+                _effectMats[i] = DEGuiTextures.get("effect/glitter_" + i);
+            }
+        }
+        return _effectMats;
+    }
+
+    public void drawPieProgress(GuiRender render, double x, double y, double diameter, double progress, double offsetAngle, int colour) {
+        float alpha = (float) (colour >> 24 & 255) / 255.0F;
+        float red = (float) (colour >> 16 & 255) / 255.0F;
+        float green = (float) (colour >> 8 & 255) / 255.0F;
+        float blue = (float) (colour & 255) / 255.0F;
+        double radius = diameter / 2;
+        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(DERenderTypes.FAN_TYPE), render.pose());
+        builder.vertex(x + radius, y + radius, 0).color(0, 255, 255, 64).endVertex();
+        for (double d = 0; d <= 1; d += 1D / 30D) {
+            double angle = (d * progress) + 0.5 - progress;
+            angle *= Math.PI * 2;
+            angle += MathHelper.torad * offsetAngle;
+            double vertX = x + radius + Math.sin(angle) * radius;
+            double vertY = y + radius + Math.cos(angle) * radius;
+            builder.vertex(vertX, vertY, 0).color(red, green, blue, alpha).endVertex();
+        }
     }
 }

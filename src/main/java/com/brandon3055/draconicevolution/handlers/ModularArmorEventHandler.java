@@ -58,9 +58,9 @@ public class ModularArmorEventHandler {
         MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::livingTick);
         MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
 
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT.get(), ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight);
     }
 
     @Nullable
@@ -102,7 +102,7 @@ public class ModularArmorEventHandler {
         LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
         boolean hasHighStep = hasHost && optional.orElseThrow(WTFException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
-        AttributeInstance instance = entity.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
+        AttributeInstance instance = entity.getAttribute(ForgeMod.STEP_HEIGHT.get());
 
         if (hasHighStep && instance != null) {
             double stepHeight = instance.getValue();
@@ -110,7 +110,7 @@ public class ModularArmorEventHandler {
             if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_UUID) == null) {
                 return null;
             }
-            return new AttributeModifier(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT_ADDITION.get().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
+            return new AttributeModifier(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT.get().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class ModularArmorEventHandler {
 
     private static void onEntityAttacked(LivingAttackEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.ADMIN_KILL)) {
+        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -152,7 +152,7 @@ public class ModularArmorEventHandler {
 
     private static void onEntityDamaged(LivingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.ADMIN_KILL)) {
+        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -217,7 +217,7 @@ public class ModularArmorEventHandler {
             }
         }
 
-        if (undyingModules.isEmpty() || event.getSource().is(DEDamage.ADMIN_KILL)) {
+        if (undyingModules.isEmpty() || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 

@@ -48,12 +48,12 @@ public class BoundDislocator extends Dislocator {
         super(properties);
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
-        if (this.allowdedIn(group) && (this == DEContent.DISLOCATOR_PLAYER_UNBOUND.get() || this == DEContent.DISLOCATOR_P2P_UNBOUND.get())) {
-            list.add(new ItemStack(this));
-        }
-    }
+//    @Override
+//    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
+//        if (this.allowdedIn(group) && (this == DEContent.DISLOCATOR_PLAYER_UNBOUND.get() || this == DEContent.DISLOCATOR_P2P_UNBOUND.get())) {
+//            list.add(new ItemStack(this));
+//        }
+//    }
 
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
@@ -86,9 +86,9 @@ public class BoundDislocator extends Dislocator {
         TargetPos location = getTargetPos(stack, player.level());
         if (location == null) {
             if (isPlayer(stack)) {
-                player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED));
             } else {
-                player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED));
             }
             return true;
         }
@@ -135,9 +135,9 @@ public class BoundDislocator extends Dislocator {
             TargetPos location = getTargetPos(stack, world);
             if (location == null) {
                 if (isPlayer(stack)) {
-                    player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED));
                 } else {
-                    player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED));
                 }
                 return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }

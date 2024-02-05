@@ -145,7 +145,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_DISENCHANTER.get(), currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.DISENCHANTER_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_DISENCHANTER.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

@@ -92,7 +92,6 @@ public class RenderModularChestpiece extends ToolRenderBase {
     }
 
     private class CoreGemPart extends SimpleToolPart {
-
         private final ToolShader shader;
 
         public CoreGemPart(CCModel model, RenderType baseType, ToolShader shader) {
@@ -106,7 +105,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
         }
 
         public void render(MultiBufferSource buffers, Matrix4 mat, int color) {
-            buffers.getBuffer(vboType.withCallback(() -> {
+            buffers.getBuffer(vboType.get().withCallback(() -> {
                 shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
             }));

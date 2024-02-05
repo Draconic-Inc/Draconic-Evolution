@@ -10,13 +10,10 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -28,11 +25,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-@OnlyIn(Dist.CLIENT)
+@OnlyIn (Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity> {
     public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
     private static final ResourceLocation DRAGON_EXPLODING_TEXTURES = new ResourceLocation("textures/entity/enderdragon/dragon_exploding.png");
@@ -44,7 +43,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
     private static final RenderType beamType = RenderType.entitySmoothCutout(ENDERCRYSTAL_BEAM_TEXTURES);
     private static RenderType BEAM_TYPE2 = RenderType.create("beam_type_2", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setShaderState(RenderType.RENDERTYPE_ENTITY_SMOOTH_CUTOUT_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(ENDERCRYSTAL_BEAM_TEXTURES, false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
@@ -57,14 +56,6 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             .setCullState(RenderStateShard.NO_CULL)
             .setDepthTestState(RenderStateShard.EQUAL_DEPTH_TEST)
             .createCompositeState(false));
-
-    public static RenderType BEAM_TYPE = RenderType.create(DraconicEvolution.MODID + ":guardian_beam", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(ENDERCRYSTAL_BEAM_TEXTURES, true, false))
-            .setLightmapState(RenderStateShard.LIGHTMAP)
-            .setOverlayState(RenderStateShard.OVERLAY)
-            .createCompositeState(false)
-    );
 
     private static final float sqrt3div2 = (float) (Math.sqrt(3.0D) / 2.0D);
     private final DraconicGuardianRenderer.DragonModel model;
@@ -81,8 +72,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         poseStack.pushPose();
         float f = (float) guardian.getLatencyPos(7, partialTicks)[0];
         float f1 = (float) (guardian.getLatencyPos(5, partialTicks)[1] - guardian.getLatencyPos(10, partialTicks)[1]);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 10.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-f));
+        poseStack.mulPose(Axis.XP.rotationDegrees(f1 * 10.0F));
         poseStack.translate(0.0D, 0.0D, 1.0D);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0D, -1.501F, 0.0D);
@@ -127,12 +118,12 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             poseStack.translate(0.0D, -1.0D, -2.0D);
 
             for (int i = 0; (float) i < (f5 + f5 * f5) / 2.0F * 60.0F; ++i) {
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + f5 * 90.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(random.nextFloat() * 360.0F + f5 * 90.0F));
                 float f3 = random.nextFloat() * 20.0F + 5.0F + f7 * 10.0F;
                 float f4 = random.nextFloat() * 2.0F + 1.0F + f7 * 2.0F;
                 Matrix4f matrix4f = poseStack.last().pose();
@@ -202,8 +193,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float distance = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
         mStack.pushPose();
         mStack.translate(0.0D, 2.0D, 0.0D);
-        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
-        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
         VertexConsumer builder = getter.getBuffer(beamType);
         float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f3 = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
@@ -235,8 +226,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float distance = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
         mStack.pushPose();
         mStack.translate(0.0D, 2.0D, 0.0D);
-        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
-        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
         VertexConsumer builder = getter.getBuffer(BEAM_TYPE2);
         float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f3 = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
@@ -268,8 +259,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float distance = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
         mStack.pushPose();
         mStack.translate(0.0D, 2.0D, 0.0D);
-        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
-        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
         VertexConsumer builder = getter.getBuffer(BEAM_TYPE2);
         float vMin = ((float) animTicks + partialTicks) * 0.01F;
         float vMax = (Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F) + (((float) animTicks + partialTicks) * 0.01F);
@@ -305,8 +296,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float distance = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
         mStack.pushPose();
         mStack.translate(0.0D, 2.0D, 0.0D);
-        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
-        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Axis.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
         VertexConsumer builder = getter.getBuffer(beamType);
         float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f3 = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
@@ -338,7 +329,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         return DRAGON_TEXTURE;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public static class DragonModel extends EntityModel<DraconicGuardianEntity> {
         private final ModelPart head;
         private final ModelPart neck;
@@ -401,26 +392,26 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         public void renderToBuffer(PoseStack p_114281_, VertexConsumer p_114282_, int p_114283_, int p_114284_, float p_114285_, float p_114286_, float p_114287_, float p_114288_) {
             p_114281_.pushPose();
             float f = Mth.lerp(this.a, this.entity.oFlapTime, this.entity.flapTime);
-            this.jaw.xRot = (float) (Math.sin((double) (f * ((float) Math.PI * 2F))) + 1.0D) * 0.2F;
-            float f1 = (float) (Math.sin((double) (f * ((float) Math.PI * 2F) - 1.0F)) + 1.0D);
+            this.jaw.xRot = (float) (Math.sin(f * ((float) Math.PI * 2F)) + 1.0D) * 0.2F;
+            float f1 = (float) (Math.sin(f * ((float) Math.PI * 2F) - 1.0F) + 1.0D);
             f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
-            p_114281_.translate(0.0D, (double) (f1 - 2.0F), -3.0D);
-            p_114281_.mulPose(Vector3f.XP.rotationDegrees(f1 * 2.0F));
+            p_114281_.translate(0.0D, f1 - 2.0F, -3.0D);
+            p_114281_.mulPose(Axis.XP.rotationDegrees(f1 * 2.0F));
             float f2 = 0.0F;
             float f3 = 20.0F;
             float f4 = -12.0F;
             float f5 = 1.5F;
             double[] adouble = this.entity.getLatencyPos(6, this.a);
-            float f6 = Mth.rotWrap(this.entity.getLatencyPos(5, this.a)[0] - this.entity.getLatencyPos(10, this.a)[0]);
-            float f7 = Mth.rotWrap(this.entity.getLatencyPos(5, this.a)[0] + (double) (f6 / 2.0F));
+            float f6 = Mth.wrapDegrees((float) this.entity.getLatencyPos(5, this.a)[0] - (float) this.entity.getLatencyPos(10, this.a)[0]);
+            float f7 = Mth.wrapDegrees((float) this.entity.getLatencyPos(5, this.a)[0] + (f6 / 2.0F));
             float f8 = f * ((float) Math.PI * 2F);
 
             for (int i = 0; i < 5; ++i) {
                 double[] adouble1 = this.entity.getLatencyPos(5 - i, this.a);
-                float f9 = (float) Math.cos((double) ((float) i * 0.45F + f8)) * 0.15F;
-                this.neck.yRot = Mth.rotWrap(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F) * 1.5F;
+                float f9 = (float) Math.cos((float) i * 0.45F + f8) * 0.15F;
+                this.neck.yRot = Mth.wrapDegrees((float) (adouble1[0] - adouble[0])) * ((float) Math.PI / 180F) * 1.5F;
                 this.neck.xRot = f9 + this.entity.getHeadPartYOffset(i, adouble, adouble1) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-                this.neck.zRot = -Mth.rotWrap(adouble1[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+                this.neck.zRot = -Mth.wrapDegrees((float) (adouble1[0] - (double) f7)) * ((float) Math.PI / 180F) * 1.5F;
                 this.neck.y = f3;
                 this.neck.z = f4;
                 this.neck.x = f2;
@@ -434,21 +425,21 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             this.head.z = f4;
             this.head.x = f2;
             double[] adouble2 = this.entity.getLatencyPos(0, this.a);
-            this.head.yRot = Mth.rotWrap(adouble2[0] - adouble[0]) * ((float) Math.PI / 180F);
-            this.head.xRot = Mth.rotWrap((double) this.entity.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-            this.head.zRot = -Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F);
+            this.head.yRot = Mth.wrapDegrees((float) (adouble2[0] - adouble[0])) * ((float) Math.PI / 180F);
+            this.head.xRot = Mth.wrapDegrees(this.entity.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+            this.head.zRot = -Mth.wrapDegrees((float) (adouble2[0] - (double) f7)) * ((float) Math.PI / 180F);
             this.head.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
             p_114281_.pushPose();
             p_114281_.translate(0.0D, 1.0D, 0.0D);
-            p_114281_.mulPose(Vector3f.ZP.rotationDegrees(-f6 * 1.5F));
+            p_114281_.mulPose(Axis.ZP.rotationDegrees(-f6 * 1.5F));
             p_114281_.translate(0.0D, -1.0D, 0.0D);
             this.body.zRot = 0.0F;
             this.body.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
             float f10 = f * ((float) Math.PI * 2F);
-            this.leftWing.xRot = 0.125F - (float) Math.cos((double) f10) * 0.2F;
+            this.leftWing.xRot = 0.125F - (float) Math.cos(f10) * 0.2F;
             this.leftWing.yRot = -0.25F;
-            this.leftWing.zRot = -((float) (Math.sin((double) f10) + 0.125D)) * 0.8F;
-            this.leftWingTip.zRot = (float) (Math.sin((double) (f10 + 2.0F)) + 0.5D) * 0.75F;
+            this.leftWing.zRot = -((float) (Math.sin(f10) + 0.125D)) * 0.8F;
+            this.leftWingTip.zRot = (float) (Math.sin(f10 + 2.0F) + 0.5D) * 0.75F;
             this.rightWing.xRot = this.leftWing.xRot;
             this.rightWing.yRot = -this.leftWing.yRot;
             this.rightWing.zRot = -this.leftWing.zRot;
@@ -466,9 +457,9 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             for (int j = 0; j < 12; ++j) {
                 adouble2 = this.entity.getLatencyPos(12 + j, this.a);
                 f11 += Mth.sin((float) j * 0.45F + f8) * 0.05F;
-                this.neck.yRot = (Mth.rotWrap(adouble2[0] - adouble[0]) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
+                this.neck.yRot = (Mth.wrapDegrees((float) (adouble2[0] - adouble[0])) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
                 this.neck.xRot = f11 + (float) (adouble2[1] - adouble[1]) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-                this.neck.zRot = Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+                this.neck.zRot = Mth.wrapDegrees((float) (adouble2[0] - (double) f7)) * ((float) Math.PI / 180F) * 1.5F;
                 this.neck.y = f3;
                 this.neck.z = f4;
                 this.neck.x = f2;

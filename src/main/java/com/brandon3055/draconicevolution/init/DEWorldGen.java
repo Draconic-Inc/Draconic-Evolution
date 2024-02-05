@@ -65,10 +65,10 @@ public class DEWorldGen {
 
         ConfigCategory worldGenTag = configTag.getCategory("World Gen");
 
-        DRACONIUM_ORE_PLACED_OVERWORLD = createOreFeature("draconium_overworld", ores, worldGenTag, 8, 0.1, -64, -32);
-        DRACONIUM_ORE_PLACED_NETHER = createOreFeature("draconium_nether", ores, worldGenTag, 18, 0.05, 0, 16);
-        DRACONIUM_ORE_PLACED_END = createOreFeature("draconium_end", ores, worldGenTag, 8, 3, 0, 70);
-        ISLAND_FEATURE = createChaosIslandFeature(worldGenTag);
+//        DRACONIUM_ORE_PLACED_OVERWORLD = createOreFeature("draconium_overworld", ores, worldGenTag, 8, 0.1, -64, -32);
+//        DRACONIUM_ORE_PLACED_NETHER = createOreFeature("draconium_nether", ores, worldGenTag, 18, 0.05, 0, 16);
+//        DRACONIUM_ORE_PLACED_END = createOreFeature("draconium_end", ores, worldGenTag, 8, 3, 0, 70);
+//        ISLAND_FEATURE = createChaosIslandFeature(worldGenTag);
     }
 
     private static RegistryObject<PlacedFeature> createOreFeature(String baseName, Supplier<List<OreConfiguration.TargetBlockState>> ores, ConfigCategory config, int size, double spawns, int minY, int maxY) {

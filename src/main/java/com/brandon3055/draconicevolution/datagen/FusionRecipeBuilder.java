@@ -31,7 +31,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     private List<FusionRecipe.FusionIngredient> ingredients = new ArrayList<>();
 
     protected FusionRecipeBuilder(ResourceLocation id, ItemStack result) {
-        super(DraconicAPI.FUSION_RECIPE_SERIALIZER, id, result);
+        super(DraconicAPI.FUSION_RECIPE_SERIALIZER.get(), id, result);
         this.result = result;
     }
 
@@ -231,7 +231,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
 
         @Override
         public RecipeSerializer<?> getType() {
-            return DraconicAPI.FUSION_RECIPE_SERIALIZER;
+            return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
         }
 
         @Override

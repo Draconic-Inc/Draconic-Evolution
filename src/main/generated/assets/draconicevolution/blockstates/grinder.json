@@ -1,77 +1,77 @@
 {
   "multipart": [
     {
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder",
+        "y": 180
+      },
       "when": {
         "facing": "south"
-      },
-      "apply": {
-        "model": "draconicevolution:block/grinder/grinder",
-        "y": 180
       }
     },
     {
-      "when": {
-        "facing": "south",
-        "active": "true"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder_eyes",
         "y": 180
+      },
+      "when": {
+        "active": "true",
+        "facing": "south"
       }
     },
     {
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder",
+        "y": 270
+      },
       "when": {
         "facing": "west"
-      },
-      "apply": {
-        "model": "draconicevolution:block/grinder/grinder",
-        "y": 270
       }
     },
     {
-      "when": {
-        "facing": "west",
-        "active": "true"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder_eyes",
         "y": 270
+      },
+      "when": {
+        "active": "true",
+        "facing": "west"
       }
     },
     {
-      "when": {
-        "facing": "north"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder"
+      },
+      "when": {
+        "facing": "north"
       }
     },
     {
-      "when": {
-        "facing": "north",
-        "active": "true"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder_eyes"
+      },
+      "when": {
+        "active": "true",
+        "facing": "north"
       }
     },
     {
-      "when": {
-        "facing": "east"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder",
         "y": 90
+      },
+      "when": {
+        "facing": "east"
       }
     },
     {
-      "when": {
-        "facing": "east",
-        "active": "true"
-      },
       "apply": {
         "model": "draconicevolution:block/grinder/grinder_eyes",
         "y": 90
+      },
+      "when": {
+        "active": "true",
+        "facing": "east"
       }
     }
   ]

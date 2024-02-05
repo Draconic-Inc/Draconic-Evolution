@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
@@ -33,18 +32,18 @@ public class ContainerDETile<T extends TileBCore> extends ContainerBCTile<T> imp
         initHost(tile, player);
     }
 
-    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<T> factory) {
-        super(type, windowId, player, extraData, factory);
-        initHost(tile, player);
-    }
+//    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
+//        super(type, windowId, player, extraData);
+//        initHost(tile, player);
+//    }
+//
+//    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, T tile) {
+//        super(type, windowId, player, tile);
+//        initHost(tile, player);
+//    }
 
     public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, T tile) {
         super(type, windowId, player, tile);
-        initHost(tile, player);
-    }
-
-    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, T tile, ContainerSlotLayout.LayoutFactory<T> factory) {
-        super(type, windowId, player, tile, factory);
         initHost(tile, player);
     }
 

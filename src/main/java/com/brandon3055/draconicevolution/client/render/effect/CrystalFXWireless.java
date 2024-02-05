@@ -3,12 +3,11 @@ package com.brandon3055.draconicevolution.client.render.effect;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
-import com.brandon3055.draconicevolution.client.DEMiscSprites;
+import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -23,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,7 +71,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             }
         }
 
-        int ps = Minecraft.getInstance().options.particles.getId();
+        int ps = Minecraft.getInstance().options.particles().get().getId();
         if (age % 2 == 0 && powerLevel > random.nextFloat() && (ps == 0 || (ps == 1 && random.nextInt(3) == 0) || (ps == 2 && random.nextInt(10) == 0))) {
             double travel = 50 + random.nextInt(50);
             travel *= (1.4F - powerLevel);
@@ -83,8 +83,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        int texIndex = (ClientEventHandler.elapsedTicks) % DEMiscSprites.ENERGY_PARTICLE.length;
-        TextureAtlasSprite sprite = DEMiscSprites.ENERGY_PARTICLE[texIndex];
+        int texIndex = (ClientEventHandler.elapsedTicks) % AtlasTextureHelper.ENERGY_PARTICLE.length;
+        TextureAtlasSprite sprite = AtlasTextureHelper.ENERGY_PARTICLE[texIndex];
         if (sprite == null) return;
         float minU = sprite.getU0();
         float maxU = sprite.getU1();
@@ -133,7 +133,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, DEMiscSprites.ATLAS_LOCATION);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

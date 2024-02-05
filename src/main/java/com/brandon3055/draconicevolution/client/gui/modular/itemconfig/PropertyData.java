@@ -19,8 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -86,7 +85,7 @@ public class PropertyData {
         if (isPropertyAvailable) {
             displayName = property.getDisplayName();
             toolTip = property.getToolTip();
-            if (toolTip instanceof TranslatableComponent && ((TranslatableComponent) toolTip).getKey().equals(toolTip.getString())) {
+            if (toolTip != null && toolTip.getContents() instanceof TranslatableContents tra && tra.getKey().equals(toolTip.getString())) {
                 toolTip = null;
             }
 

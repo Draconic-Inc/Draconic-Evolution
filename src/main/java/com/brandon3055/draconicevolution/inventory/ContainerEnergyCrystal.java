@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,7 +14,7 @@ import javax.annotation.Nullable;
 public class ContainerEnergyCrystal extends ContainerDETile<TileCrystalBase> {
 
     public ContainerEnergyCrystal(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.container_energy_crystal, windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_ENERGY_CRYSTAL.get(), windowId, playerInv, getClientTile(extraData));
     }
 
     public ContainerEnergyCrystal(@Nullable MenuType<?> type, int windowId, Inventory player, TileCrystalBase tile) {

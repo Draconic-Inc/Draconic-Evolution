@@ -17,7 +17,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;

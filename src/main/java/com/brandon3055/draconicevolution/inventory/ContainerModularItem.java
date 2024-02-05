@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.gui.modular.elements.GuiButton;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -14,10 +13,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,14 +49,14 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
     private ModuleHost moduleHost;
 
     public ContainerModularItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
-        super(DEContent.container_modular_item, windowId, player, extraData);
+        super(DEContent.MENU_MODULAR_ITEM.get(), windowId, player, extraData);
         this.slot = PlayerSlot.fromBuff(extraData);
         this.onContainerOpen();
         this.moduleGrid = new ModuleGrid(this, player);
     }
 
-    public ContainerModularItem(int windowId, Inventory player, PlayerSlot itemSlot, ContainerSlotLayout.LayoutFactory<TileBCore> factory) {
-        super(DEContent.container_modular_item, windowId, player, factory);
+    public ContainerModularItem(int windowId, Inventory player, PlayerSlot itemSlot) {
+        super(DEContent.MENU_MODULAR_ITEM.get(), windowId, player);
         this.slot = itemSlot;
         this.onContainerOpen();
         this.moduleGrid = new ModuleGrid(this, player);
@@ -69,17 +70,17 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
         ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
-            NetworkHooks.openGui(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
+            NetworkHooks.openScreen(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
             return;
         } else {
             PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
             if (slot != null) {
-                NetworkHooks.openGui(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
+                NetworkHooks.openScreen(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;
             }
         }
 
-        sender.sendMessage(Component.translatable("modular_item.draconicevolution.error.no_modular_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        sender.sendSystemMessage(Component.translatable("modular_item.draconicevolution.error.no_modular_items").withStyle(ChatFormatting.RED));
     }
 
     @Override
@@ -186,9 +187,9 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
                             else if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
                             else if (slotId >= 36) playerSlot = new PlayerSlot(slotId - 36, PlayerSlot.EnumInvCategory.ARMOR);
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
-                            NetworkHooks.openGui((ServerPlayer) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
+                            NetworkHooks.openScreen((ServerPlayer) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
                         } else {
-                            GuiButton.playGenericClick();
+                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         }
                         return;
                     }
@@ -218,7 +219,7 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
         @Nullable
         @Override
         public AbstractContainerMenu createMenu(int menuID, Inventory playerInventory, Player playerEntity) {
-            return new ContainerModularItem(menuID, playerInventory, slot, GuiLayoutFactories.MODULAR_ITEM_LAYOUT);
+            return new ContainerModularItem(menuID, playerInventory, slot);
         }
     }
 }

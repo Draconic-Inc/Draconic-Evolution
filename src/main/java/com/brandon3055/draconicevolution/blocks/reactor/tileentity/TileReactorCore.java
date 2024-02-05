@@ -38,7 +38,6 @@ import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -47,7 +46,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -606,8 +604,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             BlockPos pos = data.readPos();
             BlockEntity tile = level.getBlockEntity(pos);
             Screen screen = Minecraft.getInstance().screen;
-            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
-                ((GuiReactor) screen).component = (TileReactorComponent) tile;
+            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor.Screen) {
+                ((GuiReactor.Screen) screen).component = (TileReactorComponent) tile;
             }
         }
     }

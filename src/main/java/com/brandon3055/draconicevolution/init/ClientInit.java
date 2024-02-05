@@ -27,6 +27,7 @@ import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.covers1624.quack.util.CrashLock;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -35,12 +36,13 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -58,8 +60,8 @@ public class ClientInit {
     private static final CrashLock LOCK = new CrashLock("Already Initialized.");
     private static final ModelRegistryHelper MODEL_HELPER = new ModelRegistryHelper();
 
-    public static final DeferredRegister<AbstractHudElement> HUDS = DeferredRegister.create(HudManager.HUD_REGISTRY, MODID);
-    public static final RegistryObject<AbstractHudElement> SHIELD_HUD = HUDS.register("shield_hud", ShieldHudElement::new);
+    public static final DeferredRegister<AbstractHudElement> HUDS = DeferredRegister.create(HudManager.HUD_TYPE, MODID);
+    public static final RegistryObject<ShieldHudElement> SHIELD_HUD = HUDS.register("shield_hud", ShieldHudElement::new);
 
     public static void init() {
         LOCK.lock();
@@ -79,6 +81,7 @@ public class ClientInit {
         CustomBossInfoHandler.init();
         OverlayRenderHandler.init();
         DEShaders.init();
+        ClientEventHandler.init();
     }
 
     private static void clientSetupEvent(FMLClientSetupEvent event) {
@@ -87,13 +90,13 @@ public class ClientInit {
         setupRenderLayers();
 
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         KeyBindings.init();
     }
 
     public static void onResourceReload(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(ModuleTextures.getAtlasHolder());
         event.registerReloadListener(DEGuiTextures.getAtlasHolder());
+        AtlasTextureHelper.onResourceReload(event);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -131,23 +134,23 @@ public class ClientInit {
     }
 
     private static void registerGuiFactories() {
-        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator::new);
-        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder::new);
-        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest::new);
-        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore::new);
-        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), GuiModularItem::new);
-        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), GuiConfigurableItem::new);
-        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor::new);
-
-        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator::new);
-        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter::new);
-        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore::new);
-        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate::new);
-        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), GuiEntityDetector::new);
-        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), GuiEnergyTransfuser::new);
+//        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator.Screen::new);
+//        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder.Screen::new);
+//        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest.Screen::new);
+//        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore.Screen::new);
+//        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), GuiModularItem.Screen::new);
+//        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), GuiConfigurableItem.Screen::new);
+//        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor.Screen::new);
+//
+//        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator.Screen::new);
+//        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter.Screen::new);
+//        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore.Screen::new);
+//        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate.Screen::new);
+//        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), GuiEntityDetector.Screen::new);
+//        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), GuiEnergyTransfuser.Screen::new);
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings ("ConstantConditions")
     private static void registerItemRenderers() {
         MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_SHARD.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_SHARD.get()));
         MODEL_HELPER.register(new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(DEContent.CHAOS_FRAG_LARGE.get()), "inventory"), new RenderItemChaosShard(DEContent.CHAOS_FRAG_LARGE.get()));
@@ -220,7 +223,7 @@ public class ClientInit {
         ItemBlockRenderTypes.setRenderLayer(DEContent.DEEPSLATE_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings ({"rawtypes", "unchecked"})
     private static void onAddRenderLayers(EntityRenderersEvent.AddLayers event) {
         for (String skin : event.getSkins()) {
             LivingEntityRenderer renderer = event.getSkin(skin);

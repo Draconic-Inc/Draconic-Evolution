@@ -147,7 +147,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             validateStructure();
-            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
             return InteractionResult.SUCCESS;
         }
 
@@ -171,7 +171,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_ENERGY_CORE, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_ENERGY_CORE.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

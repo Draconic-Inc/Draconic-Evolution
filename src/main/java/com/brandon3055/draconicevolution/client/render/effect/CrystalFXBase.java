@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -52,15 +52,15 @@ public abstract class CrystalFXBase<T extends BlockEntity & IENetEffectTile> ext
     }
 
     protected Vector3f[] getRenderVectors(Camera renderInfo, float viewX, float viewY, float viewZ, float scale) {
-        Quaternion quaternion;
+        Quaternionf quaternion;
         quaternion = renderInfo.rotation();
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-        vector3f1.transform(quaternion);
+        vector3f1.rotate(quaternion);
         Vector3f[] renderVector = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = renderVector[i];
-            vector3f.transform(quaternion);
+            vector3f.rotate(quaternion);
             vector3f.mul(scale);
             vector3f.add(viewX, viewY, viewZ);
         }

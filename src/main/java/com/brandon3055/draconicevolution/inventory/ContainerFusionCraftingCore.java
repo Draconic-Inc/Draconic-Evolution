@@ -11,10 +11,10 @@ import net.minecraft.world.entity.player.Inventory;
 public class ContainerFusionCraftingCore extends ContainerDETile<TileFusionCraftingCore> {
 
     public ContainerFusionCraftingCore(int windowId, Inventory player, FriendlyByteBuf extraData) {
-        super(DEContent.container_fusion_crafting_core, windowId, player, extraData);
+        super(DEContent.MENU_FUSION_CRAFTING_CORE.get(), windowId, player, extraData);
     }
 
     public ContainerFusionCraftingCore(int windowId, Inventory player, TileFusionCraftingCore tile) {
-        super(DEContent.container_fusion_crafting_core, windowId, player, tile);
+        super(DEContent.MENU_FUSION_CRAFTING_CORE.get(), windowId, player, tile);
     }
 }

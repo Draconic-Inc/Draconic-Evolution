@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +24,8 @@ public class OverlayRenderHandler {
         MinecraftForge.EVENT_BUS.addListener(OverlayRenderHandler::renderLevelStage);
     }
 
-    public static void renderLevelStage(RenderLevelLastEvent event) {
-        if (event.isCanceled()) {
+    public static void renderLevelStage(RenderLevelStageEvent event) {
+        if (event.isCanceled() || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
             return;
         }
         ClientEventHandler.MODELVIEW.set(event.getPoseStack().last().pose());

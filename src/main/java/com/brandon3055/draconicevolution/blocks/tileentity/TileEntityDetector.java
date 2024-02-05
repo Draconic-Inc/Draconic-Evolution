@@ -184,7 +184,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
 
         //endregion
 
-        IntParticleData data = new IntParticleData(DEParticles.spark,
+        IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                 0, 255, 255, //Colour
                 (int) (0.4F * (level.random.nextFloat() + 0.1) * 100), //Scale
                 (int) (0.15F*100), //Spark scale
@@ -199,7 +199,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
         double z = i % 2;
 
         boolean advanced = isAdvanced();
-        data = new IntParticleData(DEParticles.spark,
+        data = new IntParticleData(DEParticles.SPARK.get(),
                 advanced ? 255 : 76, //R
                 advanced ? 178 : 0,  //G
                 advanced ? 0 : 255,  //B

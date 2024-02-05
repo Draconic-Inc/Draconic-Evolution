@@ -1,23 +1,17 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
@@ -29,9 +23,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.Tesselator;
-
-import codechicken.lib.data.MCDataInput;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -52,6 +43,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
+
+import javax.annotation.Nullable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -344,7 +339,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         if (timer > expandStart && timer < ascendStart) {
             for (int i = 0; i < 10; i++) {
                 Direction dir = Direction.values()[2 + level.random.nextInt(4)];
-                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.spark,
+                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
                         0, //R
                         127,  //G
                         255,  //B
@@ -363,7 +358,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
         if (timer == ascendStart) {
             for (int i = 0; i < 100; i++) {
-                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.spark,
+                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
                         0, //R
                         127,  //G
                         255,  //B
@@ -489,7 +484,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 //			}
 //		}
 
-        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.spark,
+        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
                 255, //R
                 127,  //G
                 0,  //B
@@ -502,7 +497,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         level.addParticle(data, pos.x, pos.y, pos.z, 0.002D, 0.04, 0.002D);
 
         Direction dir = Direction.values()[2 + level.random.nextInt(4)];
-        data = new IntParticleType.IntParticleData(DEParticles.spark,
+        data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
                 255, //R
                 127,  //G
                 255,  //B
@@ -569,7 +564,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
-        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.spark,
+        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
                 76, //R
                 0,  //G
                 255,  //B
@@ -654,7 +649,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.CELESTIAL_MANIPULATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

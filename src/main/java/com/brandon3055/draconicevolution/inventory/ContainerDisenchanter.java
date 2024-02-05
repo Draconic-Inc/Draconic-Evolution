@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 public class ContainerDisenchanter extends ContainerBCTile<TileDisenchanter> {
 
     public ContainerDisenchanter(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.container_disenchanter, windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_DISENCHANTER.get(), windowId, playerInv, getClientTile(extraData));
     }
 
     public ContainerDisenchanter(@Nullable MenuType<?> type, int windowId, Inventory player, TileDisenchanter tile) {

@@ -310,7 +310,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
                 spawn.add((level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition).subtract(coreOffset.get());
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_CORE.get(), 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
         } else {
             if (coreDirection.get().getAxis() == Direction.Axis.Z) {
                 spawn.add(offsetX * 1.2, offsetY * 1.2, level.random.nextBoolean() ? -0.38 : 0.38);
@@ -320,7 +320,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
                 spawn.add(level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_CORE.get(), 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
         }
     }
 ////

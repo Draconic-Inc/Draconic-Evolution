@@ -35,7 +35,7 @@ public class ContainerDraconiumChest extends ContainerDETile<TileDraconiumChest>
     private final ResultContainer resultInventory = new ResultContainer();
 
     public ContainerDraconiumChest(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.container_draconium_chest, windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_DRACONIUM_CHEST.get(), windowId, playerInv, getClientTile(extraData));
     }
 
     public ContainerDraconiumChest(@Nullable MenuType<?> type, int windowId, Inventory playerInv, TileDraconiumChest tile) {
@@ -69,15 +69,15 @@ public class ContainerDraconiumChest extends ContainerDETile<TileDraconiumChest>
     }
 
 
-    protected void slotChangedCraftingGrid(int containerID, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory) {
-        if (!world.isClientSide) {
+    protected void slotChangedCraftingGrid(int containerID, Level level, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory) {
+        if (!level.isClientSide) {
             ServerPlayer serverplayerentity = (ServerPlayer) player;
             ItemStack itemstack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+            Optional<CraftingRecipe> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, level);
             if (optional.isPresent()) {
                 CraftingRecipe icraftingrecipe = optional.get();
-                if (resultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-                    itemstack = icraftingrecipe.assemble(craftingInventory);
+                if (resultInventory.setRecipeUsed(level, serverplayerentity, icraftingrecipe)) {
+                    itemstack = icraftingrecipe.assemble(craftingInventory, level.registryAccess());
                 }
             }
 

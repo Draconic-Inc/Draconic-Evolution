@@ -159,7 +159,7 @@ public class ExplosionFX extends Particle {
         }
 
         if (age == 10) {
-            level.playLocalSound(x, y, z, DESounds.fusionExplosion, SoundSource.PLAYERS, 100, 0.9F, false);
+            level.playLocalSound(x, y, z, DESounds.FUSION_EXPLOSION.get(), SoundSource.PLAYERS, 100, 0.9F, false);
         }
 
         this.age++;

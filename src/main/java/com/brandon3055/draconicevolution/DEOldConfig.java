@@ -15,7 +15,6 @@ import java.util.function.Consumer;
  * Created by brandon3055 on 24/3/2016.
  * This class holds all of the config values for Draconic Evolution
  */
-//@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @Deprecated
 public class DEOldConfig {
 

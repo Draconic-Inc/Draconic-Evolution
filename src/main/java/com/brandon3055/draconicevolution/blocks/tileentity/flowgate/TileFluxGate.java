@@ -66,7 +66,7 @@ public class TileFluxGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this);
     }
 
     @Override

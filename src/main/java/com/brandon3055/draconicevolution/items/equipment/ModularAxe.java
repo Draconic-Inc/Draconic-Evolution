@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +26,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool, IDraconicDamage {
+public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -46,11 +44,6 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     @Override
     public DETier getItemTier() {
         return itemTier;
-    }
-
-    @Override
-    public TechLevel getTechLevel(@Nullable ItemStack stack) {
-        return techLevel;
     }
 
     @Override

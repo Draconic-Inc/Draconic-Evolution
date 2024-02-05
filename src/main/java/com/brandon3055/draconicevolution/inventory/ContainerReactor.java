@@ -25,7 +25,7 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
     public boolean fuelSlots = false;
 
     public ContainerReactor(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.container_reactor, windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_REACTOR.get(), windowId, playerInv, getClientTile(extraData));
     }
 
     public ContainerReactor(@Nullable MenuType<?> type, int windowId, Inventory player, TileReactorCore tile) {
@@ -123,13 +123,13 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
         if (stack.isEmpty()) {
             return 0;
         }
-        else if (stack.getItem() == DEContent.block_draconium_awakened.asItem()) {
+        else if (stack.getItem() == DEContent.AWAKENED_DRACONIUM_BLOCK.get().asItem()) {
             return stack.getCount() * 1296;
         }
-        else if (stack.getItem() == DEContent.ingot_draconium_awakened) {
+        else if (stack.getItem() == DEContent.INGOT_DRACONIUM_AWAKENED.get()) {
             return stack.getCount() * 144;
         }
-        else if (stack.getItem() == DEContent.nugget_draconium_awakened) {
+        else if (stack.getItem() == DEContent.NUGGET_DRACONIUM_AWAKENED.get()) {
             return stack.getCount() * 16;
         }
         return 0;
@@ -139,13 +139,13 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
         if (stack.isEmpty()) {
             return 0;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_large) {
+        else if (stack.getItem() == DEContent.CHAOS_FRAG_LARGE.get()) {
             return stack.getCount() * 1296;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_medium) {
+        else if (stack.getItem() == DEContent.CHAOS_FRAG_MEDIUM.get()) {
             return stack.getCount() * 144;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_small) {
+        else if (stack.getItem() == DEContent.CHAOS_FRAG_SMALL.get()) {
             return stack.getCount() * 16;
         }
         return 0;
@@ -188,13 +188,13 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
                 int nugget = ((fuel % 1296) % 144) / 16;
 
                 if (index == 0 && block > 0) {
-                    return new ItemStack(DEContent.block_draconium_awakened, block);
+                    return new ItemStack(DEContent.AWAKENED_DRACONIUM_BLOCK.get(), block);
                 }
                 else if (index == 1 && ingot > 0) {
-                    return new ItemStack(DEContent.ingot_draconium_awakened, ingot);
+                    return new ItemStack(DEContent.INGOT_DRACONIUM_AWAKENED.get(), ingot);
                 }
                 else if (index == 2 && nugget > 0) {
-                    return new ItemStack(DEContent.nugget_draconium_awakened, nugget);
+                    return new ItemStack(DEContent.NUGGET_DRACONIUM_AWAKENED.get(), nugget);
                 }
             }
             else {
@@ -204,13 +204,13 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
                 int nugget = ((chaos % 1296) % 144) / 16;
 
                 if (index == 3 && block > 0) {
-                    return new ItemStack(DEContent.chaos_frag_large, block);
+                    return new ItemStack(DEContent.CHAOS_FRAG_LARGE.get(), block);
                 }
                 else if (index == 4 && ingot > 0) {
-                    return new ItemStack(DEContent.chaos_frag_medium, ingot);
+                    return new ItemStack(DEContent.CHAOS_FRAG_MEDIUM.get(), ingot);
                 }
                 else if (index == 5 && nugget > 0) {
-                    return new ItemStack(DEContent.chaos_frag_small, nugget);
+                    return new ItemStack(DEContent.CHAOS_FRAG_SMALL.get(), nugget);
                 }
             }
 

@@ -34,8 +34,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -460,7 +460,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     //Render Utils
 
     @OnlyIn(Dist.CLIENT)
-    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @org.jetbrains.annotations.Nullable String text1, @org.jetbrains.annotations.Nullable String text2) {
+    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable String text1, @Nullable String text2) {
         double diameter = Math.min(width, height) * 0.425;
 
         render.rect(x, y, width, height, 0x60FF0000);

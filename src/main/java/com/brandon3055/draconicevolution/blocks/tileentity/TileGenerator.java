@@ -229,7 +229,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     private void spawnGrillParticle(RandomSource rand, double x, double y, double z) {
         level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         if (mode.get() != Mode.PERFORMANCE_PLUS && rand.nextInt(8) == 0) {
-            level.addParticle(new IntParticleData(DEParticles.flame, 127), x, y, z, 0, 0, 0);
+            level.addParticle(new IntParticleData(DEParticles.FLAME.get(), 127), x, y, z, 0, 0, 0);
         }
     }
 
@@ -239,14 +239,14 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
             level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
             level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
         } else {
-            level.addParticle(new IntParticleData(DEParticles.flame, 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
+            level.addParticle(new IntParticleData(DEParticles.FLAME.get(), 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
         }
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_GENERATOR.get(), currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.GENERATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_GENERATOR.get(), currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

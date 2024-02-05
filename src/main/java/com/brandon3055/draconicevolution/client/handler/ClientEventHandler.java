@@ -1,53 +1,44 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
-import codechicken.lib.render.shader.ShaderObject;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.client.DEShaders;
-import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.Viewport;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.Random;
+
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -73,16 +64,30 @@ public class ClientEventHandler {
                     .createCompositeState(false)
     );
 
-    @SubscribeEvent
-    public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
-        if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            mc = Minecraft.getInstance();
-            updateExplosionAnimation(mc, event.getMatrixStack(), event.getWindow(), mc.getFrameTime());
-        }
+    public static void init() {
+        mc = Minecraft.getInstance();
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(EventPriority.LOW, ClientEventHandler::registerOverlays);
+        MinecraftForge.EVENT_BUS.addListener(ClientEventHandler::tickEnd);
     }
 
-    @SubscribeEvent
-    public void tickEnd(TickEvent.ClientTickEvent event) {
+    private static void registerOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerBelowAll("explosion_overlay", (gui, graphics, partialTick, screenWidth, screenHeight) -> {
+            if (explosionPos != null) {
+                updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), mc.getFrameTime());
+            }
+        });
+    }
+
+//    @SubscribeEvent
+//    public void renderGameOverlay(RenderGuiOverlayEvent.Post event) {
+//        if (explosionPos != null && event.getOverlay() == RenderGameOverlayEvent.ElementType.ALL) {
+//            mc = Minecraft.getInstance();
+//            updateExplosionAnimation(mc, event.getMatrixStack(), event.getWindow(), mc.getFrameTime());
+//        }
+//    }
+
+    public static void tickEnd(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != LogicalSide.CLIENT) {
             return;
         }
@@ -286,7 +291,7 @@ public class ClientEventHandler {
         }
     }
 
-    private void updateExplosion() {
+    private static void updateExplosion() {
         if (Minecraft.getInstance().isPaused()) {
             return;
         }
@@ -309,7 +314,7 @@ public class ClientEventHandler {
 //        explosionAnimation = explosionTime * 0.05;
     }
 
-    private void updateExplosionAnimation(Minecraft mc, PoseStack poseStack, Window window, float partialTick) {
+    private static void updateExplosionAnimation(Minecraft mc, GuiRender render, Window window, float partialTick) {
         MultiBufferSource.BufferSource buffers = RenderUtils.getGuiBuffers();
 
         if (/*true || */explosionRetreating) {
@@ -322,7 +327,7 @@ public class ClientEventHandler {
                 alpha = (float) explosionAnimation + (partialTick * 0.05F);
             }
             if (alpha > 1) alpha = 1;
-            GuiHelper.drawRect(buffers, poseStack, 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
+            render.rect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
             RenderUtils.endBatch(buffers);
 
         } else {
@@ -338,7 +343,7 @@ public class ClientEventHandler {
             DEShaders.explosionFlashScreenPos.glUniform2f(screenX, screenY);
             DEShaders.explosionFlashIntensity.glUniform1f((float) explosionAnimation);
             DEShaders.explosionFlashScreenSize.glUniform2f(window.getScreenWidth(), window.getScreenHeight());
-            GuiHelperOld.drawColouredRect(buffers.getBuffer(explosionFlashType), 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0xFFFFFFFF, 0);
+            render.rect(explosionFlashType, 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0xFFFFFFFF);
             RenderUtils.endBatch(buffers);
         }
     }
@@ -352,11 +357,11 @@ public class ClientEventHandler {
         if (o.w() == 0) {
             return Vector3.ZERO.copy();
         }
-        o.setW((1.0F / o.w()) * 0.5F);
+        o.w = 1.0F / o.w() * 0.5F;
 
-        o.setX(o.x() * o.w() + 0.5F);
-        o.setY(o.y() * o.w() + 0.5F);
-        o.setZ(o.z() * o.w() + 0.5F);
+        o.x = o.x() * o.w() + 0.5F;
+        o.y = o.y() * o.w() + 0.5F;
+        o.z = o.z() * o.w() + 0.5F;
 
         Vector3 winPos = new Vector3();
         winPos.z = o.z();

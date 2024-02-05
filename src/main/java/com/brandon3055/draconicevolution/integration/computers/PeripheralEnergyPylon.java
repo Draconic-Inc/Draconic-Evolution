@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
+import com.brandon3055.brandonscore.api.power.IOInfo;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
+import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import com.brandon3055.brandonscore.api.power.IOInfo;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
-import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.Capabilities;
-import dan200.computercraft.shared.util.CapabilityUtil;
-import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	

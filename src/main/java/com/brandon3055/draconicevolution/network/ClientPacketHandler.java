@@ -133,7 +133,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (entity != null) {
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
-                ClientInit.hudElement.popTotem();
+                ClientInit.SHIELD_HUD.get().popTotem();
             }
         }
     }

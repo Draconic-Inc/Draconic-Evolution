@@ -2,8 +2,11 @@ package com.brandon3055.draconicevolution.mixin;
 
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,19 +43,19 @@ public abstract class ServerEntityMixin {
     }
 
     @Redirect(
-            method = "sendPairingData(Ljava/util/function/Consumer;)V",
+            method = "sendPairingData(Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V",
                     ordinal = 3
             )
     )
-    public void onPairingData(Consumer<Object> consumer, Object t) {
+    public void onPairingData(Consumer<Object> instance, Object t) {
         if (!(entity instanceof DraconicArrowEntity)) {
-            consumer.accept(t);
+            instance.accept(t);
             return;
         }
-        consumer.accept(BCoreNetwork.sendEntityVelocity(entity, false));
+        instance.accept(BCoreNetwork.sendEntityVelocity(entity, false));
     }
 
     @Redirect(

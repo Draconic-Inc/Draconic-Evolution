@@ -25,6 +25,7 @@ public class DEDamage {
 
     public static ResourceKey<DamageType> FUSION_EXPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "fusion_explosion"));
 //    public static ResourceKey<DamageType> ADMIN_KILL = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "admin_kill"));
+    public static ResourceKey<DamageType> KILL = DamageTypes.GENERIC_KILL;
     public static ResourceKey<DamageType> CRYSTAL_MOVE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "crystal_move"));
     public static ResourceKey<DamageType> CHAOS_IMPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "chaos_implosion"));
     public static ResourceKey<DamageType> GUARDIAN = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "guardian"));

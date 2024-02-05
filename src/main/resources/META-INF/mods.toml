@@ -11,7 +11,7 @@ license="CoFH \"Don't Be a Jerk\" License"
 [[dependencies.draconicevolution]]
 	modId="forge"
 	mandatory=true
-	versionRange="[${forge_version},)"
+	versionRange="[${neo_version},)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]

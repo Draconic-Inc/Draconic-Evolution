@@ -421,7 +421,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_GRINDER.get(), currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+        return new ContainerDETile<>(DEContent.MENU_GRINDER.get(), currentWindowIndex, playerInventory, this);
     }
 
     @Override

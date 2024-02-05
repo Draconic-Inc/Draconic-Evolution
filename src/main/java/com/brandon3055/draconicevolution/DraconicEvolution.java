@@ -40,6 +40,7 @@ public class DraconicEvolution {
         DEModules.init();
         DESounds.init();
         DEParticles.init();
+        DECreativeTabs.init();
         DraconicNetwork.init();
         EquipmentManager.initialize();
         DECommands.init();

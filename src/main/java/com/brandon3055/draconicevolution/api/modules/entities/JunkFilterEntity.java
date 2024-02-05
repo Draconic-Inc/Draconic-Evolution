@@ -29,7 +29,7 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
             double xPos = x + ((i % 3) * slotXSize);
             //noinspection IntegerDivisionInFloatingPointContext
             double yPos = y + ((i / 3) * slotYSize);
-            slots.add(new Slot(i, xPos, yPos, slotXSize, slotYSize));
+            slots.add(new Slot(i, xPos, yPos, slotXSize));
         }
         return slots;
     }

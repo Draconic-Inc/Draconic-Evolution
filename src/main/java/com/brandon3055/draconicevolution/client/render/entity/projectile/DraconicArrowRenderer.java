@@ -6,9 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -18,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import java.util.Random;
 
@@ -32,15 +32,15 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
 
     public void render(DraconicArrowEntity arrowEntity, float entityYaw, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLightIn) {
         mStack.pushPose();
-        mStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.getYRot()) - 90.0F));
-        mStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.getXRot())));
+        mStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.getYRot()) - 90.0F));
+        mStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.getXRot())));
         float f9 = (float) arrowEntity.shakeTime - partialTicks;
         if (f9 > 0.0F) {
             float f10 = -Mth.sin(f9 * 3.0F) * f9;
-            mStack.mulPose(Vector3f.ZP.rotationDegrees(f10));
+            mStack.mulPose(Axis.ZP.rotationDegrees(f10));
         }
 
-        mStack.mulPose(Vector3f.XP.rotationDegrees(45.0F));
+        mStack.mulPose(Axis.XP.rotationDegrees(45.0F));
         mStack.scale(0.05625F, 0.05625F, 0.05625F);
         mStack.translate(-4.0D, 0.0D, 0.0D);
         VertexConsumer ivertexbuilder = getter.getBuffer(RenderType.entityCutout(this.getTextureLocation(arrowEntity)));
@@ -57,7 +57,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLightIn);
 
         for (int j = 0; j < 4; ++j) {
-            mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+            mStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLightIn);
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLightIn);
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLightIn);

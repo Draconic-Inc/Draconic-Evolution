@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.modules.items.EnderCollectionModule
 import com.brandon3055.draconicevolution.api.modules.items.EnergyLinkModuleItem;
 import com.brandon3055.draconicevolution.api.modules.items.EnergyModuleItem;
 import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
+import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
 
@@ -39,6 +41,7 @@ public class DEModules {
         eventBus.addListener(DEModules::createRegistries);
         MODULES.register(eventBus);
         ITEMS.register(eventBus);
+        eventBus.addListener(DEModules::registerEvent);
     }
 
     public static void createRegistries(NewRegistryEvent event) {
@@ -46,6 +49,10 @@ public class DEModules {
                         .setName(MODULE_KEY.location())
                         .disableSaving(),
                 e -> REGISTRY = e);
+    }
+
+    public static void registerEvent(FMLCommonSetupEvent event) {
+        REGISTRY.getValues().forEach(module -> ((BaseModule<?>)module).reloadData());
     }
 
     //@formatter:off

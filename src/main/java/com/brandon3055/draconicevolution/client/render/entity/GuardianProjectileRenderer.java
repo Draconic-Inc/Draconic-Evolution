@@ -4,12 +4,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -17,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectileEntity> {
@@ -37,7 +36,7 @@ public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectil
       matrixStackIn.pushPose();
       matrixStackIn.scale(2.0F, 2.0F, 2.0F);
       matrixStackIn.mulPose(this.entityRenderDispatcher.cameraOrientation());
-      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+      matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F));
       PoseStack.Pose matrixstack$entry = matrixStackIn.last();
       Matrix4f matrix4f = matrixstack$entry.pose();
       Matrix3f matrix3f = matrixstack$entry.normal();

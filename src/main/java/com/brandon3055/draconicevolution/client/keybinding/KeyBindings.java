@@ -5,10 +5,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegistryManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Supplier;
@@ -52,23 +55,21 @@ public class KeyBindings {
 //        hudConfig         = new KeyBinding("key.tool_config",         new CustomContext(IN_GAME, () -> hudConfig),           InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,         DraconicEvolution.MODNAME);
         //@formatter:on
 
-        ClientRegistry.registerKeyBinding(placeItem);
-        ClientRegistry.registerKeyBinding(toolConfig);
-        ClientRegistry.registerKeyBinding(toolModules);
-        ClientRegistry.registerKeyBinding(toggleFlight);
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus.addListener(KeyBindings::registerKeyMappings);
+    }
 
-        ClientRegistry.registerKeyBinding(toggleMagnet);
-        ClientRegistry.registerKeyBinding(dislocatorTeleport);
-        ClientRegistry.registerKeyBinding(dislocatorBlink);
-        ClientRegistry.registerKeyBinding(dislocatorGui);
-        ClientRegistry.registerKeyBinding(dislocatorUp);
-        ClientRegistry.registerKeyBinding(dislocatorDown);
-
-
-//        ClientRegistry.registerKeyBinding(hudConfig);
-//        ClientRegistry.registerKeyBinding(cycleDigAOE);
-//        ClientRegistry.registerKeyBinding(cycleAttackAOE);
-
+    private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(placeItem);
+        event.register(toolConfig);
+        event.register(toolModules);
+        event.register(toggleFlight);
+        event.register(toggleMagnet);
+        event.register(dislocatorTeleport);
+        event.register(dislocatorBlink);
+        event.register(dislocatorGui);
+        event.register(dislocatorUp);
+        event.register(dislocatorDown);
     }
 
 

@@ -25,10 +25,6 @@ public class DEGuiTextures {
         return ATLAS_HOLDER;
     }
 
-    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(getAtlasHolder());
-    }
-
     /**
      * Returns a cached Material for the specified gui texture.
      * Warning: Do not use this if you intend to use the material with multiple render types.

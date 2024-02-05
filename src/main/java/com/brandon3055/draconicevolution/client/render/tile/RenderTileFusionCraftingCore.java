@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.render.EffectLib;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler.IngredFX;
@@ -37,6 +38,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static com.brandon3055.draconicevolution.client.AtlasTextureHelper.*;
 
 public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFusionCraftingCore> {
 
@@ -74,33 +77,10 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
         }
     }
 
-    TextureAtlasSprite[] ENERGY_PARTICLE = new TextureAtlasSprite[5];
-    TextureAtlasSprite[] SPARK_PARTICLE = new TextureAtlasSprite[7];
-    TextureAtlasSprite[] SPELL_PARTICLE = new TextureAtlasSprite[7];
-    TextureAtlasSprite[] MIXED_PARTICLE;
-
     private void renderEffects(TileFusionCraftingCore core, FusionTileFXHandler handler, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packetLight, int packetOverlay) {
         Minecraft mc = Minecraft.getInstance();
         Camera renderInfo = mc.gameRenderer.getMainCamera();
         mStack.translate(0.5, 0.5, 0.5);
-
-        //TODO, Make this less bad, assuming it works at all.
-        Function<ResourceLocation, TextureAtlasSprite> atlas = mc.getTextureAtlas(TextureAtlas.LOCATION_PARTICLES);
-        ENERGY_PARTICLE = new TextureAtlasSprite[5];
-        SPARK_PARTICLE = new TextureAtlasSprite[7];
-        SPELL_PARTICLE = new TextureAtlasSprite[7];
-
-        for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
-            ENERGY_PARTICLE[i] = atlas.apply(new ResourceLocation(DraconicEvolution.MODID, "particle/energy_" + i));
-        }
-        for (int i = 0; i < SPARK_PARTICLE.length; i++) {
-            SPARK_PARTICLE[i] = atlas.apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spark_" + i));
-        }
-        for (int i = 0; i < SPELL_PARTICLE.length; i++) {
-            SPELL_PARTICLE[i] = atlas.apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spell_" + i));
-        }
-        MIXED_PARTICLE = Stream.concat(Arrays.stream(SPARK_PARTICLE), Arrays.stream(SPELL_PARTICLE)).toArray(TextureAtlasSprite[]::new);
-
 
         ParticleStatus pStatus = mc.options.particles().get();
         double particleSetting = pStatus == ParticleStatus.ALL ? 1 : pStatus == ParticleStatus.DECREASED ? 2 / 3D : 1 / 3D;

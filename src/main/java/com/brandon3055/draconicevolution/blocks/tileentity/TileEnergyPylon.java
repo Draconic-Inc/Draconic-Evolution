@@ -337,7 +337,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             double randZ = level.random.nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
@@ -364,13 +364,13 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+                level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 

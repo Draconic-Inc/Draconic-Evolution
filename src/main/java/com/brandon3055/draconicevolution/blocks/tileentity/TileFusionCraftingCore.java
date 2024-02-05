@@ -96,7 +96,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         }
 
         updateInjectors();
-        IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
+        IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
         setActiveRecipe(recipe);
         if (recipe == null || !recipe.canStartCraft(this, level, null)) {
             return;
@@ -130,7 +130,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 double velX = (level.random.nextDouble() - 0.5) * 0.1;
                 double velY = (level.random.nextDouble() - 0.5) * 0.1;
                 double velZ = (level.random.nextDouble() - 0.5) * 0.1;
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_basic, 0, 255, 255, 64), getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, velX, velY, velZ);
+                level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_BASIC.get(), 0, 255, 255, 64), getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, velX, velY, velZ);
             }
         }
     }
@@ -225,7 +225,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 cancelCraft();
             }
         } else if (!level.isClientSide) {
-            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
+            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
             if (recipe != null) {
                 recipe.canStartCraft(this, level, e -> setFusionStatus(-1, e));
             } else {
@@ -252,7 +252,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerFusionCraftingCore(currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.FUSION_CRAFTING_CORE);
+        return new ContainerFusionCraftingCore(currentWindowIndex, player.getInventory(), this);
     }
 
     @Nonnull
@@ -386,7 +386,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (crafting.get()) {
             return 1 + getFusionState().ordinal();
         } else {
-            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
+            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
             if (recipe != null && recipe.canStartCraft(this, level, null)) {
                 return 1;
             }

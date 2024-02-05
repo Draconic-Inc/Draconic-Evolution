@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.raytracer.SubHitBlockHitResult;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
@@ -168,7 +167,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_ENERGY_TRANSFUSER.get(), id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
+        return null;//new ContainerDETile<>(DEContent.MENU_ENERGY_TRANSFUSER.get(), id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
     }
 
     public enum ItemIOMode {
@@ -221,14 +220,11 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         }
 
         public boolean canExtract(IOPStorage storage) {
-            switch (this) {
-                case CHARGE:
-                    return storage.getOPStored() >= storage.getMaxOPStored();
-                case DISCHARGE:
-                    return storage.getOPStored() == 0 || (!storage.canExtract() && !(storage instanceof IOPStorageModifiable));
-                default:
-                    return false;
-            }
+            return switch (this) {
+                case CHARGE -> storage.getOPStored() >= storage.getMaxOPStored();
+                case DISCHARGE -> storage.getOPStored() == 0;
+                default -> false;
+            };
         }
 
         public int getColour() {
