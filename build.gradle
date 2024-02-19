@@ -7,7 +7,12 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withSourcesJar()
+}
 
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"

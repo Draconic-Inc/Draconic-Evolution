@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.init;
 
+import codechicken.lib.inventory.container.ICCLContainerType;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
@@ -47,6 +48,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
@@ -98,9 +100,9 @@ public class DEContent {
     // Blocks
     //#################################################################
 
-    public static final Properties MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(3.0F, 8F).noOcclusion().requiresCorrectToolForDrops();
-    public static final Properties HARDENED_MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(20.0F, 600F).noOcclusion().requiresCorrectToolForDrops();
-    public static final Properties STORAGE_BLOCK = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(30.0F, 600F).requiresCorrectToolForDrops();
+    public static final Properties MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(3.0F, 8F).noOcclusion().requiresCorrectToolForDrops();
+    public static final Properties HARDENED_MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(20.0F, 600F).noOcclusion().requiresCorrectToolForDrops();
+    public static final Properties STORAGE_BLOCK = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(30.0F, 600F).requiresCorrectToolForDrops();
     public static final Properties STONE_PROP = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6F).requiresCorrectToolForDrops();
     public static final Properties ORE = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(6.0F, 16F).requiresCorrectToolForDrops();
     //@formatter:off
@@ -146,13 +148,13 @@ public class DEContent {
     public static final RegistryObject<DraconiumOre> NETHER_DRACONIUM_ORE               = BLOCKS.register("nether_draconium_ore",               () -> new DraconiumOre(ORE));
     public static final RegistryObject<DraconiumOre> END_DRACONIUM_ORE                  = BLOCKS.register("end_draconium_ore",                  () -> new DraconiumOre(ORE));
     //Storage Blocks
-    public static final RegistryObject<DraconiumBlock> DRACONIUM_BLOCK                  = BLOCKS.register("draconium_block",                    () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant());
-    public static final RegistryObject<DraconiumBlock> AWAKENED_DRACONIUM_BLOCK         = BLOCKS.register("awakened_draconium_block",           () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant());
+    public static final RegistryObject<DraconiumBlock> DRACONIUM_BLOCK                  = BLOCKS.register("draconium_block",                    () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant().setExplosionResistant());
+    public static final RegistryObject<DraconiumBlock> AWAKENED_DRACONIUM_BLOCK         = BLOCKS.register("awakened_draconium_block",           () -> (DraconiumBlock) new DraconiumBlock(STORAGE_BLOCK).setMobResistant().setExplosionResistant());
     //Special
     public static final RegistryObject<Portal> PORTAL                                   = BLOCKS.register("portal",                             () -> new Portal(Properties.of().noOcclusion().noCollission().strength(-1F)));
     public static final RegistryObject<ChaosCrystal> CHAOS_CRYSTAL                      = BLOCKS.register("chaos_crystal",                      () -> new ChaosCrystal(Properties.of().strength(100, 4000).noOcclusion()));
     public static final RegistryObject<ChaosCrystal> CHAOS_CRYSTAL_PART                 = BLOCKS.register("chaos_crystal_part",                 () -> new ChaosCrystal(Properties.of().strength(100, 4000).noOcclusion()));
-    public static final RegistryObject<BlockBCore> INFUSED_OBSIDIAN                     = BLOCKS.register("infused_obsidian",                   () -> new BlockBCore(Properties.of().mapColor(MapColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant());
+    public static final RegistryObject<BlockBCore> INFUSED_OBSIDIAN                     = BLOCKS.register("infused_obsidian",                   () -> new BlockBCore(Properties.of().mapColor(MapColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setExplosionResistant());
 
     public static final RegistryObject<PlacedItem> PLACED_ITEM                          = BLOCKS.register("placed_item",                        () -> new PlacedItem(Properties.of().strength(5F, 12F).noOcclusion()));
 
@@ -355,20 +357,22 @@ public class DEContent {
     //#################################################################
 
     //@formatter:off
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_GRINDER                           = null;//= MENU_TYPES.register("grinder",                        () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_GRINDER.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENERGY_CORE                       = null;//= MENU_TYPES.register("energy_core",                    () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_ENERGY_CORE.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_DISENCHANTER                      = null;//= MENU_TYPES.register("disenchanter",                   () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_DISENCHANTER.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENERGY_TRANSFUSER                 = null;//= MENU_TYPES.register("energy_transfuser",              () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_ENERGY_TRANSFUSER.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_FLOW_GATE                         = null;//= MENU_TYPES.register("flow_gate",                      () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_FLOW_GATE.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_CELESTIAL_MANIPULATOR             = null;//= MENU_TYPES.register("celestial_manipulator",          () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_CELESTIAL_MANIPULATOR.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENTITY_DETECTOR                   = null;//= MENU_TYPES.register("entity_detector",                () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_ENTITY_DETECTOR.get(), id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerFusionCraftingCore>> MENU_FUSION_CRAFTING_CORE     = null;//= MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create((id, inv, data) -> new ContainerFusionCraftingCore(id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerModularItem>> MENU_MODULAR_ITEM                    = null;//= MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create((id, inv, data) -> new ContainerModularItem(id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerConfigurableItem>> MENU_CONFIGURABLE_ITEM          = null;//= MENU_TYPES.register("configurable_item",              () -> IForgeMenuType.create((id, inv, data) -> new ContainerConfigurableItem(id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerDraconiumChest>> MENU_DRACONIUM_CHEST              = null;//= MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(ContainerDraconiumChest::new));
-    public static final RegistryObject<MenuType<ContainerEnergyCrystal>> MENU_ENERGY_CRYSTAL                = null;//= MENU_TYPES.register("energy_crystal",                 () -> IForgeMenuType.create(ContainerEnergyCrystal::new));
-    public static final RegistryObject<MenuType<ContainerReactor>> MENU_REACTOR                             = null;//= MENU_TYPES.register("reactor",                        () -> IForgeMenuType.create(ContainerReactor::new));
-    public static final RegistryObject<MenuType<ContainerDETile<TileGenerator>>> MENU_GENERATOR             = null;//= MENU_TYPES.register("generator",                      () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(MENU_GENERATOR.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<GeneratorMenu>> MENU_GENERATOR                              = MENU_TYPES.register("generator",                      () -> IForgeMenuType.create(GeneratorMenu::new));
+    public static final RegistryObject<MenuType<GrinderMenu>> MENU_GRINDER                                  = MENU_TYPES.register("grinder",                        () -> IForgeMenuType.create(GrinderMenu::new));
+
+
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENERGY_CORE                       = MENU_TYPES.register("energy_core",                    () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_ENERGY_CORE.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_DISENCHANTER                      = MENU_TYPES.register("disenchanter",                   () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_DISENCHANTER.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENERGY_TRANSFUSER                 = MENU_TYPES.register("energy_transfuser",              () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_ENERGY_TRANSFUSER.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_FLOW_GATE                         = MENU_TYPES.register("flow_gate",                      () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_CELESTIAL_MANIPULATOR             = MENU_TYPES.register("celestial_manipulator",          () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENTITY_DETECTOR                   = MENU_TYPES.register("entity_detector",                () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_ENTITY_DETECTOR.get(), id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerFusionCraftingCore>> MENU_FUSION_CRAFTING_CORE     = MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create((id, inv, data) -> new ContainerFusionCraftingCore(id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerModularItem>> MENU_MODULAR_ITEM                    = MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create((id, inv, data) -> new ContainerModularItem(id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerConfigurableItem>> MENU_CONFIGURABLE_ITEM          = MENU_TYPES.register("configurable_item",              () -> IForgeMenuType.create((id, inv, data) -> new ContainerConfigurableItem(id, inv, data)));
+    public static final RegistryObject<MenuType<ContainerDraconiumChest>> MENU_DRACONIUM_CHEST              = MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(ContainerDraconiumChest::new));
+    public static final RegistryObject<MenuType<ContainerEnergyCrystal>> MENU_ENERGY_CRYSTAL                = MENU_TYPES.register("energy_crystal",                 () -> IForgeMenuType.create(ContainerEnergyCrystal::new));
+    public static final RegistryObject<MenuType<ContainerReactor>> MENU_REACTOR                             = MENU_TYPES.register("reactor",                        () -> IForgeMenuType.create(ContainerReactor::new));
     //@formatter:on
 
 

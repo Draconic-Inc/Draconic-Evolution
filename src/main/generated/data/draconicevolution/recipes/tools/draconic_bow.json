@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:draconic_bow"
-  },
   "catalyst": {
     "item": "draconicevolution:wyvern_bow"
   },
-  "total_energy": 32000000,
-  "tier": "DRACONIC",
   "ingredients": [
     {
       "tag": "forge:ingots/netherite"
@@ -33,5 +28,10 @@
     {
       "tag": "forge:ingots/netherite"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:draconic_bow"
+  },
+  "tier": "DRACONIC",
+  "total_energy": 32000000
 }

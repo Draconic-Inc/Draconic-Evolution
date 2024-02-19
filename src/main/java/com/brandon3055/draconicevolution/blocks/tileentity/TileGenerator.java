@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.util.ServerUtils;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
@@ -20,6 +21,7 @@ import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -245,8 +247,8 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_GENERATOR.get(), currentWindowIndex, player.getInventory(), this);
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory inventory, Player player) {
+        return new GeneratorMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

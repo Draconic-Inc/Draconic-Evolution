@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import codechicken.lib.gui.modular.elements.GuiButton;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
@@ -41,7 +42,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ContainerModularItem extends ContainerBCore<TileBCore> implements ModuleHostContainer {
+public class ContainerModularItem extends ContainerBCore implements ModuleHostContainer {
 
     private PlayerSlot slot;
     public ItemStack hostStack;
@@ -145,7 +146,7 @@ public class ContainerModularItem extends ContainerBCore<TileBCore> implements M
         return moduleGrid;
     }
 
-    @Override
+//    @Override
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);

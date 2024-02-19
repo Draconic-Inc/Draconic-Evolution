@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:gems/emerald"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "B": {
+      "item": "draconicevolution:item_wyvern_shield_control"
+    },
+    "I": {
+      "tag": "forge:ingots/netherite"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconic_shield_control"
+  }
+}

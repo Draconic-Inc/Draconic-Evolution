@@ -1,0 +1,17 @@
+// 1.20.1	2024-02-07T21:33:25.632392681	Tags for minecraft:item mod id draconicevolution
+9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/items/body.json
+474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/items/curio.json
+cb626dc6c627c42fbd0b589c6d7420e1e7dcb27e data/forge/tags/items/dusts.json
+26a02ca040deced33c1f86c215e347e169ce3499 data/forge/tags/items/dusts/draconium.json
+9864e525e028426969eb33f4b4a445b8ad2a3b89 data/forge/tags/items/dusts/draconium_awakened.json
+24060ef2d87f3c4a3c166d346c050ffe1cdacbfb data/forge/tags/items/ingots.json
+dfa819b0763812751deeeab28237aef8066d2ff1 data/forge/tags/items/ingots/draconium.json
+b84123cbe5d4449b219ea0dd632564beefca219b data/forge/tags/items/ingots/draconium_awakened.json
+188aa993c70f6b4b84564077b67d15a2598ee119 data/forge/tags/items/nuggets.json
+ed7b649e3d0b9aba6f8047b53de74d220fa889f9 data/forge/tags/items/nuggets/draconium.json
+d6e849ce45014fce8572def4935daf749982910c data/forge/tags/items/nuggets/draconium_awakened.json
+1c106c8cc56a70d22bc9c21c9dede992bc19923a data/forge/tags/items/ores.json
+5aa22761690ef99d01ab8f93ee1bd0f59e428004 data/forge/tags/items/ores/draconium.json
+bdb736e6f52cea51cdb88deb79d7c10a0bd92595 data/forge/tags/items/storage_blocks.json
+59987491edcad8feef7cf904cb84da279dae8781 data/forge/tags/items/storage_blocks/draconium.json
+e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/forge/tags/items/storage_blocks/draconium_awakened.json

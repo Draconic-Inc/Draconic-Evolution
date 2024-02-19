@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "draconicevolution:item_wyvern_large_shield_capacity"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "item": "draconicevolution:item_wyvern_shield_capacity"
+  }
+}

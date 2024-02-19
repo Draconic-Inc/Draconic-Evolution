@@ -1,0 +1,40 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:awakened_crafting_injector"
+  },
+  "ingredients": [
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "item": "draconicevolution:large_chaos_frag"
+    },
+    {
+      "item": "draconicevolution:large_chaos_frag"
+    },
+    {
+      "item": "draconicevolution:large_chaos_frag"
+    },
+    {
+      "item": "draconicevolution:large_chaos_frag"
+    },
+    {
+      "item": "minecraft:dragon_egg"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    }
+  ],
+  "result": {
+    "item": "draconicevolution:chaotic_crafting_injector"
+  },
+  "tier": "DRACONIC",
+  "total_energy": 8000000
+}

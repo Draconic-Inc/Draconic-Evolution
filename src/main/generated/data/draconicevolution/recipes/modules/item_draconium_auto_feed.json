@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "item": "minecraft:cookie"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "item": "minecraft:golden_apple"
+    },
+    "D": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconium_auto_feed"
+  }
+}

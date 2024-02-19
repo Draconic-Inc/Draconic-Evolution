@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "tag": "forge:ender_pearls"
+    },
+    "P": {
+      "item": "minecraft:wither_skeleton_skull"
+    }
+  },
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconic_proj_anti_immune"
+  }
+}

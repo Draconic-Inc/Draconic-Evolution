@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    "B": {
+      "tag": "forge:gems/diamond"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "draconicevolution:crafting_core"
+  }
+}

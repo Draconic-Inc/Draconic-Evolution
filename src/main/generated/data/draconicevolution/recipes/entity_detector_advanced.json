@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "EFE"
-  ],
   "key": {
     "A": {
       "tag": "forge:storage_blocks/redstone"
@@ -25,6 +20,11 @@
       "item": "draconicevolution:entity_detector"
     }
   },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
   "result": {
     "item": "draconicevolution:entity_detector_advanced"
   }

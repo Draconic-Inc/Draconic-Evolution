@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:draconic_capacitor"
-  },
   "catalyst": {
     "item": "draconicevolution:wyvern_capacitor"
   },
-  "total_energy": 32000000,
-  "tier": "DRACONIC",
   "ingredients": [
     {
       "tag": "forge:ingots/draconium_awakened"
@@ -33,5 +28,10 @@
     {
       "tag": "forge:ingots/draconium_awakened"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:draconic_capacitor"
+  },
+  "tier": "DRACONIC",
+  "total_energy": 32000000
 }

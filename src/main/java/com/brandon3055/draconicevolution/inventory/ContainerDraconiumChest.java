@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
@@ -35,7 +36,7 @@ public class ContainerDraconiumChest extends ContainerDETile<TileDraconiumChest>
     private final ResultContainer resultInventory = new ResultContainer();
 
     public ContainerDraconiumChest(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.MENU_DRACONIUM_CHEST.get(), windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_DRACONIUM_CHEST.get(), windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public ContainerDraconiumChest(@Nullable MenuType<?> type, int windowId, Inventory playerInv, TileDraconiumChest tile) {

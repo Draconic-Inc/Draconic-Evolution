@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "AEA"
-  ],
   "key": {
     "A": {
       "tag": "forge:ingots/iron"
@@ -22,6 +17,11 @@
       "item": "minecraft:comparator"
     }
   },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
   "result": {
     "item": "draconicevolution:flux_gate"
   }

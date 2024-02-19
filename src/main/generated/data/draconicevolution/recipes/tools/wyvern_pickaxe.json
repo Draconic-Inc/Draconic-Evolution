@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:wyvern_pickaxe"
-  },
   "catalyst": {
     "item": "minecraft:diamond_pickaxe"
   },
-  "total_energy": 8000000,
-  "tier": "WYVERN",
   "ingredients": [
     {
       "item": "draconicevolution:draconium_core"
@@ -27,5 +22,10 @@
     {
       "item": "draconicevolution:basic_relay_crystal"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:wyvern_pickaxe"
+  },
+  "tier": "WYVERN",
+  "total_energy": 8000000
 }

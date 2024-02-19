@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "item": "minecraft:ender_eye"
+    },
+    "C": {
+      "tag": "forge:gems/emerald"
+    },
+    "D": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "E": {
+      "tag": "forge:gems/diamond"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "result": {
+    "count": 2,
+    "item": "draconicevolution:energy_pylon"
+  }
+}

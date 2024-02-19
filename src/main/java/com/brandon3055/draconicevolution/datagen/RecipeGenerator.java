@@ -23,6 +23,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -68,12 +69,12 @@ public class RecipeGenerator extends RecipeProvider {
 
     private void components() {
 
-        smelting(DEContent.INGOT_DRACONIUM, "components")
+        smelting(DEContent.INGOT_DRACONIUM, "components", s -> s + "_from_dust")
                 .ingredient(Ingredient.of(DETags.Items.DUSTS_DRACONIUM))
                 .cookingTime(200)
                 .experience(0);
 
-        smelting(DEContent.INGOT_DRACONIUM, "components")
+        smelting(DEContent.INGOT_DRACONIUM, "components", s -> s + "_from_ore")
                 .ingredient(Ingredient.of(DETags.Items.ORES_DRACONIUM))
                 .cookingTime(200)
                 .experience(1);
@@ -473,15 +474,15 @@ public class RecipeGenerator extends RecipeProvider {
         shapelessRecipe(DEContent.DRACONIC_IO_CRYSTAL, 2, "machines")
                 .addIngredient(DEContent.DRACONIC_RELAY_CRYSTAL);
 
-        shapelessRecipe(DEContent.BASIC_RELAY_CRYSTAL, "machines")
+        shapelessRecipe(DEContent.BASIC_RELAY_CRYSTAL, "machines", e -> e + "_combine")
                 .addIngredient(DEContent.BASIC_IO_CRYSTAL)
                 .addIngredient(DEContent.BASIC_IO_CRYSTAL);
 
-        shapelessRecipe(DEContent.WYVERN_RELAY_CRYSTAL, "machines")
+        shapelessRecipe(DEContent.WYVERN_RELAY_CRYSTAL, "machines", e -> e + "_combine")
                 .addIngredient(DEContent.WYVERN_IO_CRYSTAL)
                 .addIngredient(DEContent.WYVERN_IO_CRYSTAL);
 
-        shapelessRecipe(DEContent.DRACONIC_RELAY_CRYSTAL, "machines")
+        shapelessRecipe(DEContent.DRACONIC_RELAY_CRYSTAL, "machines", e -> e + "_combine")
                 .addIngredient(DEContent.DRACONIC_IO_CRYSTAL)
                 .addIngredient(DEContent.DRACONIC_IO_CRYSTAL);
     }
@@ -838,7 +839,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DEContent.CHAOS_FRAG_MEDIUM)
                 .ingredient(DEContent.CHAOS_FRAG_MEDIUM);
 
-        fusionRecipe(DEContent.STAFF_CHAOTIC, new ResourceLocation(MODID, "tools/alt_" + ForgeRegistries.ITEMS.getKey(DEContent.STAFF_CHAOTIC.get()).getPath()))
+        fusionRecipe(DEContent.STAFF_CHAOTIC, "tools", e -> e + "_alt")
                 .catalyst(DEContent.STAFF_DRACONIC)
                 .energy(1024000000)
                 .techLevel(TechLevel.CHAOTIC)
@@ -1232,13 +1233,13 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem())
                 .key('A', DEContent.CORE_DRACONIUM);
 
-        shapelessRecipe(DEModules.WYVERN_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.WYVERN_SHIELD_CAPACITY.get())))
+        shapelessRecipe(DEModules.WYVERN_SHIELD_CAPACITY.get().getItem(), 5, "modules", e -> e + "_uncraft")
                 .addIngredient(DEModules.WYVERN_LARGE_SHIELD_CAPACITY.get().getItem());
 
-        shapelessRecipe(DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.DRACONIC_SHIELD_CAPACITY.get())))
+        shapelessRecipe(DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem(), 5, "modules", e -> e + "_uncraft")
                 .addIngredient(DEModules.DRACONIC_LARGE_SHIELD_CAPACITY.get().getItem());
 
-        shapelessRecipe(DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem(), 5, new ResourceLocation(MODID, "modules/uncraft_"+DEModules.REGISTRY.getKey(DEModules.CHAOTIC_SHIELD_CAPACITY.get())))
+        shapelessRecipe(DEModules.CHAOTIC_SHIELD_CAPACITY.get().getItem(), 5, "modules", e -> e + "_uncraft")
                 .addIngredient(DEModules.CHAOTIC_LARGE_SHIELD_CAPACITY.get().getItem());
 
         //Shield Recovery
@@ -1756,7 +1757,7 @@ public class RecipeGenerator extends RecipeProvider {
 //        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
 //    }
 
-//    @Override
+    //    @Override
 //    public void run(HashCache cache) {
 //        super.run(cache);
 //    }
@@ -1788,6 +1789,11 @@ public class RecipeGenerator extends RecipeProvider {
         return builder(FusionRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
+    protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(FusionRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+    }
+
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
         return builder(FusionRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
@@ -1810,6 +1816,11 @@ public class RecipeGenerator extends RecipeProvider {
         return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
+    protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+    }
+
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, String folder) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
         return builder(ShapedRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
@@ -1825,9 +1836,19 @@ public class RecipeGenerator extends RecipeProvider {
         return builder(ShapedRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
+    protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder, Function<String, String> customPath) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapedRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
+    }
+
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder) {
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
+    }
+
+    protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
@@ -1837,5 +1858,10 @@ public class RecipeGenerator extends RecipeProvider {
 
     protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, ResourceLocation id) {
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), id));
+    }
+
+    protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, String folder, Function<String, String> customPath) {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.asItem());
+        return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 }

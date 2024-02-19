@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/netherite"
+    },
+    "C": {
+      "item": "draconicevolution:chaotic_core"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "M": {
+      "item": "draconicevolution:item_draconic_energy_link"
+    },
+    "W": {
+      "item": "draconicevolution:draconic_wireless_crystal"
+    }
+  },
+  "pattern": [
+    "#E#",
+    "WMW",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_chaotic_energy_link"
+  }
+}

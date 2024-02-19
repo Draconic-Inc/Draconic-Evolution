@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "tag": "forge:gems/diamond"
+    },
+    "C": {
+      "item": "minecraft:blaze_rod"
+    },
+    "D": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "pattern": [
+    " AB",
+    " CA",
+    "D  "
+  ],
+  "result": {
+    "item": "draconicevolution:crystal_binder"
+  }
+}

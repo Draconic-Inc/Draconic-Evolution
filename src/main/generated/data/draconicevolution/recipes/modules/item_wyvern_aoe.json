@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:item_draconium_aoe"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "I": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_wyvern_aoe"
+  }
+}

@@ -24,6 +24,7 @@ public class StabilizedSpawner extends EntityBlockBCore {
     public StabilizedSpawner(Properties properties) {
         super(properties);
         setMobResistant();
+        setExplosionResistant();
         setBlockEntity(DEContent.TILE_STABILIZED_SPAWNER::get, true);
     }
 

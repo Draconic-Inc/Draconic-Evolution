@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:chaotic_staff"
-  },
   "catalyst": {
     "item": "draconicevolution:chaotic_core"
   },
-  "total_energy": 1024000000,
-  "tier": "CHAOTIC",
   "ingredients": [
     {
       "item": "draconicevolution:medium_chaos_frag"
@@ -39,5 +34,10 @@
     {
       "item": "draconicevolution:medium_chaos_frag"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:chaotic_staff"
+  },
+  "tier": "CHAOTIC",
+  "total_energy": 1024000000
 }

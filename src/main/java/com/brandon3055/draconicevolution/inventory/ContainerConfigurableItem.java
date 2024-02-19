@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.lib.Pair;
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ContainerConfigurableItem extends ContainerBCore<Object> {
+public class ContainerConfigurableItem extends ContainerBCore {
     private static final UUID DEFAULT_UUID = UUID.fromString("d12b41e3-16ce-4653-ab36-1cd913719af8"); //This is just a completely random UUID
 
     private UUID selectedId; //Default is irrelevant as long as its not null.

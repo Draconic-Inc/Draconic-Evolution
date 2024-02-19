@@ -5,7 +5,6 @@ import codechicken.lib.gui.modular.sprite.ModAtlasHolder;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.BrandonsCore;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class DEGuiTextures {
 
     private static final ModAtlasHolder ATLAS_HOLDER = new ModAtlasHolder(MODID, "textures/atlas/gui.png", "gui");
-    private static final Map<String, codechicken.lib.gui.modular.sprite.Material> MATERIAL_CACHE = new HashMap<>();
+    private static final Map<String, Material> MATERIAL_CACHE = new HashMap<>();
 
     /**
      * The returned AtlasLoader needs to be registered as a resource reload listener using the appropriate NeoForge / Fabric event.
@@ -34,7 +33,7 @@ public class DEGuiTextures {
      * @param texture The texture path relative to "modid:gui/"
      */
     public static Material get(String texture) {
-        return MATERIAL_CACHE.computeIfAbsent(BrandonsCore.MODID + ":" + texture, e -> getUncached(texture));
+        return MATERIAL_CACHE.computeIfAbsent(MODID + ":" + texture, e -> getUncached(texture));
     }
 
     public static Supplier<Material> getter(Supplier<String> texture) {
@@ -46,9 +45,10 @@ public class DEGuiTextures {
     }
 
     public static Material getUncached(String texture) {
-        return new Material(ATLAS_HOLDER.atlasLocation(), new ResourceLocation(BrandonsCore.MODID, "gui/" + texture), ATLAS_HOLDER::getSprite);
+        return new Material(ATLAS_HOLDER.atlasLocation(), new ResourceLocation(MODID, "gui/" + texture), ATLAS_HOLDER::getSprite);
     }
 
+    @Deprecated //Should almost always use themedGetter so the texture gets updated when theme is changed.
     public static Material getThemed(String location) {
         return get((BCConfig.darkMode ? "dark/" : "light/") + location);
     }

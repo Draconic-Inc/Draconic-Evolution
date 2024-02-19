@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:dusts/redstone"
+    },
+    "B": {
+      "tag": "forge:ingots/draconium"
+    },
+    "C": {
+      "tag": "forge:ingots/iron"
+    },
+    "D": {
+      "item": "draconicevolution:dislocator"
+    }
+  },
+  "pattern": [
+    "A A",
+    "B B",
+    "CDC"
+  ],
+  "result": {
+    "item": "draconicevolution:magnet"
+  }
+}

@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:chaotic_core"
-  },
   "catalyst": {
     "item": "draconicevolution:large_chaos_frag"
   },
-  "total_energy": 100000000,
-  "tier": "DRACONIC",
   "ingredients": [
     {
       "tag": "forge:ingots/draconium_awakened"
@@ -45,5 +40,10 @@
     {
       "tag": "forge:ingots/draconium_awakened"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:chaotic_core"
+  },
+  "tier": "DRACONIC",
+  "total_energy": 100000000
 }

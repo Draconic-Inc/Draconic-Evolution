@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:chaotic_bow"
-  },
   "catalyst": {
     "item": "draconicevolution:draconic_bow"
   },
-  "total_energy": 128000000,
-  "tier": "CHAOTIC",
   "ingredients": [
     {
       "tag": "forge:ingots/draconium_awakened"
@@ -33,5 +28,10 @@
     {
       "tag": "forge:ingots/draconium_awakened"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:chaotic_bow"
+  },
+  "tier": "CHAOTIC",
+  "total_energy": 128000000
 }

@@ -27,6 +27,7 @@ public class Grinder extends EntityBlockBCore {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
         setMobResistant();
+        setExplosionResistant();
         setBlockEntity(DEContent.TILE_GRINDER::get, true);
     }
 

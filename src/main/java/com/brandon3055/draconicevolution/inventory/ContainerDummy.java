@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,7 +16,7 @@ import net.minecraft.world.inventory.MenuType;
 public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 
     public ContainerDummy(MenuType<?> type, int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        super(type, windowId, playerInv, getClientTile(extraData));
+        super(type, windowId, playerInv, extraData);
     }
 //    public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory player) {
 //        super(type, windowId, player);

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:strength\"}"
+    }
+  },
+  "pattern": [
+    "IPG",
+    "ABA",
+    "GPI"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconium_damage"
+  }
+}

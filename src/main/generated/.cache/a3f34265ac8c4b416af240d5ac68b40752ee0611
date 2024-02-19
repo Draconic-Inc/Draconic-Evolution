@@ -1,0 +1,13 @@
+// 1.20.1	2024-02-07T21:33:25.633707858	Tags for minecraft:damage_type mod id draconicevolution
+2808562e634fd4e3eb34f75541400554ea41f81e data/draconicevolution/tags/damage_type/chaotic.json
+7f2e7dc8bfc7a261ac080cf590335271d4e0c554 data/draconicevolution/tags/damage_type/draconic.json
+4e61c033e4607bac16ab0b7400438a0009215153 data/draconicevolution/tags/damage_type/draconium.json
+5100ef182098825430d88fdb53972d0713a83170 data/draconicevolution/tags/damage_type/wyvern.json
+a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_armor.json
+a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_cooldown.json
+a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_effects.json
+f7c38b5026495b0fb6b7f2758fd98427fecc8b0e data/minecraft/tags/damage_type/bypasses_invulnerability.json
+a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_resistance.json
+a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_shield.json
+8792c87a5d8d6b012b76a23741bac9c324520c1e data/minecraft/tags/damage_type/is_explosion.json
+4a9ab5c6a2c42cc3b25fb40f6538eda48c40eba9 data/minecraft/tags/damage_type/is_projectile.json

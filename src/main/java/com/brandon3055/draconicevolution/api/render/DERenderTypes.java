@@ -26,11 +26,4 @@ public class DERenderTypes {
                     .createCompositeState(false)
     );
 
-    public static RenderType FAN_TYPE = RenderType.create("tri_fan_type", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN, 256, RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//            .setAlphaState(RenderStateShard.NO_ALPHA)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
-    );
 }

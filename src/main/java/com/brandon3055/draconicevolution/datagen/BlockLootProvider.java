@@ -77,6 +77,11 @@ public class BlockLootProvider extends BlockLootSubProvider {
 //            add(DEContent.chaos_crystal, block -> createSingleItemTable(DEContent.chaos_shard).apply(SetCount.setCount(ConstantRange.exactly(5))));
 //            add(DEContent.chaos_crystal_part, noDrop());
 //            add(DEContent.portal, noDrop());
+        noDrop(DEContent.STRUCTURE_BLOCK);
+        noDrop(DEContent.PORTAL);
+        noDrop(DEContent.CHAOS_CRYSTAL);
+        noDrop(DEContent.CHAOS_CRYSTAL_PART);
+        noDrop(DEContent.PLACED_ITEM);
 
         //Fortune
         add(DEContent.OVERWORLD_DRACONIUM_ORE.get(), (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(DEContent.DUST_DRACONIUM.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F))).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
@@ -88,6 +93,10 @@ public class BlockLootProvider extends BlockLootSubProvider {
 
     protected void dropSelf(Supplier<? extends Block> pBlock) {
         super.dropSelf(pBlock.get());
+    }
+
+    protected void noDrop(Supplier<? extends Block> pBlock) {
+        add(pBlock.get(), noDrop());
     }
 
     @Override

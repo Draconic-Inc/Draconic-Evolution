@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "BCB",
-    "ABA"
-  ],
   "key": {
     "A": {
       "item": "minecraft:blaze_powder"
@@ -16,6 +11,11 @@
       "tag": "forge:dusts/draconium"
     }
   },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
   "result": {
     "item": "draconicevolution:infused_obsidian"
   }

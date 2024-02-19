@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "IRI",
-    "GDG",
-    "IRI"
-  ],
   "key": {
+    "D": {
+      "tag": "forge:ingots/draconium"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
     "I": {
       "tag": "forge:ingots/iron"
     },
     "R": {
       "tag": "forge:dusts/redstone"
-    },
-    "G": {
-      "tag": "forge:ingots/gold"
-    },
-    "D": {
-      "tag": "forge:ingots/draconium"
     }
   },
+  "pattern": [
+    "IRI",
+    "GDG",
+    "IRI"
+  ],
   "result": {
     "item": "draconicevolution:module_core"
   }

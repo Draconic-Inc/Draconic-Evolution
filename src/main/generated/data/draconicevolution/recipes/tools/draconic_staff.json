@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:draconic_staff"
-  },
   "catalyst": {
     "item": "draconicevolution:awakened_core"
   },
-  "total_energy": 256000000,
-  "tier": "DRACONIC",
   "ingredients": [
     {
       "tag": "forge:ingots/draconium_awakened"
@@ -39,5 +34,10 @@
     {
       "tag": "forge:ingots/draconium_awakened"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:draconic_staff"
+  },
+  "tier": "DRACONIC",
+  "total_energy": 256000000
 }

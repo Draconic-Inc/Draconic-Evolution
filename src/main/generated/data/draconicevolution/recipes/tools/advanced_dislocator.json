@@ -1,0 +1,37 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:dislocator"
+  },
+  "ingredients": [
+    {
+      "tag": "forge:ender_pearls"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "tag": "forge:ender_pearls"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "tag": "forge:ender_pearls"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:wyvern_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    }
+  ],
+  "result": {
+    "item": "draconicevolution:advanced_dislocator"
+  },
+  "tier": "WYVERN",
+  "total_energy": 1000000
+}

@@ -20,8 +20,11 @@ public class DamageTypeGenerator extends DamageTypeTagsProvider {
         super(pOutput, pLookupProvider, modId, existingFileHelper);
     }
 
+
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+
+
         tag(DamageTypeTags.IS_EXPLOSION).add(GUARDIAN_LASER, FUSION_EXPLOSION, /*ADMIN_KILL, */CHAOS_IMPLOSION, GUARDIAN_PROJECTILE);
         tag(DamageTypeTags.BYPASSES_ARMOR).add(GUARDIAN_LASER, FUSION_EXPLOSION, /*ADMIN_KILL, */CHAOS_IMPLOSION, GUARDIAN_PROJECTILE, GUARDIAN, CRYSTAL_MOVE);
         tag(DamageTypeTags.BYPASSES_EFFECTS).add(GUARDIAN_LASER, FUSION_EXPLOSION, /*ADMIN_KILL, */CHAOS_IMPLOSION, GUARDIAN_PROJECTILE, GUARDIAN, CRYSTAL_MOVE);

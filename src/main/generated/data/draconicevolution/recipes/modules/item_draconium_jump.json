@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "tag": "forge:ingots/iron"
+    },
+    "D": {
+      "tag": "forge:ingots/gold"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:leaping\"}"
+    }
+  },
+  "pattern": [
+    "CPD",
+    "ABA",
+    "DPC"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconium_jump"
+  }
+}

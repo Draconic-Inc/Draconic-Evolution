@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "item": "minecraft:clock"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:swiftness\"}"
+    }
+  },
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconium_speed"
+  }
+}

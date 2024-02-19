@@ -72,11 +72,6 @@ public class TileFluidGate extends TileFlowGate {
     }
 
     @Override
-    public Component getName() {
-        return super.getName();
-    }
-
-    @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);

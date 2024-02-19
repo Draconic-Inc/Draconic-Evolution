@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:item_wyvern_proj_damage"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "###",
+    "ABA",
+    "###"
+  ],
+  "result": {
+    "item": "draconicevolution:item_draconic_proj_damage"
+  }
+}

@@ -459,12 +459,13 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     //Render Utils
 
+    @Deprecated //TODO, Can probably use RenderUtils version... maybe.
     @OnlyIn(Dist.CLIENT)
     protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable String text1, @Nullable String text2) {
         double diameter = Math.min(width, height) * 0.425;
 
         render.rect(x, y, width, height, 0x60FF0000);
-        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(DERenderTypes.FAN_TYPE), render.pose());
+        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderUtils.FAN_TYPE), render.pose());
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;

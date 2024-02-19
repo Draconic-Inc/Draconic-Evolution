@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/netherite"
+    },
+    "A": {
+      "item": "draconicevolution:item_draconic_aoe"
+    },
+    "B": {
+      "item": "draconicevolution:chaotic_core"
+    },
+    "I": {
+      "tag": "forge:ingots/draconium_awakened"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_chaotic_aoe"
+  }
+}

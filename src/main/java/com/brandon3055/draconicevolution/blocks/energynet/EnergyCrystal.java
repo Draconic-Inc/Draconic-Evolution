@@ -74,11 +74,6 @@ public class EnergyCrystal extends BlockBCore implements IHudBlock, EntityBlock 
     }
 
     @Override
-    protected boolean hasBlockEntity() {
-        return true;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         if (crystalType == CrystalType.CRYSTAL_IO) {
             BlockEntity tile = world.getBlockEntity(pos);

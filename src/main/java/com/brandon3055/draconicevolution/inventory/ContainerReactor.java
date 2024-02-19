@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
@@ -25,7 +26,7 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
     public boolean fuelSlots = false;
 
     public ContainerReactor(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.MENU_REACTOR.get(), windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_REACTOR.get(), windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public ContainerReactor(@Nullable MenuType<?> type, int windowId, Inventory player, TileReactorCore tile) {
@@ -44,7 +45,7 @@ public class ContainerReactor extends ContainerDETile<TileReactorCore> {
         lastSlots.clear();
 
         if (fuelSlots) {
-            addPlayerSlots(44 - 31, 140);
+//            addPlayerSlots(44 - 31, 140);
 
             for (int x = 0; x < 3; x++) {
                 addSlot(new SlotReactor(tile, x, 183 + (x * 18), 149));

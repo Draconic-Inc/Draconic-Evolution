@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "tag": "minecraft:arrows"
+    },
+    "P": {
+      "item": "minecraft:target"
+    }
+  },
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_wyvern_proj_accuracy"
+  }
+}

@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "EEE"
-  ],
   "key": {
     "A": {
       "tag": "forge:gems/emerald"
@@ -22,6 +17,11 @@
       "item": "minecraft:bookshelf"
     }
   },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EEE"
+  ],
   "result": {
     "item": "draconicevolution:disenchanter"
   }

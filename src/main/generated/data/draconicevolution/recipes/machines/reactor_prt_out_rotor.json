@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:gems/diamond"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "C": {
+      "tag": "forge:ingots/draconium"
+    }
+  },
+  "pattern": [
+    "   ",
+    "AAA",
+    "BCC"
+  ],
+  "result": {
+    "item": "draconicevolution:reactor_prt_out_rotor"
+  }
+}

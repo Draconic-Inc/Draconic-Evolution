@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:item_draconium_jump"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:strong_leaping\"}"
+    }
+  },
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_wyvern_jump"
+  }
+}

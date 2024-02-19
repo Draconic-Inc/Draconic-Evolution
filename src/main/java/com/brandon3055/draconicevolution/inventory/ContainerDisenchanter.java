@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
@@ -20,12 +21,12 @@ import javax.annotation.Nullable;
 public class ContainerDisenchanter extends ContainerBCTile<TileDisenchanter> {
 
     public ContainerDisenchanter(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.MENU_DISENCHANTER.get(), windowId, playerInv, getClientTile(extraData));
+        this(DEContent.MENU_DISENCHANTER.get(), windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public ContainerDisenchanter(@Nullable MenuType<?> type, int windowId, Inventory player, TileDisenchanter tile) {
         super(type, windowId, player, tile);
-        addPlayerSlots(8, 60);
+//        addPlayerSlots(8, 60);
 
         addSlot(new SlotCheckValid(tile.itemHandler, 0, 27, 23));
         addSlot(new SlotCheckValid(tile.itemHandler, 1, 76, 23));

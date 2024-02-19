@@ -24,6 +24,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.GrinderMenu;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
@@ -101,9 +102,10 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
-        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
+//        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER); //TODO Restore this
+        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER, FilterType.ITEM_FILTER);
         entityFilter.setDirtyHandler(this::setChanged);
-        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers);
+//        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers); //TODO Restore this
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
@@ -421,7 +423,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_GRINDER.get(), currentWindowIndex, playerInventory, this);
+        return new GrinderMenu(currentWindowIndex, playerInventory, this);
     }
 
     @Override

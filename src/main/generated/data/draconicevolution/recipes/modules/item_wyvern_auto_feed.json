@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:item_draconium_auto_feed"
+    },
+    "C": {
+      "item": "minecraft:cookie"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_wyvern_auto_feed"
+  }
+}

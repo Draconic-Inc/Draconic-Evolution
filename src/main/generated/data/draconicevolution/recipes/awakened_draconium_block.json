@@ -1,20 +1,14 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:awakened_draconium_block",
-    "count": 4
-  },
   "catalyst": {
+    "type": "draconicevolution:ingredient_stack",
     "count": 4,
     "items": [
       {
         "tag": "forge:storage_blocks/draconium"
       }
-    ],
-    "type": "draconicevolution:ingredient_stack"
+    ]
   },
-  "total_energy": 50000000,
-  "tier": "WYVERN",
   "ingredients": [
     {
       "item": "draconicevolution:draconium_core"
@@ -37,5 +31,11 @@
     {
       "item": "draconicevolution:draconium_core"
     }
-  ]
+  ],
+  "result": {
+    "count": 4,
+    "item": "draconicevolution:awakened_draconium_block"
+  },
+  "tier": "WYVERN",
+  "total_energy": 50000000
 }

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:strong_swiftness\"}"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "B": {
+      "item": "draconicevolution:item_draconic_flight"
+    },
+    "C": {
+      "item": "draconicevolution:large_chaos_frag"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_chaotic_flight"
+  }
+}

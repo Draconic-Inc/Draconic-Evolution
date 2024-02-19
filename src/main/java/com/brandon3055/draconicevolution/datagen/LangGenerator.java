@@ -532,8 +532,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("claim.xp.level.info",                                       "Claim 1 experience level");
         helper.add("claim.xp.levels.info",                                      "Claim %s experience levels");
         helper.add("stored_xp",                                                 "Stored Experience:");
-        helper.add("stored_xp.raw",                                             "(Raw XP)");
+        helper.add("xp_value",                                                  "%s (Raw XP)");
         helper.add("weapon_slot",                                               "Optional weapon to use when attacking.");
+        helper.add("close_large_view",                                          "Close large filter view.");
 
         //Disenchanter
         helper.setPrefix("gui." + MODID + ".disenchanter");

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "item": "draconicevolution:energy_core_stabilizer"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "D": {
+      "item": "minecraft:enchanting_table"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ACA"
+  ],
+  "result": {
+    "item": "draconicevolution:energy_transfuser"
+  }
+}

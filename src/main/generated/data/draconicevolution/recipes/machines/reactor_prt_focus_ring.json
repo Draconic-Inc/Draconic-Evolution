@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/gold"
+    },
+    "B": {
+      "tag": "forge:gems/diamond"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CBC",
+    "ABA"
+  ],
+  "result": {
+    "item": "draconicevolution:reactor_prt_focus_ring"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "M": {
+      "item": "draconicevolution:module_core"
+    },
+    "W": {
+      "item": "draconicevolution:basic_wireless_crystal"
+    }
+  },
+  "pattern": [
+    "#E#",
+    "WMW",
+    "#C#"
+  ],
+  "result": {
+    "item": "draconicevolution:item_wyvern_energy_link"
+  }
+}

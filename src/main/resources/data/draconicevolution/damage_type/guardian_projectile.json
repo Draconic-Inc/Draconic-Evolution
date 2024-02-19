@@ -1,0 +1,6 @@
+{
+  "effects": "burning",
+  "exhaustion": 0.1,
+  "message_id": "draconicevolution.guardian_projectile",
+  "scaling": "always"
+}

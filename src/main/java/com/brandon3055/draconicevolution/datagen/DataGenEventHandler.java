@@ -38,6 +38,7 @@ public class DataGenEventHandler {
             gen.addProvider(true, new BlockStateGenerator(gen, event.getExistingFileHelper()));
             gen.addProvider(true, new ItemModelGenerator(gen, event.getExistingFileHelper()));
             gen.addProvider(true, new MultiBlockGenerator(gen));
+            gen.addProvider(true, new DynamicTextures(gen, event.getExistingFileHelper()));
         }
 
         if (event.includeServer()) {

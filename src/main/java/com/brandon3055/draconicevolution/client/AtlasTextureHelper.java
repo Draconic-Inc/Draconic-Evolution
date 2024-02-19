@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,28 +58,53 @@ public class AtlasTextureHelper {
         }
     };
 
-    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
+    public static void init(IEventBus modBus) {
+        modBus.addListener(AtlasTextureHelper::textureStitch);
+    }
+
+    private static void textureStitch(TextureStitchEvent.Post event) {
+        TextureAtlas atlas = event.getAtlas();
+        if (atlas.location().equals(TextureAtlas.LOCATION_PARTICLES)) {
             ATLAS_CACHE.clear();
             for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
-                ENERGY_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/energy_" + i));
+                ENERGY_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "particle/energy_" + i));
             }
             for (int i = 0; i < SPARK_PARTICLE.length; i++) {
-                SPARK_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spark_" + i));
+                SPARK_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "particle/spark_" + i));
             }
             for (int i = 0; i < SPELL_PARTICLE.length; i++) {
-                SPELL_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spell_" + i));
+                SPELL_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "particle/spell_" + i));
             }
             MIXED_PARTICLE = Stream.concat(Arrays.stream(SPARK_PARTICLE), Arrays.stream(SPELL_PARTICLE)).toArray(TextureAtlasSprite[]::new);
 
-            ORB_PARTICLE = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/white_orb"));
-            PORTAL_PARTICLE = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/portal"));
-        });
+            ORB_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "particle/white_orb"));
+            PORTAL_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "particle/portal"));
+        }
+
     }
 
-    public static Function<ResourceLocation, TextureAtlasSprite> getAtlas(ResourceLocation atlas) {
-        return ATLAS_CACHE.computeIfAbsent(atlas, e -> (tex) -> ((TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(atlas)).getSprite(tex));
-    }
+//    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
+//        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
+//            ATLAS_CACHE.clear();
+//            for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
+//                ENERGY_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/energy_" + i));
+//            }
+//            for (int i = 0; i < SPARK_PARTICLE.length; i++) {
+//                SPARK_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spark_" + i));
+//            }
+//            for (int i = 0; i < SPELL_PARTICLE.length; i++) {
+//                SPELL_PARTICLE[i] = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/spell_" + i));
+//            }
+//            MIXED_PARTICLE = Stream.concat(Arrays.stream(SPARK_PARTICLE), Arrays.stream(SPELL_PARTICLE)).toArray(TextureAtlasSprite[]::new);
+//
+//            ORB_PARTICLE = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/white_orb"));
+//            PORTAL_PARTICLE = getAtlas(TextureAtlas.LOCATION_PARTICLES).apply(new ResourceLocation(DraconicEvolution.MODID, "particle/portal"));
+//        });
+//    }
+
+//    public static Function<ResourceLocation, TextureAtlasSprite> getAtlas(ResourceLocation atlas) {
+//        return ATLAS_CACHE.computeIfAbsent(atlas, e -> (tex) -> ((TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(atlas)).getSprite(tex));
+//    }
 
 //    public static TextureAtlasSprite getParticle
 }

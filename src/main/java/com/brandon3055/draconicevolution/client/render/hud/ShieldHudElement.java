@@ -284,7 +284,7 @@ public class ShieldHudElement extends AbstractHudElement {
             for (double state : totemStatus) {
                 render.tex(DEGuiTextures.get("hud/undying"), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
                 if (state != -1) {
-                    drawPieProgress(render, x, height + 1, 8, state, 0, 0x80FFFFFF);
+                    RenderUtils.drawPieProgress(render, x, height + 1, 8, state, 0, 0x80FFFFFF);
                 }
                 x -= 9;
             }
@@ -362,23 +362,5 @@ public class ShieldHudElement extends AbstractHudElement {
             }
         }
         return _effectMats;
-    }
-
-    public void drawPieProgress(GuiRender render, double x, double y, double diameter, double progress, double offsetAngle, int colour) {
-        float alpha = (float) (colour >> 24 & 255) / 255.0F;
-        float red = (float) (colour >> 16 & 255) / 255.0F;
-        float green = (float) (colour >> 8 & 255) / 255.0F;
-        float blue = (float) (colour & 255) / 255.0F;
-        double radius = diameter / 2;
-        VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(DERenderTypes.FAN_TYPE), render.pose());
-        builder.vertex(x + radius, y + radius, 0).color(0, 255, 255, 64).endVertex();
-        for (double d = 0; d <= 1; d += 1D / 30D) {
-            double angle = (d * progress) + 0.5 - progress;
-            angle *= Math.PI * 2;
-            angle += MathHelper.torad * offsetAngle;
-            double vertX = x + radius + Math.sin(angle) * radius;
-            double vertY = y + radius + Math.cos(angle) * radius;
-            builder.vertex(vertX, vertY, 0).color(red, green, blue, alpha).endVertex();
-        }
     }
 }

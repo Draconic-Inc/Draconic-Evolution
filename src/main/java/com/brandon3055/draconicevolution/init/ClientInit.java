@@ -82,6 +82,7 @@ public class ClientInit {
         OverlayRenderHandler.init();
         DEShaders.init();
         ClientEventHandler.init();
+        AtlasTextureHelper.init(modBus);
     }
 
     private static void clientSetupEvent(FMLClientSetupEvent event) {
@@ -96,7 +97,6 @@ public class ClientInit {
     public static void onResourceReload(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(ModuleTextures.getAtlasHolder());
         event.registerReloadListener(DEGuiTextures.getAtlasHolder());
-        AtlasTextureHelper.onResourceReload(event);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -134,8 +134,8 @@ public class ClientInit {
     }
 
     private static void registerGuiFactories() {
-//        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator.Screen::new);
-//        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder.Screen::new);
+        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator.Screen::new);
+        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder.Screen::new);
 //        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest.Screen::new);
 //        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore.Screen::new);
 //        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), GuiModularItem.Screen::new);

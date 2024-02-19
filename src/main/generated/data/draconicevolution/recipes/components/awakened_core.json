@@ -1,13 +1,8 @@
 {
   "type": "draconicevolution:fusion_crafting",
-  "result": {
-    "item": "draconicevolution:awakened_core"
-  },
   "catalyst": {
     "tag": "forge:nether_stars"
   },
-  "total_energy": 1000000,
-  "tier": "WYVERN",
   "ingredients": [
     {
       "item": "draconicevolution:wyvern_core"
@@ -33,5 +28,10 @@
     {
       "item": "draconicevolution:wyvern_core"
     }
-  ]
+  ],
+  "result": {
+    "item": "draconicevolution:awakened_core"
+  },
+  "tier": "WYVERN",
+  "total_energy": 1000000
 }

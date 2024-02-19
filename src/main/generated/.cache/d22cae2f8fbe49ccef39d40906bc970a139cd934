@@ -1,0 +1,9 @@
+// 1.20.1	2024-02-07T21:33:25.634610723	Tags for minecraft:block mod id draconicevolution
+e1ab416e7e78411c08a640ffc4bc9535023d0566 data/forge/tags/blocks/ores.json
+e1ab416e7e78411c08a640ffc4bc9535023d0566 data/forge/tags/blocks/ores/draconium.json
+e728da52cf6039cbdcd9ae8d6670769359f9bea7 data/forge/tags/blocks/storage_blocks.json
+59987491edcad8feef7cf904cb84da279dae8781 data/forge/tags/blocks/storage_blocks/draconium.json
+e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/forge/tags/blocks/storage_blocks/draconium_awakened.json
+6969db2b703510aeba8db0b8fe4f578655a14820 data/minecraft/tags/blocks/mineable/pickaxe.json
+28592e0132f7d75388149a27f712d05d7b0c13d2 data/minecraft/tags/blocks/needs_diamond_tool.json
+5ae797c8f15913e7eb537c803d874f9de62b9483 data/minecraft/tags/blocks/soul_fire_base_blocks.json

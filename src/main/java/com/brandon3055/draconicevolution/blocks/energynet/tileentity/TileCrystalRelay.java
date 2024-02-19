@@ -20,11 +20,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileCrystalRelay extends TileCrystalBase {
 
     public TileCrystalRelay(BlockPos pos, BlockState state) {
-        super(DEContent.TILE_REACTOR_CORE.get(), pos, state);
+        super(DEContent.TILE_RELAY_CRYSTAL.get(), pos, state);
     }
 
     public TileCrystalRelay(TechLevel techLevel, BlockPos pos, BlockState state) {
-        super(DEContent.TILE_REACTOR_CORE.get(), techLevel, pos, state);
+        super(DEContent.TILE_RELAY_CRYSTAL.get(), techLevel, pos, state);
     }
 
     //region Rendering
