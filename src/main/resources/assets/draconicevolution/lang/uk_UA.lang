@@ -1,0 +1,1028 @@
+Translated by dimaringomaster
+//Tile Information ----------------------------------------------------------------------------------------------------------------------------------------
+tile.draconicevolution:celestial_manipulator.name=Контролер погоди
+tile.draconicevolution:draconium_ore_normal.name=Драконієва руда
+tile.draconicevolution:draconium_ore_nether.name=Драконієва руда Незера
+tile.draconicevolution:draconium_ore_end.name=Драконієва руда Ендера
+tile.draconicevolution:grinder.name=Молотилка
+tile.draconicevolution:potentiometer.name=Потенціометр
+tile.draconicevolution:rain_sensor.name=Датчик дощу
+tile.draconicevolution:particle_generator.name=Генератор частинок
+tile.draconicevolution:energy_core_stabilizer.name=Стабілізатор енергетичного ядра
+tile.draconicevolution:entity_detector.name=Детектор істот
+tile.draconicevolution:entity_detector_basic.name=Детектор істот
+tile.draconicevolution:entity_detector_advanced.name=Покращений детектор істот
+tile.draconicevolution:energy_infuser.name=Енергетичний наповнювач
+tile.draconicevolution:draconic_spawner.name=Стабілізований спавнер
+tile.draconicevolution:generator.name=Генератор RF
+tile.draconicevolution:energy_storage_core.name=Енергетичне ядро
+tile.draconicevolution:energy_pylon.name=Енергетичний пілон
+tile.draconicevolution:draconium_block.name=Драконієвий блок
+tile.draconicevolution:draconium_block_charged.name=Заряджений драконієвий блок
+tile.draconicevolution:diss_enchanter.name=Розчаровувач зачарувань
+tile.draconicevolution:dislocator_pedestal.name=Підніжжя телепортації
+tile.draconicevolution:draconium_chest.name=Драконієва скриня
+tile.draconicevolution:draconic_block.name=Пробуджений драконієвий блок
+tile.draconicevolution:infused_obsidian.name=Заряджений обсидіан
+tile.draconicevolution:dislocator_receptacle.name=Телепортаційний приймач
+tile.draconicevolution:portal.name=Портал
+tile.draconicevolution:flux_gate.name=Енергетичний обмежувач
+tile.draconicevolution:fluid_gate.name=Рідинний обмежувач
+tile.draconicevolution:reactor_core.name=Ядро драконієвого реактора
+tile.draconicevolution:reactor_stabilizer.name=Стабілізатор драконієвого реактора
+tile.draconicevolution:reactor_injector.name=Енергетичний інжектор драконієвого реактора
+tile.draconicevolution:chaos_crystal.name=Кристал хаосу
+tile.draconicevolution:item_dislocation_inhibitor.name=Проектор поля нормалізації телепортації
+
+tile.draconicevolution:energy_crystal.relay.basic.name=Базовий кристал передачі енергії
+tile.draconicevolution:energy_crystal.relay.wyvern.name=Віверновий кристал передачі енергії
+tile.draconicevolution:energy_crystal.relay.draconic.name=Драконієвий кристал передачі енергії
+tile.draconicevolution:energy_crystal.crystal_io.basic.name=Базовий кристал введення/виведення енергії
+tile.draconicevolution:energy_crystal.crystal_io.wyvern.name=Віверновий кристал введення/виведення енергії
+tile.draconicevolution:energy_crystal.crystal_io.draconic.name=Драконієвий кристал введення/виведення енергії
+tile.draconicevolution:energy_crystal.wireless.basic.name=Базовий бездротовий кристал передачі енергії
+tile.draconicevolution:energy_crystal.wireless.wyvern.name=Віверновий бездротовий кристал передачі енергії
+tile.draconicevolution:energy_crystal.wireless.draconic.name=Драконієвий бездротовий кристал передачі енергії
+
+
+tile.draconicevolution:fusion_crafting_core.name=Ядро злиття
+tile.draconicevolution:crafting_injector_basic.name=Базовий інжектор злиття
+tile.draconicevolution:crafting_injector_wyvern.name=Віверновий інжектор злиття
+tile.draconicevolution:crafting_injector_draconic.name=Драконієвий інжектор злиття
+tile.draconicevolution:crafting_injector_chaotic.name=Хаотичний інжектор злиття
+
+tile.draconicevolution:creative_rf_source.name=Творче джерело енергії RF
+
+
+//Item Information ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:awakened_core.name=Пробуджене ядро
+item.draconicevolution:draconium_ingot.name=Драконієвий злиток
+item.draconicevolution:draconium_dust.name=Драконієвий пил
+item.draconicevolution:draconium_blend.name=Драконієва суміш (Застаріла)
+item.draconicevolution:dragon_heart.name=Серце дракона
+item.draconicevolution:wyvern_core.name=Віверное ядро
+item.draconicevolution:sun_focus.name=Сонячний фокус
+item.draconicevolution:draconic_core.name=Драконієва ядро
+item.draconicevolution:dislocator.name=Телепорт
+item.draconicevolution:dislocator_advanced.name=Покращений телепорт
+item.draconicevolution:dislocator_bound.bound.name=Зв'язаний телепорт
+item.draconicevolution:dislocator_bound.player.name=Зв'язаний телепорт (Гравець)
+item.draconicevolution:dislocator_bound.p2p.name=Зв'язаний телепорт (Точка до точки)
+
+info.teleporterInfGUI.txt=Щоб відкрити GUI, нажміть SHIFT + ПКМ
+info.teleporterInfScroll.txt=Щоб змінити пункт призачення, зажміть SHIFT + коліщатко миші
+
+item.draconicevolution:wyvern_pick.name=Вівернове кайло
+item.draconicevolution:wyvern_axe.name=Вівернова сокира
+item.draconicevolution:wyvern_shovel.name=Вівернова лопата
+item.draconicevolution:wyvern_sword.name=Віверновий меч
+item.draconicevolution:wyvern_bow.name=Віверновий лук
+item.draconicevolution:wyvern_helm.name=Віверновий шолом
+item.draconicevolution:wyvern_chest.name=Віверновий нагрудник
+item.draconicevolution:wyvern_legs.name=Вівернові наголінники
+item.draconicevolution:wyvern_boots.name=Вівернові чоботи
+item.draconicevolution:draconic_pick.name=Драконієве кайло
+item.draconicevolution:draconic_axe.name=Драконієва сокира
+item.draconicevolution:draconic_shovel.name=Драконієва лопата
+item.draconicevolution:draconic_hoe.name=Драконієва мотика
+item.draconicevolution:draconic_sword.name=Драконієвий меч
+item.draconicevolution:draconic_bow.name=Драконієвий лук
+item.draconicevolution:draconic_helm.name=Драконієвий шолом
+item.draconicevolution:draconic_chest.name=Драконієвий нагрудник
+item.draconicevolution:draconic_legs.name=Драконієві наголінники
+item.draconicevolution:draconic_boots.name=Драконієві чоботи
+item.draconicevolution:draconic_staff_of_power.name=Драконієвий посох сили
+item.draconicevolution:mob_soul.name=- душа
+item.draconicevolution:ender_arrow.name=Ендер-стріла
+item.draconicevolution:safety_match.name=Безпечний сірник
+item.draconicevolution:safety_match_box.name=Коробочка безпечних сірників
+item.draconicevolution:key.name=Ключ
+item.draconicevolution:wyvern_energy_core.name=Вівернове енергетичне ядро
+item.draconicevolution:draconic_energy_core.name=Драконієве енергетичне ядро
+
+item.draconicevolution:draconium_capacitor.wyvern.name=Віверновий флакс-конденсатор
+item.draconicevolution:draconium_capacitor.draconic.name=Драконієвий флакс-конденсатор
+item.draconicevolution:draconium_capacitor.creative.name=Творчий флакс-конденсатор
+
+item.draconicevolution:draconic_ingot.name=Пробуджений драконієвий злиток
+item.draconicevolution:creative_structure_spawner_comet.name=Викликати комету
+item.draconicevolution:creative_structure_spawner_ender_island.name=Викликати острів Ендера
+item.draconicevolution:info_tablet.name=Інформаційний планшет Draconic Evolution
+item.draconicevolution:crystal_binder.name=Звязувач кристалів
+item.draconicevolution:dezils_marshmallow.name=Зефір Дезіла
+item.draconicevolution:reactor_part.stabilizer_frame.name=Рамка стабілізатора реактора
+item.draconicevolution:reactor_part.inner_rotor.name=Внутрішній ротор стабілізатора реактора
+item.draconicevolution:reactor_part.outer_rotor.name=Зовнішній ротор стабілізатора реактора
+item.draconicevolution:reactor_part.rotor_assembly.name=Збібраний ротора стабілізатора реактора
+item.draconicevolution:reactor_part.focus_ring.name=Кільце фокусування стабілізатора реактора
+item.draconicevolution:chaotic_core.name=Хаотичне ядро
+item.draconicevolution:chaos_shard.shard.name=Великий фрагмент хаосу
+item.draconicevolution:chaos_shard.fragSmall.name=Малесенький фрагмент хаосу
+item.draconicevolution:chaos_shard.fragMedium.name=Невеликий фрагмент хаосу
+item.draconicevolution:chaos_shard.fragLarge.name=Фрагмент хаосу
+item.draconicevolution:nugget.draconium.name=Драконієвий самородок
+item.draconicevolution:nugget.awakened.name=Пробуджений драконієвий самородок
+item.draconicevolution:magnet.basic.name=Магніт телепортацій
+item.draconicevolution:magnet.advanced.name=Пробуджений магніт телепортацій
+
+item.draconicevolution:tool_upgrade.rfCap.name=Модифікатор (Ємність RF)
+item.draconicevolution:tool_upgrade.digSpeed.name=Модифікатор (Швидкість копання)
+item.draconicevolution:tool_upgrade.digAOE.name=Модифікатор (Область копання)
+item.draconicevolution:tool_upgrade.digDepth.name=Модифікатор (Глибина копання)
+item.draconicevolution:tool_upgrade.attackDmg.name=Модифікатор (Сила атаки)
+item.draconicevolution:tool_upgrade.attackAOE.name=Модифікатор (Область атаки)
+item.draconicevolution:tool_upgrade.arrowDmg.name=Модифікатор (Сила стріли)
+item.draconicevolution:tool_upgrade.drawSpeed.name=Модифікатор (Швидкість натягу)
+item.draconicevolution:tool_upgrade.arrowSpeed.name=Модифікатор (Швидкість стріли)
+item.draconicevolution:tool_upgrade.shieldCap.name=Модифікатор (Ємність щита)
+item.draconicevolution:tool_upgrade.shieldRec.name=Модифікатор (Відновлення щита)
+item.draconicevolution:tool_upgrade.moveSpeed.name=Модифікатор (Швидкість руху)
+item.draconicevolution:tool_upgrade.jumpBoost.name=Модифікатор (Підвищення стрибка)
+
+item.draconicevolution:creative_exchanger.name=Творчий замінник блоків
+item.draconicevolution:ender_energy_manipulator.name=Маніпулятор ендер-енергії
+
+//Item Groups ----------------------------------------------------------------------------------------------------------------------------------------
+itemGroup.toolsAndWeapons=Draconic Evolution Інструменти та Зброя
+itemGroup.blocksAndItems=Draconic Evolution Блоки та Предмети
+
+//Chat Messages ----------------------------------------------------------------------------------------------------------------------------------------
+msg.size0.txt=Tool Mode: Один блок
+msg.size1.txt=Tool Mode: 3x3
+msg.size2.txt=Tool Mode: 5x5
+msg.size3.txt=Tool Mode: 7x7
+msg.size4.txt=Tool Mode: 9x9
+msg.oblittrue.txt=§aObliteration Mode: §4Active
+msg.oblitfalse.txt=§aObliteration Mode: §2Inactive
+msg.bowmoderapidfire.txt=§3Режим стрільби: §6Швидка стільба
+msg.bowmodesharpshooter.txt=§3Режим стрільби: §6Снайпер
+msg.bowmodeexplosive.txt=§3Режим стрільби: §6Вибуховий постріл
+msg.bowmodedevistation.txt=§3Режим стрільби: §6Спустошення!!! (Тільки для творчого режиму)
+msg.bowoutofgunpowder.txt=§4Для використання вибухового режиму потрібно 4 пороху
+msg.teleporterUnSet.txt=§cПерш ніж телепортуватися, ви маєте вказати місце призначення (Shift + ПКМ)
+msg.teleporterBound.txt=§aТелепорт, прив'язаний до:
+msg.teleporterLowHealth.txt=§cУ вас замало здоров'я!
+msg.teleporterSentMob.txt=утність була відправлена до
+msg.teleporterEntityDimensional.txt=§cВи не можете відправляти мобів через виміри!
+msg.teleporterAlreadySet.txt=§cПомилка цей амулет можна прив'язати лише до однієї локації
+msg.teleporterOutOfFuel.txt=§cНЕМАЄ ПАЛИВА!!!
+msg.teleporterOutOfPearls.txt=§cЗакінчилися перлини ендера!!!
+msg.teleporterPlayerT1.txt=Для цього вам потрібен більш потужний телепорт
+msg.teleporterPlayerConsent.txt=Гравець повинен дати свою згоду, використовуючи Shift
+msg.spawnerInfo1.txt=Тип сутності
+msg.spawnerInfo2.txt=Потрібен гравець
+msg.spawnerInfo3.txt=Ігнорує вимоги спавну
+msg.spawnerInfo4.txt=Рівень спавнера
+msg.spawnerInfo5.txt=§3Утримуйте клавішу Shift для інформації про оновлення
+msg.spawnerInfo6.txt=Вимагати гравця поряд: §3Пекельна зірка
+msg.spawnerInfo7.txt=Ігнорувати вимоги спавну: §3Золоте яблуко
+msg.spawnerInfo8.txt=Рівень 2: §3Вівернове ядро
+msg.spawnerInfo9.txt=Рівень 3: §3Пробуджене ядро
+msg.dislocatorUnsafe.txt=Призначення небезпечне. Спробуйте ще раз
+msg.dislocatorNoGround.txt=Помилка: світ не знайдено
+msg.range.txt=Діапазон:
+msg.energyStorageCoreUTA.txt=Неможливо активувати (недійсна конфігурація)
+msg.SpawnDragonToFarFrom00.txt=[ПОМИЛКА] Занадто далеко від 0,0
+msg.SpawnDragonMustBeInTheEnd.txt=Ви повинні виконати цей ритуал у вимірі Енду!
+msg.wrongKey.txt=Ключ не підходить для цього замка
+msg.cKeyStoneType0.txt=Постійне активування (використовує ключ)
+msg.cKeyStoneType1.txt=Активація за допомогою кнопки
+msg.cKeyStoneType2.txt=Активація за допомогою перемикання
+msg.cKeyStoneType3.txt=Активація за допомогою кнопки (використовує ключ)
+msg.draconiumChestEditmode.txt=Режим редагування кольору =
+msg.draconiumChestRed.txt=Червоний =
+msg.draconiumChestGreen.txt=Зелений =
+msg.draconiumChestBlue.txt=Синій =
+msg.draconiumChestEditL1.txt=Клацніть ПКМ з червоним, зеленим або синім барвником, щоб налаштувати колір
+msg.draconiumChestEditL2.txt=Щоб збільшити показник кольору, клікніть по верхній стороні скрині
+msg.draconiumChestEditL3.txt=Щоб зменшити показник кольору, клікніть по нижній стороні скрині
+msg.draconiumChestEditL4.txt=Нажміть ПКМ папером, щоб скопіювати колір
+msg.draconiumChestEdit2.txt=Використовуйте тільки один папір
+msg.de.dragonDeath.txt=§5Серце пробудилось від §5вибуху дракона
+msg.de.baseSafeAOW.txt=§9(§aУвімкнено §aбезпечний §aрежим §aкопання §aв §aрадіусі§9) §cОперація §cскасована, §cтому що §cбуло §cвиявлено §cсутність §cентіті
+msg.de.guardianAttackBlocked.txt=Ваша атака заблокована кристалами стражів!
+msg.de.shieldDepleted.txt=Попередження! Критичні ушкодження!!!
+msg.de.shockWaveForEnergyBoltsOnly.txt=Ударна хвиля можлива лише зі стрілою драконієвого вогню
+msg.de.explosiveNotForEnergyBolts.txt=Вибух не можливий зі стрілою драконієвого вогню
+msg.de.insufficientPowerToFire.txt=Недостатньо енергії для пострілу
+msg.de.outOfArrows.txt=Стріли закінчилися!!!
+msg.de.coreNotFound.txt=[Помилка: 404] Ядро не знайдено!
+msg.de.notRaining.txt=В даний момент не йде дощ!
+msg.de.alreadyRaining.txt=Вже йде дощ!
+msg.de.alreadyStorm.txt=Вже гроза!
+msg.de.insufficientPower.txt=Недостатньо енергії!
+msg.de.alreadyRunning.txt=Вже виконується!
+
+//Tool Tips/other localizations ----------------------------------------------------------------------------------------------------------------------------------------
+info.teleporterInfUnset1.txt=Не зв'язаний
+info.teleporterInfUnset2.txt=Натисніть Shift + ПКМ, щоб зв'язати за
+info.teleporterInfUnset3.txt=координатами x, y, z
+info.teleporterInfUnset4.txt=Після телепортації гравець буде дивитися туди,
+info.teleporterInfUnset5.txt=куди він дивився під час прив'язки координат
+info.teleporterInfDest.txt=Місце призначення
+info.teleporterInfFuel.txt=Пальне:
+info.teleporterInfSet1.txt=Зв'язаний з
+info.teleporterInfSet2.txt=Використання залишився
+info.de.rightClickToTeleport.txt=ПКМ для телепортації
+info.de.draconiumBlockCapacitorCharge.txt=Тримайте предмет і присідайте, щоб зарядити з конденсатора.
+info.creativeCapacitor.txt=Може зберігати або використовувати
+info.de.itemDislocationInhibitor.txt=Запобігає збиранню предметів, що впали в межах 5 блоків від телепорта.
+
+info.draconicAxe1.txt=Деревина!!!!!!
+info.draconicAxe2.txt=Впаде ціле дерево
+info.draconicAxe3.txt=або ломає деревину в радіусі 5х5х5.
+info.draconicAxe4.txt=Утримуйте клавішу Shift, щоб видобути один блок.
+
+info.draconicCore.txt=Ядро, необхідна складова для створення предметів у Draconic Evolution.
+info.draconicCore1.txt=Може бути використано для стабілізації спавнерів.
+
+info.mobSoul1.txt=Можна використовувати на стабілізованому спавнері для встановлення типу.
+info.mobSoul2.txt=Або натисніть Shift + ПКМ, щоб викликати моба.
+info.mobSoul3.txt=(Одноразове використання)
+
+info.arrowInfo.txt=Дуже боляче...
+info.arrowInfo0.txt=Занадто важка для звичайного лука
+
+//ender_extraction_core
+info.de.ender_energy_manipulator.info.txt=Цей трохи жахливий містичний пристрій використовує енергію кристалів Енда, які сцілюють дракона.
+info.de.ender_energy_manipulator.info2.txt=І разом з душами Ендерменів використовує цю енергію для видобуття яйця з Ендер Дракона.
+info.de.ender_energy_manipulator.location.msg=Повинно бути розміщено на верхівці порталу!
+info.de.ender_energy_manipulator.dead.msg=Ендер Дракона не знайдено!
+info.de.ender_energy_manipulator.running.msg=Потрібно зачекати, поки поточний маніпулятор завершить роботу!
+
+info.de.obliterationMode.txt=Режим винищення
+info.de.obliterationModetrue.txt=Активний
+info.de.obliterationModefalse.txt=Неактивний
+info.de.miningMode.txt=Режим видобутку
+info.de.changeMiningMode.txt=Натисніть Shift + ПКМ, щоб змінити режим видобутку
+info.de.toggleOblit.txt=Натисніть ПКМ, щоб перемикати режим винищення
+info.de.oblitInfo.txt=Режим винищення знищує блоки низької вартості
+info.de.attackDamage.txt=Сила атаки
+info.de.bonusHealthDamage.txt=Здоров'я мобів
+info.de.press.txt=Натисніть
+info.de.toOpenConfigGUI.txt=Щоб відкрити GUI конфігурації
+info.de.shiftToPause.txt=Утримуйте клавішу Shift, щоб призупинити зміщення
+info.de.power.txt=Потужність
+
+info.de.sword.txt=Сила вашого ворога робить цей меч сильнішим!
+
+info.de.safetyMatch.txt=Запаліть вогонь, який НЕ спалить ваш будинок!
+
+info.draconiumChestInfo1.txt=Натисніть Shift + ПКМ порожньою рукою
+info.draconiumChestInfo2.txt=щоб отримати доступ до опцій кольору
+
+info.de.capacitorMode.txt=Режим
+info.de.capacitorMode0.txt=Неактивний
+info.de.capacitorMode1.txt=Заряджати броню
+info.de.capacitorMode2.txt=Заряджати предмети в руці
+info.de.capacitorMode3.txt=Заряджати броню та предмети в руці
+info.de.capacitorMode4.txt=Заряджати все
+info.de.changwMode.txt=Натисніть Shift + ПКМ, щоб змінити режим
+
+info.de.toolInventoryOblit.txt=Фільтр сміття та чарів
+info.de.toolInventoryEnch.txt=Чари
+
+info.de.hudDisplayConfigTxt1.txt=#### Відображення HUD ####
+info.de.hudDisplayConfigTxt2.txt=Клацніть і перетягніть для переміщення
+info.de.hudDisplayConfigTxt3.txt=###################
+info.de.hudDisplayConfigInfo1.txt=Клацніть і перетягніть HUD
+info.de.hudDisplayConfigInfo2.txt=щоб змінити місце розташування
+
+
+info.de.manual.introTxt.txt=Все, що вам потрібно знати. Усе в одному місці.
+info.de.manual.indexButton.txt=Індекс
+info.de.manual.indexButtonTip.txt=Перейти на сторінку індексу
+info.de.manual.contributors.txt=Учасники Draconic Evolution
+info.de.manual.name.txt=Ім'я
+info.de.manual.contribution.txt=Внесок
+info.de.manual.clickToGoToSite.txt=(Клацніть на ім'я, щоб відкрити веб-сайт)
+info.de.manual.contributorsButton.txt=Учасники
+info.de.manual.contributorsButtonInfo.txt=Список людей, які внесли свій внесок у Draconic Evolution
+info.de.shiftRightClickToActivate.txt=Shift-Правий клік, щоб активувати.
+info.de.blockRange.txt=Діапазон блоків.
+info.de.hasSavedData.txt=Зміст збережено!
+info.de.energyBuffer.txt=Буфер енергії
+
+info.de.manual.nav1.txt=Підказки щодо навігації
+info.de.manual.nav2.txt=Натисніть Backspace, щоб перейти на попередню сторінку.
+info.de.manual.nav3.txt=Утримуйте клавішу Shift, щоб прокручуватися швидше.
+
+//Energy Net
+info.de.modeIn.txt=Режим: Вхід
+info.de.modeOut.txt=Режим: Вихід
+info.de.5xTransfer.txt=(5x Передача)
+info.de.connections.txt=З'єднання
+info.de.wirelessConnections.txt=Бездротові з'єднання
+
+
+info.infusedObsidian.txt=Цей блок стійкий до вибухів Візера
+
+enchantment.draconicevolution.reaperEnchant=Жнець
+enchantment.draconicevolution.enchant_reaper.desc=При застосуванні до зброї це зачарування збільшує шанс того, що моб, вбитий цією зброєю, випустить свою душу. Це зачарування найкраще застосовувати до зброї від Draconic Evolution, оскільки воно накладається на їх вбудований модифікатор жнеця.
+
+//Achievements ----------------------------------------------------------------------------------------------------------------------------------------
+draconicevolution.achievementPage.name=Draconic Evolution
+
+achievement.draconicevolution.dust=Початок чогось ВЕЛИКОГО!
+achievement.draconicevolution.dust.desc=Зібрати Драконієвий пил
+achievement.draconicevolution.ingot=Краще за діаманти!
+achievement.draconicevolution.ingot.desc=Виплавити Драконієвий пил в Драконієвий злиток
+achievement.draconicevolution.core=Тут початок чогось більшого!
+achievement.draconicevolution.core.desc=Виготовити Драконієве ядро
+achievement.draconicevolution.core2=Недостатньо добре!
+achievement.draconicevolution.core2.desc=Покращити Драконієве ядро до Вівернового
+
+achievement.draconicevolution.dislocator=У ендерменів немає шансів!
+achievement.draconicevolution.dislocator.desc=Створити Телепорт
+achievement.draconicevolution.chest=Тепер мені вистачить місця!
+achievement.draconicevolution.chest.desc=Створити Драконієву скриню
+achievement.draconicevolution.particles=ОООО, блискітки!
+achievement.draconicevolution.particles.desc=Створити генератор частинок
+achievement.draconicevolution.weather=Кому потрібна ця Мати-природа
+achievement.draconicevolution.weather.desc=Створити контролер погоди
+achievement.draconicevolution.dissenchanter=Лише те, що я хочу!
+achievement.draconicevolution.dissenchanter.desc=Створити Розчаровувач зачарувань
+achievement.draconicevolution.ecore=Все сильніше, і потужніше, і краще!
+achievement.draconicevolution.ecore.desc=Побудувати енергетичне ядро
+achievement.draconicevolution.wpick=Несхоже на діаманти!
+achievement.draconicevolution.wpick.desc=Покращення до Вівернового кайла
+achievement.draconicevolution.wshovel=Професійний копач!
+achievement.draconicevolution.wshovel.desc=Створити Вівернову лопату
+achievement.draconicevolution.wsword=Краща зброя!
+achievement.draconicevolution.wsword.desc=Створити Віверновий меч
+achievement.draconicevolution.wbow=Снайпери готові!
+achievement.draconicevolution.wbow.desc=Створити Віверновий лук
+achievement.draconicevolution.whelm=Вільне дихання!
+achievement.draconicevolution.whelm.desc=Створити Віверновий шолом
+achievement.draconicevolution.wchest=Високий захист
+achievement.draconicevolution.wchest.desc=Створити Віверновий нагрудник
+achievement.draconicevolution.wleggs=Біжи як вітер
+achievement.draconicevolution.wleggs.desc=Створити Вівернові наголінники
+achievement.draconicevolution.wboots=Опади пера
+achievement.draconicevolution.wboots.desc=Створити Вівернові чоботи
+achievement.draconicevolution.resurrection=Переповнений очікуванням!
+achievement.draconicevolution.resurrection.desc=Створити Rамінь воскресіння
+achievement.draconicevolution.dislocator2=Владар Енду!
+achievement.draconicevolution.dislocator2.desc=Створити Покращений телепорт
+achievement.draconicevolution.flux=1,21 гігават!
+achievement.draconicevolution.flux.desc=Створити Віверновий флакс-конденсатор
+
+achievement.draconicevolution.heart=Серце дракона!
+achievement.draconicevolution.heart.desc=Вбити дракона та взяти його серце
+achievement.draconicevolution.awakenedblock=Найкрасивіший ритуал!
+achievement.draconicevolution.awakenedblock.desc=Створити Пробуджений драконієвий злиток
+achievement.draconicevolution.core3=Витрати проти потужності!
+achievement.draconicevolution.core3.desc=Оновити Віверное ядро до Пробудженого
+
+achievement.draconicevolution.dhelm=Я - підводний човен!
+achievement.draconicevolution.dhelm.desc=Створити Драконієвий шолом
+achievement.draconicevolution.dChest=Літай як орел!
+achievement.draconicevolution.dChest.desc=Створити Драконієвий нагрудник
+achievement.draconicevolution.dleggs=Танцюй, як балерина!
+achievement.draconicevolution.dleggs.desc=Створити Драконієві наголінники
+achievement.draconicevolution.dboots=Вище і вище!
+achievement.draconicevolution.dboots.desc=Створити Драконієві чоботи
+
+achievement.draconicevolution.dpick=Копай з авторитетом!
+achievement.draconicevolution.dpick.desc=Створити Драконієве кайло
+achievement.draconicevolution.dshovel=Так багато ґрунту!
+achievement.draconicevolution.dshovel.desc=Створити Драконієву лопату
+achievement.draconicevolution.daxe=Один удар - одне дерево!
+achievement.draconicevolution.daxe.desc=Створити Драконієву сокиру
+achievement.draconicevolution.dsword=Кусай, як бджола!
+achievement.draconicevolution.dsword.desc=Створити Драконієвий меч
+achievement.draconicevolution.dbow=Тепер ти граєш з потужністю!
+achievement.draconicevolution.dbow.desc=Створити Драконієвий лук
+achievement.draconicevolution.flux2=Феноменальна космічна потужність!
+achievement.draconicevolution.flux2.desc=Створити Драконієвий флакс-конденсатор
+achievement.draconicevolution.dhoe=Це - новий рівень! -БАМ-
+achievement.draconicevolution.dhoe.desc=Створити Драконієву мотику
+
+achievement.draconicevolution.dstaff=З об'єднаними силами!
+achievement.draconicevolution.dstaff.desc=Створити Драконієвий посох сили
+
+achievement.draconicevolution.soul=Жнець!!!!
+achievement.draconicevolution.soul.desc=Здобудьте свою першу душу
+achievement.draconicevolution.sundial=Часознавець!
+achievement.draconicevolution.sundial.desc=Створіть сонячний годинник і візьміть контроль над ніччю та днем
+achievement.draconicevolution.manual=Знання до максимуму!
+achievement.draconicevolution.manual.desc=Створити Інформаційний планшет
+
+//Lore ----------------------------------------------------------------------------------------------------------------------------------------
+item.draconicevolution:wyvernPick.lore=2Звичайні кирки такі слабкі,\nза допомогою Драконію ви збільшуєте область і швидкість видобутку.
+item.draconicevolution:wyvernShovel.lore=2По одному блоку за раз? Не з Драконієм!\nШвидше, більша область, це тільки початок!
+item.draconicevolution:wyvernSword.lore=2Драконій починає розкривати потенціал меча,\nобласть і сила покращені.
+item.draconicevolution:wyvernBow.lore=2Проникнення Драконію в звичайний лук\nдозволяє вам стріляти швидше і з більшою силою. 
+
+item.draconicevolution:wyvernHelm.lore=2Сильніший за діамант!\nВи тепер можете витримати ще більші удари
+item.draconicevolution:wyvernChest.lore=2Покращивши броню Драконієм\nви значно підвищуєте її стійкість
+item.draconicevolution:wyvernLeggs.lore=2Ви відчуваєте себе ще сильнішими і швидшими,\nтому що ви покращили наголінники до Дранієвих
+item.draconicevolution:wyvernBoots.lore=2Ви вивчаєте, як покращити чоботи\nДраконій, здається надав вам більшої\nпрохідності 
+
+item.draconicevolution:draconicPick.lore=2Велика увага та дослідження\nдозволили вам видобувати ще в більшій області
+item.draconicevolution:draconicAxe.lore=2Після багатьох спроб та помилок\nви тепер можете знищити ціле дерево за один удар
+item.draconicevolution:draconicShovel.lore=2Ще більш ефективно,\nви можете копати ще в більші області
+item.draconicevolution:draconicHoe.lore=2Драконій навіть покращує фермерство,\nцілі області можна обробляти та висівати за один клік
+item.draconicevolution:draconicSword.lore=2Віверній був хорошим, але драконієва зброя\nще потужніша та уб'є кожного
+item.draconicevolution:draconicBow.lore=2Вершина досконалості на відстані? швидший постріл,\nвибухові стріли, що ще ви можете побажати?
+
+item.draconicevolution:draconicHelm.lore=2Ви більше не боїтеся ночі,\nтепер ви можете бачити все,\nнезалежно від того, день зараз чи ніч
+item.draconicevolution:draconicChest.lore=2Використовуючи Серце дракона,\nви відкриваєте для себе можливість літати
+item.draconicevolution:draconicLeggs.lore=2Ще міцніша броня!\nСерце дракона захищає вас та дозволяє рухатись зі швидкістю світла
+item.draconicevolution:draconicBoots.lore=2Сильніші, швидші, кращі, ніж раніше\nСерце дракона дарує вам\nможливість стрибати до хмар
+
+item.draconicevolution:draconicDistructionStaff.lore=2Це була довга та важка дорога!\nОдин інструмент, щоб виконувати все: копати, боротись та вбивати!
+
+//Entity ----------------------------------------------------------------------------------------------------------------------------------------
+entity.draconicevolution:EnderDragon.name=Ендер Дракон
+entity.draconicevolution:ChaosGuardian.name=Хаос Дракон
+entity.draconicevolution:lootCore.name=Ядро Здобичі
+
+
+//KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
+key.draconicevolution.placeItem=Покласти предмет у світі
+key.draconicevolution.toolConfig=Налаштування інструментів та броні (GUI)
+key.draconicevolution.toolProfileChange=Змінити профіль конфігурації інструменту
+key.draconicevolution.armorProfileChange=Змінити профілі конфігурації броні
+key.draconicevolution.toggleFlight=Увімкнути/вимкнути творчий політ
+key.draconicevolution.toggleDislocator=Увімкнути/вимкнути Магніт телепортацій
+key.draconicevolution.cycleDigAOE=Змінити область видобутку
+key.draconicevolution.cycleAttackAOE=Змінити область атаки
+key.draconicevolution.toggleShields=Увімкнути/вимкнути енергетичний щит 
+
+//Damage ----------------------------------------------------------------------------------------------------------------------------------------
+death.attack.chaos=%1$s був розірваний Хаос Драконом
+death.attack.damage.de.fusionExplode=%1$s був стертий з лиця землі високоенергетичним вибухом
+death.attack.chaosBurst=%1$s був знищений темною енергією
+death.attack.de.islandImplode=%1$s не встиг втекти і був поглинутий Островом хаосу
+
+death.attack.de.GuardianFireball=%1$s був спалений вогняною кулею Хаос Дракона
+death.attack.de.GuardianEnergyBall=%1$s був шокований енергетичною кулею Хаос Дракона
+death.attack.de.GuardianChaosBall=%1$s був знищений Хаос Драконом за допомогою темної енергії
+
+death.attack.chaosImplosion=%1$s був затягнутий у енергетичний вихор і розтрощений на шматки
+death.attack.chrystalMoved=%1$s був непослухливим і отримав покарання від Draconic Evolution!
+
+death.attack.administrative.kill=%1$s був вбитий силою з інших вимірів
+
+death.attack.chaos=%1$s був розірваний Хаос Драконом
+
+death.attack.customArrowEnergy=%1$s був вражений %2$s
+death.attack.customArrowEnergy.item=%1$s був вражений %2$s за допомогою %3$s
+
+//Buttons ----------------------------------------------------------------------------------------------------------------------------------------
+button.de.chestAutoFeed0.txt=ВИМК.Автоподача вимкнена
+button.de.chestAutoFeed1.txt=ЗАПОВ.Підтримувати стаки повними
+button.de.chestAutoFeed2.txt=ЗАМК.Використовувати лише ті предмети, що плавляться в даний момент
+button.de.chestAutoFeed3.txt=ВСІ.Використовувати всі можливі предмети
+button.de.chestLockOutput.txt=Блокувати виведення. Блокує предмети, які вставляються в останні 5 слотів
+button.de.previous.txt=<==
+button.de.next.txt===>
+button.de.backToIndex.txt=Назад до індексу
+button.de.back.txt=Назад
+button.de.goToIndex.txt=Сторінка індексу
+button.de.addNew.txt=Додати новий
+button.de.rename.txt=Перейменувати
+button.de.commit.txt=Зберегти
+button.de.setHere.txt=Встановити координати
+button.de.remove.txt=Видалити
+button.de.addFuel.txt=Додати паливо
+button.de.cancel.txt=Скасувати
+button.de.UP.txt=ВГОРУ
+button.de.DOWN.txt=ВНИЗ
+button.de.toggleHidden.txt=Перемкнути приховані
+
+//Item Config Buttons
+button.de.stats.txt=Статистика
+button.de.statsShow.txt=Показати
+button.de.statsHide.txt=Приховати
+button.de.scaleUp.txt=Збільшити масштаб +
+button.de.scaleDown.txt=Зменшити масштаб -
+button.de.fadeMode0.txt=Прозорість: Вимкнено
+button.de.fadeMode1.txt=Прозорість: 25%%
+button.de.fadeMode2.txt=Прозорість: 50%%
+button.de.fadeMode3.txt=Прозорість: 75%%
+button.de.fadeMode4.txt=Прозорість: Максимальна
+button.de.rotate.txt=Повернути
+button.de.numeric.txt=Відображати числа:
+
+//Gui ----------------------------------------------------------------------------------------------------------------------------------------
+
+gui.de.flowGate.name=Керування потоком
+gui.de.flowGatePartialSignal.name=Фактичний потік буде змінюватися між двома заданими значеннями в залежності від сили редстоун сигналу, який подається на блок.
+gui.de.flowGateCurrentFlow.name=Потік
+gui.de.flowGateRSLow.name=Низький сигнал редстоун сигналу
+gui.de.flowGateRSHigh.name=Високий сигнал редстоун сигналу
+gui.de.flowGateOverridden.txt=Комп'ютерне перезаписування увімкнено
+gui.de.increment.name=Збільшити значення на
+gui.de.decrement.name=Зменшити значення на
+gui.de.ctrlAndShift.name=Ви можете використовувати Ctrl та Shift для більшої точності збільшення/зменшення значень.
+gui.de.pressOrScroll.name=Натисніть або прокрутіть коліщатко миші
+gui.de.configureItem.txt=Налаштувати предмет
+gui.de.min.txt=мін
+gui.de.max.txt=МАКС
+
+gui.de.insert.txt=Вставити
+gui.de.extract.txt=Витягти
+gui.de.fuel.txt=Паливо
+gui.de.internalStorage.txt=Внутрішнє сховище
+gui.de.itemStorage.txt=Сховище предметів
+gui.de.addCore.txt=Додати ядро
+gui.de.removeCore.txt=Видалити ядро
+gui.de.cores.txt=Ядра
+gui.de.cap.txt=Кількість
+gui.de.installed.txt=Встановлено
+gui.de.free.txt=Вільно
+gui.de.max.txt=Макс.
+gui.de.on.txt=Увімкнено
+gui.de.off.txt=Вимкнено
+gui.de.basePoints.txt=Базові бали
+gui.de.maxPoints.txt=Макс. бали
+gui.de.pointCost.txt=Вартість балів
+gui.de.value.txt=Значення
+gui.de.points.txt=Бали
+gui.de.point.txt=Бал
+gui.de.itemInventory.txt=Інвентар предметів
+gui.de.configureGuiElements.txt=Налаштувати елементи інтерфейсу користувача (GUI)
+gui.de.hudDisplaySettings.txt=Налаштування відображення HUD
+gui.de.shieldDisplaySettings.txt=Налаштування відображення захисту
+gui.de.clickAndDragPurpleBoxes.txt=Натисніть і перетягніть фіолетові рамки для переміщення дисплеїв
+gui.de.profile.txt=Профіль
+gui.de.maxDamage.txt=Максимальний урон
+gui.de.rfPerShot.txt=RF/Вистріл
+gui.de.tier.txt=Рівень
+gui.de.inactive.txt=Неактивний
+gui.de.active.txt=Активний
+gui.de.energyStorage.txt=Зберігання енергії
+gui.de.capacity.txt=Ємність
+gui.de.maxStorage.txt=>> Максимальне зберігання <<
+gui.de.stabilizers.txt=Стабілізатори
+gui.de.invalid.txt=Недійсний
+gui.de.valid.txt=Дійсний
+gui.de.advancedStabilizersRequired.txt=Потрібний кращий стабілізатор
+gui.de.core.txt=Ядро
+gui.de.almostInfinite.txt=Майже безмежний!
+gui.de.transfer.charge.txt=Передача / Час до зарядження
+gui.de.transfer.discharge.txt=Передача / Час до розрядження
+gui.de.transfer.txt=Передача
+
+gui.de.RFCapacity.txt=Ємність RF
+gui.de.DigSpeed.txt=Швидкість копання
+gui.de.DigAOE.txt=Ширина копання
+gui.de.DigDepth.txt=Глибина копання
+gui.de.AttackDamage.txt=Урон від удару
+gui.de.AttackAOE.txt=Зона удару
+gui.de.ArrowDamage.txt=Урон стріли
+gui.de.DrawSpeed.txt=Швидкість натягування
+gui.de.ArrowSpeed.txt=Швидкість стріли
+gui.de.ShieldCapacity.txt=Ємність щита
+gui.de.ShieldRecovery.txt=Відновлення щита
+gui.de.MoveSpeed.txt=Швидкість руху
+gui.de.JumpBoost.txt=Висота стрибка
+
+
+//Potions ----------------------------------------------------------------------------------------------------------------------------------------
+potion.de.effect.txt=Ефект
+potion.de.flight.txt=Політ
+potion.de.highStep.txt=Високий крок
+potion.de.swiftness.txt=Швидкість
+potion.de.fireImmune.txt=Імунітет до вогню
+potion.de.jumpBoost.txt=Високі стрибки
+
+
+
+
+//##################   Start of refactored (sane) localization   ##################
+
+//---- Gui Names ----//
+gui.de.energyStorageCore.name=Енергетичне ядро %s-го рівня
+gui.de.fusionCraftingCore.name=Злиття
+gui.de.dissEnchanter.name=Розчаровувач зачарувань
+
+
+//---- Fusion Crafting ----//
+gui.fusionCrafting.tierLow.info=Недостатній рівень злиття
+gui.fusionCrafting.outputObstructed.info=Вихід заблокований
+gui.fusionCrafting.crafting.info=Крафт...
+gui.fusionCrafting.charging.info=Зарядка...
+gui.jeiFusion.tier.0=Рівень: Базовий
+gui.jeiFusion.tier.1=Рівень: Віверновий
+gui.jeiFusion.tier.2=Рівень: Драконієвий
+gui.jeiFusion.tier.3=Рівень: Хаотичний
+msg.craftingInjector.singleItemOn.txt=Режим одного предмету: Увімкнено
+msg.craftingInjector.singleItemOff.txt=Режим одного предмету: Вимкнено
+
+//---- Upgrades ----//
+upgrade.de.upgrades.info=Покращення
+upgrade.de.upgradeNA.info=Покращення не застосовне до цього предмету
+upgrade.de.upgradeLevelToHigh.info=Рівень покращення занадто високий для цього предмету
+upgrade.de.upgradeApplied.info=Покращення застосовано
+upgrade.de.upgradePrevLevelRequired.info=Потрібен попередній рівень покращення
+upgrade.de.holdCtrlForUpgrades.info=Утримуйте %sCTRL%s, щоб подивитись покращення
+upgrade.de.holdShiftForRecipes.info=Утримуйте %sShift%s, щоб подивитись рецепти
+upgrade.de.holdCTRLToPause.info=CTRL, щоб поставити на паузу
+upgrade.de.level.info=Рівень
+
+upgrade.de.rfCap.name=Ємність RF
+upgrade.de.digSpeed.name=Швидкість копання
+upgrade.de.digAOE.name=Ширина копання
+upgrade.de.digDepth.name=Глибина копання
+upgrade.de.attackDmg.name=Урон від удару
+upgrade.de.attackAOE.name=Зона удару
+upgrade.de.arrowDmg.name=Урон стріли
+upgrade.de.drawSpeed.name=Швидкість натягування
+upgrade.de.arrowSpeed.name=Швидкість стріли
+upgrade.de.shieldCap.name=Ємність щита
+upgrade.de.shieldRec.name=Відновлення щита
+upgrade.de.moveSpeed.name=Швидкість руху
+upgrade.de.jumpBoost.name=Високі стрибки
+
+upgrade.level.0=-
+upgrade.level.1=Базовий
+upgrade.level.2=Віверновий
+upgrade.level.3=Драконієвий
+upgrade.level.4=Хаотичний
+
+//---- Tool Config ----//
+config.field.on.state=Увімкнено
+config.field.off.state=Вимкнено
+config.field.digSpeed.entry=Множник швидкості копання
+config.field.digSpeed.description=Дозволяє налаштувати швидкість з якою цей інструмент ламає блоки.
+config.field.digAOE.entry=Ширина копання
+config.field.digAOE.description=Дозволяє налаштувати ширину копання цього інструменту.
+config.field.aoeSafeMode.entry=Безпечний режим Ширини копання
+config.field.aoeSafeMode.description=При увімкненні цього режиму, інструмент не буде ламати нічого, якщо виявить під собою блок-сутність (механізми і тд) у зоні копання. Це може допомогти уникнути випадкового ламання частини вашої бази за одне невдале натискання.
+config.field.digDepth.entry=Глибина копання
+config.field.digDepth.description=Ця функція працює тільки з Шириною копання 3x3 або більше.
+config.field.showDigAOE.entry=Показати зону копання
+config.field.showDigAOE.description=При увімкненні показує всі блоки, які охоплюються зоною копання цього інструменту.
+
+config.field.toggleEnchant.description=Дозволяє вимкнути/увімкнути раніше застосоване чарування. Примітка: це налаштування не є специфічним для профілю, що означає, що ви не можете мати різні профілі з різними налаштуваннями чар.
+
+config.field.armorSpeedModifier.entry=Модифікатор швидкості
+config.field.armorSpeedModifier.description=Це дозволяє вам налаштувати підвищення швидкості руху.
+config.field.armorSpeedFOVWarp.entry=Вимкнути динамічну зміну поля зору
+config.field.armorSpeedFOVWarp.description=Якщо вимкнути динамічну зміну поля зору, то поле зору не буде змінюватись від великої швидкості руху.
+config.field.armorJumpModifier.entry=Модифікатор стрибків
+config.field.armorJumpModifier.description=Це дозволяє вам налаштувати висоту стрибка.
+config.field.sprintBoost.entry=Вимикання при ходьбі
+config.field.sprintBoost.description=Якщо увімкненно, то вимикає всі еффекти при ходьбі, але вмикає в бігу.
+config.field.armorNV.entry=Нічний зір
+config.field.armorNV.description=Увімкнути/вимкнути нічний зір. За замовчуванням нічний зер буде увімкнено в темноті.
+config.field.armorNVLock.entry=Блокування нічного зору
+config.field.armorNVLock.description=Нічний зір буде активний завжди.
+config.field.armorAutoFeed.entry=Автохарчування
+config.field.armorAutoFeed.description=Якщо ця функція увімкнена, то ваш шолом буде автоматично годувати вас!
+
+config.field.armorFSpeedModifier.entry=Модифікатор швидкості польоту
+config.field.armorFSpeedModifier.description=Дозволяє вам налаштуват швидкість польоту.
+config.field.armorFlightLock.entry=Блокування польоту
+config.field.armorFlightLock.description=Дозволяє вам зробити політ завжди активним.
+config.field.armorVFSpeedModifier.entry=Вертикальна швидкість
+config.field.armorVFSpeedModifier.description=Зміна швидкості польоту вгору/вниз.
+config.field.armorInertiaCancel.entry=Відміна інерції
+config.field.armorInertiaCancel.description=Майже моментальна зупинка при польоті.
+config.field.armorHillStep.entry=Краще ніж авто-стрибок
+config.field.armorHillStep.description=Дозволяє вам піднятися на 1 повний блок без стрибків.
+
+config.field.bowArrowDamage.entry=Базовий урон стріли
+config.field.bowArrowDamage.description=Дозволяє налаштувати базовий урон. Фактичний урон залежить ще від швидкості стріли.
+config.field.bowArrowSpeedModifier.entry=Модифікатор швидкості стріли
+config.field.bowArrowSpeedModifier.description=Змінює швидкість польота стріли. Впливає на урон і відстань.
+config.field.bowAutoFire.entry=Автоматичний постріл
+config.field.bowAutoFire.description=Стріляє автоматично.
+config.field.bowExplosionPower.entry=Сила вибуху
+config.field.bowExplosionPower.description=Налаштовує силу вибуху ваших стріл.
+config.field.bowZoomModifier.entry=Збільшення точності
+config.field.bowZoomModifier.description=Може бути використаний для точних пострілів на велику відстань.
+config.field.bowFireArrow.entry=Стріла Драконічного вогню
+config.field.bowFireArrow.description=Вистрілює стрілою з чистої енергії. Застосовується без необхідності боєприпасів і розблоковує ефект Ударної хвилі.
+config.field.bowShockPower.entry=Сила Ударної хвилі
+config.field.bowShockPower.description=Створює потужну ударну хвилю при ударі, яка завдає шкоди сутностям, але без ломання блоків.
+config.field.attackAOE.entry=Радіус атаки
+config.field.attackAOE.description=Дозволяє налаштувати область удару.
+config.field.showHarvestIndicator.entry=Індикатор збору
+config.field.showHarvestIndicator.description=Показує область роботи сокири.
+config.field.landFill.entry=Заповнення землею
+config.field.landFill.description=Автоматично використовує землю з вашого інвентаря для заповнення отвору глибиною до 1 блоку, щоб створити плоску планувальну область.
+
+config.field.junkFilter.entry=Налаштувати фільтр сміття
+config.field.junkFilter.description=Фільтр сміття дозволяє вказати блоки, які будуть видалятися під час видобування. Фільтр сміття є постійним між конфігураційними профілями та працює лише в режимі зони копання.
+config.field.junkFilter.button=Відкрити фільтр сміття
+config.field.enableJunkFilter.entry=Увімкнути фільтр сміття
+config.field.enableJunkFilter.description=Дозволяє увімкнути/вимкнути фільтр сміття.
+config.field.junkNbtSens.entry=Чутливість Фільтра Сміття до NBT
+config.field.junkNbtSens.description=Якщо функція вимкнена, фільтр буде ігнорувати NBT предмети при фільтрації.
+
+config.field.hideArmor.entry=Приховати броню
+config.field.hideArmor.description=Коли увімкнено, цей елемент броні буде повністю невидимим.
+
+config.field.AOE.entry=Зона
+config.field.replaceSame.entry=Замінювати однакові блоки
+config.field.replaceVisible.entry=Замінювати видимі
+config.field.fillLogic.entry=Логіка заповнення
+
+
+button.de.ArmorNVActive.name=Нічний зір
+button.de.ArmorNVLock.name=Зафіксувати нічний зір
+button.de.ArmorFlightLock.name=Зафіксувати політ
+button.de.ArmorInertiaCancellation.name=Відміна інерції
+button.de.ArmorSpeedMult.name=Модифікатор швидкості руху
+button.de.ArmorJumpMult.name=Модифікатор висоти стрибка
+button.de.ArmorHillStep.name=Покращений авто-стрибок
+button.de.ArmorSprintOnly.name=Вимикання при ходьбі
+button.de.ArmorFlightSpeedMult.name=Модифікатор швидкості польоту
+button.de.ToolDigMultiplier.name=Швидкість копання
+button.de.ToolDigAOE.name=Ширина копання
+button.de.ToolDigDepth.name=Глибина копання
+button.de.WeaponAttackAOE.name=Область атаки
+button.de.ToolVoidJunk.name=Видалення непотрібних блоків
+button.de.AxeTreeMode.name=Режим дерева
+button.de.BaseSafeAOE.name=Безпечний режим області дії
+button.de.VerticalAcceleration.name=Вертикальне прискорення
+button.de.EffectiveOnSprint.name=Еффективний біг
+button.de.GogglesOfRevealing.name=Магічний чуття
+button.de.BowArrowSpeedModifier.name=Модифікатор швидкості стріли
+button.de.BowAutoFire.name=Автоматична стільба
+button.de.BowArrowDamage.name=Базовий урон
+button.de.BowExplosionPower.name=Сила вибуху
+button.de.BowShockWavePower.name=Сила ударної хвилі
+button.de.BowEnergyBolt.name=Стріла драконівського вогню
+button.de.BowZoomModifier.name=Приближиння при стрільбі
+
+config.de.armor_profile_0.msg=Профіль шолома:
+config.de.armor_profile_1.msg=Профіль нагрудника:
+config.de.armor_profile_2.msg=Профіль наголінників:
+config.de.armor_profile_3.msg=Профіль чоботів:
+
+//---- Info Helper ----//TODO Move this to BrandonsCore
+info.bc.holdShiftForDetails.txt=Утримуйте %sShift%s для деталей
+info.bc.charge.txt=Зарядка
+
+info.bc.hold.txt=Утримуйте
+info.bc.shift.txt=Shift
+info.bc.forDetails.txt=для деталей
+info.bc.ctrl.txt=CTRL
+
+//---- Chat Messages ----//
+chat.toolConfig.thatItemNotConfigurable.msg=Цей предмет не налаштовується.
+chat.dissEnchanter.notEnoughLevels.msg=Вам потрібно %s рівнів, щоб витягти це зачаровування!
+chat.item_dislocator_activate.msg=Активовано реактор телепорта
+chat.item_dislocator_deactivate.msg=Деактивовано реактор телепорта
+chat.shields_activated.msg=Активовано драконовий щит
+chat.shields_deactivated.msg=Деактивовано драконовий щит
+
+//---- GUI Buttons ----//
+gui.de.toolConfig.hud.txt=HUD
+gui.de.toolConfig.hudDesc.txt=Відкрити конфігурацію HUD
+button.de.open=Відкрити
+
+//---- Celestial Manipulato ----//
+gui.de.celMod.weather=Погода
+gui.de.celMod.time=Час
+gui.de.celMod.stopRain=Зупинити дощ
+gui.de.celMod.startRain=Почати дощ
+gui.de.celMod.startStorm=Почати бурю
+gui.de.celMod.skipTo=Перейти до...
+gui.de.celMod.sunRise=Схід сонця
+gui.de.celMod.midDay=Полудень
+gui.de.celMod.sunSet=Захід сонця
+gui.de.celMod.moonRise=Схід місяця
+gui.de.celMod.midnight=Північ
+gui.de.celMod.moonSet=Захід місяця
+gui.de.celMod.skipToTime=Перейти до часу
+gui.de.celMod.skip24=Пропустити 24 години
+gui.de.celMod.stop=Зупинити
+gui.de.celMod.rs.0=Зупинити дощ
+gui.de.celMod.rs.1=Почати дощ
+gui.de.celMod.rs.2=Почати бурю
+gui.de.celMod.rs.3=Схід сонця
+gui.de.celMod.rs.4=Полудень
+gui.de.celMod.rs.5=Захід сонця
+gui.de.celMod.rs.6=Схід місяця
+gui.de.celMod.rs.7=Північ
+gui.de.celMod.rs.8=Захід місяця
+gui.de.celMod.rs.9=Пройти 1 повний день майнкрафт або до вимкнення сигналу редстоуна.
+
+//---- Entity Detector ----//
+guiwiki.label.navigation=Навігація
+guiwiki.label.mods=Моди
+modwiki.label.style=Стиль
+
+modwiki.style.navWindow=Вікно навігації
+modwiki.style.mainWindow=Головне вікно
+modwiki.style.menu=Меню
+modwiki.style.presets=Шаблони
+modwiki.style.navText=Текст навігації
+modwiki.style.text=Текст
+
+modwiki.style.preset.intellij=Intellij
+modwiki.style.preset.black&white=Чорно-білий
+modwiki.style.preset.white&black=Біло-чорний
+modwiki.style.preset.purple=Фіолетовий
+modwiki.style.preset.draconic=Драконієвий
+modwiki.style.preset.transparent=Прозорий
+
+guiwiki.button.home=Домівка
+
+//---- Entity Detector ----//
+gui.entityDetector.pulseDelay=Затримка пульса
+gui.entityDetector.pulseDelay.info=Затримка між сканувальними пульсами. Сканувальний пульс - це коли блок перевіряє навколишні сутності.
+gui.entityDetector.outputPulse=Режим виводу пульсів
+gui.entityDetector.outputContin=Фіксований режим виводу
+gui.entityDetector.output.info=Сила виводу визначається кількістю виявлених сутностей і налаштуваннями редстоун сигналу. Режим пульсу видає один пульс з такт. Фіксований режим видасть постійний сигнал, який оновлюється кожен сканувальний пульс.
+gui.entityDetector.range=Діапазон
+gui.entityDetector.range.info=Діапазон сканування в блоках. Збільшення діапазону збільшує витрати енергії для кожного сканувального пульса.
+gui.entityDetector.rsMin=Мінімум редстоун сигналу
+gui.entityDetector.rsMin.info=Мінімальна кількість виявлених сутностей, необхідна для створення редстоун сигналу 1 рівня.
+gui.entityDetector.rsMax=Максимум редстоун сигналу
+gui.entityDetector.rsMax.info=Максимальна кількість виявлених сутностей, необхідна для створення редстоун сигналу 15 рівня.
+gui.entityDetector.energyCost=Енергія на пульс
+gui.entityDetector.energyCost.info=Це кількість енергії, необхідна для кожного сканувального пульсу. Енергія потрібна 125 * діапазон^1.5 Це означає, що витрати енергії зростають експоненційно при збільшенні діапазону.
+gui.entityDetector.filter=Налаштування фільтра сутностей
+
+//---- Energy Net ----//
+eNet.de.posSavedToTool.info=Позицію блоку збережено в інструменті. (Shift + ПКМ для очищення)
+eNet.de.posCleared.info=Позицію очищено
+eNet.de.toolNotBound.info=Інструмент не прив'язаний! (Shift + ПКМ для прив'язки)
+eNet.de.boundToInvalid.info=Інструмент прив'язаний до недійсного блоку!
+eNet.de.linkBroken.info=Зв'язок розірвано!
+eNet.de.devicesLinked.info=Пристрої зв'язані!
+eNet.de.linkLimitReachedThis.info=Цей пристрій досягнув межі підключень!
+eNet.de.linkLimitReachedTarget.info=Цільовий пристрій досягнув межі підключень!
+eNet.de.thisRangeLimit.info=Цей пристрій занадто далеко!
+eNet.de.targetRangeLimit.info=Цей пристрій занадто далеко від цільового пристрою!
+eNet.de.deviceInvalid.info=Це не є дійсним пристроєм!
+eNet.de.linkFailedUnknown.info=Помилка зв'язку! [Причина невідома...]
+eNet.de.linkToSelf.info=Ви не можете зв'язати пристрій сам з собою...
+eNet.de.hudCharge.info=Заряд
+eNet.de.hudLinks.info=з'єднання
+eNet.de.hudWirelessLinks.info=Бездротові з'єднання
+eNet.de.IOOutput_true.info=Режим Вхід/Вихід:%s Вхід
+eNet.de.IOOutput_false.info=Режим Вхід/Вихід:%s Вихід
+eNet.de.sideCanNotReceive.info=Цей блок не може отримувати енергію з цього боку!
+eNet.de.sideCanNotExtract.info=Цей блок не може постачати енергію з цього боку!
+eNet.de.maxReceivers.info=Досягнуто межу приймачів!
+eNet.de.hudWirelessLinks.info=Бездротові з'єднання
+eNet.de.output.info=Вихід
+eNet.de.input.info=Вхід
+eNet.de.identify.gui=Ідентифікація
+eNet.de.unlink.gui=Роз'єднати
+eNet.de.clearLinks.gui=Очист. з'єднання
+eNet.de.clearReceivers.gui=Очистити приймачі
+
+//---- Energy Core ----//
+button.de.buildGuide.txt=Посібник зі збірки:
+button.de.assembleCore.txt=Зібрати ядро
+button.de.tierUp.txt=Наступний рівень
+button.de.tierDown.txt=Попередній рівень
+button.de.activate.txt=Активувати
+button.de.deactivate.txt=Деактивувати
+ecore.de.already_assembling.txt=Збірка вже в процесі!
+ecore.de.assemble_found_invalid.txt=Помилка: Знайдено недійсний блок [%s в %s]!
+ecore.de.assemble_error_expected_air.txt=Під час будівництва структури виникла помилка! Очікувався блок повітря в %s.
+ecore.de.assemble_missing_required.txt=Неможливо завершити структуру! Відсутні необхідні блоки: %s.
+
+//---- Reactor ----//
+gui.reactor.draconicReactor.txt=Драконієвий реактор
+gui.reactor.fuelIn.txt=Паливо (вхід)
+gui.reactor.chaosOut.txt=Хаос (вихід)
+gui.reactor.tempLoadFactor.txt=Це показує, яке навантаження покладає температура на стримувальне поле реактора. Якщо температура реактора перевищить 8,000, це буде збільшуватися.
+gui.reactor.coreVolume.txt=Це показує загальний об'єм речовини в кубічних метрах (Драконій + Хаос). Це значення буде змінюватися лише тоді, коли ви додаєте або видаляєте паливо.
+gui.reactor.genRate.txt=Поточна кількість RF/t, яка генерується реактором.
+gui.reactor.inputRate.txt=Поточна кількість RF/t, потрібна для підтримання поточної сили поля. При збільшенні сили поля - це буде збільшуватися.
+gui.reactor.conversionRate.txt=Швидкість, з якою реактор в даний момент використовує паливо. Якщо насичення реактора зростає - це значення буде зменшуватися.
+gui.reactor.redstoneMode.txt=Налаштуйте вихід компаратора для цього компонента реактора.
+gui.reactor.rsMode_temp.txt=Виведе сигнал від 0 до 15, по мірі збільшення температури до 10000.
+gui.reactor.rsMode_temp_inv.txt=Те саме, що і температура, але сигнал інвертований.
+gui.reactor.rsMode_field.txt=Виведе сигнал від 0 до 15, по мірі зміни міцності щита між 0 та 100%, сигнал 1 = > 10% міцності щита і сигнал 15 = >= 90% міцності щита.
+gui.reactor.rsMode_field_inv.txt=Те саме, що і щит, але сигнал інвертований.
+gui.reactor.rsMode_sat.txt=Виведе сигнал від 0 до 15, по мірі зміни рівня насиченості енергією між 0 та 100%.
+gui.reactor.rsMode_sat_inv.txt=Те саме, що і насиченість, але сигнал інвертований.
+gui.reactor.rsMode_fuel.txt=Виведе сигнал від 0 до 15, по мірі зростання рівня конвертації палива від 0 до 100%, сигнал 15 = >= 90% конвертації.
+gui.reactor.rsMode_fuel_inv.txt=Це те саме, що і конвертація, але сигнал інвертований.
+gui.reactor.failSafe.txt=Якщо увімкнено, то реактор автоматично зупиняє роботу, коли температура опускається нижче 2500C, а насичення досягає 99% Це може бути використано для автоматичної зупинки реактора у випадку несправності або просто, коли він потребує заправки паливом.
+
+gui.reactor.reactionTemp.info=Температура ядра
+gui.reactor.fieldStrength.info=Сила стримувального поля
+gui.reactor.energySaturation.info=Насиченість енергією
+gui.reactor.fuelConversion.info=Рівень конвертації палива
+gui.reactor.tempLoad.info=Навантаження від температури:
+gui.reactor.coreVolume.info=Об'єм ядра:
+gui.reactor.genRate.info=Швидкість генерації:
+gui.reactor.fieldInputRate.info=Енергія для стримувального поля:
+gui.reactor.fuelConversionRate.info=Швидкість конвертації палива:
+gui.reactor.status.info=Статус
+gui.reactor.status.invalid.info=Неправильна настройка
+gui.reactor.status.cold.info=Вимкнений
+gui.reactor.status.warming_up.info=Прогрівається...
+gui.reactor.status.running.info=Увімкнений
+gui.reactor.status.stopping.info=Зупинка...
+gui.reactor.status.cooling.info=Охолодження...
+gui.reactor.status.beyond_hope.info=Критичний статус ядра
+
+gui.reactor.charge.btn=Заряджений
+gui.reactor.activate.btn=Увімкнутий
+gui.reactor.shutdown.btn=Вимкнутий
+gui.reactor.rsMode.btn=Режим\nредстоуна
+gui.reactor.failSafe.btn=Відмовостійкість
+
+gui.reactor.rsMode_temp.btn=Температура
+gui.reactor.rsMode_temp_inv.btn=-Температура
+gui.reactor.rsMode_field.btn=Поле
+gui.reactor.rsMode_field_inv.btn=-Поле
+gui.reactor.rsMode_sat.btn=Насичення
+gui.reactor.rsMode_sat_inv.btn=-Насичення
+gui.reactor.rsMode_fuel.btn=Конверсія
+gui.reactor.rsMode_fuel_inv.btn=-Конверсія
+
+msg.de.reactorRSMode.0.txt=Режим компаратора: Температура
+msg.de.reactorRSMode.1.txt=Режим компаратора: Температура [Інвертований]
+msg.de.reactorRSMode.2.txt=Режим компаратора: Стримувальне поле
+msg.de.reactorRSMode.3.txt=Режим компаратора: Стримувальне поле [Інвертований]
+msg.de.reactorRSMode.4.txt=Режим компаратора: Насичення енергією
+msg.de.reactorRSMode.5.txt=Режим компаратора: Насичення енергією [Інвертований]
+msg.de.reactorRSMode.6.txt=Режим компаратора: Конвертація палива
+msg.de.reactorRSMode.7.txt=Режим компаратора: Конвертація палива [Інвертований]
+gui.de.coreMass.txt=Маса ядра
+
+
+//---- Draconium Chest ----//
+gui.draconiumChest.name=Драконієва скриня
+gui.draconiumChest.fMode.btn=Авто Подача
+gui.draconiumChest.fMode.info=Авто Подача дозволяє вам автоматично плавити предмети в інвентарі. Натисніть, щоб переглянути доступні режими подачі.
+gui.draconiumChest.fMode.off.btn=Вимк.
+gui.draconiumChest.fMode.off.info=Авто подача вимкнена.
+gui.draconiumChest.fMode.fill.btn=Заповнити
+gui.draconiumChest.fMode.fill.info=Підтримує стаки повними
+gui.draconiumChest.fMode.lock.btn=Заблокувати
+gui.draconiumChest.fMode.lock.info=Аналогічно до заповнення, за винятком того, що не буде плавити останній предмет. Як тільки з'явиться більше, плавлення продовжиться.
+gui.draconiumChest.fMode.all.btn=Все
+gui.draconiumChest.fMode.all.info=Автоматично плавить все, що може.
+gui.draconiumChest.speedBoost.info=Вставте Віведнове ядро або вище, щоб підвищити швидкість та подвоїти руду за рахунок значного збільшення споживання енергії.
+gui.draconiumChest.energyConsumption.info=Споживання енергії
+gui.draconiumChest.processTime.info=Швидкість обробки
+gui.draconiumChest.editRegion.btn=Ред. область
+gui.draconiumChest.editDefaultRegion.btn=Редагувати вхід/вихід для решти
+gui.draconiumChest.enableRegion.btn=Увімкнути область
+gui.draconiumChest.disableRegion.btn=Вимкнути область
+gui.draconiumChest.regionSelect.info=Клацніть і перетягніть у інвентарі скрині, щоб змінити слоти, які призначені для цієї області. Область повинна бути увімкнений і області не можуть перекриватися.
+gui.draconiumChest.ioRegions.btn=вхід/вихід області
+gui.draconiumChest.ioRegions.info=Клацніть тут, щоб налаштувати вхід/вихід області. Це дозволяють створювати групи слотів з налаштовуваним входом/виходом. Ви також можете вказати, які слоти використовуватиме піч. Приклад використання: Предмети, що входять з лівого боку скрині, йдуть до області 1 і плавляться піччю, піч виводить до області 2 і потім можуть бути вилучені з правої сторони скрині.
+gui.draconiumChest.pickColour.btn=Колір скрині
+gui.draconiumChest.pickColour.info=Дозволяє вам змінювати колір скрині.
+
+gui.draconiumChest.toggleIOMode.down.btn=Перемикнути режим нижньої сторони.
+gui.draconiumChest.toggleIOMode.up.btn=Перемикнути режим верхньої сторони.
+gui.draconiumChest.toggleIOMode.north.btn=Перемикнути режим передньої сторони.
+gui.draconiumChest.toggleIOMode.south.btn=Перемикнути режим задньої сторони.
+gui.draconiumChest.toggleIOMode.west.btn=Перемикнути режим правої сторони.
+gui.draconiumChest.toggleIOMode.east.btn=Перемикнути режим лівої сторони.
+gui.draconiumChest.toggleIOMode.furnace.btn=Перемикнути режим печі.
+
+gui.draconiumChest.ioState0.btn=Вимкнено
+gui.draconiumChest.ioState1.btn=Тільки вхід
+gui.draconiumChest.ioState2.btn=Тільки вихід
+gui.draconiumChest.ioState3.btn=Вхід та вихід
+
+//---- Particle Generator ----//
+gui.particleGenerator.name=Генератор частинок
+gui.particleGenerator.red=Червоний
+gui.particleGenerator.green=Зелений
+gui.particleGenerator.blue=Синій
+gui.particleGenerator.alpha=Прозорість
+gui.particleGenerator.spawnX=Поява X
+gui.particleGenerator.spawnY=Поява Y
+gui.particleGenerator.spawnZ=Поява Z
+gui.particleGenerator.motionX=Швидкість по X
+gui.particleGenerator.motionY=Швидкість по Y
+gui.particleGenerator.motionZ=Швидкість по Z
+gui.particleGenerator.gravity=Гравітація
+gui.particleGenerator.scale=Масштаб
+gui.particleGenerator.delay=Затримка
+gui.particleGenerator.life=Час життя
+gui.particleGenerator.fade=Згасання
+gui.particleGenerator.collision=Зіткнення
+gui.particleGenerator.type=Тип
+gui.particleGenerator.type0=Сфера
+gui.particleGenerator.type1=Квадрат
+gui.particleGenerator.type2=Темна сфера
+gui.particleGenerator.type3=Сфера 2
+gui.particleGenerator.type4=Зірка
+
+//---- Gui Junk Filter ----//
+gui.de.junkFilter.name=Фільтр сіття інструментів
+
+//---- Misc Info Text ----//
+info.de.shiftReversePlaceLogic.txt=Утримуйте Shift, щоб змінити логіку розміщення.
+
+//---- Bound Dislocators ----//
+info.de.bound_dislocator.key=Унікальний ключ
+info.de.bound_dislocator.click_to_link=Натисніть ПКМ, щоб створити зв'язану пару.
+info.de.bound_dislocator.click_to_link_self=Натисніть ПКМ, щоб зв'язати з собою.
+info.de.bound_dislocator.player_link=Зв'язаний з гравцем
+info.de.bound_dislocator.bound_to=Зв'язаний з
+info.de.bound_dislocator.in_player_inventory=Зв'язаний телепорт знаходиться в інвентарі гравця. Телепортую до гравця...
+info.de.bound_dislocator.unknown_link=Невідоме місцезнаходження
+info.de.bound_dislocator.cant_find_player=Зв'язаний гравець не в мережі!
+info.de.bound_dislocator.cant_find_target=Не вдалося знайти зв'язаний телепорт!
