@@ -142,7 +142,7 @@ public class ClientInit {
 //        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), GuiConfigurableItem.Screen::new);
 //        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor.Screen::new);
 //
-//        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator.Screen::new);
+        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator.Screen::new);
 //        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter.Screen::new);
 //        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore.Screen::new);
 //        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate.Screen::new);
