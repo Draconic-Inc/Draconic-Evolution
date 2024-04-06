@@ -33,7 +33,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
     public final ManagedLong chargeRate = register(new ManagedLong("charge_rate", DataFlags.SAVE_NBT));
     public final ManagedBool singleItem = register(new ManagedBool("single_item", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public final ManagedVec3I corePos = register(new ManagedVec3I("core_pos", new Vec3I(0, -9999, 0), DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 1);
     private TechLevel techLevelCache = null;
 
     public TileFusionCraftingInjector(BlockPos pos, BlockState state) {

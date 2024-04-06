@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.gui.modular.elements.GuiButton;
-import com.brandon3055.brandonscore.blocks.TileBCore;
+import codechicken.lib.gui.modular.lib.container.SlotGroup;
+import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
+import codechicken.lib.inventory.container.modular.ModularSlot;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostContainer;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -42,25 +43,36 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ContainerModularItem extends ContainerBCore implements ModuleHostContainer {
+public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHostContainer {
 
     private PlayerSlot slot;
     public ItemStack hostStack;
     private ModuleGrid moduleGrid;
     private ModuleHost moduleHost;
+    private Player player;
 
-    public ContainerModularItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
-        super(DEContent.MENU_MODULAR_ITEM.get(), windowId, player, extraData);
-        this.slot = PlayerSlot.fromBuff(extraData);
-        this.onContainerOpen();
-        this.moduleGrid = new ModuleGrid(this, player);
+    public final SlotGroup main = createSlotGroup(0);
+    public final SlotGroup hotBar = createSlotGroup(0);
+    public final SlotGroup armor = createSlotGroup(0);
+    public final SlotGroup offhand = createSlotGroup(0);
+    public final SlotGroup curios = createSlotGroup(0);
+
+    public ModularItemMenu(int windowId, Inventory inv, FriendlyByteBuf extraData) {
+        this(windowId, inv, PlayerSlot.fromBuff(extraData));
     }
 
-    public ContainerModularItem(int windowId, Inventory player, PlayerSlot itemSlot) {
-        super(DEContent.MENU_MODULAR_ITEM.get(), windowId, player);
+    public ModularItemMenu(int windowId, Inventory inv, PlayerSlot itemSlot) {
+        super(DEContent.MENU_MODULAR_ITEM.get(), windowId, inv);
+        this.player = inv.player;
         this.slot = itemSlot;
         this.onContainerOpen();
-        this.moduleGrid = new ModuleGrid(this, player);
+        this.moduleGrid = new ModuleGrid(this, inv);
+
+        hotBar.addPlayerBar(inv);
+        main.addPlayerMain(inv);
+        armor.addPlayerArmor(inv);
+        offhand.addPlayerOffhand(inv);
+        EquipmentManager.getEquipmentInventory(inv.player).ifPresent(handler -> curios.addSlots(handler.getSlots(), 0, i -> new ModularSlot(handler, i)));
     }
 
     private static Stream<ItemStack> getPlayerInventory(Inventory player) {
@@ -71,12 +83,12 @@ public class ContainerModularItem extends ContainerBCore implements ModuleHostCo
         ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
-            NetworkHooks.openScreen(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
+            NetworkHooks.openScreen(sender, new ModularItemMenu.Provider(stack, slot), slot::toBuff);
             return;
         } else {
             PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
             if (slot != null) {
-                NetworkHooks.openScreen(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
+                NetworkHooks.openScreen(sender, new ModularItemMenu.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;
             }
         }
@@ -220,7 +232,7 @@ public class ContainerModularItem extends ContainerBCore implements ModuleHostCo
         @Nullable
         @Override
         public AbstractContainerMenu createMenu(int menuID, Inventory playerInventory, Player playerEntity) {
-            return new ContainerModularItem(menuID, playerInventory, slot);
+            return new ModularItemMenu(menuID, playerInventory, slot);
         }
     }
 }

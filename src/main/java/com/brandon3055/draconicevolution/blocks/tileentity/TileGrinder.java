@@ -71,7 +71,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     public final ManagedBool collectItems = register(new ManagedBool("collect_items", true, DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
     public final ManagedBool collectXP = register(new ManagedBool("collect_xp", true, DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
     public final ManagedInt storedXP = register(new ManagedInt("stored_xp", DataFlags.SAVE_BOTH_SYNC_CONTAINER));
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 2);
     public EntityFilter entityFilter;
     public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 

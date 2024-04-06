@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.inventory.container.ICCLContainerType;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
@@ -359,6 +358,7 @@ public class DEContent {
     //@formatter:off
     public static final RegistryObject<MenuType<GeneratorMenu>> MENU_GENERATOR                              = MENU_TYPES.register("generator",                      () -> IForgeMenuType.create(GeneratorMenu::new));
     public static final RegistryObject<MenuType<GrinderMenu>> MENU_GRINDER                                  = MENU_TYPES.register("grinder",                        () -> IForgeMenuType.create(GrinderMenu::new));
+    public static final RegistryObject<MenuType<ConfigurableItemMenu>> MENU_CONFIGURABLE_ITEM               = MENU_TYPES.register("configurable_item",              () -> IForgeMenuType.create(ConfigurableItemMenu::new));
     public static final RegistryObject<MenuType<CelestialManipulatorMenu>> MENU_CELESTIAL_MANIPULATOR       = MENU_TYPES.register("celestial_manipulator",          () -> IForgeMenuType.create(CelestialManipulatorMenu::new));
 
     public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENERGY_CORE                       = MENU_TYPES.register("energy_core",                    () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_ENERGY_CORE.get(), id, inv, data)));
@@ -367,8 +367,7 @@ public class DEContent {
     public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_FLOW_GATE                         = MENU_TYPES.register("flow_gate",                      () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, inv, data)));
     public static final RegistryObject<MenuType<ContainerDETile<?>>> MENU_ENTITY_DETECTOR                   = MENU_TYPES.register("entity_detector",                () -> IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(DEContent.MENU_ENTITY_DETECTOR.get(), id, inv, data)));
     public static final RegistryObject<MenuType<ContainerFusionCraftingCore>> MENU_FUSION_CRAFTING_CORE     = MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create((id, inv, data) -> new ContainerFusionCraftingCore(id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerModularItem>> MENU_MODULAR_ITEM                    = MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create((id, inv, data) -> new ContainerModularItem(id, inv, data)));
-    public static final RegistryObject<MenuType<ContainerConfigurableItem>> MENU_CONFIGURABLE_ITEM          = MENU_TYPES.register("configurable_item",              () -> IForgeMenuType.create((id, inv, data) -> new ContainerConfigurableItem(id, inv, data)));
+    public static final RegistryObject<MenuType<ModularItemMenu>> MENU_MODULAR_ITEM                    = MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create((id, inv, data) -> new ModularItemMenu(id, inv, data)));
     public static final RegistryObject<MenuType<ContainerDraconiumChest>> MENU_DRACONIUM_CHEST              = MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(ContainerDraconiumChest::new));
     public static final RegistryObject<MenuType<ContainerEnergyCrystal>> MENU_ENERGY_CRYSTAL                = MENU_TYPES.register("energy_crystal",                 () -> IForgeMenuType.create(ContainerEnergyCrystal::new));
     public static final RegistryObject<MenuType<ContainerReactor>> MENU_REACTOR                             = MENU_TYPES.register("reactor",                        () -> IForgeMenuType.create(ContainerReactor::new));

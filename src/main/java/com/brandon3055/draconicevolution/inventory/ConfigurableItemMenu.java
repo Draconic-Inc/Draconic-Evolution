@@ -1,7 +1,8 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import codechicken.lib.data.MCDataInput;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
+import codechicken.lib.gui.modular.lib.container.SlotGroup;
+import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
+import codechicken.lib.inventory.container.modular.ModularSlot;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -37,7 +38,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ContainerConfigurableItem extends ContainerBCore {
+public class ConfigurableItemMenu extends ModularGuiContainerMenu {
     private static final UUID DEFAULT_UUID = UUID.fromString("d12b41e3-16ce-4653-ab36-1cd913719af8"); //This is just a completely random UUID
 
     private UUID selectedId; //Default is irrelevant as long as its not null.
@@ -45,29 +46,33 @@ public class ContainerConfigurableItem extends ContainerBCore {
     private Consumer<Boolean> onSelectionMade;
     private ItemStack stackCache = ItemStack.EMPTY;
 
-    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData) {
-        super(DEContent.MENU_CONFIGURABLE_ITEM.get(), windowId, player, extraData);
-        PlayerSlot slot = PlayerSlot.fromBuff(extraData);
-        UUID found = getProviderID(slot.getStackInSlot(player.player));
-        if (found != null) stackCache = slot.getStackInSlot(player.player);
-        this.selectedId = found == null ? DEFAULT_UUID : found;
+    public final SlotGroup main = createSlotGroup(0);
+    public final SlotGroup hotBar = createSlotGroup(0);
+    public final SlotGroup armor = createSlotGroup(0);
+    public final SlotGroup offhand = createSlotGroup(0);
+    public final SlotGroup curios = createSlotGroup(0);
+
+    public ConfigurableItemMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
+        this(windowId, playerInv, PlayerSlot.fromBuff(extraData));
     }
 
-    public ContainerConfigurableItem(int windowId, Inventory player, PlayerSlot itemSlot) {
-        super(DEContent.MENU_CONFIGURABLE_ITEM.get(), windowId, player);
+    public ConfigurableItemMenu(int windowId, Inventory playerInv, PlayerSlot slot) {
+        super(DEContent.MENU_CONFIGURABLE_ITEM.get(), windowId, playerInv);
+        main.addPlayerMain(playerInv);
+        hotBar.addPlayerBar(playerInv);
+        armor.addPlayerArmor(playerInv);
+        offhand.addPlayerOffhand(playerInv);
+        EquipmentManager.getEquipmentInventory(playerInv.player).ifPresent(handler -> curios.addSlots(handler.getSlots(), 0, i -> new ModularSlot(handler, i)));
+
         sanitizeProviders();
-        UUID found = getProviderID(itemSlot.getStackInSlot(player.player));
-        if (found != null) stackCache = itemSlot.getStackInSlot(player.player);
+        UUID found = getProviderID(slot.getStackInSlot(playerInv.player));
+        if (found != null) {
+            stackCache = slot.getStackInSlot(playerInv.player);
+        }
         this.selectedId = found == null ? DEFAULT_UUID : found;
     }
 
     private Stream<ItemStack> getInventoryStacks() {
-//        if (EquipmentManager.equipModLoaded()) {
-//            return Streams.concat(
-//                    EquipmentManager.getAllItems(player).stream(),
-//                    inventorySlots.stream().map(Slot::getStack))
-//                    .filter(stack -> !stack.isEmpty());
-//        }
         return slots.stream()
                 .map(Slot::getItem)
                 .filter(stack -> !stack.isEmpty());
@@ -121,43 +126,14 @@ public class ContainerConfigurableItem extends ContainerBCore {
                 }
             }
         }
-        if (slotId > 40) {
-            return;
-        }
+//        if (slotId > 40) {
+//            return; //Block curio Pickup
+//        }
         if (onInventoryChange != null) {
             onInventoryChange.run();
         }
         super.clicked(slotId, button, clickTypeIn, player);
     }
-
-    //    @Override
-//    public ItemStack clicked(int slotId, int button, ClickType clickTypeIn, Player player) {
-//        if (slotId >= 0 && slotId < slots.size()) {
-//            Slot slot = this.slots.get(slotId);
-//            if (slot != null && !slot.getItem().isEmpty()) {
-//                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
-//                if (optionalCap.isPresent()) {
-//                    PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
-//                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
-//                        selectedId = provider.getProviderID();
-//                        if (onSelectionMade != null) {
-//                            onSelectionMade.accept(false);
-//                        }
-//                        stackCache = slot.getItem();
-//                        return ItemStack.EMPTY;
-//                    }
-//                }
-//            }
-//        }
-//        if (slotId > 40) {
-//            return ItemStack.EMPTY;
-//        }
-//        ItemStack ret = super.clicked(slotId, button, clickTypeIn, player);
-//        if (onInventoryChange != null) {
-//            onInventoryChange.run();
-//        }
-//        return ret;
-//    }
 
     public UUID getSelectedId() {
         return selectedId;
@@ -171,7 +147,7 @@ public class ContainerConfigurableItem extends ContainerBCore {
         return null;
     }
 
-    private static Stream<ItemStack> getPlayerInventory(Inventory player) {
+    public static Stream<ItemStack> getPlayerInventory(Inventory player) {
         return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
@@ -213,6 +189,11 @@ public class ContainerConfigurableItem extends ContainerBCore {
     }
 
     @Override
+    public boolean stillValid(Player pPlayer) {
+        return true;
+    }
+
+    @Override
     public void setItem(int slotID, int stateId, ItemStack stack) {
         super.setItem(slotID, stateId, stack);
         onSyncDataReceived();
@@ -229,9 +210,11 @@ public class ContainerConfigurableItem extends ContainerBCore {
                 onSelectionMade.accept(true);
             }
         }
-        if (onInventoryChange != null && selectedId != lastSelected || findProvider(selectedId) == null) {
+        if (selectedId != lastSelected || findProvider(selectedId) == null) {
             lastSelected = selectedId;
-            onInventoryChange.run();
+            if (onInventoryChange != null) {
+                onInventoryChange.run();
+            }
         }
     }
 
@@ -247,12 +230,12 @@ public class ContainerConfigurableItem extends ContainerBCore {
         ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
-            NetworkHooks.openScreen(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
+            NetworkHooks.openScreen(sender, new ConfigurableItemMenu.Provider(slot), slot::toBuff);
             return;
         } else {
             PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
             if (slot != null) {
-                NetworkHooks.openScreen(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
+                NetworkHooks.openScreen(sender, new ConfigurableItemMenu.Provider(slot), slot::toBuff);
                 return;
             }
         }
@@ -275,7 +258,7 @@ public class ContainerConfigurableItem extends ContainerBCore {
         @Nullable
         @Override
         public AbstractContainerMenu createMenu(int menuID, Inventory playerInventory, Player playerEntity) {
-            return new ContainerConfigurableItem(menuID, playerInventory, slot);
+            return new ConfigurableItemMenu(menuID, playerInventory, slot);
         }
     }
 }

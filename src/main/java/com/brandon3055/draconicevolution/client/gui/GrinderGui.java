@@ -27,10 +27,10 @@ import static net.minecraft.ChatFormatting.GRAY;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
+public class GrinderGui extends ContainerGuiProvider<GrinderMenu> {
+    private static GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.grinder");
     public static final int GUI_WIDTH = 270;
     public static final int GUI_HEIGHT = 200;
-    private static GuiToolkit toolkit = new GuiToolkit("gui.draconicevolution.grinder");
     private boolean largeView = false;
     private TileGrinder tile;
 
@@ -48,36 +48,38 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
         GrinderMenu menu = screenAccess.getMenu();
         tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
-        toolkit.createHeading(root, gui.getGuiTitle(), true);
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
 
         InfoPanel infoPanel = InfoPanel.create(root);
-        infoPanel.labeledValue(toolkit.translate("stored_xp").withStyle(GOLD), () -> toolkit.translate("xp_value", tile.storedXP.get()).withStyle(GRAY));
+        infoPanel.labeledValue(TOOLKIT.translate("stored_xp").withStyle(GOLD), () -> TOOLKIT.translate("xp_value", tile.storedXP.get()).withStyle(GRAY));
 
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
-        buttonRow.addButton(e -> toolkit.createThemeButton(e));
-        buttonRow.addButton(e -> toolkit.createInfoButton(e, infoPanel));
-        buttonRow.addButton(e -> toolkit.createRSSwitch(e, screenAccess.getMenu().tile));
+        buttonRow.addButton(e -> TOOLKIT.createThemeButton(e));
+        buttonRow.addButton(e -> TOOLKIT.createInfoButton(e, infoPanel));
+        buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));
 
         //Inventory
         GuiRectangle invBG = new GuiRectangle(root)
                 .shadedRect(Palette.SubItem::accentLight, Palette.SubItem::accentDark, Palette.SubItem::fill);
         var playInv = GuiSlots.player(invBG, screenAccess, menu.main, menu.hotBar);
+        playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
         Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_RIGHT, -7, -7);
         Constraints.bind(invBG, playInv.container(), -13, -2, -2, -2);
-        toolkit.playerInvTitle(playInv.container());
+        TOOLKIT.playerInvTitle(playInv.container());
 
         //Power
         GuiSlots capInv = GuiSlots.singleSlot(root, screenAccess, menu.capacitor, 0)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
                 .setEmptyIcon(BCGuiTextures.get("slots/energy"))
                 .constrain(LEFT, relative(root.get(LEFT), 5))
                 .constrain(BOTTOM, relative(invBG.get(TOP),-2));
-        var energyBar = toolkit.createEnergyBar(root, tile.opStorage);
+        var energyBar = TOOLKIT.createEnergyBar(root, tile.opStorage);
         energyBar.container()
                 .constrain(TOP, relative(root.get(TOP), 14))
                 .constrain(LEFT, relative(root.get(LEFT), 7))
                 .constrain(BOTTOM, relative(capInv.get(TOP), -12))
                 .constrain(WIDTH, literal(14));
-        Constraints.placeOutside(toolkit.energySlotArrow(root, false, true), capInv, Constraints.LayoutPos.TOP_CENTER, 0, -1);
+        Constraints.placeOutside(TOOLKIT.energySlotArrow(root, false, true), capInv, Constraints.LayoutPos.TOP_CENTER, 0, -1);
 
         //Weapon Slot
         GuiTexture weaponBg = new GuiTexture(root, BCGuiTextures.getThemed("bg_dynamic_small"))
@@ -86,14 +88,15 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
         Constraints.placeOutside(weaponBg, root, Constraints.LayoutPos.BOTTOM_LEFT, 1, -27);
 
         GuiSlots weaponInv = GuiSlots.singleSlot(root, screenAccess, menu.weapon, 0)
-                .setTooltipSingle(toolkit.translate("weapon_slot"))
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
+                .setTooltipSingle(TOOLKIT.translate("weapon_slot"))
                 .setEmptyIcon(BCGuiTextures.get("slots/sword"));
         Constraints.bind(weaponInv, weaponBg, 2);
 
         //UI Buttons
 
-        GuiButton aoeSize = toolkit.createFlat3DButton(root, () -> toolkit.translate("aoe").append(" " + getAOEString()))
-                .setTooltipSingle(toolkit.translate("aoe.info"))
+        GuiButton aoeSize = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("aoe").append(" " + getAOEString()))
+                .setTooltipSingle(TOOLKIT.translate("aoe.info"))
                 .onPress(() -> modifyAOE(Screen.hasShiftDown()), GuiButton.LEFT_CLICK)
                 .onPress(() -> modifyAOE(true), GuiButton.RIGHT_CLICK)
                 .constrain(HEIGHT, literal(14))
@@ -101,7 +104,7 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton showAOE = toolkit.createFlat3DButton(root, () -> toolkit.translate("show_aoe"))
+        GuiButton showAOE = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("show_aoe"))
                 .onPress(tile.showAOE::invert)
                 .setToggleMode(tile.showAOE::get)
                 .constrain(HEIGHT, literal(14))
@@ -109,8 +112,8 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton collectItems = toolkit.createFlat3DButton(root, () -> toolkit.translate("collect.items"))
-                .setTooltip(toolkit.translate("collect.items.info"))
+        GuiButton collectItems = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("collect.items"))
+                .setTooltip(TOOLKIT.translate("collect.items.info"))
                 .onPress(tile.collectItems::invert)
                 .setToggleMode(tile.collectItems::get)
                 .constrain(HEIGHT, literal(14))
@@ -118,8 +121,8 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton collectXP = toolkit.createFlat3DButton(root, () -> toolkit.translate("collect.xp"))
-                .setTooltip(toolkit.translate("collect.xp.info"))
+        GuiButton collectXP = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("collect.xp"))
+                .setTooltip(TOOLKIT.translate("collect.xp.info"))
                 .onPress(tile.collectXP::invert)
                 .setToggleMode(tile.collectXP::get)
                 .constrain(HEIGHT, literal(14))
@@ -127,32 +130,32 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton claimXP = toolkit.createFlat3DButton(root, () -> toolkit.translate("collect.xp"))
-                .setTooltip(toolkit.translate("claim.xp.info"))
+        GuiButton claimXP = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("collect.xp"))
+                .setTooltip(TOOLKIT.translate("claim.xp.info"))
                 .onPress(() -> tile.sendPacketToServer(output -> output.writeByte(0), 1))
                 .constrain(HEIGHT, literal(14))
                 .constrain(TOP, relative(collectXP.get(BOTTOM), 2))
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton level = toolkit.createFlat3DButton(root, () -> Component.literal("1L"))
-                .setTooltip(toolkit.translate("claim.xp.level.info"))
+        GuiButton level = TOOLKIT.createFlat3DButton(root, () -> Component.literal("1L"))
+                .setTooltip(TOOLKIT.translate("claim.xp.level.info"))
                 .onPress(() -> tile.sendPacketToServer(output -> output.writeByte(1), 1))
                 .constrain(HEIGHT, literal(14))
                 .constrain(WIDTH, dynamic(() -> claimXP.xSize() / 3D))
                 .constrain(TOP, relative(claimXP.get(BOTTOM), 1))
                 .constrain(LEFT, match(claimXP.get(LEFT)));
 
-        GuiButton level5 = toolkit.createFlat3DButton(root, () -> Component.literal("5L"))
-                .setTooltip(toolkit.translate("claim.xp.levels.info", 5))
+        GuiButton level5 = TOOLKIT.createFlat3DButton(root, () -> Component.literal("5L"))
+                .setTooltip(TOOLKIT.translate("claim.xp.levels.info", 5))
                 .onPress(() -> tile.sendPacketToServer(output -> output.writeByte(2), 1))
                 .constrain(HEIGHT, literal(14))
                 .constrain(WIDTH, dynamic(() -> claimXP.xSize() / 3D))
                 .constrain(TOP, relative(claimXP.get(BOTTOM), 1))
                 .constrain(LEFT, match(level.get(RIGHT)));
 
-        GuiButton level10 = toolkit.createFlat3DButton(root, () -> Component.literal("10L"))
-                .setTooltip(toolkit.translate("claim.xp.levels.info", 10))
+        GuiButton level10 = TOOLKIT.createFlat3DButton(root, () -> Component.literal("10L"))
+                .setTooltip(TOOLKIT.translate("claim.xp.levels.info", 10))
                 .onPress(() -> tile.sendPacketToServer(output -> output.writeByte(3), 1))
                 .constrain(HEIGHT, literal(14))
                 .constrain(WIDTH, dynamic(() -> claimXP.xSize() / 3D))
@@ -160,11 +163,11 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, match(level5.get(RIGHT)));
 
         //Entity Filter
-        GuiButton largeViewButton = toolkit.createResizeButton(root)
+        GuiButton largeViewButton = TOOLKIT.createResizeButton(root)
                 .onPress(() -> largeView = !largeView);
         Constraints.placeOutside(largeViewButton, invBG, Constraints.LayoutPos.TOP_RIGHT, -10, -2);
 
-        GuiButton closeLarge = toolkit.createFlat3DButton(root, () -> toolkit.translate("close_large_view"))
+        GuiButton closeLarge = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("close_large_view"))
                 .setEnabled(() -> largeView)
                 .onPress(() -> largeView = !largeView)
                 .jeiExclude();
@@ -200,7 +203,7 @@ public class GuiGrinder extends ContainerGuiProvider<GrinderMenu> {
 
     public static class Screen extends ModularGuiContainer<GrinderMenu> {
         public Screen(GrinderMenu menu, Inventory inv, Component title) {
-            super(menu, inv, new GuiGrinder());
+            super(menu, inv, new GrinderGui());
             getModularGui().setGuiTitle(title);
         }
     }

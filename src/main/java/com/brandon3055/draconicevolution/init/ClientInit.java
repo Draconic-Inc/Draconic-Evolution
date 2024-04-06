@@ -10,8 +10,8 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.*;
 import com.brandon3055.draconicevolution.client.gui.*;
-import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
-import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
+import com.brandon3055.draconicevolution.client.gui.modular.ModularItemGui;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrideHandler;
 import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
@@ -27,7 +27,6 @@ import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.covers1624.quack.util.CrashLock;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -38,11 +37,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -83,6 +78,7 @@ public class ClientInit {
         DEShaders.init();
         ClientEventHandler.init();
         AtlasTextureHelper.init(modBus);
+        KeyBindings.init();
     }
 
     private static void clientSetupEvent(FMLClientSetupEvent event) {
@@ -91,7 +87,6 @@ public class ClientInit {
         setupRenderLayers();
 
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
-        KeyBindings.init();
     }
 
     public static void onResourceReload(RegisterClientReloadListenersEvent event) {
@@ -134,15 +129,17 @@ public class ClientInit {
     }
 
     private static void registerGuiFactories() {
-        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GuiGenerator.Screen::new);
-        MenuScreens.register(DEContent.MENU_GRINDER.get(), GuiGrinder.Screen::new);
+        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GeneratorGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_GRINDER.get(), GrinderGui.Screen::new);
+
+        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), ConfigurableItemGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), ModularItemGui.Screen::new);
+
 //        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest.Screen::new);
 //        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore.Screen::new);
-//        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), GuiModularItem.Screen::new);
-//        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), GuiConfigurableItem.Screen::new);
 //        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor.Screen::new);
 //
-        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), GuiCelestialManipulator.Screen::new);
+        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), CelestialManipulatorGui.Screen::new);
 //        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter.Screen::new);
 //        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore.Screen::new);
 //        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate.Screen::new);

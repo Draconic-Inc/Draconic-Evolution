@@ -73,7 +73,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     public final ManagedByte linkedFlowRate = register(new ManagedByte("linked_flow_rate", 0, DataFlags.SYNC_TILE));
     public final ManagedPos crystalLinkPos = register(new ManagedPos("crystal_link_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
 
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 1);
     private PortalHelper portalHelper = new PortalHelper(this);
     //A que is used to get around the issue of an entity touching multiple portal blocks simultaneously and getting teleported more than once.
     private List<Entity> teleportQ = new ArrayList<>();

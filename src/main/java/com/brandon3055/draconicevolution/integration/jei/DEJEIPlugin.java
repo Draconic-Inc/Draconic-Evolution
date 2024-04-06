@@ -1,43 +1,18 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
-import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
-import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
-import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
-import com.google.common.collect.Lists;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.gui.handlers.IGuiClickableArea;
-import mezz.jei.api.gui.handlers.IGuiContainerHandler;
-import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 24/07/2016.

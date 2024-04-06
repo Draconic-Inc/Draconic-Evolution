@@ -44,7 +44,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TileDisenchanter extends TileBCore implements MenuProvider, IInteractTile {
 
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(3);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 3);
 
     public TileDisenchanter(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISENCHANTER.get(), pos, state);

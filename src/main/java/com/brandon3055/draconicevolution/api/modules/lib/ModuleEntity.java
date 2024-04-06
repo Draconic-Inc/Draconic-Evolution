@@ -257,7 +257,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     @OnlyIn(Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
-            render.pose().translate(0, 0, 210);
+//            render.pose().translate(0, 0, 210);
         }
 
         int colour = getModuleColour(module);
@@ -280,15 +280,15 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
         if (iar * width <= height) { //Fit Width
             double h = width * iar;
-            render.tex(texture, x, y + (height / 2D) - (h / 2D), width, h);
+            render.texRect(texture, x, y + (height / 2D) - (h / 2D), width, h);
         } else { //Fit height
             double w = height * ar;
-            render.tex(texture, x + (width / 2D) - (w / 2D), y, w, height);
+            render.texRect(texture, x + (width / 2D) - (w / 2D), y, w, height);
         }
 
         //Hover highlight
         if (stackRender) {
-            render.pose().translate(0, 0, -210);
+//            render.pose().translate(0, 0, -210);
         } else if (GuiRender.isInRect(x, y, width, height, mouseX, mouseY)) {
             render.rect(x, y, width, height, 0x50FFFFFF);
         }

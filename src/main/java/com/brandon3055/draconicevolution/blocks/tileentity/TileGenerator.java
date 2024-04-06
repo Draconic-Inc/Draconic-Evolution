@@ -70,7 +70,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     public float rotation = 0;
     public float rotationSpeed = 0;
 
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(4);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 4);
 //    public SimpleModuleHost moduleHost = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
     public OPStorage opStorage = new ModularOPStorage(this, 100000, 0, 32000);
 

@@ -1,14 +1,12 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
-import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -52,20 +50,21 @@ public class KeyInputHandler {
 
     private void onInput(Player player) {
 
-        if (KeyBindings.toolConfig.consumeClick()) {
-            DraconicNetwork.sendOpenItemConfig(false);
-        }
+
 //        else if (KeyBindings.hudConfig.isPressed()) {
-////            Minecraft.getInstance().displayGuiScreen(new GuiHudConfig());
-//
+//            Minecraft.getInstance().displayGuiScreen(new GuiHudConfig());
+
 //        }
-        else if (KeyBindings.toolModules.consumeClick()) {
+        if (KeyBindings.toolModules.isDown()) {
             DraconicNetwork.sendOpenItemConfig(true);
+        }
+        else if (KeyBindings.toolConfig.isDown()) {
+            DraconicNetwork.sendOpenItemConfig(false);
         }
 //        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
 ////            PacketDispatcher.dispatchToolProfileChange(false);
 //        }
-        else if (KeyBindings.toggleFlight.consumeClick()) {
+        else if (KeyBindings.toggleFlight.isDown()) {
             if (player.getAbilities().mayfly) {
                 if (player.getAbilities().flying) {
                     player.getAbilities().flying = false;
@@ -79,22 +78,22 @@ public class KeyInputHandler {
                     player.onUpdateAbilities();
                 }
             }
-        } else if (KeyBindings.toggleMagnet.consumeClick()) {
+        } else if (KeyBindings.toggleMagnet.isDown()) {
             DraconicNetwork.sendToggleMagnets();
-        } else if (KeyBindings.dislocatorTeleport.consumeClick()) {
+        } else if (KeyBindings.dislocatorTeleport.isDown()) {
             DraconicNetwork.sendDislocatorMessage(11, output -> {});
-        } else if (KeyBindings.dislocatorBlink.consumeClick()) {
+        } else if (KeyBindings.dislocatorBlink.isDown()) {
             DraconicNetwork.sendDislocatorMessage(12, output -> {});
-        } else if (KeyBindings.dislocatorUp.consumeClick()) {
+        } else if (KeyBindings.dislocatorUp.isDown()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(false));
-        } else if (KeyBindings.dislocatorDown.consumeClick()) {
+        } else if (KeyBindings.dislocatorDown.isDown()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(true));
-        } else if (KeyBindings.dislocatorGui.consumeClick()) {
+        } else if (KeyBindings.dislocatorGui.isDown()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
                 Minecraft.getInstance().setScreen(new GuiDislocator.Screen(stack.getHoverName(), player));
             }
-        } else if (KeyBindings.placeItem.consumeClick()) {
+        } else if (KeyBindings.placeItem.isDown()) {
             DraconicNetwork.sendPlaceItem();
         }
 //        else if (KeyBindings.armorProfileChange.isPressed()) {
@@ -121,7 +120,7 @@ public class KeyInputHandler {
     public void priorityKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && event.getAction() == 1) {
-            GuiConfigurableItem.checkKeybinding(event.getKey(), event.getScanCode());
+            ConfigurableItemGui.checkKeybinding(event.getKey(), event.getScanCode());
         }
     }
 }

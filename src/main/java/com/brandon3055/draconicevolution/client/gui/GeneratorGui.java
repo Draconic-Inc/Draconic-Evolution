@@ -37,10 +37,10 @@ import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
 import static net.minecraft.ChatFormatting.GOLD;
 import static net.minecraft.ChatFormatting.GRAY;
 
-public class GuiGenerator extends ContainerGuiProvider<GeneratorMenu> {
+public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.generator");
     public static final int GUI_WIDTH = 176;
     public static final int GUI_HEIGHT = 166;
-    private static GuiToolkit toolkit = new GuiToolkit("gui.draconicevolution.generator");
 
     private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
@@ -66,44 +66,49 @@ public class GuiGenerator extends ContainerGuiProvider<GeneratorMenu> {
         GeneratorMenu menu = screenAccess.getMenu();
         TileGenerator tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
-        toolkit.createHeading(root, gui.getGuiTitle(), true);
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
 
         InfoPanel infoPanel = InfoPanel.create(root);
-        infoPanel.labeledValue(toolkit.translate("fuel_efficiency").withStyle(GOLD), () -> Component.literal(tile.mode.get().getEfficiency() + "%").withStyle(GRAY));
-        infoPanel.labeledValue(toolkit.translate("output_power").withStyle(GOLD), () -> Component.literal(tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t").withStyle(GRAY));
-        infoPanel.labeledValue(toolkit.translate("current_fuel_value").withStyle(GOLD), () -> Component.literal(tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()).withStyle(GRAY));
+        infoPanel.labeledValue(TOOLKIT.translate("fuel_efficiency").withStyle(GOLD), () -> Component.literal(tile.mode.get().getEfficiency() + "%").withStyle(GRAY));
+        infoPanel.labeledValue(TOOLKIT.translate("output_power").withStyle(GOLD), () -> Component.literal(tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t").withStyle(GRAY));
+        infoPanel.labeledValue(TOOLKIT.translate("current_fuel_value").withStyle(GOLD), () -> Component.literal(tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()).withStyle(GRAY));
 
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
-        buttonRow.addButton(e -> toolkit.createThemeButton(e));
-        buttonRow.addButton(e -> toolkit.createInfoButton(e, infoPanel));
-        buttonRow.addButton(e -> toolkit.createRSSwitch(e, screenAccess.getMenu().tile));
+        buttonRow.addButton(e -> TOOLKIT.createThemeButton(e));
+        buttonRow.addButton(e -> TOOLKIT.createInfoButton(e, infoPanel));
+        buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));
 
         StorageRenderer fancyBg = new StorageRenderer(root);
         Constraints.bind(fancyBg, root);
 
-        var fuelInv = new GuiSlots(fancyBg, screenAccess, menu.fuel, 3);
-        fuelInv.setEmptyIcon(BCGuiTextures.get("slots/fuel"));
+        GuiSlots fuelInv = new GuiSlots(fancyBg, screenAccess, menu.fuel, 3)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
+                .setEmptyIcon(BCGuiTextures.get("slots/fuel"));
         Constraints.placeInside(fuelInv, root, Constraints.LayoutPos.TOP_LEFT, 64, 28);
 
         var playInv = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
+        playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
+        playInv.main().setSlotTextureI(slot -> BCGuiTextures.getThemed("slot"));
+        playInv.hotBar().setSlotTextureI(slot ->BCGuiTextures.getThemed("slot"));
         Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_CENTER, 0, -7);
-        toolkit.playerInvTitle(playInv.container());
+        TOOLKIT.playerInvTitle(playInv.container());
 
-        var capInv = GuiSlots.singleSlot(root, screenAccess, menu.capacitor, 0);
-        capInv.setEmptyIcon(BCGuiTextures.get("slots/energy"));
+        GuiSlots capInv = GuiSlots.singleSlot(root, screenAccess, menu.capacitor, 0)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
+                .setEmptyIcon(BCGuiTextures.get("slots/energy"));
 
         //Energy Bar
-        var energyBar = toolkit.createEnergyBar(root, tile.opStorage);
+        var energyBar = TOOLKIT.createEnergyBar(root, tile.opStorage);
         energyBar.container()
                 .constrain(TOP, relative(root.get(TOP), 6))
                 .constrain(BOTTOM, relative(playInv.container().get(TOP), -14))
                 .constrain(LEFT, match(playInv.container().get(LEFT)))
                 .constrain(WIDTH, literal(14));
         Constraints.placeInside(capInv, energyBar.container(), Constraints.LayoutPos.BOTTOM_RIGHT, 20, 0);
-        Constraints.placeOutside(toolkit.energySlotArrow(root, true, false), capInv, Constraints.LayoutPos.TOP_CENTER, -2, -2);
+        Constraints.placeOutside(TOOLKIT.energySlotArrow(root, true, false), capInv, Constraints.LayoutPos.TOP_CENTER, -2, -2);
 
         //Mode Button
-        GuiButton modButton = toolkit.createFlat3DButton(root, () -> Component.translatable(tile.mode.get().unlocalizedName()));
+        GuiButton modButton = TOOLKIT.createFlat3DButton(root, () -> Component.translatable(tile.mode.get().unlocalizedName()));
         modButton.onPress(() -> tile.mode.set(tile.mode.get().next(Screen.hasShiftDown())), GuiButton.LEFT_CLICK);
         modButton.onPress(() -> tile.mode.set(tile.mode.get().next(true)), GuiButton.RIGHT_CLICK);
         Constraints.size(modButton, 100, 14);
@@ -139,7 +144,7 @@ public class GuiGenerator extends ContainerGuiProvider<GeneratorMenu> {
 
     public static class Screen extends ModularGuiContainer<GeneratorMenu> {
         public Screen(GeneratorMenu menu, Inventory inv, Component title) {
-            super(menu, inv, new GuiGenerator());
+            super(menu, inv, new GeneratorGui());
             getModularGui().setGuiTitle(title);
         }
     }

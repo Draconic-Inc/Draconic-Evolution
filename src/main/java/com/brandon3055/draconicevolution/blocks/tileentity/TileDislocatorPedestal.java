@@ -46,7 +46,7 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
 //    private static final ResourceLocation WOOL_TAG = new ResourceLocation("forge:wool");
 
     public final ManagedInt rotation = register(new ManagedInt("rotation", 0, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 1);
 
     public TileDislocatorPedestal(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISLOCATOR_PEDESTAL.get(), pos, state);

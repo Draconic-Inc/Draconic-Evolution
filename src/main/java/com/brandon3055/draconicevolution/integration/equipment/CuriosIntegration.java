@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -39,7 +38,8 @@ public class CuriosIntegration extends EquipmentManager {
     public static final TagKey<Item> CURIO_TAG = ItemTags.create(new ResourceLocation("curios", "curio"));
     public static final TagKey<Item> BODY_TAG = ItemTags.create(new ResourceLocation("curios", "body"));
 
-    public static Capability<ICurio> CURIO_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+    public static Capability<ICurio> CURIO_CAP = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     public static void sendIMC(InterModEnqueueEvent event) {
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().size(2).build());
@@ -77,13 +77,14 @@ public class CuriosIntegration extends EquipmentManager {
 
     @Override
     public List<ResourceLocation> getSlotIcons(LivingEntity entity) {
-        LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosHelper().getCuriosHandler(entity);
+        LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(entity);
         if (optional.isPresent()) {
             ICuriosItemHandler handler = optional.orElseThrow(WTFException::new);
             List<ResourceLocation> icons = new ArrayList<>();
             handler.getCurios().forEach((s, h) -> {
                 for (int i = 0; i < h.getSlots(); i++) {
-                    icons.add(CuriosApi.getIconHelper().getIcon(s));
+                    ResourceLocation icon = CuriosApi.getSlotIcon(s); //Why couldnt this just be the full path?
+                    icons.add(new ResourceLocation(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
                 }
             });
             return icons;

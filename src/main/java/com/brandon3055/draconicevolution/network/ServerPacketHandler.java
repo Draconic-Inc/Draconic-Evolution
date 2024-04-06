@@ -14,9 +14,9 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyD
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.jei.FusionRecipeTransferHelper;
-import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
+import com.brandon3055.draconicevolution.inventory.ModularItemMenu;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
 import net.minecraft.ChatFormatting;
@@ -67,12 +67,12 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 break;
             case DraconicNetwork.S_ITEM_CONFIG_GUI:
                 if (packet.readBoolean())
-                    ContainerModularItem.tryOpenGui(sender);
+                    ModularItemMenu.tryOpenGui(sender);
                 else
-                    ContainerConfigurableItem.tryOpenGui(sender);
+                    ConfigurableItemMenu.tryOpenGui(sender);
                 break;
             case DraconicNetwork.S_MODULE_CONFIG_GUI:
-                ContainerModularItem.tryOpenGui(sender);
+                ModularItemMenu.tryOpenGui(sender);
                 break;
             case DraconicNetwork.S_DISLOCATOR_MESSAGE:
                 dislocatorMessage(sender, packet);
@@ -202,7 +202,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
     private void propertyData(ServerPlayer sender, PacketCustom packet) {
         PropertyData data = PropertyData.read(packet);
-        ContainerConfigurableItem.handlePropertyData(sender, data);
+        ConfigurableItemMenu.handlePropertyData(sender, data);
     }
 
     private void dislocatorMessage(ServerPlayer sender, PacketCustom packet) {

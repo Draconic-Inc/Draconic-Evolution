@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormat
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormatter;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.Type;
-import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.gson.JsonParseException;
 import net.minecraft.ChatFormatting;
@@ -134,7 +134,7 @@ public class PropertyData {
         return propUniqueName == null ? propName : propUniqueName.toString();
     }
 
-    public void pullData(ContainerConfigurableItem container, boolean pullValue) {
+    public void pullData(ConfigurableItemMenu container, boolean pullValue) {
         PropertyProvider provider = container.findProvider(providerID);
         isProviderAvailable = provider != null;
         if (isProviderAvailable) {

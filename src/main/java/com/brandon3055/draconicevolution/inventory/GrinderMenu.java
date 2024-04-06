@@ -21,7 +21,7 @@ public class GrinderMenu extends ContainerBCTile<TileGrinder> {
     public final SlotGroup capacitor = createSlotGroup(2, 0);
 
     public GrinderMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileGrinder)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public GrinderMenu(int windowId, Inventory playerInv, TileGrinder tile) {
@@ -29,9 +29,7 @@ public class GrinderMenu extends ContainerBCTile<TileGrinder> {
 
         main.addPlayerMain(inventory);
         hotBar.addPlayerBar(inventory);
-        capacitor.addSlot(new ModularSlot(tile.itemHandler, 0)
-                .setValidator(EnergyUtils::canReceiveEnergy)
-        );
+        capacitor.addSlot(new ModularSlot(tile.itemHandler, 0));
         weapon.addSlot(new ModularSlot(tile.itemHandler, 1));
     }
 }

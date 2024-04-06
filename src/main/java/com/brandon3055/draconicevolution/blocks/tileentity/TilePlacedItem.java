@@ -53,7 +53,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     public final ManagedBool[] isBlock = new ManagedBool[MAX_STACKS];
 
     //TODO / Something to think about. I could create a new item handler based dynamic inventory for this but i'm not sure if its needed. It should not take much effort to make this work.
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(MAX_STACKS);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, MAX_STACKS);
 
     public TilePlacedItem(BlockPos pos, BlockState state) {
         super(DEContent.TILE_PLACED_ITEM.get(), pos, state);

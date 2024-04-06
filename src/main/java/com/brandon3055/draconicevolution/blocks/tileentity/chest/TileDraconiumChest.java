@@ -45,16 +45,16 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public float prevLidAngle;
     public float lidAngle;
 
-    public TileItemStackHandler mainInventory = new TileItemStackHandler(260);
-    public TileItemStackHandler craftingItems = new TileItemStackHandler(9);
-    public TileItemStackHandler furnaceItems = new TileItemStackHandler(5);
-    public TileItemStackHandler capacitorInv = new TileItemStackHandler(1);
+    public TileItemStackHandler mainInventory = new TileItemStackHandler(this, 260);
+    public TileItemStackHandler craftingItems = new TileItemStackHandler(this, 9);
+    public TileItemStackHandler furnaceItems = new TileItemStackHandler(this, 5);
+    public TileItemStackHandler capacitorInv = new TileItemStackHandler(this, 1);
     public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 
     public SmeltingLogic smeltingLogic = new SmeltingLogic(this, furnaceItems, mainInventory, opStorage);
 
     @Deprecated //TODO remove in a few versions
-    public TileItemStackHandler old_item_handler = new TileItemStackHandler(267);
+    public TileItemStackHandler old_item_handler = new TileItemStackHandler(this, 267);
 
     public TileDraconiumChest(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DRACONIUM_CHEST.get(), pos, state);

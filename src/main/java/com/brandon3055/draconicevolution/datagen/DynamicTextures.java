@@ -2,10 +2,9 @@ package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.GuiCelestialManipulator;
-import com.brandon3055.draconicevolution.client.gui.GuiGenerator;
-import com.brandon3055.draconicevolution.client.gui.GuiGrinder;
-
+import com.brandon3055.draconicevolution.client.gui.CelestialManipulatorGui;
+import com.brandon3055.draconicevolution.client.gui.GeneratorGui;
+import com.brandon3055.draconicevolution.client.gui.GrinderGui;
 import codechicken.lib.datagen.DynamicTextureProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -22,13 +21,13 @@ public class DynamicTextures extends DynamicTextureProvider {
 
     @Override
     public void addTextures() {
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/generator"), GuiGenerator.GUI_WIDTH, GuiGenerator.GUI_HEIGHT, 4);
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/generator"), GuiGenerator.GUI_WIDTH, GuiGenerator.GUI_HEIGHT, 4);
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/generator"), GeneratorGui.GUI_WIDTH, GeneratorGui.GUI_HEIGHT, 4);
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/generator"), GeneratorGui.GUI_WIDTH, GeneratorGui.GUI_HEIGHT, 4);
 
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/grinder"), GuiGrinder.GUI_WIDTH, GuiGenerator.GUI_HEIGHT, 4);
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/grinder"), GuiGrinder.GUI_WIDTH, GuiGenerator.GUI_HEIGHT, 4);
-        
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/celestial_manipulator"), GuiCelestialManipulator.GUI_WIDTH, GuiCelestialManipulator.GUI_HEIGHT, 4);
-        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/celestial_manipulator"), GuiCelestialManipulator.GUI_WIDTH, GuiCelestialManipulator.GUI_HEIGHT, 4);
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/grinder"), GrinderGui.GUI_WIDTH, GeneratorGui.GUI_HEIGHT, 4);
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/grinder"), GrinderGui.GUI_WIDTH, GeneratorGui.GUI_HEIGHT, 4);
+
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/light/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/celestial_manipulator"), CelestialManipulatorGui.GUI_WIDTH, CelestialManipulatorGui.GUI_HEIGHT, 4);
+        addDynamicTexture(new ResourceLocation(BrandonsCore.MODID, "textures/gui/dark/background_dynamic"), new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/celestial_manipulator"), CelestialManipulatorGui.GUI_WIDTH, CelestialManipulatorGui.GUI_HEIGHT, 4);
     }
 }

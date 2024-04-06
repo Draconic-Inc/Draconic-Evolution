@@ -1,116 +1,149 @@
-//package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
-//
-//import com.brandon3055.brandonscore.client.BCGuiTextures;
-//import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-//import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
-//import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
-//import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiSlideControl;
-//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
-//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
-//import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSelectDialog;
-//import com.brandon3055.brandonscore.client.render.RenderUtils;
-//import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-//import com.mojang.blaze3d.vertex.PoseStack;
-//import net.minecraft.ChatFormatting;
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.renderer.MultiBufferSource;
-//import net.minecraft.client.resources.language.I18n;
-//
-//import java.util.Collections;
-//import java.util.function.Supplier;
-//import java.util.stream.Collectors;
-//
-///**
-// * Created by brandon3055 on 10/5/20.
-// */
-//public class PropertyElement extends GuiElement<PropertyElement> {
-//    protected PropertyData data;
-//    private boolean advanced;
-//    private GuiConfigurableItem gui;
-//    private GuiLabel label;
-//    private GuiLabel valueLabel;
+package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
+
+import codechicken.lib.gui.modular.elements.*;
+import codechicken.lib.gui.modular.lib.BackgroundRender;
+import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.lib.SliderState;
+import codechicken.lib.gui.modular.lib.geometry.Axis;
+import codechicken.lib.gui.modular.lib.geometry.GuiParent;
+import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.function.Supplier;
+
+import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
+import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
+import static com.brandon3055.brandonscore.BCConfig.darkMode;
+import static net.minecraft.ChatFormatting.AQUA;
+import static net.minecraft.ChatFormatting.DARK_AQUA;
+
+/**
+ * Created by brandon3055 on 10/5/20.
+ */
+public class PropertyElement extends GuiElement<PropertyElement> {
+    protected PropertyData data;
+    private boolean advanced;
+    private ConfigurableItemGui gui;
+    private GuiText label;
+    //    private GuiLabel valueLabel;
 //    private GuiButton decrement;
 //    private GuiButton increment;
 //    private GuiButton valueButton;
 //    private GuiButton globalButton;
 //    private GuiSlideControl slider;
-//    private Supplier<Boolean> enableToolTip = () -> true;
-//    private Supplier<Integer> opacitySupplier = () -> 0xFF000000;
-//    private int index = 0;
+    private Supplier<Boolean> suppressToolTip = () -> false;
+    private Supplier<Integer> opacitySupplier = () -> 0xFF000000;
+    private int index = 0;
 //    protected GuiElement<?> dragZone;
-//
-//    public PropertyElement(PropertyData data, GuiConfigurableItem gui, boolean advanced) {
-//        this.data = data;
-//        this.gui = gui;
-//        this.advanced = advanced;
-//        this.setHoverTextDelay(10);
-//        this.setYSize(22);
-//    }
-//
-//    public void setEnableToolTip(Supplier<Boolean> enableToolTip) {
-//        this.enableToolTip = enableToolTip;
-//    }
-//
-//    public void setOpacitySupplier(Supplier<Integer> opacitySupplier) {
-//        this.opacitySupplier = opacitySupplier;
-//    }
-//
-//    @Override
-//    public void addChildElements() {
-//        label = addChild(new GuiLabel(data.displayName));
-////        label.setMidTrim(true);
-//        label.setTextColour(ChatFormatting.GOLD);
-//        label.setShadow(false);
-//        label.setYSize(10).setPos(xPos() + 10, yPos());
-//        label.onReload(e -> e.setMaxXPos(maxXPos() - 10, true));
-//        label.setHoverTextDelay(10);
-//        label.setComponentHoverText(() -> enableToolTip.get() && data.toolTip != null ? Collections.singletonList(data.toolTip) : Collections.emptyList());
-//
-//        valueButton = addChild(new GuiButton());
-//        valueButton.setYSize(10).setYPos(10).setXSizeMod(this::xSize);
-//        valueButton.setInsets(0, 4, 0, 0);
-//        valueButton.setTextColour(ChatFormatting.DARK_AQUA, ChatFormatting.AQUA);
-//        valueButton.setEnabled(data.type == ConfigProperty.Type.BOOLEAN || data.type == ConfigProperty.Type.ENUM);
-//        valueButton.onPressed(this::valueClicked);
-//        valueButton.setClickEnabled(false);
-//
-//        decrement = gui.toolkit.createIconButton(this, 10, 12, "dark/arrow_left");
-//        increment = gui.toolkit.createIconButton(this, 10, 12, "dark/arrow_right");
-//        decrement.onReload(() -> decrement.setPos(xPos() + 1, yPos() + 10));
-//        increment.onReload(() -> increment.setMaxXPos(maxXPos() - 1, false).setYPos(yPos() + 10));
-//        decrement.setEnabled(data.type != ConfigProperty.Type.BOOLEAN);
-//        increment.setEnabled(data.type != ConfigProperty.Type.BOOLEAN);
-//        increment.onPressed(() -> data.increment(1));
-//        decrement.onPressed(() -> data.increment(-1));
-//
-//        slider = addChild(new GuiSlideControl());
-//        slider.setBackgroundElement(new SliderBackground());
-//        slider.onReload(() -> slider.setYSize(10).setYPos(yPos() + 10).setXPos(decrement.maxXPos()).setMaxXPos(increment.xPos(), true).setSliderSize(4).updateElements());
-//        slider.setInsets(1, 1, 1, 1);
-//        slider.setEnabled(data.type == ConfigProperty.Type.DECIMAL || data.type == ConfigProperty.Type.INTEGER);
-//        slider.setDefaultSlider(0xFFE0E0E0, 0xFF90FFFF, 0xFFE0E0E0, 0xFF90FFFF);
-//        slider.addScrollCheck((e, e1, e2) -> false);
-//        slider.setRange(data.minValue, data.maxValue);
-//        slider.setInputListener(e -> data.updateNumberValue(e.getPosition(), !e.isDragging()));
-//
-//        valueLabel = addChild(new GuiLabel());
-//        valueLabel.setDisplaySupplier(() -> data.displayValue);
-//        valueLabel.setYSize(10).setYPos(10).setXSizeMod(this::xSize);
-//        valueLabel.setTextColour(ChatFormatting.DARK_AQUA, ChatFormatting.AQUA);
-//        valueLabel.setMidTrim(true);
-//
-//        if (advanced && data.propUniqueName == null) {
-//            globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCGuiTextures.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
-//            globalButton.setHoverText(I18n.get("gui.draconicevolution.item_config.global.info"));
-//            globalButton.addChild(new GuiBorderedRect().setColours(0, 0xFF409040, 0xFFBBFFBB).setRelPos(globalButton, -1, -1).setSize(10, 10).setEnabledCallback(() -> data.isGlobal));
-//            globalButton.onReload(e -> e.setPos(xPos() + 1, yPos() + 1));
-//            globalButton.onPressed(() -> data.toggleGlobal());
-//        }
-//
+
+    public PropertyElement(GuiParent<?> parent, PropertyData data, ConfigurableItemGui gui, int index, boolean advanced) {
+        super(parent);
+        this.data = data;
+        this.gui = gui;
+        this.constrain(HEIGHT, literal(22));
+        this.index = index;
+        this.advanced = advanced;
+        buildElement();
+    }
+
+    private void buildElement() {
+        Constraints.bind(new GuiRectangle(this).fill(() -> (index % 2 == 0 ? (darkMode ? 0x101010 : 0x252525) : (darkMode ? 0x202020 : 0x404040)) | opacitySupplier.get()), this);
+
+        label = new GuiText(this, data.displayName.copy().withStyle(ChatFormatting.GOLD))
+                .setShadow(false)
+                .setEnableToolTip(() -> !suppressToolTip.get())
+                .setTooltip(() -> data.toolTip != null ? Collections.singletonList(data.toolTip) : Collections.emptyList())
+                .constrain(HEIGHT, literal(10))
+                .constrain(TOP, match(get(TOP)))
+                .constrain(LEFT, relative(get(LEFT), 10))
+                .constrain(RIGHT, relative(get(RIGHT), -10));
+
+        GuiButton valueButton = new GuiButton(this)
+                .setEnabled(() -> data.type == ConfigProperty.Type.BOOLEAN || data.type == ConfigProperty.Type.ENUM)
+                .setPressSound(null)
+                .onPress(this::valueClicked)
+                .constrain(HEIGHT, literal(10))
+                .constrain(LEFT, match(get(LEFT)))
+                .constrain(RIGHT, match(get(RIGHT)))
+                .constrain(TOP, relative(get(TOP), 10));
+
+        GuiButton decrement = ConfigurableItemGui.TOOLKIT.createIconButton(this, 10, 12, "dark/arrow_left")
+                .setEnabled(() -> data.type != ConfigProperty.Type.BOOLEAN)
+                .onPress(() -> data.increment(-1));
+        Constraints.placeInside(decrement, this, Constraints.LayoutPos.TOP_LEFT, 1, 10);
+
+        GuiButton increment = ConfigurableItemGui.TOOLKIT.createIconButton(this, 10, 12, "dark/arrow_right")
+                .setEnabled(() -> data.type != ConfigProperty.Type.BOOLEAN)
+                .onPress(() -> data.increment(1));
+        Constraints.placeInside(increment, this, Constraints.LayoutPos.TOP_RIGHT, -1, 10);
+
+        SliderBackground slideBg = new SliderBackground(this)
+                .setEnabled(() -> data.type == ConfigProperty.Type.DECIMAL || data.type == ConfigProperty.Type.INTEGER)
+                .constrain(HEIGHT, literal(10))
+                .constrain(LEFT, match(decrement.get(RIGHT)))
+                .constrain(RIGHT, match(increment.get(LEFT)))
+                .constrain(TOP, relative(get(TOP), 10));
+
+        GuiSlider slider = new GuiSlider(slideBg, Axis.X)
+                .setSliderState(new DataSlideState(data));
+        slideBg.slider = slider;
+        slider.getSlider().constrain(WIDTH, literal(6));
+        Constraints.bind(slider, slideBg, 0, 1, 0, 1);
+        Constraints.bind(new GuiRectangle(slider.getSlider()).fill(() -> slider.isMouseOver() || slider.isDragging() ? 0xFF90FFFF : 0xFFE0E0E0), slider.getSlider());
+
+        GuiText valueLabel = new GuiText(this)
+                .constrain(HEIGHT, literal(10))
+                .constrain(LEFT, match(get(LEFT)))
+                .constrain(RIGHT, match(get(RIGHT)))
+                .constrain(TOP, relative(get(TOP), 10));
+        valueLabel.setTextSupplier(() -> Component.literal(data.displayValue).withStyle(valueLabel.isMouseOver() ? AQUA : DARK_AQUA));
+
+        if (advanced && data.propUniqueName == null) {
+            GuiButton globalButton = ConfigurableItemGui.TOOLKIT.createIconButton(this, 8, 8, () -> BCGuiTextures.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"))
+                    .setTooltip(Component.translatable("gui.draconicevolution.item_config.global.info"))
+                    .onPress(() -> data.toggleGlobal());
+            Constraints.placeInside(globalButton, this, Constraints.LayoutPos.TOP_LEFT, 1, 1);
+            Constraints.bind(new GuiRectangle(globalButton).shadedRect(0xFF409040, 0xFFBBFFBB, 0).setEnabled(() -> data.isGlobal), globalButton, -1);
+        }
+
+        Constraints.bind(new GuiRectangle(this)
+                .border(() -> data.isGlobal ? 0x80ffff00 : gui.hoveredProvider.getProviderID().equals(data.providerID) ? 0x8000ff00 : 0)
+                .setEnabled(() -> advanced && gui.hoveredProvider != null && gui.hoveredProvider.getProviderName().equals(data.providerName)), this);
+
+        Constraints.bind(new GuiRectangle(this)
+                .fill(0x80FF8080)
+                .setTooltip(Component.translatable("gui.draconicevolution.item_config.provider_unavailable"))
+                .setEnabled(() -> !data.isPropertyAvailable() && !data.isGlobal), this);
+
 //        detectValueChanges();
-//    }
-//
+    }
+
+    public void setSuppressToolTip(Supplier<Boolean> suppressToolTip) {
+        this.suppressToolTip = suppressToolTip;
+    }
+
+    public void setOpacitySupplier(Supplier<Integer> opacitySupplier) {
+        this.opacitySupplier = opacitySupplier;
+    }
+
+    @Override
+    public void tick(double mouseX, double mouseY) {
+        super.tick(mouseX, mouseY);
+        if (advanced && label.isMouseOver()) {
+            gui.hoveredData = data;
+        }
+    }
+
+    //
 //    @Override
 //    public void reloadElement() {
 //        super.reloadElement();
@@ -124,11 +157,19 @@
 //        }
 //    }
 //
-//    private void valueClicked() {
-//        if (data.type == ConfigProperty.Type.BOOLEAN) {
-//            data.toggleBooleanValue();
-//            GuiButton.playGenericClick();
-//        } else if (data.type == ConfigProperty.Type.ENUM && data.enumValueOptions.size() > 1) {
+    private void valueClicked() {
+        if (data.type == ConfigProperty.Type.BOOLEAN) {
+            data.toggleBooleanValue();
+            mc().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+        } else if (data.type == ConfigProperty.Type.ENUM && data.enumValueOptions.size() > 1) {
+            //Cycle through options. [Temporary... Probably permanently temporary...]
+            int i = data.enumValueOptions.indexOf(data.enumValueIndex);
+            i++;
+            if (i >= data.enumValueOptions.size()) {
+                i = 0;
+            }
+            data.updateEnumValue(data.enumValueOptions.get(i));
+            //TODO Enum Selection Dialog
 //            GuiSelectDialog<Integer> dialog = new GuiSelectDialog<>(this);
 //            dialog.setRendererBuilder(e -> {
 //                GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(ChatFormatting.DARK_AQUA, ChatFormatting.AQUA);
@@ -158,9 +199,10 @@
 //            });
 //            dialog.setCloseOnSelection(true);
 //            dialog.show();
-//        }
-//    }
-//
+        }
+    }
+
+    //
 //    @Override
 //    public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
 //        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
@@ -225,18 +267,49 @@
 //        return super.onUpdate();
 //    }
 //
-//    private class SliderBackground extends GuiElement<SliderBackground> {
-//        @Override
-//        public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-//            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
-//            if (isMouseOver(mouseX, mouseY) || slider.isDragging()) {
-//                drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), 0x60475b6a);
-//            }
-//            drawColouredRect(getter, xPos(), yPos() + (ySize() / 2F) - 1, xSize(), 2, 0xFF808080);
-//            drawColouredRect(getter, xPos(), yPos(), 1, ySize(), 0xFF808080);
-//            drawColouredRect(getter, xPos() + xSize() - 1, yPos(), 1, ySize(), 0xFF808080);
-//            getter.endBatch();
-//            super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-//        }
-//    }
-//}
+    private static class DataSlideState implements SliderState {
+        private final PropertyData prop;
+
+        public DataSlideState(PropertyData prop) {
+            this.prop = prop;
+        }
+
+        @Override
+        public double getPos() {
+            return MathHelper.map(prop.decimalValue, prop.minValue, prop.maxValue, 0, 1);
+        }
+
+        @Override
+        public void setPos(double pos) {
+            prop.updateNumberValue(MathHelper.map(pos, 0, 1, prop.minValue, prop.maxValue), true);
+        }
+
+        @Override
+        public double scrollSpeed() {
+            return 0.05;
+        }
+
+        @Override
+        public boolean canScroll(Axis scrollAxis) {
+            return Screen.hasShiftDown();
+        }
+    }
+
+    private static class SliderBackground extends GuiElement<SliderBackground> implements BackgroundRender {
+        private GuiSlider slider;
+
+        public SliderBackground(@NotNull GuiParent<?> parent) {
+            super(parent);
+        }
+
+        @Override
+        public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
+            if (slider != null && (slider.isDragging() || slider.isMouseOver())) {
+                render.rect(xMin(), yMin(), xSize(), ySize(), 0x60475b6a);
+            }
+            render.rect(xMin(), yMin() + (ySize() / 2F) - 1, xSize(), 2, 0xFF808080);
+            render.rect(xMin(), yMin(), 1, ySize(), 0xFF808080);
+            render.rect(xMin() + xSize() - 1, yMin(), 1, ySize(), 0xFF808080);
+        }
+    }
+}

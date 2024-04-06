@@ -71,7 +71,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public final ManagedShort craftAnimLength = register(new ManagedShort("craft_anim_length", DataFlags.SYNC_TILE));
     public final ManagedFloat progress = register(new ManagedFloat("progress", -1, DataFlags.SAVE_NBT_SYNC_CONTAINER));
 
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 2);
     public ITileFXHandler fxHandler;
 
     private List<IFusionInjector> injectorCache = null;

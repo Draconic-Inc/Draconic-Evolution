@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.lib.IEquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -110,4 +111,9 @@ public abstract class EquipmentManager implements IEquipmentManager {
         return findItems(stack -> !stack.isEmpty(), entity);
     }
 
+
+    public static List<ResourceLocation> getIcons(LivingEntity entity) {
+        if (instance == null) return Collections.emptyList();
+        return instance.getSlotIcons(entity);
+    }
 }

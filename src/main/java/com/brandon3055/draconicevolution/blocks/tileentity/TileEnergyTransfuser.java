@@ -40,10 +40,10 @@ import javax.annotation.Nullable;
  */
 public class TileEnergyTransfuser extends TileBCore implements IInteractTile, MenuProvider, IRSSwitchable {
 
-    public TileItemStackHandler itemNorth = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
-    public TileItemStackHandler itemEast = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
-    public TileItemStackHandler itemSouth = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
-    public TileItemStackHandler itemWest = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
+    public TileItemStackHandler itemNorth = new TileItemStackHandler(this, 1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
+    public TileItemStackHandler itemEast = new TileItemStackHandler(this, 1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
+    public TileItemStackHandler itemSouth = new TileItemStackHandler(this, 1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
+    public TileItemStackHandler itemWest = new TileItemStackHandler(this, 1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
     private IItemHandlerModifiable[] indexedItemHandlers = {itemNorth, itemEast, itemSouth, itemWest};
     public IItemHandlerModifiable itemsCombined = (IItemHandlerModifiable) ItemCapMerger.merge(itemNorth, itemEast, itemSouth, itemWest);
     public IOPStorage opStorage = new OPIOAdapter();
