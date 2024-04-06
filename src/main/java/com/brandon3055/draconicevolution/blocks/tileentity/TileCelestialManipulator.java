@@ -109,6 +109,8 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                         sLevel.setDayTime(sLevel.getDayTime() + ticks);
                         opStorage.extractEnergy(ticks * 320, false);
                     }
+                } else {
+                    stopTimeWarp();
                 }
                 if (!level.isClientSide && level.getDayTime() >= targetTime) {
                     stopTimeWarp();
