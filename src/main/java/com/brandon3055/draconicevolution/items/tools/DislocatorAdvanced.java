@@ -9,7 +9,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
+import com.brandon3055.draconicevolution.client.gui.DislocatorGui;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
@@ -25,7 +25,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -133,8 +132,7 @@ public class DislocatorAdvanced extends Dislocator {
 
     @OnlyIn(Dist.CLIENT)
     private void openGui(ItemStack stack, Player player) {
-        throw new NotImplementedException("");//TODO
-//        Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
+        Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
     }
 
     private void handleTeleport(Player player, ItemStack stack, TargetPos targetPos, boolean showFuel) {

@@ -1,19 +1,43 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
+import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by Werechang on 27/6/21
  */
-public class GuiDraconiumChest extends ContainerGuiProvider<ContainerDraconiumChest> {
+public class DraconiumChestGui extends ContainerGuiProvider<ContainerDraconiumChest> {
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.draconium_chest");
+    public static final int GUI_WIDTH = 478;
+    public static final int GUI_HEIGHT = 268;
+
+    @Override
+    public GuiElement<?> createRootElement(ModularGui gui) {
+        GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("draconium_chest"));
+        Constraints.bind(bg, root.getContentElement());
+        return root;
+    }
 
     @Override
     public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerDraconiumChest> screenAccess) {
-
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        ContainerDraconiumChest menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+        GuiElement<?> root = gui.getRoot();
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
     }
 
 
@@ -151,9 +175,10 @@ public class GuiDraconiumChest extends ContainerGuiProvider<ContainerDraconiumCh
 //        toolkit.placeOutside(furnaceContainer, template.playerSlots, GuiToolkit.LayoutPos.MIDDLE_LEFT, -7, 1);
 //    }
 
-    public static class Screen extends ModularGuiScreen {
-        public Screen() {
-            super(new GuiDraconiumChest());
+    public static class Screen extends ModularGuiContainer<ContainerDraconiumChest> {
+        public Screen(ContainerDraconiumChest menu, Inventory inv, Component title) {
+            super(menu, inv, new DraconiumChestGui());
+            getModularGui().setGuiTitle(title);
         }
     }
 }

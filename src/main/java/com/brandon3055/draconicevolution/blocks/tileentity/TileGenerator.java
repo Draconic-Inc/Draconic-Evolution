@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import codechicken.lib.util.ServerUtils;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
@@ -20,7 +19,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -45,7 +43,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
-import java.util.Random;
 
 public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvider, IInteractTile {
 

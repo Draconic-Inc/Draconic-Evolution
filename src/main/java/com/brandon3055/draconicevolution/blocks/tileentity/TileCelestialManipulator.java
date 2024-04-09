@@ -20,7 +20,8 @@ import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCeles
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.CelestialManipulatorMenu;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
@@ -651,7 +652,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), currentWindowIndex, player.getInventory(), this);
+        return new CelestialManipulatorMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

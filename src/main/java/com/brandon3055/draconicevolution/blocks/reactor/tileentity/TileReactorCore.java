@@ -16,7 +16,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
-import com.brandon3055.draconicevolution.client.gui.GuiReactor;
+import com.brandon3055.draconicevolution.client.gui.ReactorGui;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -604,8 +604,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             BlockPos pos = data.readPos();
             BlockEntity tile = level.getBlockEntity(pos);
             Screen screen = Minecraft.getInstance().screen;
-            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor.Screen) {
-                ((GuiReactor.Screen) screen).component = (TileReactorComponent) tile;
+            if (tile instanceof TileReactorComponent && screen instanceof ReactorGui.Screen) {
+                ((ReactorGui.Screen) screen).component = (TileReactorComponent) tile;
             }
         }
     }

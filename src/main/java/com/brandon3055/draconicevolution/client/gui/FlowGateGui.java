@@ -1,20 +1,48 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.inventory.ContainerReactor;
+import com.brandon3055.draconicevolution.inventory.FlowGateMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public class GuiFlowGate extends ContainerGuiProvider<ContainerBCTile<TileFlowGate>> {
+public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.flow_gate");
+    public static final int GUI_WIDTH = 176;
+    public static final int GUI_HEIGHT = 166;
 
     @Override
-    public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerBCTile<TileFlowGate>> screenAccess) {
+    public GuiElement<?> createRootElement(ModularGui gui) {
+        GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("flow_gate"));
+        Constraints.bind(bg, root.getContentElement());
+        return root;
+    }
 
+    @Override
+    public void buildGui(ModularGui gui, ContainerScreenAccess<FlowGateMenu> screenAccess) {
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        FlowGateMenu menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+        GuiElement<?> root = gui.getRoot();
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+        ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
+        buttonRow.addButton(TOOLKIT::createThemeButton);
     }
 
 //    private GuiToolkit<GuiFlowGate> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.DEFAULT).setTranslationPrefix("gui.draconicevolution.flow_gate");
@@ -104,9 +132,10 @@ public class GuiFlowGate extends ContainerGuiProvider<ContainerBCTile<TileFlowGa
 //        });
 //    }
 
-    public static class Screen extends ModularGuiScreen {
-        public Screen() {
-            super(new GuiFlowGate());
+    public static class Screen extends ModularGuiContainer<FlowGateMenu> {
+        public Screen(FlowGateMenu menu, Inventory inv, Component title) {
+            super(menu, inv, new FlowGateGui());
+            getModularGui().setGuiTitle(title);
         }
     }
 }

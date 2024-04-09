@@ -1,26 +1,46 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
+import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 10/02/2017.
  */
 //public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
-public class GuiReactor extends ContainerGuiProvider<ContainerReactor> { //Temp fix for tile
+public class ReactorGui extends ContainerGuiProvider<ContainerReactor> { //Temp fix for tile
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.reactor");
+    public static final int GUI_WIDTH = 248;
+    public static final int GUI_HEIGHT = 222;
+
+    @Override
+    public GuiElement<?> createRootElement(ModularGui gui) {
+        GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("reactor"));
+        Constraints.bind(bg, root.getContentElement());
+        return root;
+    }
 
     @Override
     public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerReactor> screenAccess) {
-
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        ContainerReactor menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+        GuiElement<?> root = gui.getRoot();
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
     }
-
-
-
-
 
 
 //    private Player player;
@@ -360,11 +380,12 @@ public class GuiReactor extends ContainerGuiProvider<ContainerReactor> { //Temp 
 //        }
 //    }
 
-    public static class Screen extends ModularGuiScreen {
-            public TileReactorComponent component = null;
+    public static class Screen extends ModularGuiContainer<ContainerReactor> {
+        public TileReactorComponent component = null;
 
-        public Screen() {
-            super(new GuiReactor());
+        public Screen(ContainerReactor menu, Inventory inv, Component title) {
+            super(menu, inv, new ReactorGui());
+            getModularGui().setGuiTitle(title);
         }
     }
 }

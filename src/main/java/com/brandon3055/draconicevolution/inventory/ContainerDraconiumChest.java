@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import codechicken.lib.data.MCDataInput;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -25,7 +23,7 @@ import java.util.Optional;
 /**
  * Created by brandon3055 on 4/06/2017.
  */
-public class ContainerDraconiumChest extends ContainerDETile<TileDraconiumChest> {
+public class ContainerDraconiumChest extends DETileMenu<TileDraconiumChest> {
     public List<Slot> mainSlots = new ArrayList<>();
     public List<Slot> playerSlots = new ArrayList<>();
     public List<Slot> craftInputSlots = new ArrayList<>();

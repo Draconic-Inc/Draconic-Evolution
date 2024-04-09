@@ -50,7 +50,7 @@ public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnerg
             double xOffset = dir == Direction.NORTH ? 2 : dir == Direction.SOUTH ? 1 : 2.5;
             mStack.translate(0.0625 * -xOffset, 0.0625 * -3.5, 0.0625 * 1.375);
             mStack.scale(0.0625F, 0.0625F, 0.0625F);
-            mc.font.drawInBatch(TEXT[i].getVisualOrderText(), 0, 0, tile.ioModes[i].get().getColour(), false, mStack.last().pose(), getter, Font.DisplayMode.NORMAL, packedLight, packedOverlay);
+            mc.font.drawInBatch(TEXT[i].getVisualOrderText(), 0, 0, tile.ioModes[i].get().getColour(), false, mStack.last().pose(), getter, Font.DisplayMode.NORMAL, 240, 240);
             mStack.popPose();
 
             ItemStack stack = tile.itemsCombined.getStackInSlot(i);

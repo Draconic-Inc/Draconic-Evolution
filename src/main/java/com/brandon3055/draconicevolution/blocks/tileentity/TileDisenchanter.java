@@ -5,17 +5,16 @@ import codechicken.lib.data.MCDataInput;
 import javax.annotation.Nullable;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
 
+import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -145,7 +144,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_DISENCHANTER.get(), currentWindowIndex, player.getInventory(), this);
+        return new DisenchanterMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

@@ -1,20 +1,49 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
+import com.brandon3055.draconicevolution.inventory.TransfuserMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class GuiEntityDetector extends ContainerGuiProvider<ContainerBCTile<TileEntityDetector>> {
+public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> {
+	private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.entity_detector");
+	public static final int GUI_WIDTH = 300;
+	public static final int GUI_HEIGHT = 180;
 
 	@Override
-	public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerBCTile<TileEntityDetector>> screenAccess) {
+	public GuiElement<?> createRootElement(ModularGui gui) {
+		GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+		GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("entity_detector"));
+		Constraints.bind(bg, root.getContentElement());
+		return root;
+	}
 
+
+	@Override
+	public void buildGui(ModularGui gui, ContainerScreenAccess<EntityDetectorMenu> screenAccess) {
+		gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+		EntityDetectorMenu menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+		GuiElement<?> root = gui.getRoot();
+		TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+		ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
+		buttonRow.addButton(TOOLKIT::createThemeButton);
 	}
 
 //	private TileEntityDetector tile;
@@ -104,9 +133,10 @@ public class GuiEntityDetector extends ContainerGuiProvider<ContainerBCTile<Tile
 //			.setDisplaySupplier(() -> toolkit.i18n("pulse_mode." + (tile.pulseRsMode.get() ? "on" : "off")));
 //	}
 
-	public static class Screen extends ModularGuiScreen {
-		public Screen() {
-			super(new GuiEntityDetector());
+	public static class Screen extends ModularGuiContainer<EntityDetectorMenu> {
+		public Screen(EntityDetectorMenu menu, Inventory inv, Component title) {
+			super(menu, inv, new EntityDetectorGui());
+			getModularGui().setGuiTitle(title);
 		}
 	}
 }

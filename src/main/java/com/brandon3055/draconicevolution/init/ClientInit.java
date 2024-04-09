@@ -135,16 +135,16 @@ public class ClientInit {
         MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), ConfigurableItemGui.Screen::new);
         MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), ModularItemGui.Screen::new);
 
-//        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), GuiDraconiumChest.Screen::new);
-//        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), GuiEnergyCore.Screen::new);
-//        MenuScreens.register(DEContent.MENU_REACTOR.get(), GuiReactor.Screen::new);
+        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), DraconiumChestGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), EnergyCoreGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_REACTOR.get(), ReactorGui.Screen::new);
 //
         MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), CelestialManipulatorGui.Screen::new);
-//        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), GuiDisenchanter.Screen::new);
-//        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), GuiFusionCraftingCore.Screen::new);
-//        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), GuiFlowGate.Screen::new);
-//        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), GuiEntityDetector.Screen::new);
-//        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), GuiEnergyTransfuser.Screen::new);
+        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), DisenchanterGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), FusionCraftingCoreGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), FlowGateGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), EntityDetectorGui.Screen::new);
+        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), EnergyTransfuserGui.Screen::new);
     }
 
     @SuppressWarnings ("ConstantConditions")

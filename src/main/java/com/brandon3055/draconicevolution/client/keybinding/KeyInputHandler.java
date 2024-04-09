@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
-import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
+import com.brandon3055.draconicevolution.client.gui.DislocatorGui;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
@@ -91,7 +91,7 @@ public class KeyInputHandler {
         } else if (KeyBindings.dislocatorGui.isDown()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
-                Minecraft.getInstance().setScreen(new GuiDislocator.Screen(stack.getHoverName(), player));
+                Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.isDown()) {
             DraconicNetwork.sendPlaceItem();

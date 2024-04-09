@@ -1,16 +1,46 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
-public class GuiFusionCraftingCore extends ContainerGuiProvider<ContainerFusionCraftingCore> {
+public class FusionCraftingCoreGui extends ContainerGuiProvider<ContainerFusionCraftingCore> {
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.fusion_craft");
+    public static final int GUI_WIDTH = 218;
+    public static final int GUI_HEIGHT = 220;
+
+    @Override
+    public GuiElement<?> createRootElement(ModularGui gui) {
+        GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("fusion_craft"));
+        Constraints.bind(bg, root.getContentElement());
+        return root;
+    }
+
 
     @Override
     public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerFusionCraftingCore> screenAccess) {
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        ContainerFusionCraftingCore menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+        GuiElement<?> root = gui.getRoot();
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
 
+        ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
+        buttonRow.addButton(TOOLKIT::createThemeButton);
     }
 
 //    private final TileFusionCraftingCore tile;
@@ -123,9 +153,10 @@ public class GuiFusionCraftingCore extends ContainerGuiProvider<ContainerFusionC
 //        }
 //    }
 
-    public static class Screen extends ModularGuiScreen {
-        public Screen() {
-            super(new GuiFusionCraftingCore());
+    public static class Screen extends ModularGuiContainer<ContainerFusionCraftingCore> {
+        public Screen(ContainerFusionCraftingCore menu, Inventory inv, Component title) {
+            super(menu, inv, new FusionCraftingCoreGui());
+            getModularGui().setGuiTitle(title);
         }
     }
 }

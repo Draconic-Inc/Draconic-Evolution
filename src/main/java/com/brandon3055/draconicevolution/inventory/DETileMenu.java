@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -23,27 +22,17 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by brandon3055 on 18/11/2022
  */
-public class ContainerDETile<T extends TileBCore> extends ContainerBCTile<T> implements ModuleHostContainer {
+public abstract class DETileMenu<T extends TileBCore> extends ContainerBCTile<T> implements ModuleHostContainer {
 
     protected ModuleGrid moduleGrid;
     protected ModuleHost moduleHost = null;
 
-    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
+    public DETileMenu(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
         super(type, windowId, player, extraData);
         initHost(tile, player);
     }
 
-//    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
-//        super(type, windowId, player, extraData);
-//        initHost(tile, player);
-//    }
-//
-//    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, T tile) {
-//        super(type, windowId, player, tile);
-//        initHost(tile, player);
-//    }
-
-    public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, T tile) {
+    public DETileMenu(@Nullable MenuType<?> type, int windowId, Inventory player, T tile) {
         super(type, windowId, player, tile);
         initHost(tile, player);
     }

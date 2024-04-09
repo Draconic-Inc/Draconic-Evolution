@@ -13,11 +13,11 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
+import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
 import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
 import com.brandon3055.draconicevolution.lib.OPStorageOP;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -171,7 +171,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_ENERGY_CORE.get(), currentWindowIndex, player.getInventory(), this);
+        return new EnergyCoreMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

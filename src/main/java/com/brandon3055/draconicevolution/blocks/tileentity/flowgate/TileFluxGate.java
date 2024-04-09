@@ -5,8 +5,8 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import net.covers1624.quack.util.SneakyUtils;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
+import com.brandon3055.draconicevolution.inventory.FlowGateMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,7 +66,7 @@ public class TileFluxGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this);
+        return new FlowGateMenu(id, player.getInventory(), this);
     }
 
     @Override

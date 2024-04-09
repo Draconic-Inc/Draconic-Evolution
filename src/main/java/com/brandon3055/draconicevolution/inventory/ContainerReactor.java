@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 10/02/2017.
  */
-public class ContainerReactor extends ContainerDETile<TileReactorCore> {
+public class ContainerReactor extends DETileMenu<TileReactorCore> {
 
     public boolean fuelSlots = false;
 

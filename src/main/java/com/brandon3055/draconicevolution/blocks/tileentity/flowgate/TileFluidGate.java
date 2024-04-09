@@ -1,12 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
+import com.brandon3055.draconicevolution.inventory.FlowGateMenu;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -68,7 +67,7 @@ public class TileFluidGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_FLOW_GATE.get(), id, player.getInventory(), this);
+        return new FlowGateMenu(id, player.getInventory(), this);
     }
 
     @Override

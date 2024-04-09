@@ -19,7 +19,8 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDETile;
+import com.brandon3055.draconicevolution.inventory.DETileMenu;
+import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -334,7 +335,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDETile<>(DEContent.MENU_ENTITY_DETECTOR.get(), currentWindowIndex, playerInventory, this);
+        return new EntityDetectorMenu(currentWindowIndex, playerInventory, this);
     }
 
     @Override

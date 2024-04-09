@@ -1,21 +1,52 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
-import codechicken.lib.gui.modular.ModularGuiScreen;
+import codechicken.lib.gui.modular.ModularGuiContainer;
+import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.GuiManipulable;
+import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.draconicevolution.client.DEGuiTextures;
+import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
+import com.brandon3055.draconicevolution.inventory.TransfuserMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class GuiEnergyTransfuser extends ContainerGuiProvider<ContainerBCTile<TileEnergyTransfuser>> {
+public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
+    private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.transfuser");
+    public static final int GUI_WIDTH = 218;
+    public static final int GUI_HEIGHT = 215;
 
     @Override
-    public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerBCTile<TileEnergyTransfuser>> screenAccess) {
+    public GuiElement<?> createRootElement(ModularGui gui) {
+        GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("transfuser"));
+        Constraints.bind(bg, root.getContentElement());
+        return root;
+    }
+
+    @Override
+    public void buildGui(ModularGui gui, ContainerScreenAccess<TransfuserMenu> screenAccess) {
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        TransfuserMenu menu = screenAccess.getMenu();
+//		TileDisenchanter tile = menu.tile;
+        GuiElement<?> root = gui.getRoot();
+        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+        ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
+        buttonRow.addButton(TOOLKIT::createThemeButton);
+        buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));
 
     }
+
 
 //    public Player player;
 //    private TileEnergyTransfuser tile;
@@ -107,9 +138,10 @@ public class GuiEnergyTransfuser extends ContainerGuiProvider<ContainerBCTile<Ti
 //                .setRelPos(1, 1));
 //    }
 
-    public static class Screen extends ModularGuiScreen {
-        public Screen() {
-            super(new GuiEnergyTransfuser());
+    public static class Screen extends ModularGuiContainer<TransfuserMenu> {
+        public Screen(TransfuserMenu menu, Inventory inv, Component title) {
+            super(menu, inv, new EnergyTransfuserGui());
+            getModularGui().setGuiTitle(title);
         }
     }
 }
