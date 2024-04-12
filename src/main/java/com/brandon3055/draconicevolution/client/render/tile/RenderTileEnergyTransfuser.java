@@ -55,7 +55,7 @@ public class RenderTileEnergyTransfuser implements BlockEntityRenderer<TileEnerg
 
             ItemStack stack = tile.itemsCombined.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                mStack.mulPose(new Quaternionf().rotationYXZ(90 * (float) MathHelper.torad, 0, 180 * (float) MathHelper.torad));
+                mStack.mulPose(new Quaternionf().rotationYXZ(90 * (float) MathHelper.torad, 90 * (float) MathHelper.torad, 180 * (float) MathHelper.torad));
                 mStack.translate(0, 0, 0.0625 * (1.5 / 2));
                 mStack.scale(0.5F, 0.5F, 0.5F);
                 Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, mStack, getter, tile.getLevel(), tile.posSeed());

@@ -21,6 +21,7 @@ public class TransfuserMenu extends DETileMenu<TileEnergyTransfuser> {
     public final SlotGroup eastSlot = createSlotGroup(1, 0);
     public final SlotGroup southSlot = createSlotGroup(1, 0);
     public final SlotGroup westSlot = createSlotGroup(1, 0);
+    public final SlotGroup[] slotGroups = new SlotGroup[]{northSlot, eastSlot, southSlot, westSlot};
 
     public TransfuserMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(windowId, playerInv, (TileEnergyTransfuser) playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
