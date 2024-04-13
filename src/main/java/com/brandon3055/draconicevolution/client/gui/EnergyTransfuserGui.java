@@ -79,6 +79,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
             Constraints.bind(new SlotLetter(slot, i, tile).setEnabled(() -> !menu.slotGroups[fi].getSlot(0).hasItem()), slot);
 
             GuiButton button = TOOLKIT.createBorderlessButton(column)
+                    .setResetHoverOnPress(false)
                     .setTooltipSingle(() -> TOOLKIT.translate(tile.ioModes[fi].get().getName()))
                     .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(Screen.hasShiftDown())), GuiButton.LEFT_CLICK)
                     .onPress(() -> tile.ioModes[fi].set(tile.ioModes[fi].get().nextMode(true)), GuiButton.RIGHT_CLICK);
@@ -99,6 +100,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
         }
 
         GuiButton modeButton = TOOLKIT.createBorderlessButton(root)
+                .setResetHoverOnPress(false)
                 .constrain(LEFT, relative(root.get(LEFT), 6))
                 .constrain(BOTTOM, relative(invTitle.get(TOP), -3))
                 .setTooltipSingle(() -> TOOLKIT.translate(tile.balancedMode.get() ? "balanced_charge" : "sequential_charge"))

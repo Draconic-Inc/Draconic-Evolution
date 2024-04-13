@@ -571,12 +571,18 @@ public class LangGenerator extends LanguageProvider {
         //Entity Detector
         helper.setPrefix("gui." + MODID + ".entity_detector");
         helper.add("range",                                                     "Range");
+        helper.add("range.info",                                                "The scanning range in blocks. Increasing the range increases the energy cost for each scanning pulse");
         helper.add("rsmin",                                                     "Min Str.");
+        helper.add("rsmin.info",                                                "The minimum number of detected entities required to produce a redstone signal of 1.");
         helper.add("rsmax",                                                     "Max Str.");
+        helper.add("rsmax.info",                                                "The minimum number of detected entities required to produce a redstone signal of 15.");
         helper.add("pulse_rate",                                                "Rate");
+        helper.add("pulse_rate.info",                                           "The delay between scanning pulses. The scanning pulse is when the block checks for nearby entities.");
         helper.add("pulse_mode",                                                "Mode");
+        helper.add("pulse_mode.info",                                           "The strength of the output is determined by the number of valid entities detected and the RS Min and RS Max settings.\nPulse mode will emmit a 1 tick pulse every scanning pulse.\nFixed mode will emmit a continuous signal updating every scanning pulse.");
         helper.add("pulse_mode.on",                                             "Pulse");
         helper.add("pulse_mode.off",                                            "Constant");
+        helper.add("close_large_view",                                          "Close large filter view.");
 
         //Draconium Chest
         helper.setPrefix("gui." + MODID + ".draconium_chest");

@@ -1,10 +1,10 @@
-// 1.20.1	2024-04-10T07:21:33.763956297	dynamic-textures:draconicevolution
+// 1.20.1	2024-04-14T07:46:27.094757341	dynamic-textures:draconicevolution
 fe3838a75439970815ae4456534336b836151d75 assets/draconicevolution/textures/gui/dark/advanced_dislocator.png
 1ed636eefce8772e550064e817ff5acedd7c63b0 assets/draconicevolution/textures/gui/dark/celestial_manipulator.png
 06ce9e2e1c8765b479560f5dcbb653949bf38270 assets/draconicevolution/textures/gui/dark/disenchanter.png
 28543d16e78ad1185184ad5a8bb2dca667754ae0 assets/draconicevolution/textures/gui/dark/draconium_chest.png
 3e9c9de14360298415c6a48b7a3a62c53dff5b0c assets/draconicevolution/textures/gui/dark/energy_core.png
-f65fe6072fd90bfc27e6de87f926a3606c0757d9 assets/draconicevolution/textures/gui/dark/entity_detector.png
+bd82585380bcd2f55211f6ee1780928533a78bd6 assets/draconicevolution/textures/gui/dark/entity_detector.png
 e94c60d8928ca82f1b2bb50f952198f4cda22b79 assets/draconicevolution/textures/gui/dark/flow_gate.png
 3cc4c76d99140f47219707a22b4fb2ea83277a5b assets/draconicevolution/textures/gui/dark/fusion_craft.png
 e94c60d8928ca82f1b2bb50f952198f4cda22b79 assets/draconicevolution/textures/gui/dark/generator.png
@@ -16,7 +16,7 @@ bb9b93a36cbb3fa34acafaa14e81b0fc01ffc110 assets/draconicevolution/textures/gui/l
 bdc3913b38bed98e4c583183bd159d78419c5d16 assets/draconicevolution/textures/gui/light/disenchanter.png
 cc69b60992040d51951017c82feb3af2c0cd524a assets/draconicevolution/textures/gui/light/draconium_chest.png
 7fc9b28244065b67f43bf7ce091cc4d1164f1480 assets/draconicevolution/textures/gui/light/energy_core.png
-66a414e2cb9d28a5310dbb04bf93d22a029cd005 assets/draconicevolution/textures/gui/light/entity_detector.png
+7da0de7932effc5877f880f3bcd907cc18321f9a assets/draconicevolution/textures/gui/light/entity_detector.png
 ecf826070c59bcaa82f37308bddc95d5f7bd52f0 assets/draconicevolution/textures/gui/light/flow_gate.png
 4670db86eacf93f12d8bdb380728bf8bf9e0b793 assets/draconicevolution/textures/gui/light/fusion_craft.png
 ecf826070c59bcaa82f37308bddc95d5f7bd52f0 assets/draconicevolution/textures/gui/light/generator.png
