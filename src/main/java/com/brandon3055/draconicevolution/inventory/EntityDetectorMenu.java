@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class EntityDetectorMenu extends DETileMenu<TileEntityDetector> {
 
     public EntityDetectorMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileEntityDetector) playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public EntityDetectorMenu(int windowId, Inventory playerInv, TileEntityDetector tile) {

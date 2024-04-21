@@ -15,7 +15,7 @@ public class EnergyCoreMenu extends DETileMenu<TileEnergyCore> {
     public final SlotGroup hotBar = createSlotGroup(0);
 
     public EnergyCoreMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileEnergyCore)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public EnergyCoreMenu(int windowId, Inventory playerInv, TileEnergyCore tile) {

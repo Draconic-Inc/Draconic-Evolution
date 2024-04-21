@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.inventory.SlotCheckValid;
+import codechicken.lib.gui.modular.lib.container.SlotGroup;
+import codechicken.lib.inventory.container.modular.ModularSlot;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,55 +17,75 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by brandon3055 on 4/06/2017.
  */
-public class ContainerDraconiumChest extends DETileMenu<TileDraconiumChest> {
-    public List<Slot> mainSlots = new ArrayList<>();
-    public List<Slot> playerSlots = new ArrayList<>();
-    public List<Slot> craftInputSlots = new ArrayList<>();
-    public List<Slot> furnaceInputSlots = new ArrayList<>();
-    public Slot craftResultSlot;
-    public Slot capacitorSlot;
+public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
+//    public List<Slot> mainSlots = new ArrayList<>();
+//    public List<Slot> playerSlots = new ArrayList<>();
+//    public List<Slot> craftInputSlots = new ArrayList<>();
+//    public List<Slot> furnaceInputSlots = new ArrayList<>();
+    public ModularResultSlot craftResultSlot;
+//    public Slot capacitorSlot;
     private CraftingInventoryWrapper craftInventory;
     private final ResultContainer resultInventory = new ResultContainer();
 
-    public ContainerDraconiumChest(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
+    public final SlotGroup main = createSlotGroup(0, 1, 2, 3, 4);
+    public final SlotGroup hotBar = createSlotGroup(0, 1, 2, 3, 4);
+
+    public final SlotGroup chestInv = createSlotGroup(1, 0, 2, 3);
+
+    public final SlotGroup furnaceInputs = createSlotGroup(2, 0, 1);
+    public final SlotGroup capacitor = createSlotGroup(3, 0, 1);
+
+    public final SlotGroup craftIn = createSlotGroup(4, 0, 1);
+    public final SlotGroup craftOut = createSlotGroup(5, 0, 1);
+
+    public DraconiumChestMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(DEContent.MENU_DRACONIUM_CHEST.get(), windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
-    public ContainerDraconiumChest(@Nullable MenuType<?> type, int windowId, Inventory playerInv, TileDraconiumChest tile) {
-        super(type, windowId, playerInv, tile);
+    public DraconiumChestMenu(@Nullable MenuType<?> type, int windowId, Inventory inv, TileDraconiumChest tile) {
+        super(type, windowId, inv, tile);
 
-        //Player Inventory
-        for (int i = 0; i < playerInv.items.size(); i++) {
-            playerSlots.add(addSlot(new SlotCheckValid.IInv(playerInv, i, 0, 0)));
-        }
+        hotBar.addPlayerBar(inv);
+        main.addPlayerMain(inv);
+
+        chestInv.addSlots(tile.mainInventory.getSlots(), 0, slot -> new ModularSlot(tile.mainInventory, slot));
+
+
+
+//        Player Inventory
+//        for (int i = 0; i < inv.items.size(); i++) {
+//            playerSlots.add(addSlot(new SlotCheckValid.IInv(inv, i, 0, 0)));
+//        }
 
         //Main Inventory
-        for (int i = 0; i < tile.mainInventory.getSlots(); i++) {
-            mainSlots.add(addSlot(new SlotCheckValid(tile.mainInventory, i, 0, 0)));
-        }
+//        for (int i = 0; i < tile.mainInventory.getSlots(); i++) {
+//            mainSlots.add(addSlot(new SlotCheckValid(tile.mainInventory, i, 0, 0)));
+//        }
 
         //Crafting Inventory
         craftInventory = new CraftingInventoryWrapper(this, 3, 3, tile.craftingItems);
-        this.addSlot(craftResultSlot = new ResultSlot(playerInv.player, craftInventory, resultInventory, 0, 0, 0));
-        for (int i = 0; i < 9; ++i) {
-            craftInputSlots.add(addSlot(new Slot(craftInventory, i, 0, 0)));
-        }
+//        this.addSlot(craftResultSlot = new ModularResultSlot(inv.player, craftInventory, resultInventory, 0, 0, 0));
+//        for (int i = 0; i < 9; ++i) {
+//            craftInputSlots.add(addSlot(new Slot(craftInventory, i, 0, 0)));
+//        }
+        craftOut.addSlot(craftResultSlot = new ModularResultSlot(inv.player, craftInventory, resultInventory, 0, 0, 0));
+        craftIn.addSlots(craftInventory.getContainerSize(), 0, slot -> new ModularSlot(craftInventory, slot));
+
+        furnaceInputs.addSlots(tile.furnaceItems.getSlots(), 0, slot -> new ModularSlot(tile.furnaceItems, slot));
 
         //Furnace Inventory
-        for (int i = 0; i < 5; i++) {
-            furnaceInputSlots.add(addSlot(new SlotCheckValid(tile.furnaceItems, i, 0, 0)));
-        }
+//        for (int i = 0; i < 5; i++) {
+//            furnaceInputSlots.add(addSlot(new SlotCheckValid(tile.furnaceItems, i, 0, 0)));
+//        }
+        capacitor.addSlot(new ModularSlot(tile.capacitorInv, 0));
+//        addSlot(capacitorSlot = new SlotCheckValid(tile.capacitorInv, 0, 0, 0));
 
-        addSlot(capacitorSlot = new SlotCheckValid(tile.capacitorInv, 0, 0, 0));
-
-        slotsChanged(playerInv);
+        slotsChanged(inv);
     }
 
 
@@ -81,7 +102,7 @@ public class ContainerDraconiumChest extends DETileMenu<TileDraconiumChest> {
             }
 
             resultInventory.setItem(0, itemstack);
-            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerID, stateId, craftResultSlot.index, itemstack));
+            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerID, stateId, ((Slot)craftResultSlot).index, itemstack));
         }
     }
 

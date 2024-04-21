@@ -16,7 +16,7 @@ public class FlowGateMenu extends DETileMenu<TileFlowGate> {
     public final SlotGroup hotBar = createSlotGroup(0);
 
     public FlowGateMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileFlowGate)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public FlowGateMenu(int windowId, Inventory playerInv, TileFlowGate tile) {

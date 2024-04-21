@@ -15,7 +15,7 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
+import com.brandon3055.draconicevolution.inventory.DraconiumChestMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -119,7 +119,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
 
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerDraconiumChest(DEContent.MENU_DRACONIUM_CHEST.get(), currentWindowIndex, playerInventory, this);
+        return new DraconiumChestMenu(DEContent.MENU_DRACONIUM_CHEST.get(), currentWindowIndex, playerInventory, this);
     }
 
     @Override

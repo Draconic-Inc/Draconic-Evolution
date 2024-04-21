@@ -21,7 +21,7 @@ public class GeneratorMenu extends DETileMenu<TileGenerator> {
     public final SlotGroup capacitor = createSlotGroup(2, 0);
 
     public GeneratorMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileGenerator)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public GeneratorMenu(int windowId, Inventory playerInv, TileGenerator tile) {

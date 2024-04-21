@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class CelestialManipulatorMenu extends DETileMenu<TileCelestialManipulator> {
     public CelestialManipulatorMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileCelestialManipulator)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public CelestialManipulatorMenu(int windowId, Inventory playerInv, TileCelestialManipulator tile) {

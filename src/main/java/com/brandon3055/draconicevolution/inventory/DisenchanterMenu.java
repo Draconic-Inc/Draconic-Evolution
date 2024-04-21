@@ -21,7 +21,7 @@ public class DisenchanterMenu extends DETileMenu<TileDisenchanter> {
     public final SlotGroup output = createSlotGroup(3);
 
     public DisenchanterMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(windowId, playerInv, (TileDisenchanter)playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
     public DisenchanterMenu(int windowId, Inventory playerInv, TileDisenchanter tile) {

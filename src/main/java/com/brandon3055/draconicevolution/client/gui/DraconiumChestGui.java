@@ -2,23 +2,34 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
-import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.elements.GuiManipulable;
-import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.elements.*;
+import codechicken.lib.gui.modular.lib.ColourState;
 import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
+import codechicken.lib.gui.modular.lib.geometry.Constraint;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import codechicken.lib.gui.modular.lib.geometry.GeoParam;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiListDialog;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic.FeedMode;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
-import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
-import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
+import com.brandon3055.draconicevolution.inventory.DraconiumChestMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import static codechicken.lib.gui.modular.lib.Constraints.LayoutPos.*;
+import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
+import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
 
 /**
  * Created by Werechang on 27/6/21
  */
-public class DraconiumChestGui extends ContainerGuiProvider<ContainerDraconiumChest> {
+public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> {
     private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.draconium_chest");
     public static final int GUI_WIDTH = 478;
     public static final int GUI_HEIGHT = 268;
@@ -32,151 +43,141 @@ public class DraconiumChestGui extends ContainerGuiProvider<ContainerDraconiumCh
     }
 
     @Override
-    public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerDraconiumChest> screenAccess) {
+    public void buildGui(ModularGui gui, ContainerScreenAccess<DraconiumChestMenu> screenAccess) {
         gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
-        ContainerDraconiumChest menu = screenAccess.getMenu();
-//		TileDisenchanter tile = menu.tile;
+        DraconiumChestMenu menu = screenAccess.getMenu();
+        TileDraconiumChest tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
-        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+        var playInv = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
+        playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
+        Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_CENTER, 0, -5);
+
+        GuiSlots chestInv = new GuiSlots(root, screenAccess, menu.chestInv, 26)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"));
+        Constraints.placeInside(chestInv, root, Constraints.LayoutPos.TOP_CENTER, 0, 5);
+
+        //Crafting grid
+        GuiSlots craftIn = new GuiSlots(root, screenAccess, menu.craftIn, 3)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"));
+        Constraints.placeOutside(craftIn, playInv.container(), Constraints.LayoutPos.MIDDLE_RIGHT, 12, 0);
+
+        GuiTexture craftIcon = new GuiTexture(root, BCGuiTextures.themedGetter("prog_arrow_right"));
+        Constraints.size(craftIcon, 22, 15);
+        Constraints.placeOutside(craftIcon, craftIn, Constraints.LayoutPos.MIDDLE_RIGHT, 7, 0);
+
+        GuiTexture craftOutTex = new GuiTexture(root, BCGuiTextures.themedGetter("slot_large"));
+        Constraints.size(craftOutTex, 26, 26);
+        Constraints.placeOutside(craftOutTex, craftIcon, Constraints.LayoutPos.MIDDLE_RIGHT, 7, 0);
+
+        GuiSlots craftOut = new GuiSlots(root, screenAccess, menu.craftOut, 1)
+                .setSlotTexture(slot -> null);
+        Constraints.center(craftOut, craftOutTex);
+
+        GuiText craftLabel = TOOLKIT.createHeading(root, Component.translatable("container.crafting"), false)
+                .setScroll(false);
+        Constraints.size(craftLabel, 50, 8);
+        Constraints.placeOutside(craftLabel, craftOutTex, Constraints.LayoutPos.TOP_CENTER, 0, -6);
+
+        //Furnace
+
+        GuiRectangle furnaceContainer = new GuiRectangle(root)
+                .shadedRect(GuiToolkit.Palette.Slot::accentLight, GuiToolkit.Palette.Slot::accentDark, GuiToolkit.Palette.Slot::fill)
+                .constrain(LEFT, relative(root.get(LEFT), 10))
+                .constrain(BOTTOM, relative(root.get(BOTTOM), -10))
+                .constrain(RIGHT, relative(playInv.container().get(LEFT), -7))
+                .constrain(TOP, relative(chestInv.get(BOTTOM), 7));
+
+        GuiSlots furnaceIn = new GuiSlots(root, screenAccess, menu.furnaceInputs, 5)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"));
+        Constraints.placeInside(furnaceIn, furnaceContainer, Constraints.LayoutPos.TOP_CENTER, 0, 4);
+
+        GuiProgressIcon furnaceFlame = new GuiProgressIcon(furnaceContainer, DEGuiTextures.get("chest/fire_base"), DEGuiTextures.get("chest/fire_over"))
+                .setDirection(Direction.UP)
+                .setRotateToDirection(false)
+                .setProgress(() -> (double) tile.smeltingLogic.smeltingPower.get());
+        Constraints.size(furnaceFlame, 88, 15);
+        Constraints.placeOutside(furnaceFlame, furnaceIn, Constraints.LayoutPos.BOTTOM_CENTER, 0, 5);
+
+        GuiProgressIcon furnaceProgress = new GuiProgressIcon(furnaceContainer, BCGuiTextures.themedGetter("prog_arrow_up_tall"), BCGuiTextures.themedGetter("prog_arrow_up_tall_over"))
+                .setDirection(Direction.UP)
+                .setRotateToDirection(false)
+                .setProgress(() -> (double) tile.smeltingLogic.smeltProgress.get());
+        Constraints.size(furnaceProgress, 16, 32);
+        Constraints.placeInside(furnaceProgress, furnaceContainer, Constraints.LayoutPos.TOP_RIGHT, -5, 5);
+
+        //Energy Bar
+        var energyBar = TOOLKIT.createEnergyBar(furnaceContainer, tile.opStorage);
+        energyBar.container()
+                .constrain(TOP, relative(furnaceFlame.get(BOTTOM), 5))
+                .constrain(LEFT, match(furnaceIn.get(LEFT)))
+                .constrain(RIGHT, match(furnaceIn.get(RIGHT)))
+                .constrain(HEIGHT, literal(14));
+
+        GuiTexture chargeArrow = TOOLKIT.energySlotArrow(furnaceContainer, false, false)
+                .setRotation(2);
+        Constraints.placeOutside(chargeArrow, energyBar.container(), Constraints.LayoutPos.MIDDLE_LEFT, -3, -2);
+
+        // Feed Mode Button
+        GuiButton feedButton = TOOLKIT.createBorderlessButton(furnaceContainer)
+                .setTooltipDelay(5)
+                .setTooltipSingle(() -> TOOLKIT.translate("feed." + tile.smeltingLogic.feedMode.get().localKey() + ".info"));
+        Constraints.size(feedButton, 18, 18);
+        Constraints.placeOutside(feedButton, furnaceIn, Constraints.LayoutPos.MIDDLE_LEFT, -3, 0);
+        Constraints.bind(new GuiTexture(feedButton, () -> DEGuiTextures.get(tile.smeltingLogic.feedMode.get().getSprite())), feedButton, 1);
+
+        feedButton.onPress(() -> {
+            GuiListDialog<FeedMode> dialog = GuiListDialog.<FeedMode>createNoSearch(furnaceContainer)
+                    .setCloseOnItemClicked(true)
+                    .addItems(FeedMode.values());
+
+            dialog.getList().setZStacking(false);
+            dialog.getList().setItemSpacing(1);
+
+            dialog.getList().setDisplayBuilder((feedModeGuiList, feedMode) -> {
+                GuiButton button = TOOLKIT.createBorderlessButton(feedModeGuiList)
+                        .onPress(() -> tile.smeltingLogic.feedMode.set(feedMode))
+                        .setTooltipDelay(5)
+                        .constrain(HEIGHT, literal(18))
+                        .setTooltip(TOOLKIT.translate("feed." + feedMode.localKey() + ".info"));
+                Constraints.bind(new GuiTexture(button, DEGuiTextures.get(feedMode.getSprite())), button, 1);
+                return button;
+            });
+
+            Constraints.size(dialog, 18 + 6, 72 + 9);
+            Constraints.placeInside(dialog, feedButton, Constraints.LayoutPos.TOP_CENTER, 0, -10);
+        });
+
+        // Cap Slot
+        GuiSlots capInv = GuiSlots.singleSlot(furnaceContainer, screenAccess, menu.capacitor, 0)
+                .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
+                .setEmptyIcon(BCGuiTextures.get("slots/energy"));
+        Constraints.placeOutside(capInv, feedButton, Constraints.LayoutPos.BOTTOM_CENTER, 0, 3);
+
+
+        // Button Row
+        ButtonRow buttonRow = new ButtonRow(root, Direction.DOWN)
+                .setSpacing(1);
+        Constraints.placeOutside(buttonRow, chestInv, Constraints.LayoutPos.BOTTOM_RIGHT, -10, 1);
+        buttonRow.addButton(e -> TOOLKIT.createThemeButton(e));
+        buttonRow.addButton(e -> TOOLKIT.createIconButton(e, 12, BCGuiTextures.getter("color_picker"))
+                .setTooltip(TOOLKIT.translate("color_picker"))
+                .onPress(() -> {
+                    GuiColourPicker picker = GuiColourPicker.create(root, ColourState.create(tile.colour::get, tile.colour::set), false);
+                    picker.enableCursors(true);
+                    picker.getContentElement().jeiExclude();
+                    picker.setBlockOutsideClicks(true);
+                    picker.setCancelOnOutsideClick(true);
+                    picker.getCancelButton().setEnabled(false);
+                    picker.addMoveHandle((int) picker.ySize());
+                    Constraints.placeInside(picker, root, BOTTOM_RIGHT, -16, -10);
+                })
+        );
+        buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));
     }
 
-
-//    protected GuiToolkit<GuiDraconiumChest> toolkit = new GuiToolkit<>(this, 478, 268).setTranslationPrefix("gui.draconicevolution.draconium_chest");
-//    private final TileDraconiumChest tile;
-//
-//    public GuiTexture craftIcon;
-//    public GuiProgressIcon furnaceProgress;
-//    public GuiPickColourDialog colourDialog;
-//
-//    public GuiDraconiumChest(ContainerDraconiumChest container, Inventory inv, Component titleIn) {
-//        super(container, inv, titleIn);
-//        tile = container.tile;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//        // Create and load dynamic background
-//        TGuiBase template = new TGuiBase(this);
-//        template.setButtonPlacer(null);
-//        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
-//        template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
-//        template.dragZoneHeight = 5;
-//        toolkit.loadTemplate(template);
-//        template.background.removeChild(template.title);
-//
-//        // Add player inventory to gui
-//        template.playerSlots = toolkit.createPlayerSlotsManualMovers(template.background, false, index -> new SlotMover(container.slots.get(index)));
-//        toolkit.placeInside(template.playerSlots, template.background, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -5);
-//
-//        // Main storage
-//        GuiElement<?> mainSlots = toolkit.createSlots(template.background, 26, 10, 0, (x, y) -> new SlotMover(container.mainSlots.get(x + (y * 26))), null).setPos(guiLeft() + 5, guiTop() + 5);
-//        template.themeButton.setPos(template.background.maxXPos() - 15, mainSlots.maxYPos() + 1);
-//
-//        GuiButton colourPicker = toolkit.createIconButton(template.background, 12, 12, BCGuiTextures.getter("color_picker"))
-//                .setHoverText(toolkit.i18n("color_picker"));
-//        toolkit.placeOutside(colourPicker, template.themeButton, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 0);
-//
-//        colourDialog = new GuiPickColourDialog(template.background);
-//        colourDialog.setBackgroundElement(new GuiTooltipBackground());
-//        colourDialog.setColourChangeListener(tile.colour::set);
-//        colourDialog.setIncludeAlpha(false);
-//        colourDialog.setDragZone(null);
-//        colourPicker.onPressed(() -> {
-//            colourDialog.setColour(tile.colour.get());
-//            toolkit.placeOutside(colourDialog, colourPicker, GuiToolkit.LayoutPos.BOTTOM_LEFT, -3, -20);
-//            colourDialog.show(200);
-//        });
-//
-//        GuiButton redstoneMode = toolkit.createRSSwitch(template.background, tile);
-//        toolkit.placeOutside(redstoneMode, colourPicker, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 0);
-//
-//
-//        // Crafting Slots
-//        GuiElement<?> craftInputSlots = toolkit.createSlots(template.background, 3, 3, 0, (x, y) -> new SlotMover(container.craftInputSlots.get(x + (y * 3))), null);
-//        toolkit.placeOutside(craftInputSlots, template.playerSlots, GuiToolkit.LayoutPos.MIDDLE_RIGHT, 12, 0);
-//        craftIcon = template.background.addChild(new GuiTexture(22, 15, BCGuiTextures.themedGetter("prog_arrow_right")));
-//        toolkit.placeOutside(craftIcon, craftInputSlots, GuiToolkit.LayoutPos.MIDDLE_RIGHT, 7, 0);
-//        GuiElement<?> craftOutputSlot = toolkit.createSlot(template.background, new SlotMover(container.craftResultSlot), null, true)
-//                .setPos(craftInputSlots.maxXPos() + 10, craftInputSlots.yPos());
-//        toolkit.placeOutside(craftOutputSlot, craftIcon, GuiToolkit.LayoutPos.MIDDLE_RIGHT, 7, 0);
-//        GuiLabel craftingLabel = toolkit.createHeading("container.crafting", craftInputSlots)
-//                .setYSize(8)
-//                .setTrim(false)
-//                .setWidthFromText()
-//                .setAlignment(GuiAlign.LEFT);
-//        toolkit.placeOutside(craftingLabel, craftOutputSlot, GuiToolkit.LayoutPos.TOP_CENTER, 0, -6);
-//
-//        // Furnace Container Element
-////        GuiElement<?> furnaceContainer = template.background.addChild(GuiTexture.newDynamicTexture(BCSprites.themedGetter("slot")));
-////        GuiElement<?> furnaceContainer = template.background.addChild(new GuiBorderedRect().set3DGetters(GuiToolkit.Palette.SubItem::fill, GuiToolkit.Palette.SubItem::accentDark, GuiToolkit.Palette.SubItem::accentLight));
-////        GuiElement<?> furnaceContainer = template.background.addChild(new GuiBorderedRect().set3DGetters(GuiToolkit.Palette.BG::fill, GuiToolkit.Palette.BG::accentDark, GuiToolkit.Palette.BG::accentLight));
-////        GuiElement<?> furnaceContainer = template.background.addChild(new GuiBorderedRect().set3DGetters(GuiToolkit.Palette.Slot::fill, GuiToolkit.Palette.BG::accentDark, GuiToolkit.Palette.BG::accentLight));
-//        GuiElement<?> furnaceContainer = template.background.addChild(new GuiBorderedRect().set3DGetters(GuiToolkit.Palette.Slot::fill, GuiToolkit.Palette.Slot::accentLight, GuiToolkit.Palette.Slot::accentDark));
-////        GuiElement<?> furnaceContainer = template.background.addChild(new GuiElement<>());
-//        GuiElement<?> furnaceSlots = toolkit.createSlots(furnaceContainer, 5, 1, 0, (x, y) -> new SlotMover(container.furnaceInputSlots.get(x)), null);
-//
-//        // Furnace Flames
-//        GuiProgressIcon furnaceFlame = furnaceContainer.addChild(new GuiProgressIcon(DEGuiTextures.getter("chest/fire_base"), DEGuiTextures.getter("chest/fire_over"), GuiProgressIcon.Direction.UP).setSize(88, 15));
-//        furnaceFlame.setProgressSupplier(() -> (double) tile.smeltingLogic.smeltingPower.get());
-//        toolkit.placeOutside(furnaceFlame, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 4);
-//
-//        // Furnace Progress
-//        furnaceProgress = furnaceContainer.addChild(new GuiProgressIcon(BCGuiTextures.themedGetter("prog_arrow_up_tall"), BCGuiTextures.themedGetter("prog_arrow_up_tall_over"), GuiProgressIcon.Direction.UP).setSize(16, 32));
-//        furnaceProgress.setProgressSupplier(() -> (double) tile.smeltingLogic.smeltProgress.get());
-//        toolkit.placeOutside(furnaceProgress, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_RIGHT, 6, -16);
-//
-//        // Energy Bar and
-//        GuiEnergyBar energyBar = toolkit.createEnergyBar(furnaceContainer, tile.opStorage)
-//                .setSize(furnaceSlots.xSize(), 14);
-//        toolkit.placeOutside(energyBar, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 5 + 19);
-//
-//        // Capacitor Slot
-//        GuiElement<?> capSlot = toolkit.createSlot(furnaceContainer, new SlotMover(container.capacitorSlot), BCGuiTextures.getter("slots/energy"), false);
-//        toolkit.placeOutside(capSlot, furnaceFlame, GuiToolkit.LayoutPos.MIDDLE_LEFT, -4, 0);
-//        GuiTexture chargeArrow = furnaceContainer.addChild(new GuiTexture(16, 16, BCGuiTextures.get("item_charge/right_discharge")));
-//        chargeArrow.flipX().flipY();
-//        toolkit.placeOutside(chargeArrow, capSlot, GuiToolkit.LayoutPos.BOTTOM_CENTER, 2, 0);
-//
-//        ManagedEnum<FeedMode> feedMode = tile.smeltingLogic.feedMode;
-//
-//        // Feed Mode Button
-//        GuiButton feedButton = toolkit.createBorderlessButton(furnaceContainer, "")
-//                .setSize(18, 18)
-//                .setHoverTextDelay(5)
-//                .setHoverText(e -> toolkit.i18n("feed." + feedMode.get().localKey() + ".info"));
-//        feedButton.addChild(new GuiTexture(1, 1, 16, 16, () -> DEGuiTextures.get(feedMode.get().getSprite())));
-//        toolkit.placeOutside(feedButton, furnaceSlots, GuiToolkit.LayoutPos.MIDDLE_LEFT, -3, 0);
-//
-//        GuiSelectDialog<FeedMode> dialog = new GuiSelectDialog<FeedMode>(furnaceContainer)
-//                .setSize(18+6, 72+6)
-//                .setInsets(3, 3, 3, 3)
-//                .setCloseOnSelection(true)
-//                .setPlayClickSound(true)
-//                .addItems(Lists.newArrayList(FeedMode.values()))
-//                .setSelectionListener(feedMode::set)
-//                .setRendererBuilder(mode -> {
-//                    GuiButton button = toolkit.createBorderlessButton("")
-//                            .setSize(18, 18)
-//                            .setHoverTextDelay(5)
-//                            .setHoverText(toolkit.i18n("feed." + mode.localKey() + ".info"));
-//                    button.addChild(new GuiTexture(16, 16, DEGuiTextures.getter(mode.getSprite()))
-//                            .bindPosition(button, 1, 1));
-//                    return button;
-//                });
-//        dialog.addBackGroundChild(new GuiTooltipBackground().setSize(dialog));
-//        feedButton.onPressed(() -> {
-//            dialog.setPos(feedButton);
-//            dialog.translate(-3, -10);
-//            dialog.show(800);
-//        });
-//
-//        // Furnace container bounds and position
-//        furnaceContainer.setBoundsToChildren(4, 4, 4, 4);
-//        toolkit.placeOutside(furnaceContainer, template.playerSlots, GuiToolkit.LayoutPos.MIDDLE_LEFT, -7, 1);
-//    }
-
-    public static class Screen extends ModularGuiContainer<ContainerDraconiumChest> {
-        public Screen(ContainerDraconiumChest menu, Inventory inv, Component title) {
+    public static class Screen extends ModularGuiContainer<DraconiumChestMenu> {
+        public Screen(DraconiumChestMenu menu, Inventory inv, Component title) {
             super(menu, inv, new DraconiumChestGui());
             getModularGui().setGuiTitle(title);
         }

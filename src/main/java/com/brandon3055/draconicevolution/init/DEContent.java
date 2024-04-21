@@ -368,7 +368,7 @@ public class DEContent {
 
     public static final RegistryObject<MenuType<ContainerFusionCraftingCore>> MENU_FUSION_CRAFTING_CORE     = MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create(ContainerFusionCraftingCore::new));
     public static final RegistryObject<MenuType<ModularItemMenu>> MENU_MODULAR_ITEM                         = MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create(ModularItemMenu::new));
-    public static final RegistryObject<MenuType<ContainerDraconiumChest>> MENU_DRACONIUM_CHEST              = MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(ContainerDraconiumChest::new));
+    public static final RegistryObject<MenuType<DraconiumChestMenu>> MENU_DRACONIUM_CHEST              = MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(DraconiumChestMenu::new));
     public static final RegistryObject<MenuType<ContainerEnergyCrystal>> MENU_ENERGY_CRYSTAL                = MENU_TYPES.register("energy_crystal",                 () -> IForgeMenuType.create(ContainerEnergyCrystal::new));
     public static final RegistryObject<MenuType<ContainerReactor>> MENU_REACTOR                             = MENU_TYPES.register("reactor",                        () -> IForgeMenuType.create(ContainerReactor::new));
     //@formatter:on

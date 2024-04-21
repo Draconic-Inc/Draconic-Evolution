@@ -88,8 +88,6 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
 
         var playInv = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
         playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
-        playInv.main().setSlotTextureI(slot -> BCGuiTextures.getThemed("slot"));
-        playInv.hotBar().setSlotTextureI(slot ->BCGuiTextures.getThemed("slot"));
         Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_CENTER, 0, -7);
         TOOLKIT.playerInvTitle(playInv.container());
 
