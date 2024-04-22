@@ -15,7 +15,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.jei.FusionRecipeTransferHelper;
 import com.brandon3055.draconicevolution.inventory.ConfigurableItemMenu;
-import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import com.brandon3055.draconicevolution.inventory.ModularItemMenu;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
@@ -216,8 +216,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         ResourceLocation id = packet.readResourceLocation();
         boolean maxTransfer = packet.readBoolean();
         Recipe<?> recipe = sender.level().getRecipeManager().byKey(id).orElse(null);
-        if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof ContainerFusionCraftingCore) {
-            FusionRecipeTransferHelper.doServerSideTransfer(sender, (ContainerFusionCraftingCore) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
+        if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof FusionCraftingCoreMenu) {
+            FusionRecipeTransferHelper.doServerSideTransfer(sender, (FusionCraftingCoreMenu) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
         }
     }
 

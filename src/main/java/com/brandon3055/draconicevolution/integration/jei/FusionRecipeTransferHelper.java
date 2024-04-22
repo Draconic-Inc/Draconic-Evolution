@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe.IFusionIngredient;
 import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import mezz.jei.api.constants.VanillaTypes;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 /**
  * Created by brandon3055 on 15/7/21
  */
-public class FusionRecipeTransferHelper implements IRecipeTransferHandler<ContainerFusionCraftingCore, IFusionRecipe> {
+public class FusionRecipeTransferHelper implements IRecipeTransferHandler<FusionCraftingCoreMenu, IFusionRecipe> {
 
     private final IStackHelper stackHelper;
     private final IRecipeTransferHandlerHelper handlerHelper;
@@ -53,12 +53,12 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
     }
 
     @Override
-    public @NotNull Class<ContainerFusionCraftingCore> getContainerClass() {
-        return ContainerFusionCraftingCore.class;
+    public @NotNull Class<FusionCraftingCoreMenu> getContainerClass() {
+        return FusionCraftingCoreMenu.class;
     }
 
     @Override
-    public Optional<MenuType<ContainerFusionCraftingCore>> getMenuType() {
+    public Optional<MenuType<FusionCraftingCoreMenu>> getMenuType() {
         return Optional.empty(); //TODO FusionRecipeTransferHelper.getMenuType
     }
 
@@ -68,7 +68,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(@NotNull ContainerFusionCraftingCore container, @NotNull IFusionRecipe recipe, @NotNull IRecipeSlotsView recipeSlots, @NotNull Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(@NotNull FusionCraftingCoreMenu container, @NotNull IFusionRecipe recipe, @NotNull IRecipeSlotsView recipeSlots, @NotNull Player player, boolean maxTransfer, boolean doTransfer) {
         TileFusionCraftingCore core = container.tile;
         core.updateInjectors();
 
@@ -182,7 +182,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         return missing;
     }
 
-    public static void doServerSideTransfer(ServerPlayer player, ContainerFusionCraftingCore container, IFusionRecipe recipe, boolean maxTransfer) {
+    public static void doServerSideTransfer(ServerPlayer player, FusionCraftingCoreMenu container, IFusionRecipe recipe, boolean maxTransfer) {
         TileFusionCraftingCore tile = container.tile;
         LazyOptional<IItemHandler> optionalHandler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP);
         if (!optionalHandler.isPresent()) {

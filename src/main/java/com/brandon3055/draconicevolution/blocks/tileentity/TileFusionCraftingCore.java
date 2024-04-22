@@ -23,7 +23,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -252,7 +252,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerFusionCraftingCore(currentWindowIndex, player.getInventory(), this);
+        return new FusionCraftingCoreMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Nonnull

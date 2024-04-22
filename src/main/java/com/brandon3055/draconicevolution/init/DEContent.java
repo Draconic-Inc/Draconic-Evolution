@@ -366,7 +366,7 @@ public class DEContent {
     public static final RegistryObject<MenuType<FlowGateMenu>> MENU_FLOW_GATE                               = MENU_TYPES.register("flow_gate",                      () -> IForgeMenuType.create(FlowGateMenu::new));
     public static final RegistryObject<MenuType<EntityDetectorMenu>> MENU_ENTITY_DETECTOR                   = MENU_TYPES.register("entity_detector",                () -> IForgeMenuType.create(EntityDetectorMenu::new));
 
-    public static final RegistryObject<MenuType<ContainerFusionCraftingCore>> MENU_FUSION_CRAFTING_CORE     = MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create(ContainerFusionCraftingCore::new));
+    public static final RegistryObject<MenuType<FusionCraftingCoreMenu>> MENU_FUSION_CRAFTING_CORE     = MENU_TYPES.register("fusion_crafting_core",           () -> IForgeMenuType.create(FusionCraftingCoreMenu::new));
     public static final RegistryObject<MenuType<ModularItemMenu>> MENU_MODULAR_ITEM                         = MENU_TYPES.register("modular_item",                   () -> IForgeMenuType.create(ModularItemMenu::new));
     public static final RegistryObject<MenuType<DraconiumChestMenu>> MENU_DRACONIUM_CHEST              = MENU_TYPES.register("draconium_chest",                () -> IForgeMenuType.create(DraconiumChestMenu::new));
     public static final RegistryObject<MenuType<ContainerEnergyCrystal>> MENU_ENERGY_CRYSTAL                = MENU_TYPES.register("energy_crystal",                 () -> IForgeMenuType.create(ContainerEnergyCrystal::new));
