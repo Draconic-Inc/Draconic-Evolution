@@ -2,32 +2,58 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
-import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.elements.GuiManipulable;
-import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.elements.*;
+import codechicken.lib.gui.modular.lib.ColourState;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.lib.TextState;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
+import codechicken.lib.gui.modular.lib.geometry.GuiParent;
+import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.api.power.IOInfo;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.ShaderEnergyBar;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+
+import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
+import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
+import static com.brandon3055.brandonscore.BCConfig.darkMode;
+import static net.minecraft.ChatFormatting.*;
 
 /**
  * Created by brandon3055 on 7/4/2016.
  */
 public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
     private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.energy_core");
+    private final AtomicBoolean colourSelectMode;
     public static final int GUI_WIDTH = 180;
     public static final int GUI_HEIGHT = 200;
+
+    public EnergyCoreGui(AtomicBoolean hideJEI) {
+        this.colourSelectMode = hideJEI;
+    }
 
     @Override
     public GuiElement<?> createRootElement(ModularGui gui) {
         GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
-        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("energy_core"));
+        GuiTexture bg = new GuiTexture(root.getContentElement(), DEGuiTextures.themedGetter("energy_core"))
+                .setEnabled(() -> !colourSelectMode.get());
         Constraints.bind(bg, root.getContentElement());
         return root;
     }
@@ -36,342 +62,291 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
     public void buildGui(ModularGui gui, ContainerScreenAccess<EnergyCoreMenu> screenAccess) {
         gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
         EnergyCoreMenu menu = screenAccess.getMenu();
-//		TileDisenchanter tile = menu.tile;
-        GuiElement<?> root = gui.getRoot();
-        TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+        TileEnergyCore tile = menu.tile;
+        GuiElement<?> actualRoot = gui.getRoot();
+        GuiElement<?> root = new GuiElement<>(actualRoot)
+                .setEnabled(() -> !colourSelectMode.get());
+        Constraints.bind(root, actualRoot);
+
+        GuiText title = TOOLKIT.createHeading(root, gui.getGuiTitle(), true).setTextSupplier(() -> TOOLKIT.translate("title", tile.tier.get()));
+        gui.renderScreenBackground(!colourSelectMode.get());
 
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
         buttonRow.addButton(TOOLKIT::createThemeButton);
+
+        var playInv = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
+        playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
+        Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_CENTER, 0, -7);
+        GuiText slotsTitle = TOOLKIT.playerInvTitle(playInv.container());
+
+        //Buttons
+        GuiButton activate = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate(tile.active.get() ? "deactivate" : "activate"))
+                .setEnabled(() -> !tile.active.get() && tile.isStructureValid())
+                .onPress(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION));
+        Constraints.size(activate, 18 * 9, 14);
+        Constraints.placeOutside(activate, playInv.container(), Constraints.LayoutPos.TOP_CENTER, 0, -14);
+
+        GuiButton tierDown = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("tier_down"))
+                .setEnabled(() -> !tile.active.get())
+                .setDisabled(() -> tile.tier.get() <= 1)
+                .onPress(tile.tier::dec);
+        Constraints.size(tierDown, ((18 * 9) / 2D) - 1, 14);
+        Constraints.placeInside(tierDown, activate, Constraints.LayoutPos.TOP_LEFT, 0, -15);
+
+        GuiButton tierUp = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("tier_up"))
+                .setEnabled(() -> !tile.active.get())
+                .setDisabled(() -> tile.tier.get() >= TileEnergyCore.MAX_TIER)
+                .onPress(tile.tier::inc);
+        Constraints.size(tierUp, ((18 * 9) / 2D) - 1, 14);
+        Constraints.placeInside(tierUp, activate, Constraints.LayoutPos.TOP_RIGHT, 0, -15);
+
+        GuiButton buildGuide = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("build_guide"))
+                .setToggleMode(tile.buildGuide::get)
+                .onPress(tile.buildGuide::invert)
+                .setEnabled(() -> !tile.active.get());
+        Constraints.size(buildGuide, 18 * 9, 14);
+        Constraints.placeOutside(buildGuide, activate, Constraints.LayoutPos.TOP_CENTER, 0, -16);
+
+        GuiButton assemble = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("assemble"))
+                .onPress(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_BUILD_CORE))
+                .setEnabled(() -> !tile.isStructureValid());
+        Constraints.bind(assemble, activate);
+
+        GuiButton disable = TOOLKIT.createThemedIconButton(root, "pwr_btn")
+                .setEnabled(tile.active::get)
+                .onPress(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION))
+                .setTooltip(TOOLKIT.translate("deactivate"));
+        Constraints.placeInside(disable, root, Constraints.LayoutPos.TOP_LEFT, 3, 3);
+
+        //Labels
+        GuiText coreInvalidLabel = TOOLKIT.createHeading(root, TOOLKIT.translate("core_invalid").withStyle(RED))
+                .setEnabled(() -> !tile.active.get() && !tile.coreValid.get());
+        Constraints.size(coreInvalidLabel, playInv.container().xSize(), 8);
+        Constraints.placeOutside(coreInvalidLabel, title, Constraints.LayoutPos.BOTTOM_CENTER, 0, 5);
+
+        GuiText stabInvalidLabel = TOOLKIT.createHeading(root, TOOLKIT.translate("stabilizers_invalid").withStyle(RED))
+                .setEnabled(() -> !tile.active.get() && !tile.stabilizersValid.get());
+        Constraints.size(stabInvalidLabel, playInv.container().xSize(), 8);
+        Constraints.placeOutside(stabInvalidLabel, coreInvalidLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 5);
+
+        GuiText stabAdvLabel = TOOLKIT.createHeading(root, TOOLKIT.translate("stabilizers_advanced"))
+                .setEnabled(() -> !tile.active.get() && !tile.stabilizersValid.get() && tile.reqAdvStabilizers());
+        Constraints.size(stabAdvLabel, playInv.container().xSize(), 8);
+        Constraints.placeOutside(stabAdvLabel, stabInvalidLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 5);
+
+        //Display
+        GuiRectangle display = toolTipBackground(root, 0xF0100010, () -> tile.tier.get() == 8 ? 0xFFFF5500 : 0xFF8800FF)
+                .setEnabled(tile.active::get)
+                .constrain(LEFT, match(playInv.container().get(LEFT)))
+                .constrain(RIGHT, match(playInv.container().get(RIGHT)))
+                .constrain(TOP, relative(title.get(BOTTOM), 3))
+                .constrain(BOTTOM, relative(slotsTitle.get(TOP), -2));
+
+
+        GuiRectangle barSlot = new GuiRectangle(display)
+                .shadedRect(() -> darkMode ? 0xFF808080 : 0xFF505050, () -> 0xFFFFFFFF, () -> 0);
+        Constraints.size(barSlot, display.xSize() - 6, 14);
+        Constraints.placeInside(barSlot, display, Constraints.LayoutPos.BOTTOM_CENTER, 0, -3);
+
+        GuiEnergyBar energyBar = new ShaderEnergyBar(display)
+                .setCapacity(() -> 1000000L)
+                .setEnergy(() -> (long) (getEnergyDouble(tile) * 1000000))
+                .setTooltipSingle(() -> {
+                    int p1000 = (int) (getEnergyDouble(tile) * 100000);
+                    return Component.translatable("mod_gui.brandonscore.energy_bar.stored").withStyle(GOLD).append(": ").append(Component.literal(tile.energy.getScientific() + " (" + (p1000 / 1000D) + "%)").withStyle(GRAY));
+                });
+        Constraints.bind(energyBar, barSlot, 1);
+
+        GuiText opLabel = new GuiText(display, Component.translatable("mod_gui.brandonscore.energy_bar.operational_potential").withStyle(DARK_AQUA));
+        Constraints.size(opLabel, display.xSize(), 9);
+        Constraints.placeInside(opLabel, display, Constraints.LayoutPos.TOP_CENTER, 0, 5);
+
+        GuiText energy = new GuiText(display)
+                .setTextSupplier(() -> Component.literal(tile.energy.getReadable() + (tile.energy.getEnergyStored() < 1000000 ? " " : ""))
+                        .append(Component.translatable("mod_gui.brandonscore.energy_bar.op"))
+                        .withStyle(GOLD)
+                );
+        Constraints.size(energy, display.xSize(), 9);
+        Constraints.placeOutside(energy, opLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 2);
+
+        GuiText capLabel = new GuiText(display, Component.translatable("mod_gui.brandonscore.energy_bar.capacity").withStyle(DARK_AQUA))
+                .setEnabled(() -> !tile.energy.isUnlimited());
+        Constraints.size(capLabel, display.xSize(), 9);
+        Constraints.placeOutside(capLabel, energy, Constraints.LayoutPos.BOTTOM_CENTER, 0, 3);
+
+        GuiText capacity = new GuiText(display)
+                .setTextSupplier(() -> Component.literal(tile.energy.getReadableCapacity())
+                        .append(Component.translatable("mod_gui.brandonscore.energy_bar.op"))
+                        .withStyle(GOLD)
+                )
+                .setEnabled(() -> !tile.energy.isUnlimited());
+        Constraints.size(capacity, display.xSize(), 9);
+        Constraints.placeOutside(capacity, capLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 2);
+
+        GuiText ioLabel = new GuiText(display, Component.translatable("mod_gui.brandonscore.energy_bar.io").withStyle(DARK_AQUA));
+        Constraints.size(ioLabel, display.xSize(), 9);
+        Constraints.placeOutside(ioLabel, capacity, Constraints.LayoutPos.BOTTOM_CENTER, 0, 3);
+        ioLabel.constrain(TOP, dynamic(() -> (tile.energy.isUnlimited() ? energy : capacity).yMax() + 3));
+
+        GuiText io = new GuiText(display)
+                .setTextSupplier(() -> genIOText(tile));
+        Constraints.size(io, display.xSize(), 9);
+        Constraints.placeOutside(io, ioLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 2);
+
+        var target = GuiTextField.create(display, 0xF0300000, 0xFFa8a8a8, 0xe1e3e5);
+        target.field()
+                .setSuggestion(TOOLKIT.translate("energy_target"))
+                .setMaxLength(64)
+                .setTooltipSingle(TOOLKIT.translate("energy_target_info"))
+                .setEnabled(() -> tile.energy.isUnlimited())
+                .setFilter(s -> validBigInt(sanitizeNumStr(s)))
+                .setTextState(TextState.simpleState(tile.energyTarget.get(), tile.energyTarget::set));
+        Constraints.size(target.container(), barSlot.xSize(), 12);
+        Constraints.placeOutside(target.container(), energyBar, Constraints.LayoutPos.TOP_CENTER, 0, -4);
+
+        //Render Config
+        GuiButton legacy = TOOLKIT.createThemedIconButton(root, 12, BCGuiTextures.getter("legacy"))
+                .onPress(tile.legacyRender::invert)
+                .setToggleMode(tile.legacyRender::get)
+                .setTooltipSingle(() -> tile.customColour.get() ? TOOLKIT.translate("legacy_true") : TOOLKIT.translate("legacy_false"));
+        Constraints.placeOutside(legacy, display, Constraints.LayoutPos.BOTTOM_RIGHT, -12, 0);
+
+        GuiButton customColour = TOOLKIT.createThemedIconButton(root, 12, BCGuiTextures.getter("rgb_checker"))
+                .setEnabled(() -> !legacy.toggleState())
+                .onPress(tile.customColour::invert)
+                .setToggleMode(tile.customColour::get)
+                .setTooltipSingle(() -> tile.customColour.get() ? TOOLKIT.translate("custom_colour_true") : TOOLKIT.translate("custom_colour_false"));
+        Constraints.placeOutside(customColour, legacy, Constraints.LayoutPos.MIDDLE_LEFT, 0, 0);
+
+        GuiButton setColour = TOOLKIT.createThemedIconButton(root, 12, BCGuiTextures.getter("color_picker"))
+                .setEnabled(() -> customColour.toggleState() && !legacy.toggleState())
+                .onPress(() -> setColourSelectMode(root, true))
+                .setTooltipSingle(() -> TOOLKIT.translate("config_colour"));
+        Constraints.placeOutside(setColour, customColour, Constraints.LayoutPos.MIDDLE_LEFT, 0, 0);
+
+        setupColourPickers(gui.getDirectRoot(), tile);
     }
 
+    private void setColourSelectMode(GuiElement<?> access, boolean enabled) {
+        colourSelectMode.set(enabled);
+        access.getModularGui().renderScreenBackground(!enabled);
+    }
 
-//    private GuiToolkit<GuiEnergyCore> toolkit = new GuiToolkit<>(this, 180, 200).setTranslationPrefix("gui.draconicevolution.energy_core");
-//
-//    public Player player;
-//    public TileEnergyCore tile;
-//
-//    private GuiPickColourDialog frameColourDialog;
-//    private GuiPickColourDialog triangleColourDialog;
-//    private GuiPickColourDialog effectColourDialog;
-//    public Supplier<Boolean> hideJEI = () -> false;
-//
-//    public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, Inventory playerInventory, Component title) {
-//        super(container, playerInventory, title);
-//        this.tile = container.tile;
-//        this.player = playerInventory.player;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//        TBasicMachine temp = new TModularMachine(this, tile);
-//        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiTextures.getThemed("background_dynamic"));
-//        temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
-//        toolkit.loadTemplate(temp);
-//        temp.title.setDisplaySupplier(() -> toolkit.i18n("title", tile.tier.get()));
-//
-//        container.slots.stream()
-//                .filter(e -> e instanceof SlotDisableable)
-//                .map(e -> (SlotDisableable) e)
-//                .forEach(e -> e.setEnabled(() -> temp.background.isEnabled()));
-//
-//        hideJEI = () -> !temp.background.isEnabled();
-//
-//        //Controls
-//
-//        GuiButton activate = toolkit.createButton(() -> tile.active.get() ? "deactivate" : "activate", temp.background)
-//                .setSize(temp.playerSlots.xSize(), 14)
-//                .setEnabledCallback(() -> !tile.active.get() && tile.isStructureValid())
-//                .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION));
-//        toolkit.placeOutside(activate, temp.playerSlots, GuiToolkit.LayoutPos.TOP_CENTER, 0, -3);
-//
-//        GuiButton tierDown = toolkit.createButton("tier_down", temp.background)
-//                .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
-//                .setXPos(activate.xPos())
-//                .setMaxYPos(activate.yPos() - 1, false)
-//                .setEnabledCallback(() -> !tile.active.get())
-//                .setDisabledStateSupplier(() -> tile.tier.get() <= 1)
-//                .onPressed(() -> tile.tier.dec());
-//
-//        GuiButton tierUp = toolkit.createButton("tier_up", temp.background)
-//                .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
-//                .setMaxXPos(activate.maxXPos(), false)
-//                .setMaxYPos(activate.yPos() - 1, false)
-//                .setEnabledCallback(() -> !tile.active.get())
-//                .setDisabledStateSupplier(() -> tile.tier.get() >= TileEnergyCore.MAX_TIER)
-//                .onPressed(() -> tile.tier.inc());
-//
-//        GuiButton buildGuide = toolkit.createButton("build_guide", temp.background)
-//                .setToggleStateSupplier(() -> tile.buildGuide.get())
-//                .onPressed(() -> tile.buildGuide.invert())
-//                .setEnabledCallback(() -> !tile.active.get())
-//                .setSize(temp.playerSlots.xSize(), 14)
-//                .setXPos(tierDown.xPos())
-//                .setMaxYPos(tierDown.yPos() - 1, false);
-//
-//        GuiButton assemble = toolkit.createButton("assemble", temp.background)
-//                .setPosAndSize(activate)
-//                .setEnabledCallback(() -> !tile.isStructureValid())
-//                .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_BUILD_CORE));
-//
-//        GuiButton disable = toolkit.createThemedIconButton(temp.background, "pwr_btn")
-//                .setEnabledCallback(() -> tile.active.get())
-//                .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION))
-//                .setHoverText(toolkit.i18n("deactivate"));
-//        toolkit.placeInside(disable, temp.background, GuiToolkit.LayoutPos.TOP_LEFT, 3, 3);
-//
-//        GuiLabel coreInvalidLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("core_invalid"))
-//                .setAlignment(GuiAlign.CENTER)
-//                .setTextColour(RED)
-//                .setSize(temp.playerSlots.xSize(), 8)
-//                .setPos(temp.playerSlots.xPos(), temp.title.maxYPos() + 5)
-//                .setEnabledCallback(() -> !tile.active.get() && !tile.coreValid.get());
-//
-//        GuiLabel stabInvalidLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("stabilizers_invalid"))
-//                .setAlignment(GuiAlign.CENTER)
-//                .setTextColour(RED)
-//                .setSize(temp.playerSlots.xSize(), 8)
-//                .setPos(temp.playerSlots.xPos(), coreInvalidLabel.maxYPos() + 5)
-//                .setEnabledCallback(() -> !tile.active.get() && !tile.stabilizersValid.get());
-//
-//        GuiLabel stabAdvLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("stabilizers_advanced"))
-//                .setAlignment(GuiAlign.CENTER)
-//                .setSize(temp.playerSlots.xSize(), 8)
-//                .setPos(temp.playerSlots.xPos(), stabInvalidLabel.maxYPos() + 5)
-//                .setEnabledCallback(() -> !tile.active.get() && !tile.stabilizersValid.get() && tile.reqAdvStabilizers());
-//
-//        //Display
-//
-//        GuiTooltipBackground display = temp.background.addChild(new GuiTooltipBackground())
-//                .setBorderColor(() -> tile.tier.get() == 8 ? 0xFFFF5500 : 0xFF8800FF)
-//                .setBackgroundColor(() -> 0xF0100010)
-//                .setPos(temp.playerSlots.xPos(), temp.title.maxYPos() + 3)
-//                .setXSize(temp.playerSlots.xSize())
-//                .setMaxYPos(temp.playerSlots.yPos() - 2, true)
-//                .setEnabledCallback(() -> tile.active.get());
-//
-//        String pfx = "mod_gui.brandonscore.energy_bar.";
-//        GuiEnergyBar energyBar = display.addChild(new GuiEnergyBar())
-//                .setCapacitySupplier(() -> 1000000L)
-//                .setEnergySupplier(() -> (long) (getEnergyDouble() * 1000000))
-//                .setSize(activate.xSize() - 6, 14)
-//                .setDrawHoveringText(false)
-//                .setHoverText(e -> {
-//                    int p1000 = (int) (getEnergyDouble() * 100000);
-//                    return GOLD + I18n.get(pfx + "stored") + ": " + GRAY + tile.energy.getScientific() + " (" + (p1000 / 1000D) + "%)";
-//                });
-//        toolkit.placeInside(energyBar, display, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -3);
-//
-//        GuiLabel opLabel = display.addChild(new GuiLabel(I18n.get(pfx + "operational_potential")))
-//                .setSize(display.xSize(), 8)
-//                .setRelPos(display, 0, 6)
-//                .setTextColour(DARK_AQUA)
-//                .setAlignment(GuiAlign.CENTER);
-//
-//        GuiLabel energy = display.addChild(new GuiLabel())
-//                .setDisplaySupplier(() -> tile.energy.getReadable() + (tile.energy.getEnergyStored() < 1000000 ? " " : "") + I18n.get(pfx + "op"))
-//                .setSize(display.xSize(), 8)
-//                .setPos(display.xPos(), opLabel.maxYPos() + 3)
-//                .setTextColour(GOLD)
-//                .setAlignment(GuiAlign.CENTER);
-//
-//        GuiLabel capLabel = display.addChild(new GuiLabel())
-//                .setDisplaySupplier(() -> I18n.get(pfx + "capacity"))
-//                .setSize(display.xSize(), 8)
-//                .setPos(display.xPos(), energy.maxYPos() + 4)
-//                .setTextColour(DARK_AQUA)
-//                .setAlignment(GuiAlign.CENTER)
-//                .setEnabledCallback(() -> !tile.energy.isUnlimited());
-//
-//        GuiLabel capacity = display.addChild(new GuiLabel())
-//                .setDisplaySupplier(() -> tile.energy.getReadableCapacity() + I18n.get(pfx + "op"))
-//                .setSize(display.xSize(), 8)
-//                .setPos(display.xPos(), capLabel.maxYPos() + 3)
-//                .setTextColour(GOLD)
-//                .setAlignment(GuiAlign.CENTER)
-//                .setEnabledCallback(() -> !tile.energy.isUnlimited());
-//
-//        GuiLabel ioLabel = display.addChild(new GuiLabel())
-//                .setDisplaySupplier(() -> I18n.get(pfx + "io"))
-//                .setSize(display.xSize(), 8)
-//                .setXPos(display.xPos())
-//                .setYPosMod(() -> (tile.energy.isUnlimited() ? energy : capacity).maxYPos() + 4)
-//                .setTextColour(DARK_AQUA)
-//                .setAlignment(GuiAlign.CENTER);
-//
-//        GuiLabel io = display.addChild(new GuiLabel())
-//                .setDisplaySupplier(this::genIOText)
-//                .setSize(display.xSize(), 8)
-//                .setPos(display.xPos(), ioLabel.maxYPos() + 3)
-//                .setTextColour(GOLD)
-//                .setAlignment(GuiAlign.CENTER);
-//
-//        GuiTextField target = toolkit.createTextField(display, false)
-//                .addBackground(e -> 0xF0300000, e -> 0xFFa8a8a8)
-//                .setMaxLength(64)
-//                .setTextColor(0xe1e3e5)
-//                .setSuggestion(toolkit.i18n("energy_target"))
-//                .setHoverText(toolkit.i18n("energy_target_info").replace("\n", "\n" + GRAY))
-//                .setSize(energyBar.xSize(), 12)
-//                .setXPos(energyBar.xPos())
-//                .setMaxYPos(energyBar.yPos() - 4, false)
-//                .setValue(tile.energyTarget.get())
-//                .onValueChanged(s -> tile.energyTarget.set(s))
-//                .setFilter(s -> validBigInt(sanitizeNumStr(s)))
-//                .setEnabledCallback(() -> tile.energy.isUnlimited());
-//
-//        //Render Config
-//        GuiButton legacy = toolkit.createIconButton(temp.background, 12, 12, "legacy")
-//                .onPressed(() -> tile.legacyRender.invert())
-//                .setHoverText(e -> tile.legacyRender.get() ? toolkit.i18n("legacy_true") : toolkit.i18n("legacy_false"))
-//                .setToggleStateSupplier(() -> tile.legacyRender.get())
-//                .setToggleMode(true);
-//        toolkit.placeOutside(legacy, display, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -12, 0);
-//
-//        GuiButton customColour = toolkit.createIconButton(temp.background, 12, 12, "rgb_checker")
-//                .onPressed(() -> tile.customColour.invert())
-//                .setHoverText(e -> tile.customColour.get() ? toolkit.i18n("custom_colour_true") : toolkit.i18n("custom_colour_false"))
-//                .setToggleStateSupplier(() -> tile.customColour.get())
-//                .setToggleMode(true)
-//                .setEnabledCallback(() -> !legacy.getToggleState());
-//        toolkit.placeOutside(customColour, legacy, GuiToolkit.LayoutPos.MIDDLE_LEFT, 0, 0);
-//
-//        GuiButton setColour = toolkit.createIconButton(temp.background, 12, 12, "color_picker")
-//                .setHoverText(e -> toolkit.i18n("config_colour"))
-//                .setEnabledCallback(() -> customColour.getToggleState() && !legacy.getToggleState())
-//                .onPressed(() -> colourEditMode(temp.background, true));
-//        toolkit.placeOutside(setColour, customColour, GuiToolkit.LayoutPos.MIDDLE_LEFT, 0, 0);
-//
-//        setupColourPickers(temp.background);
-//    }
-//
-//    private void setupColourPickers(GuiElement<?> bgElement) {
-//        frameColourDialog = new GuiPickColourDialog(bgElement)
-//                .setCloseOnOutsideClick(false)
-//                .setBackgroundElement(new GuiTooltipBackground())
-//                .setColourChangeListener(tile.frameColour::set)
-//                .setIncludeAlpha(false)
-//                .setCloseCallback(() -> colourEditMode(bgElement, false))
-//                .setCancelEnabled(true)
-//                .setEnabledCallback(() -> !bgElement.isEnabled());
-//        toolkit.jeiExclude(frameColourDialog);
-//
-//        triangleColourDialog = new GuiPickColourDialog(bgElement)
-//                .setCloseOnOutsideClick(false)
-//                .setBackgroundElement(new GuiTooltipBackground())
-//                .setColourChangeListener(tile.innerColour::set)
-//                .setIncludeAlpha(false)
-//                .setCloseCallback(() -> colourEditMode(bgElement, false))
-//                .setCancelEnabled(true)
-//                .setEnabledCallback(() -> !bgElement.isEnabled());
-//        toolkit.jeiExclude(triangleColourDialog);
-//
-//        effectColourDialog = new GuiPickColourDialog(bgElement)
-//                .setCloseOnOutsideClick(false)
-//                .setBackgroundElement(new GuiTooltipBackground())
-//                .setColourChangeListener(tile.effectColour::set)
-//                .setIncludeAlpha(false)
-//                .setCloseCallback(() -> colourEditMode(bgElement, false))
-//                .setCancelEnabled(true)
-//                .setEnabledCallback(() -> !bgElement.isEnabled());
-//        toolkit.jeiExclude(effectColourDialog);
-//    }
-//
-//    private void colourEditMode(GuiElement<?> bgElement, boolean enabled) {
-//        bgElement.setEnabled(!enabled);
-//        enableDefaultBackground = !enabled;
-//
-//        if (enabled) {
-//            frameColourDialog.setColour(tile.frameColour.get())
-//                    .setYPos(5).setMaxXPos(width - 50, false)
-//                    .normalizePosition()
-//                    .show(200);
-//            frameColourDialog.cancelButton
-//                    .onPressed(() -> frameColourDialog.updateColour(tile.tier.get() == 8 ? TileEnergyCore.DEFAULT_FRAME_COLOUR_T8 : TileEnergyCore.DEFAULT_FRAME_COLOUR))
-//                    .setInsets(0, 0, 0, 0)
-//                    .setText(toolkit.i18n("reset"));
-//
-//            triangleColourDialog.setColour(tile.innerColour.get())
-//                    .setYPos(frameColourDialog.maxYPos() + 2).setMaxXPos(width - 50, false)
-//                    .normalizePosition()
-//                    .show(200);
-//            triangleColourDialog.cancelButton
-//                    .onPressed(() -> triangleColourDialog.updateColour(tile.tier.get() == 8 ? TileEnergyCore.DEFAULT_TRIANGLE_COLOUR_T8 : TileEnergyCore.DEFAULT_TRIANGLE_COLOUR))
-//                    .setInsets(0, 0, 0, 0)
-//                    .setText(toolkit.i18n("reset"));
-//
-//            effectColourDialog.setColour(tile.effectColour.get())
-//                    .setYPos(triangleColourDialog.maxYPos() + 2).setMaxXPos(width - 50, false)
-//                    .normalizePosition()
-//                    .show(200);
-//            effectColourDialog.cancelButton
-//                    .onPressed(() -> effectColourDialog.updateColour(tile.tier.get() == 8 ? TileEnergyCore.DEFAULT_EFFECT_COLOUR_T8 : TileEnergyCore.DEFAULT_EFFECT_COLOUR))
-//                    .setInsets(0, 0, 0, 0)
-//                    .setText(toolkit.i18n("reset"));
-//        }
-//    }
-//
-//    private double getEnergyDouble() {
-//        if (tile.tier.get() < 8) {
-//            return tile.energy.getOPStored() / (double) tile.energy.getMaxOPStored();
-//        }
-//        if (!validBigInt(sanitizeNumStr(tile.energyTarget.get()))) {
-//            return 0;
-//        }
-//        BigDecimal target = new BigDecimal(sanitizeNumStr(tile.energyTarget.get()));
-//        if (target.equals(BigDecimal.ZERO)) {
-//            return 0;
-//        }
-//        double val = new BigDecimal(tile.energy.getStoredBig()).divide(target, 6, RoundingMode.HALF_EVEN).doubleValue();
-//        return MathHelper.clip(val, 0, 1);
-//    }
-//
-//    private String genIOText() {
-//        IOInfo ioInfo = tile.energy.getIOInfo();
-//        if (ioInfo == null) return "[Not Available]"; //Should never hit this
-//        String pfx = "mod_gui.brandonscore.energy_bar.";
-//        StringBuilder builder = new StringBuilder();
-//        if (hasShiftDown()) {
-//            builder.append(GREEN).append("+").append(Utils.formatNumber(ioInfo.currentInput()));
-//            builder.append(" ").append(I18n.get(pfx + "op")).append("/t, ");
-//
-//            builder.append(RED).append("-").append(Utils.formatNumber(ioInfo.currentOutput()));
-//            builder.append(" ").append(I18n.get(pfx + "op")).append("/t");
-//        } else {
-//            long io = ioInfo.currentInput() - ioInfo.currentOutput();
-//            builder.append(io > 0 ? GREEN + "+" : io < 0 ? RED : GRAY);
-//            builder.append(Utils.formatNumber(io)).append(" ").append(I18n.get(pfx + "op")).append("/t");
-//        }
-//        return builder.toString();
-//    }
-//
-//    /**
-//     * This is just limits the target value the user can specify.
-//     * Things get incredibly slow when using numbers bigger then this.
-//     *
-//     * This does not limit the core's capacity.
-//     * I think i'm just going to have to accept that after around 10^10^5 years at an input rate of 2^64 * 2^32
-//     * things may start to get a bit laggy....
-//     * */
-//    private static final BigDecimal MAX_BIGINT = new BigDecimal("9999e9999");
-//    public static boolean validBigInt(String value) {
-//        try {
-//            BigDecimal val = new BigDecimal(value);
-//            return val.compareTo(BigDecimal.ZERO) >= 0 && val.compareTo(MAX_BIGINT) <= 0;
-//        } catch (Throwable e) {
-//            return false;
-//        }
-//    }
-//
-//    public static String sanitizeNumStr(String value) {
-//        if (value.isEmpty() || value.toLowerCase(Locale.ENGLISH).endsWith("e")) {
-//            value += "0";
-//        }
-//        return value;
-//    }
+    private void setupColourPickers(GuiElement<?> root, TileEnergyCore tile) {
+        GuiColourPicker frameColourDialog = GuiColourPicker.create(root, ColourState.create(tile.frameColour::get, tile.frameColour::set), false);
+        frameColourDialog.constrain(TOP, literal(0));
+        frameColourDialog.constrain(LEFT, literal(0));
+        frameColourDialog.addMoveHandle((int) frameColourDialog.ySize());
+        frameColourDialog.setEnabled(colourSelectMode::get);
+        frameColourDialog.getCancelButton().setEnabled(false);
+        frameColourDialog.getOkButton().onPress(() -> setColourSelectMode(root, false));
+
+        GuiColourPicker triangleColourDialog = GuiColourPicker.create(root, ColourState.create(tile.innerColour::get, tile.innerColour::set), false);
+        triangleColourDialog.constrain(TOP, literal(100));
+        triangleColourDialog.constrain(LEFT, literal(0));
+        triangleColourDialog.addMoveHandle((int) triangleColourDialog.ySize());
+        triangleColourDialog.setEnabled(colourSelectMode::get);
+        triangleColourDialog.getCancelButton().setEnabled(false);
+        triangleColourDialog.getOkButton().onPress(() -> setColourSelectMode(root, false));
+
+        GuiColourPicker effectColourDialog = GuiColourPicker.create(root, ColourState.create(tile.effectColour::get, tile.effectColour::set), false);
+        effectColourDialog.constrain(TOP, literal(200));
+        effectColourDialog.constrain(LEFT, literal(0));
+        effectColourDialog.addMoveHandle((int) effectColourDialog.ySize());
+        effectColourDialog.setEnabled(colourSelectMode::get);
+        effectColourDialog.getCancelButton().setEnabled(false);
+        effectColourDialog.getOkButton().onPress(() -> setColourSelectMode(root, false));
+    }
+
+    private double getEnergyDouble(TileEnergyCore tile) {
+        if (tile.tier.get() < 8) {
+            return tile.energy.getOPStored() / (double) tile.energy.getMaxOPStored();
+        }
+        if (!validBigInt(sanitizeNumStr(tile.energyTarget.get()))) {
+            return 0;
+        }
+        BigDecimal target = new BigDecimal(sanitizeNumStr(tile.energyTarget.get()));
+        if (target.equals(BigDecimal.ZERO)) {
+            return 0;
+        }
+        double val = new BigDecimal(tile.energy.getStoredBig()).divide(target, 6, RoundingMode.HALF_EVEN).doubleValue();
+        return MathHelper.clip(val, 0, 1);
+    }
+
+    private Component genIOText(TileEnergyCore tile) {
+        IOInfo ioInfo = tile.energy.getIOInfo();
+        if (ioInfo == null) return Component.literal("[Not Available]"); //Should never hit this
+        String pfx = "mod_gui.brandonscore.energy_bar.";
+
+        if (Screen.hasShiftDown()) {
+            return Component.empty().copy()
+                    .append(Component.literal("+")
+                            .withStyle(GREEN)
+                            .append(Utils.formatNumber(ioInfo.currentInput()))
+                            .append(" ")
+                            .append(Component.translatable(pfx + "op"))
+                            .append("/t, ")
+                    )
+                    .append(Component.literal("-")
+                            .withStyle(RED)
+                            .append(Utils.formatNumber(ioInfo.currentOutput()))
+                            .append(" ")
+                            .append(Component.translatable(pfx + "op"))
+                            .append("/t, ")
+                    );
+        } else {
+            long io = ioInfo.currentInput() - ioInfo.currentOutput();
+            return Component.empty().copy()
+                    .append(io > 0 ? "+" : "")
+                    .append(Component.literal(Utils.formatNumber(io)))
+                    .append(" ")
+                    .append(Component.translatable(pfx + "op"))
+                    .append("/t")
+                    .withStyle(io > 0 ? GREEN : io < 0 ? RED : GRAY);
+        }
+    }
+
+    /**
+     * This is just limits the target value the user can specify.
+     * Things get incredibly slow when using numbers bigger then this.
+     * <p>
+     * This does not limit the core's capacity.
+     * I think i'm just going to have to accept that after around 10^10^5 years at an input rate of 2^64 * 2^32
+     * things may start to get a bit laggy....
+     */
+    private static final BigDecimal MAX_BIGINT = new BigDecimal("9999e9999");
+
+    public static boolean validBigInt(String value) {
+        try {
+            BigDecimal val = new BigDecimal(value);
+            return val.compareTo(BigDecimal.ZERO) >= 0 && val.compareTo(MAX_BIGINT) <= 0;
+        } catch (Throwable e) {
+            return false;
+        }
+    }
+
+    public static String sanitizeNumStr(String value) {
+        if (value.isEmpty() || value.toLowerCase(Locale.ENGLISH).endsWith("e")) {
+            value += "0";
+        }
+        return value;
+    }
+
+    public static GuiRectangle toolTipBackground(@NotNull GuiParent<?> parent, int backgroundColour, Supplier<Integer> borderColour) {
+        Supplier<Integer> borderEndColor = () -> (borderColour.get() & 0xFEFEFE) >> 1 | borderColour.get() & 0xFF000000;
+        return new GuiRectangle(parent) {
+            @Override
+            public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
+                render.toolTipBackground(xMin(), yMin(), xSize(), ySize(), backgroundColour, backgroundColour, borderColour.get(), borderEndColor.get(), false);
+            }
+        };
+    }
 
     public static class Screen extends ModularGuiContainer<EnergyCoreMenu> {
+        public static AtomicBoolean hideJEI = new AtomicBoolean(false);
+
         public Screen(EnergyCoreMenu menu, Inventory inv, Component title) {
-            super(menu, inv, new EnergyCoreGui());
+            super(menu, inv, new EnergyCoreGui(hideJEI));
             getModularGui().setGuiTitle(title);
         }
     }

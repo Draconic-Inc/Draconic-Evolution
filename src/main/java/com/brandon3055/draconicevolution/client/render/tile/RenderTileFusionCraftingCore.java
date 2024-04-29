@@ -71,7 +71,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
             mStack.pushPose();
             mStack.translate(0.5, 0.5, 0.5);
             mStack.scale(0.5F, 0.5F, 0.5F);
-            mStack.mulPose(Axis.XP.rotationDegrees((TimeKeeper.getClientTick() + partialTicks) * 0.8F));
+            mStack.mulPose(Axis.YP.rotationDegrees((TimeKeeper.getClientTick() + partialTicks) * 0.8F));
             mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, packetLight, packetOverlay, mStack, getter, te.getLevel(), te.posSeed());
             mStack.popPose();
         }

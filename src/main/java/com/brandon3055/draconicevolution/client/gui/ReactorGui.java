@@ -2,28 +2,49 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.gui.modular.ModularGui;
 import codechicken.lib.gui.modular.ModularGuiContainer;
-import codechicken.lib.gui.modular.elements.GuiElement;
-import codechicken.lib.gui.modular.elements.GuiManipulable;
-import codechicken.lib.gui.modular.elements.GuiTexture;
+import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
+import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.lib.SliderState;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
+import codechicken.lib.gui.modular.lib.geometry.Align;
+import codechicken.lib.gui.modular.lib.geometry.Axis;
+import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent.RSMode;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
-import com.brandon3055.draconicevolution.inventory.ContainerReactor;
-import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
+import com.brandon3055.draconicevolution.inventory.ReactorMenu;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Supplier;
+
+import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
+import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
 
 /**
  * Created by brandon3055 on 10/02/2017.
  */
-//public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
-public class ReactorGui extends ContainerGuiProvider<ContainerReactor> { //Temp fix for tile
+public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
     private static final GuiToolkit TOOLKIT = new GuiToolkit("gui.draconicevolution.reactor");
     public static final int GUI_WIDTH = 248;
     public static final int GUI_HEIGHT = 222;
+
+    public TileReactorComponent component = null;
+    private static boolean compPanelExtended = false;
 
     @Override
     public GuiElement<?> createRootElement(ModularGui gui) {
@@ -34,358 +55,352 @@ public class ReactorGui extends ContainerGuiProvider<ContainerReactor> { //Temp 
     }
 
     @Override
-    public void buildGui(ModularGui gui, ContainerScreenAccess<ContainerReactor> screenAccess) {
+    public void buildGui(ModularGui gui, ContainerScreenAccess<ReactorMenu> screenAccess) {
         gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
-        ContainerReactor menu = screenAccess.getMenu();
-//		TileDisenchanter tile = menu.tile;
+        ReactorMenu menu = screenAccess.getMenu();
+        TileReactorCore tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
         TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+        //Slots
+        var playInv = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
+        playInv.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
+        playInv.container().setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
+        Constraints.placeInside(playInv.container(), root, Constraints.LayoutPos.BOTTOM_LEFT, 12, -8);
+
+        ButtonRow buttonRow = new ButtonRow(root, Direction.LEFT);
+        buttonRow.addButton(TOOLKIT::createThemeButton);
+        Constraints.placeInside(buttonRow, playInv.container(), Constraints.LayoutPos.TOP_RIGHT, 2, -12);
+
+        GuiSlots input = new GuiSlots(root, screenAccess, menu.input, 3)
+                .setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
+                .constrain(TOP, relative(playInv.container().get(TOP), 9))
+                .constrain(LEFT, midPoint(playInv.container().get(RIGHT), root.get(RIGHT), -29));
+        Constraints.placeOutside(TOOLKIT.createHeading(input, TOOLKIT.translate("fuel_in")).setSize(32, 8).setScroll(false), input, Constraints.LayoutPos.TOP_CENTER, 0, -1);
+
+        GuiSlots output = new GuiSlots(root, screenAccess, menu.output, 3)
+                .setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
+        Constraints.placeOutside(output, input, Constraints.LayoutPos.BOTTOM_CENTER, 0, 13);
+        Constraints.placeOutside(TOOLKIT.createHeading(output, TOOLKIT.translate("chaos_out")).setSize(32, 8).setScroll(false), output, Constraints.LayoutPos.TOP_CENTER, 0, -1);
+
+        //Buttons
+        GuiButton chargeButton = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("charge"))
+                .setEnabled(tile::canCharge)
+                .onPress(tile::chargeReactor);
+        Constraints.size(chargeButton, 64, 14);
+        Constraints.placeOutside(chargeButton, playInv.container(), Constraints.LayoutPos.BOTTOM_RIGHT, 3, -14);
+
+        GuiButton activateButton = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("activate"))
+                .setEnabled(tile::canActivate)
+                .onPress(tile::activateReactor);
+        Constraints.size(activateButton, 64, 14);
+        Constraints.placeOutside(activateButton, chargeButton, Constraints.LayoutPos.TOP_CENTER, 0, -3);
+
+        GuiButton shutdownButton = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("shutdown"))
+                .setEnabled(tile::canStop)
+                .onPress(tile::shutdownReactor);
+        Constraints.bind(shutdownButton, chargeButton);
+
+        GuiButton sasButton = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("sas"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .onPress(tile::toggleFailSafe)
+                .setToggleMode(tile.failSafeMode::get)
+                .setTooltip(TOOLKIT.translate("sas.info"));
+        Constraints.size(sasButton, 64, 14);
+        Constraints.placeOutside(sasButton, activateButton, Constraints.LayoutPos.TOP_CENTER, 0, -3);
+
+        GuiButton rsButton = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("rs_mode"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .onPress(() -> compPanelExtended = !compPanelExtended)
+                .setToggleMode(() -> compPanelExtended)
+                .setTooltip(TOOLKIT.translate("rs_mode.info"))
+                .constrain(TOP, match(playInv.container().get(TOP)))
+                .constrain(LEFT, match(chargeButton.get(LEFT)));
+        rsButton.getLabel().setWrap(true);
+        Constraints.size(rsButton, 64, 24);
+
+        //Status Panel
+        GuiRectangle statusPanel = new GuiRectangle(root)
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD)
+                .fill(0xFF000000)
+                .border(GuiToolkit.Palette.BG::border)
+                .border(0xFFFFFFFF);
+        Constraints.bind(statusPanel, playInv.container());
+
+        //Volume
+        GuiText last;
+        last = new GuiText(statusPanel, TOOLKIT.translate("core_volume"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setTooltip(TOOLKIT.translate("core_volume.info"))
+                .setTooltipDelay(2);
+        Constraints.size(last, 160, 9);
+        Constraints.placeInside(last, statusPanel, Constraints.LayoutPos.TOP_LEFT, 3, 1);
+
+        last = new GuiText(statusPanel)
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> Component.literal(MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + " m^3"))
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 6));
+        Constraints.size(last, 160, 9);
+
+        //Rate
+        last = new GuiText(statusPanel, TOOLKIT.translate("gen_rate"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setTooltip(TOOLKIT.translate("gen_rate.info"))
+                .setTooltipDelay(2)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 3));
+        Constraints.size(last, 160, 9);
+
+        last = new GuiText(statusPanel)
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> Component.literal(Utils.addCommas((int) tile.generationRate.get()) + " OP/t"))
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 6));
+        Constraints.size(last, 160, 9);
+
+        //Field
+        last = new GuiText(statusPanel, TOOLKIT.translate("field_rate"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setTooltip(TOOLKIT.translate("field_rate.info"))
+                .setTooltipDelay(2)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 3));
+        Constraints.size(last, 160, 9);
+
+        last = new GuiText(statusPanel)
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> {
+                    double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
+                    return Component.literal(Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + " OP/t");
+                })
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 6));
+        Constraints.size(last, 160, 9);
+
+        //Conversion
+        last = new GuiText(statusPanel, TOOLKIT.translate("convert_rate"))
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setTooltip(TOOLKIT.translate("convert_rate.info"))
+                .setTooltipDelay(2)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 3));
+        Constraints.size(last, 160, 9);
+
+        last = new GuiText(statusPanel)
+                .setEnabled(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> Component.literal(Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + " nb/t"))
+                .setAlignment(Align.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0)
+                .constrain(TOP, relative(last.get(BOTTOM), 0))
+                .constrain(LEFT, relative(statusPanel.get(LEFT), 6));
+        Constraints.size(last, 160, 9);
+
+        //Go Boom
+        GuiText goBoom = new GuiText(statusPanel, TOOLKIT.translate("go_boom_now"))
+                .setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(Align.LEFT)
+                .setWrap(true)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0);
+        Constraints.size(goBoom, 161, 77);
+        Constraints.center(goBoom, statusPanel);
+
+        GuiText eta = new GuiText(statusPanel, Component.literal("ETA"))
+                .setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> Component.literal("Estimated\nTime\nUntil\nDetonation\n\n" + ChatFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating..")))
+                .setAlignment(Align.LEFT)
+                .setWrap(true)
+                .setShadow(false)
+                .setTextColour(0xFF0000);
+        Constraints.size(eta, 68, 80);
+        Constraints.center(eta, statusPanel);
+
+        //Status Label
+        GuiText statusText = new GuiText(statusPanel)
+                .setShadow(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> {
+                    String s = tile.reactorState.get().localize();
+                    if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && TimeKeeper.getClientTick() % 10 > 5) {
+                        s = ChatFormatting.DARK_RED + "**" + s + "**";
+                    } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+                        s = ChatFormatting.DARK_RED + "--" + s + "--";
+                    }
+                    return TOOLKIT.translate("status").withStyle(ChatFormatting.GOLD).append(": " + s);
+                })
+                .setAlignment(Align.LEFT);
+        Constraints.size(statusText, 160, 12);
+        Constraints.placeInside(statusText, statusPanel, Constraints.LayoutPos.TOP_LEFT, -5, -12);
+
+        //Indicators
+        GuiTexture tempBg = new GuiTexture(root, DEGuiTextures.get("reactor/temp_gauge"))
+                .setTooltipDelay(5)
+                .setTooltip(() -> getTempStats(tile));
+        Constraints.size(tempBg, 18, 114);
+        Constraints.placeInside(tempBg, root, Constraints.LayoutPos.TOP_LEFT, 8, 6);
+        GuiSlider tempIndicator = new GuiSlider(root, Axis.Y)
+                .setSliderState(new IndicatorState(() -> tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE));
+        Constraints.bind(tempIndicator, tempBg, 1, 1, -1, 1);
+        Constraints.bind(new GuiTexture(tempIndicator.getSlider(), DEGuiTextures.get("reactor/pointer")), tempIndicator.getSlider());
+
+        GuiTexture shieldBg = new GuiTexture(root, DEGuiTextures.get("reactor/shield_gauge"))
+                .setTooltipDelay(5)
+                .setTooltip(() -> getShieldStats(tile));
+        Constraints.size(shieldBg, 18, 114);
+        Constraints.placeOutside(shieldBg, tempBg, Constraints.LayoutPos.MIDDLE_RIGHT, 6, 0);
+        GuiSlider shieldIndicator = new GuiSlider(root, Axis.Y)
+                .setSliderState(new IndicatorState(() -> tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1)));
+        Constraints.bind(shieldIndicator, shieldBg, 1, 1, -1, 1);
+        Constraints.bind(new GuiTexture(shieldIndicator.getSlider(), DEGuiTextures.get("reactor/pointer")), shieldIndicator.getSlider());
+
+        GuiTexture fuelBg = new GuiTexture(root, DEGuiTextures.get("reactor/fuel_gauge"))
+                .setTooltipDelay(5)
+                .setTooltip(() -> getFuelStats(tile));
+        Constraints.size(fuelBg, 18, 114);
+        Constraints.placeInside(fuelBg, root, Constraints.LayoutPos.TOP_RIGHT, -8, 6);
+        GuiSlider fuelIndicator = new GuiSlider(root, Axis.Y)
+                .setSliderState(new IndicatorState(() -> tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1)));
+        Constraints.bind(fuelIndicator, fuelBg, 1, 1, -1, 1);
+        Constraints.bind(new GuiTexture(fuelIndicator.getSlider(), DEGuiTextures.get("reactor/pointer")), fuelIndicator.getSlider());
+
+        GuiTexture satBg = new GuiTexture(root, DEGuiTextures.get("reactor/sat_gauge"))
+                .setTooltipDelay(5)
+                .setTooltip(() -> getSaturationStats(tile));
+        Constraints.size(satBg, 18, 114);
+        Constraints.placeOutside(satBg, fuelBg, Constraints.LayoutPos.MIDDLE_LEFT, -6, 0);
+        GuiSlider satIndicator = new GuiSlider(root, Axis.Y)
+                .setSliderState(new IndicatorState(() -> tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1)));
+        Constraints.bind(satIndicator, satBg, 1, 1, -1, 1);
+        Constraints.bind(new GuiTexture(satIndicator.getSlider(), DEGuiTextures.get("reactor/pointer")), satIndicator.getSlider());
+
+        //Core Render
+        GuiTexture coreBg = new GuiTexture(root, DEGuiTextures.get("reactor/core")) {
+            @Override
+            public double getBackgroundDepth() {
+                return 100;
+            }
+
+            @Override
+            public void renderBackground(GuiRender render, double mouseX, double mouseY, float partialTicks) {
+                super.renderBackground(render, mouseX, mouseY, partialTicks);
+                render.pose().pushPose();
+                render.pose().translate(xCenter(), yCenter(), 100);
+                RenderTileReactorCore.renderGUI(render, tile);
+                render.pose().popPose();
+            }
+        };
+        Constraints.size(coreBg, 128, 128);
+        Constraints.placeInside(coreBg, root, Constraints.LayoutPos.TOP_CENTER, 0, 10);
+
+        //RS Buttons
+        GuiRectangle rsPanel = new GuiRectangle(root)
+                .setEnabled(() -> compPanelExtended)
+                .jeiExclude()
+                .fill(0xFF808080)
+                .border(0xFF000000);
+        Constraints.size(rsPanel, 80, (RSMode.values().length * 13) + 3);
+        Constraints.placeInside(rsPanel, root, Constraints.LayoutPos.BOTTOM_RIGHT, 80, -3);
+
+        double y = 1;
+        for (RSMode mode : RSMode.values()) {
+            GuiButton btn = TOOLKIT.createFlat3DButton(rsPanel, () -> TOOLKIT.translate("rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH)))
+                    .onPress(() -> {
+                        if (component != null) {
+                            component.setRSMode(menu.player, mode);
+                        }
+                    })
+                    .setToggleMode(() -> component != null && component.rsMode.get() == mode)
+                    .setTooltip(TOOLKIT.translate("rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".info"));
+            Constraints.size(btn, 76, 12);
+            Constraints.placeInside(btn, rsPanel, Constraints.LayoutPos.TOP_CENTER, 0, 1 + y);
+            y += btn.ySize() + 1;
+        }
     }
 
+    public List<Component> getTempStats(TileReactorCore tile) {
+        List<Component> list = new ArrayList<>();
+        list.add(TOOLKIT.translate("reaction_temp"));
+        list.add(Component.literal(MathUtils.round(tile.temperature.get(), 10) + "C"));
+        return list;
+    }
 
-//    private Player player;
-//    private final TileReactorCore tile;
-//    public TileReactorComponent component = null;
-//    private static double compPanelAnim = 0;
-//    private static boolean compPanelExtended = false;
-//    private GuiElement<?> compPanel;
-//
-//    protected GuiToolkit<GuiReactor> toolkit = new GuiToolkit<>(this, 248, 222);
-//
-//    public GuiReactor(ContainerReactor container, Inventory inv, Component titleIn) {
-//        super(container, inv, titleIn);
-//        this.player = inv.player;
-//        this.tile = container.tile;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//        List<GuiElement<?>> exclusions = new ArrayList<>();
-//
-//        //region Background Elements
-//        manager.addChild(compPanel = new GuiBorderedRect(leftPos + imageWidth, topPos + 125, 0, 91));
-//        exclusions.add(compPanel);
-//        manager.setJeiExclusions(() -> exclusions);
-//        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DEGuiTextures.get("reactor/background")) {
-//            @Override
-//            public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-//                super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-//                RenderTileReactorCore.renderGUI(tile, leftPos + imageWidth / 2, topPos + 70);
-//            }
-//
-//        }.onReload(e -> e.setPosAndSize(leftPos, topPos, imageWidth, imageHeight)));
-//
-//        background.addChild(new GuiBorderedRect(leftPos + 12, topPos + 138, 162, 77)
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD)
-//                .setColours(0xFF000000, 0xFFFFFFFF));
-//        //endregion
-//
-//        //region Status Labels
-//
-//        int y = topPos + 140;
-//        background.addChild(new GuiLabel(leftPos + 10 + 5, y, 162, 8, I18n.get("gui.draconicevolution.reactor.core_volume"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0x00C0FF)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.core_volume.info"))
-//                .setHoverTextDelay(2));
-//
-//        background.addChild(new GuiLabel(leftPos + 13 + 5, y += 8, 162, 8, "")
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + " m^3")
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0xB0B0B0));
-//
-//        background.addChild(new GuiLabel(leftPos + 10 + 5, y += 11, 162, 8, I18n.get("gui.draconicevolution.reactor.gen_rate"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0x00C0FF)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.gen_rate.info"))
-//                .setHoverTextDelay(2));
-//
-//        background.addChild(new GuiLabel(leftPos + 13 + 5, y += 8, 162, 8, "")
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> Utils.addCommas((int) tile.generationRate.get()) + " OP/t")
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0xB0B0B0));
-//
-//        background.addChild(new GuiLabel(leftPos + 10 + 5, y += 11, 162, 8, I18n.get("gui.draconicevolution.reactor.field_rate"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0x00C0FF)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.field_rate.info"))
-//                .setHoverTextDelay(2));
-//
-//        background.addChild(new GuiLabel(leftPos + 13 + 5, y += 8, 162, 8, "")
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> {
-//                    double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
-//                    return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + " OP/t";
-//                })
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0xB0B0B0));
-//
-//        background.addChild(new GuiLabel(leftPos + 10 + 5, y += 11, 162, 8, I18n.get("gui.draconicevolution.reactor.convert_rate"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0x00C0FF)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.convert_rate.info"))
-//                .setHoverTextDelay(2));
-//
-//        background.addChild(new GuiLabel(leftPos + 13 + 5, y += 8, 162, 8, "")
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + " nb/t")
-//                .setAlignment(GuiAlign.LEFT)
-//                .setShadow(false)
-//                .setTextColour(0xB0B0B0));
-//
-//        background.addChild(new GuiLabel(leftPos + 13 + 5, topPos + 139, 161, 77, I18n.get("gui.draconicevolution.reactor.go_boom_now"))
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setAlignment(GuiAlign.LEFT)
-//                .setWrap(true)
-//                .setShadow(false)
-//                .setTextColour(0xB0B0B0));
-//        //endregion
-//
-//        //region Slots, Misc labels and gauges
-//
-//        toolkit.createPlayerSlots(background, false)
-//                .setXPos(background.xPos() + 12)
-//                .setMaxYPos(background.maxYPos() - 8, false)
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
-//
-//        toolkit.createSlots(background, 3, 1, 0)
-//                .setPos(leftPos + 182, topPos + 148)
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
-//
-//        toolkit.createSlots(background, 3, 1, 0)
-//                .setPos(leftPos + 182, topPos + 179)
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
-//
-//
-//        background.addChild(new GuiLabel(leftPos, topPos + 2, imageWidth, 12, I18n.get("gui.draconicevolution.reactor.title"))
-//                .setAlignment(GuiAlign.CENTER)
-//                .setTextColour(InfoHelper.GUI_TITLE));
-//
-//        background.addChild(new GuiLabel(leftPos + 182, topPos + 139, 54, 8, I18n.get("gui.draconicevolution.reactor.fuel_in"))
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
-//                .setAlignment(GuiAlign.CENTER)
-//                .setTrim(false));
-//
-//        background.addChild(new GuiLabel(leftPos + 182, topPos + 170, 54, 8, I18n.get("gui.draconicevolution.reactor.chaos_out"))
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
-//                .setAlignment(GuiAlign.CENTER)
-//                .setTrim(false));
-//
-//        background.addChild(new GuiLabel(leftPos + 7, topPos + 127, imageWidth, 12, "")
-//                .setShadowStateSupplier(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> {
-//                    String s = tile.reactorState.get().localize();
-//                    if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
-//                        s = ChatFormatting.DARK_RED + "**" + s + "**";
-//                    } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-//                        s = ChatFormatting.DARK_RED + "--" + s + "--";
-//                    }
-//                    return ChatFormatting.GOLD + I18n.get("gui.draconicevolution.reactor.status") + ": " + s;
-//                }).setAlignment(GuiAlign.LEFT));
-//
-//        background.addChild(new GuiSlideIndicator(() -> tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE)
-//                .setPos(leftPos + 10, topPos + 5)
-//                .setSize(16, 112)
-//                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
-//                .setOffsets(-2, -1)
-//                .setHoverText(element -> getTempStats())
-//                .setHoverTextDelay(5)
-//        );
-//
-//        background.addChild(new GuiSlideIndicator(() -> tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1))
-//                .setPos(leftPos + 34, topPos + 5)
-//                .setSize(16, 112)
-//                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
-//                .setOffsets(-2, -1)
-//                .setHoverText(element -> getShieldStats())
-//                .setHoverTextDelay(5)
-//        );
-//
-//        background.addChild(new GuiSlideIndicator(() -> tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1))
-//                .setPos(leftPos + 198, topPos + 5)
-//                .setSize(16, 112)
-//                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
-//                .setOffsets(-2, -1)
-//                .setHoverText(element -> getSaturationStats())
-//                .setHoverTextDelay(5)
-//        );
-//
-//        background.addChild(new GuiSlideIndicator(() -> tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1))
-//                .setPos(leftPos + 222, topPos + 5)
-//                .setSize(16, 112)
-//                .setSlideElement(new GuiTexture(16, 8, DEGuiTextures.get("reactor/pointer")))
-//                .setOffsets(-2, -1)
-//                .setHoverText(element -> getFuelStats())
-//                .setHoverTextDelay(5)
-//        );
-//
-//        //endregion
-//
-//        //region Buttons
-//
-//        background.addChild(new GuiButton(leftPos + 177, topPos + 199, 64, 14, I18n.get("gui.draconicevolution.reactor.charge"))
-//                .setEnabledCallback(tile::canCharge)
-//                .setBorderColours(0xFF555555, 0xFF777777)
-//                .setFillColour(0xFF000000)
-//                .setTrim(false)
-//                .onPressed(tile::chargeReactor));
-//
-//        background.addChild(new GuiButton(leftPos + 177, topPos + 182, 64, 14, I18n.get("gui.draconicevolution.reactor.activate"))
-//                .setEnabledCallback(tile::canActivate)
-//                .setBorderColours(0xFF555555, 0xFF777777)
-//                .setFillColour(0xFF000000)
-//                .setTrim(false)
-//                .onPressed(tile::activateReactor));
-//
-//        background.addChild(new GuiButton(leftPos + 177, topPos + 199, 64, 14, I18n.get("gui.draconicevolution.reactor.shutdown"))
-//                .setEnabledCallback(tile::canStop)
-//                .setBorderColours(0xFF555555, 0xFF777777)
-//                .setFillColour(0xFF000000)
-//                .setTrim(false)
-//                .onPressed(tile::shutdownReactor));
-//
-//        background.addChild(new GuiButton(leftPos + 177, topPos + 165, 64, 14, I18n.get("gui.draconicevolution.reactor.sas"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setBorderColours(0xFF555555, 0xFF777777)
-//                .setRectFillColourGetter((hovering, disabled) -> tile.failSafeMode.get() ? 0xFF4040FF : 0xFF000000)
-//                .setTrim(false)
-//                .onPressed(tile::toggleFailSafe)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.sas.info")));
-//
-//        background.addChild(new GuiButton(leftPos + 177, topPos + 138, 64, 24, I18n.get("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
-//                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setWrap(true)
-//                .setBorderColours(0xFF555555, 0xFF777777)
-//                .setFillColour(0xFF000000)
-//                .onPressed(() -> compPanelExtended = !compPanelExtended)
-//                .setInsets(5, 0, 5, 0)
-//                .setHoverText(I18n.get("gui.draconicevolution.reactor.rs_mode.info")));
-//
-//        background.addChild(new GuiLabel(leftPos + 175, topPos + 138, 68, 80, "ETE")
-//                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
-//                .setDisplaySupplier(() -> "Estimated\nTime\nUntil\nDetonation\n\n" + ChatFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating.."))
-//                .setWrap(true)
-//                .setShadow(false)
-//                .setTextColour(0xFF0000));
-//
-//        y = 0;
-//        for (RSMode mode : RSMode.values()) {
-//            background.addChild(new GuiButton(leftPos + imageWidth + 2, topPos + 127 + y, 76, 10, I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH)))
-//                    .setEnabledCallback(() -> compPanelAnim == 1 && component != null)
-//                    .setRectFillColourGetter((hovering, disabled) -> {
-//                        if (component != null && component.rsMode.get() == mode) {
-//                            return 0xFFAA0000;
-//                        } else if (hovering) {
-//                            return 0xFF656565;
-//                        }
-//                        return 0xFF000000;
-//                    })
-//                    .setRectBorderColourGetter((hovering, disabled) -> {
-//                        if (component != null && component.rsMode.get() == mode) {
-//                            return 0xFFAA0000;
-//                        } else if (hovering) {
-//                            return 0xFF656565;
-//                        }
-//                        return 0xFF000000;
-//                    })
-//                    .onPressed(() -> {
-//                        if (component != null) {
-//                            component.setRSMode(player, mode);
-//                        }
-//                    })
-//                    .setHoverText(I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".info"))
-//                    .setTrim(false));
-//            y += 11;
-//        }
-//
-//        //endregion
-//    }
-//
-//    public List<String> getTempStats() {
-//        List<String> list = new ArrayList<>();
-//        list.add(I18n.get("gui.draconicevolution.reactor.reaction_temp"));
-//        list.add(MathUtils.round(tile.temperature.get(), 10) + "C");
-//        return list;
-//    }
-//
-//    public List<String> getShieldStats() {
-//        List<String> list = new ArrayList<>();
-//        list.add(I18n.get("gui.draconicevolution.reactor.field_strength"));
-//        if (tile.maxShieldCharge.get() > 0) {
-//            list.add(MathUtils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
-//        }
-//        list.add(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get()));
-//        return list;
-//    }
-//
-//    public List<String> getSaturationStats() {
-//        List<String> list = new ArrayList<>();
-//        list.add(I18n.get("gui.draconicevolution.reactor.energy_saturation"));
-//        if (tile.maxSaturation.get() > 0) {
-//            list.add(MathUtils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
-//        }
-//        list.add(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get()));
-//        return list;
-//    }
-//
-//    public List<String> getFuelStats() {
-//        List<String> list = new ArrayList<>();
-//        list.add(I18n.get("gui.draconicevolution.reactor.fuel_conversion"));
-//        if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
-//            list.add(MathUtils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
-//        }
-//        list.add(MathUtils.round(tile.convertedFuel.get(), 100) + " / " + MathUtils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
-//        return list;
-//    }
-//
-//    @Override
-//    protected void containerTick() {
-//        super.containerTick();
-//
-//        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
-//            container.setSlotState();
-//        }
-//
-//        if (compPanelExtended && (compPanelAnim < 1 || compPanel.xSize() != 80)) {
-//            compPanelAnim += 0.1;
-//            if (compPanelAnim > 1) {
-//                compPanelAnim = 1;
-//            }
-//            compPanel.setXSize((int) (compPanelAnim * 80));
-//        } else if (!compPanelExtended && compPanelAnim > 0) {
-//            compPanelAnim -= 0.1;
-//            if (compPanelAnim < 0) {
-//                compPanelAnim = 0;
-//            }
-//            compPanel.setXSize((int) (compPanelAnim * 80));
-//        }
-//
-//        if (compPanel.isEnabled() && compPanelAnim == 0) {
-//            compPanel.setEnabled(false);
-//        } else if (!compPanel.isEnabled() && compPanelAnim > 0) {
-//            compPanel.setEnabled(true);
-//        }
-//    }
+    public List<Component> getShieldStats(TileReactorCore tile) {
+        List<Component> list = new ArrayList<>();
+        list.add(TOOLKIT.translate("field_strength"));
+        if (tile.maxShieldCharge.get() > 0) {
+            list.add(Component.literal(MathUtils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%"));
+        }
+        list.add(Component.literal(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get())));
+        return list;
+    }
 
-    public static class Screen extends ModularGuiContainer<ContainerReactor> {
-        public TileReactorComponent component = null;
+    public List<Component> getSaturationStats(TileReactorCore tile) {
+        List<Component> list = new ArrayList<>();
+        list.add(TOOLKIT.translate("energy_saturation"));
+        if (tile.maxSaturation.get() > 0) {
+            list.add(Component.literal(MathUtils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%"));
+        }
+        list.add(Component.literal(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get())));
+        return list;
+    }
 
-        public Screen(ContainerReactor menu, Inventory inv, Component title) {
+    public List<Component> getFuelStats(TileReactorCore tile) {
+        List<Component> list = new ArrayList<>();
+        list.add(TOOLKIT.translate("fuel_conversion"));
+        if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
+            list.add(Component.literal(MathUtils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%"));
+        }
+        list.add(Component.literal(MathUtils.round(tile.convertedFuel.get(), 100) + " / " + MathUtils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100)));
+        return list;
+    }
+
+    public static class IndicatorState implements SliderState {
+        private final Supplier<Double> pos;
+
+        public IndicatorState(Supplier<Double> pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        public double sliderRatio() {
+            return 8D / 118D;
+        }
+
+        @Override
+        public double getPos() {
+            return 1 - pos.get();
+        }
+
+        @Override
+        public void setPos(double pos) {}
+    }
+
+    public static class Screen extends ModularGuiContainer<ReactorMenu> {
+        public Screen(ReactorMenu menu, Inventory inv, Component title) {
             super(menu, inv, new ReactorGui());
-            getModularGui().setGuiTitle(title);
+            getModularGui().setGuiTitle(Component.translatable("gui.draconicevolution.reactor.title"));
         }
     }
 }

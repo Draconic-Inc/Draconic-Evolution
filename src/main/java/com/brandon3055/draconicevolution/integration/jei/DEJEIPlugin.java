@@ -1,7 +1,10 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
+import com.brandon3055.brandonscore.integration.ModularGuiProperties;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.client.gui.EnergyCoreGui;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
 import com.brandon3055.draconicevolution.init.DEContent;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -32,8 +35,8 @@ public class DEJEIPlugin implements IModPlugin {
 //
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-//        registration.addGuiScreenHandler(GuiConfigurableItem.class, gui -> null);
-//        registration.addGuiScreenHandler(GuiEnergyCore.class, gui -> gui.hideJEI.get() ? null : ModularGuiProperties.create(gui));
+        registration.addGuiScreenHandler(ConfigurableItemGui.Screen.class, gui -> null);
+        registration.addGuiScreenHandler(EnergyCoreGui.Screen.class, gui -> gui.hideJEI.get() ? null : ModularGuiProperties.create(gui.getModularGui()));
 //        registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<>() {
 //            @Override
 //            public Collection<IGuiClickableArea> getGuiClickableAreas(GuiDraconiumChest gui, double mouseX, double mouseY) {

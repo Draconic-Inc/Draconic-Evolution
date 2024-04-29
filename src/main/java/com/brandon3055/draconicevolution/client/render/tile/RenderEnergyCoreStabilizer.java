@@ -67,7 +67,7 @@ public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnerg
         } else if (facing == Direction.SOUTH) {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
         }
-        poseStack.mulPose(Axis.YP.rotationDegrees(tile.rotation + (coreActive ? partialTicks : 0)));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(tile.rotation + (coreActive ? partialTicks : 0)));
         poseStack.translate(0, -1.5, 0);
         ccrs.bind(coreActive ? MODEL_TYPE_ACTIVE : MODEL_TYPE, getter, poseStack);
         model.render(ccrs);

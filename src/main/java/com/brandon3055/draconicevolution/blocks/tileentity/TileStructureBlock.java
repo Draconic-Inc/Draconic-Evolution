@@ -40,11 +40,16 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
 
     public TileStructureBlock(BlockPos pos, BlockState state) {
         super(DEContent.TILE_STRUCTURE_BLOCK.get(), pos, state);
+        enableTileDebug();
     }
 
     public void setController(MultiBlockController controller) {
         controllerOffset.set(worldPosition.subtract(((BlockEntity) controller).getBlockPos()));
-        enableTileDebug();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
     }
 
     @Nullable

@@ -18,7 +18,7 @@ import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.client.gui.ReactorGui;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerReactor;
+import com.brandon3055.draconicevolution.inventory.ReactorMenu;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -569,7 +569,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerReactor(DEContent.MENU_REACTOR.get(), currentWindowIndex, player.getInventory(), this);
+        return new ReactorMenu(currentWindowIndex, player.getInventory(), this);
     }
 
     @Override
@@ -604,8 +604,8 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             BlockPos pos = data.readPos();
             BlockEntity tile = level.getBlockEntity(pos);
             Screen screen = Minecraft.getInstance().screen;
-            if (tile instanceof TileReactorComponent && screen instanceof ReactorGui.Screen) {
-                ((ReactorGui.Screen) screen).component = (TileReactorComponent) tile;
+            if (tile instanceof TileReactorComponent && screen instanceof ReactorGui.Screen gui) {
+                ((ReactorGui)gui.getModularGui().getProvider()).component = (TileReactorComponent) tile;
             }
         }
     }

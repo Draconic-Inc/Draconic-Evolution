@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import codechicken.lib.gui.modular.lib.container.SlotGroup;
+import codechicken.lib.inventory.container.modular.ModularSlot;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -9,7 +11,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,57 +20,26 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 10/02/2017.
  */
-public class ContainerReactor extends DETileMenu<TileReactorCore> {
+public class ReactorMenu extends DETileMenu<TileReactorCore> {
 
-    public boolean fuelSlots = false;
+    public final SlotGroup main = createSlotGroup(0);
+    public final SlotGroup hotBar = createSlotGroup(0);
 
-    public ContainerReactor(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.MENU_REACTOR.get(), windowId, playerInv, getClientTile(playerInv, extraData));
+    public final SlotGroup input = createSlotGroup(1);
+    public final SlotGroup output = createSlotGroup(2);
+
+    public ReactorMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
+        this(windowId, playerInv, getClientTile(playerInv, extraData));
     }
 
-    public ContainerReactor(@Nullable MenuType<?> type, int windowId, Inventory player, TileReactorCore tile) {
-        super(type, windowId, player, tile);
+    public ReactorMenu(int windowId, Inventory playerInv, TileReactorCore tile) {
+        super(DEContent.MENU_REACTOR.get(), windowId, playerInv, tile);
+        main.addPlayerMain(playerInv);
+        hotBar.addPlayerBar(playerInv);
+
+        input.addSlots(3, 0, e -> new SlotReactor(tile, e));
+        output.addSlots(3, 0, e -> new SlotReactor(tile, 3 + e));
     }
-
-//    public ContainerReactor(PlayerEntity player, TileReactorCore tile) {
-//        super(player, tile);
-//        setSlotState();
-//    }
-
-    public void setSlotState() {
-        fuelSlots = tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
-
-        slots.clear();
-        lastSlots.clear();
-
-        if (fuelSlots) {
-//            addPlayerSlots(44 - 31, 140);
-
-            for (int x = 0; x < 3; x++) {
-                addSlot(new SlotReactor(tile, x, 183 + (x * 18), 149));
-            }
-
-            for (int x = 0; x < 3; x++) {
-                addSlot(new SlotReactor(tile, 3 + x, 183 + (x * 18), 180));
-            }
-
-//            for (int y = 0; y < 2; y++) {
-//                for (int x = 0; x < 2; x++) {
-//                    addSlotToContainer(new SlotReactor(tile, 3 + x + y * 2, 192 + (x * 18), 180 + (y * 18)));
-//                }
-//            }
-        }
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-
-        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != fuelSlots) {
-            setSlotState();
-        }
-    }
-
 
     @Nullable
     @Override
@@ -109,13 +79,10 @@ public class ContainerReactor extends DETileMenu<TileReactorCore> {
                 tile.convertedFuel.subtract(getChaosValue(stackInSlot));
                 player.containerMenu.setCarried(stackInSlot);
             }
-
-            return;
         }
         else if (slotId <= 35) {
             super.clicked(slotId, dragType, clickTypeIn, player);
         }
-        return;
     }
 
     private int getFuelValue(ItemStack stack) {
@@ -149,12 +116,12 @@ public class ContainerReactor extends DETileMenu<TileReactorCore> {
         }
         return 0;
     }
-    public static class SlotReactor extends Slot {
-        private static Container emptyInventory = new SimpleContainer(0);
+    public static class SlotReactor extends ModularSlot {
+        private static Container emptyInventory = new SimpleContainer(6);
         private final TileReactorCore tile;
 
-        public SlotReactor(TileReactorCore tile, int index, int xPosition, int yPosition) {
-            super(emptyInventory, index, xPosition, yPosition);
+        public SlotReactor(TileReactorCore tile, int index) {
+            super(emptyInventory, index);
             this.tile = tile;
         }
 

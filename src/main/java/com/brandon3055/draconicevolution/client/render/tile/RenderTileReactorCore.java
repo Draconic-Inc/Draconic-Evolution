@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
@@ -7,6 +8,7 @@ import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.render.BlockEntityRendererTransparent;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -131,19 +133,17 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
         RenderUtils.endBatch(getter);
     }
 
-    public static void renderGUI(TileReactorCore te, int x, int y) {
+    public static void renderGUI(GuiRender render, TileReactorCore te) {
         double diameter = 100;
         float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
-        PoseStack stack = new PoseStack();
         Minecraft mc = Minecraft.getInstance();
         MultiBufferSource.BufferSource getter = RenderUtils.getBuffers();
-        Matrix4 mat = new Matrix4(stack);
-        mat.translate(x, y, 100);
+        Matrix4 mat = new Matrix4(render.pose());
         mat.scale(diameter);
-        mat.rotate((ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 400F, Vector3.Y_POS);
+        mat.rotate((TimeKeeper.getClientTick() + mc.getFrameTime()) / 400F, Vector3.Y_POS);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
         RenderSystem.depthMask(false);

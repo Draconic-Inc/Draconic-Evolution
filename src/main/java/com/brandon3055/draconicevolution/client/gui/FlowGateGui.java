@@ -12,7 +12,6 @@ import codechicken.lib.gui.modular.lib.geometry.Direction;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
-import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import com.brandon3055.draconicevolution.inventory.FlowGateMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

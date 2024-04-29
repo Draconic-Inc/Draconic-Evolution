@@ -18,11 +18,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.UUID;
+
 /**
  * Created by brandon3055 on 19/07/2016.
  */
 public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile {
 
+    private static final UUID MSG_UUID = UUID.fromString("813497f2-6161-4767-ade5-ee607bec1425");
     private final ManagedLong powerRate = register(new ManagedLong("power_rate", 1000000000, DataFlags.SAVE_NBT));
 
     public TileCreativeOPCapacitor(BlockPos pos, BlockState state) {
@@ -113,7 +116,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
                 powerRate.set(Long.MAX_VALUE);
             }
 
-            BrandonsCore.proxy.sendIndexedMessage(player, Component.literal("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
+            BrandonsCore.proxy.sendIndexedMessage(player, Component.literal("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), MSG_UUID);
 //            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
         return true;
