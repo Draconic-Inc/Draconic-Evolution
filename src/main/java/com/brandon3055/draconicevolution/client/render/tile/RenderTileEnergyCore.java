@@ -11,12 +11,15 @@ import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
+import codechicken.lib.vec.uv.IconTransformation;
 import com.brandon3055.brandonscore.client.render.MultiBlockRenderers;
+import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -45,20 +48,20 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Figure out this shader type
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
@@ -142,6 +145,7 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         double scale = SCALES[te.tier.get() - 1];
 
         renderInnerCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+        ccrs.reset();
         if (te.legacyRender.get()) {
             renderLegacyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
         } else {
@@ -209,10 +213,12 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
             ccrs.baseColour = Colour.packRGBA(0.2F, 1F, 1F, 1F);
         }
         ccrs.bind(outerCoreType, getter);
+//        ccrs.bind(RenderType.translucentMovingBlock(), getter);
         Matrix4 overlayMatRef = mat.copy();
         overlayMatRef.translate(0.5, 0.5, 0.5);
         overlayMatRef.scale(scale * -0.7, scale * -0.7, scale * -0.7);
         overlayMatRef.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
+//        modelEnergyCore.render(ccrs, overlayMatRef, new IconTransformation(AtlasTextureHelper.ENERGY_CORE_OVERLAY));
         modelEnergyCore.render(ccrs, overlayMatRef);
     }
 

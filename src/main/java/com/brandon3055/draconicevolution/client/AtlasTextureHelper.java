@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,6 +40,7 @@ public class AtlasTextureHelper {
 
     public static TextureAtlasSprite ORB_PARTICLE;
     public static TextureAtlasSprite PORTAL_PARTICLE;
+    public static TextureAtlasSprite ENERGY_CORE_OVERLAY;
 
     public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
@@ -79,6 +81,9 @@ public class AtlasTextureHelper {
 
             ORB_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "white_orb"));
             PORTAL_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "portal"));
+        }
+        if (atlas.location().equals(InventoryMenu.BLOCK_ATLAS)) {
+            ENERGY_CORE_OVERLAY = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "block/energy_core/energy_core_overlay"));
         }
     }
 }

@@ -194,11 +194,11 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
         Constraints.placeOutside(io, ioLabel, Constraints.LayoutPos.BOTTOM_CENTER, 0, 2);
 
         var target = GuiTextField.create(display, 0xF0300000, 0xFFa8a8a8, 0xe1e3e5);
+        target.container().setEnabled(() -> tile.energy.isUnlimited());
         target.field()
                 .setSuggestion(TOOLKIT.translate("energy_target"))
                 .setMaxLength(64)
                 .setTooltipSingle(TOOLKIT.translate("energy_target_info"))
-                .setEnabled(() -> tile.energy.isUnlimited())
                 .setFilter(s -> validBigInt(sanitizeNumStr(s)))
                 .setTextState(TextState.simpleState(tile.energyTarget.get(), tile.energyTarget::set));
         Constraints.size(target.container(), barSlot.xSize(), 12);

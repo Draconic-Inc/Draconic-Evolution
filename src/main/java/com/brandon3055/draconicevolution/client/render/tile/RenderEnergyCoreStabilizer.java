@@ -43,6 +43,8 @@ public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnerg
         model = CCModel.combine(map.values()).backfacedCopy();
     }
 
+//    Ask covers about this...
+
     @Override
     public void render(TileEnergyCoreStabilizer tile, float partialTicks, PoseStack poseStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         if (!tile.isValidMultiBlock.get()) return;
