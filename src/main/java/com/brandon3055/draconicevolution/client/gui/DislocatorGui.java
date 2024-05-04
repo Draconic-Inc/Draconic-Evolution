@@ -359,7 +359,7 @@ public class DislocatorGui implements GuiProvider {
                     .onPress(() -> DraconicNetwork.sendDislocatorMessage(1, e -> e.writeVarInt(index)))
                     .setEnabled(() -> hasTarget() && !isLocked());
 
-            field = TOOLKIT.createTextField(this, false)
+            field = new GuiTextField(this)
                     .constrain(LEFT, relative(get(LEFT), 1))
                     .constrain(TOP, relative(get(TOP), 2))
                     .setFocusable(false)

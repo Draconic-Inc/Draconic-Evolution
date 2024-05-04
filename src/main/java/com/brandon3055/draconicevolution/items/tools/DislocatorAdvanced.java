@@ -52,11 +52,16 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by brandon3055 on 16/07/2016.
  */
 public class DislocatorAdvanced extends Dislocator {
+    public static final UUID MSG_ID1 = UUID.fromString("1a0f4ae8-7884-4402-b223-d93f221466e3");
+    public static final UUID MSG_ID2 = UUID.fromString("bb5bf7be-5fbb-44b1-b7bc-35ac89b2890c");
+    public static final UUID MSG_ID3 = UUID.fromString("d9349a0c-6013-43ea-9be2-04686eb8bd2d");
+
     public DislocatorAdvanced(Properties properties) {
         super(properties);
     }
@@ -356,9 +361,9 @@ public class DislocatorAdvanced extends Dislocator {
                 if (selected != null) {
                     DislocatorTarget up = DataUtils.safeGet(list, Math.floorMod(selectIndex - 1, list.size()));
                     DislocatorTarget down = DataUtils.safeGet(list, Math.floorMod(selectIndex + 1, list.size()));
-                    if (up != null) ChatHelper.sendIndexed(player, Component.literal(up.getName()).withStyle(ChatFormatting.GRAY), 391);
-                    ChatHelper.sendIndexed(player, Component.literal(ChatFormatting.GREEN + ">" + ChatFormatting.GOLD + selected.getName() + ChatFormatting.GREEN + "<"), 392);
-                    if (down != null) ChatHelper.sendIndexed(player, Component.literal(down.getName()).withStyle(ChatFormatting.GRAY), 393);
+                    if (up != null) ChatHelper.sendIndexed(player, Component.literal(up.getName()).withStyle(ChatFormatting.GRAY), MSG_ID1);
+                    ChatHelper.sendIndexed(player, Component.literal(ChatFormatting.GREEN + ">" + ChatFormatting.GOLD + selected.getName() + ChatFormatting.GREEN + "<"), MSG_ID2);
+                    if (down != null) ChatHelper.sendIndexed(player, Component.literal(down.getName()).withStyle(ChatFormatting.GRAY), MSG_ID3);
                 }
                 break;
             default:

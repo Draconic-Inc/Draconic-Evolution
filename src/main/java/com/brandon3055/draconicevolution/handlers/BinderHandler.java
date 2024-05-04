@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.render.DERenderTypes;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -60,7 +61,7 @@ public class BinderHandler {
         if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
             bind(binder, blockClicked);
             if (world.isClientSide) {
-                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), TileCrystalBase.MSG_ID);
                 player.swing(hand);
             }
             return true;
@@ -69,7 +70,7 @@ public class BinderHandler {
         //If the tool is not bound but the player clicked on a linkable block then give them a hint.
         //Note: We don't want to do this if they did not click on a linkable block because that would break other mods that implement ICrystalBinder in their tools.
         if (tile instanceof ICrystalLink && !isBound) {
-            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.tool_not_bound").withStyle(ChatFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.tool_not_bound").withStyle(ChatFormatting.RED), TileCrystalBase.MSG_ID);
             return true;
         }
 
@@ -77,7 +78,7 @@ public class BinderHandler {
         if (isBound) {
             BlockPos boundLinkable = getBound(binder);
             if (boundLinkable.equals(blockClicked)) {
-                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_to_self").withStyle(ChatFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_to_self").withStyle(ChatFormatting.RED), TileCrystalBase.MSG_ID);
                 return true;
             }
             BlockEntity boundTile = world.getBlockEntity(boundLinkable);
@@ -86,7 +87,7 @@ public class BinderHandler {
                     player.swing(hand);
                 }
             } else {
-                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.bound_to_invalid").withStyle(ChatFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.bound_to_invalid").withStyle(ChatFormatting.RED), TileCrystalBase.MSG_ID);
             }
             return true;
         }
@@ -110,7 +111,7 @@ public class BinderHandler {
     public static boolean clearBinder(Player player, @Nonnull ItemStack stack) {
         if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
             stack.getTag().remove(ICrystalBinder.BINDER_TAG);
-            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_cleared"), 99);
+            ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_cleared"), TileCrystalBase.MSG_ID);
             return true;
         }
         return false;

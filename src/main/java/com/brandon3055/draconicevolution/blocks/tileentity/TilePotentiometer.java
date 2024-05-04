@@ -19,11 +19,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.UUID;
+
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IInteractTile {
 
+    public static final UUID MSG_ID = UUID.fromString("8a45fb40-4316-4e4f-b435-867f44960966");
     public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_NBT_SYNC_TILE));
 
@@ -66,7 +69,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
         }
 
         if (level.isClientSide) {
-            ChatHelper.sendIndexed(player, Component.literal(String.valueOf(power.get())), 41);
+            ChatHelper.sendIndexed(player, Component.literal(String.valueOf(power.get())), MSG_ID);
         }
         else {
             level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));

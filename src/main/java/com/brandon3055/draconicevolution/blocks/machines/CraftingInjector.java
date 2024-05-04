@@ -32,11 +32,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by brandon3055 on 10/06/2016.
  */
 public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
+
+    public static final UUID MSG_ID = UUID.fromString("3b0a968f-b0f6-4969-b00f-a49a2a36d40b");
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static VoxelShape SHAPE_DOWN = Shapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
@@ -98,7 +101,7 @@ public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
 
         if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
-            ChatHelper.sendIndexed(player, Component.translatable("fusion_inj.draconicevolution." + (craftingPedestal.singleItem.get() ? "single_item" : "multi_item")), 98);
+            ChatHelper.sendIndexed(player, Component.translatable("fusion_inj.draconicevolution." + (craftingPedestal.singleItem.get() ? "single_item" : "multi_item")), MSG_ID);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return InteractionResult.SUCCESS;
         }
