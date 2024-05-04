@@ -203,8 +203,9 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
                     core = (TileEnergyCore) tile;
                 } else {
                     core = null;
-                    coreOffset.set(null);
-
+                    if (!level.isClientSide()) {
+                        coreOffset.set(null);
+                    }
                 }
             }
         }

@@ -47,6 +47,7 @@ public class DraconicNetwork {
     public static final int S_JEI_FUSION_TRANSFER =     10;
     public static final int S_PLACE_ITEM =              11;
     public static final int S_MODULE_ENTITY_MESSAGE =   12;
+    public static final int S_BOOST_STATE =             13;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -210,6 +211,12 @@ public class DraconicNetwork {
                 .writeInt(chunk.getPos().x)
                 .writeInt(chunk.getPos().z)
                 .sendToChunk(chunk.getLevel(), chunk.getPos());
+    }
+
+    public static void sendSprintState(boolean boosting) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_BOOST_STATE);
+        packet.writeBoolean(boosting);
+        packet.sendToServer();
     }
 
     public static void init() {

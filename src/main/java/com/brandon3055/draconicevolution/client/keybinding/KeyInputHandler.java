@@ -4,7 +4,9 @@ import com.brandon3055.draconicevolution.client.gui.DislocatorGui;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.brandon3055.draconicevolution.network.InputSync;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -96,6 +98,15 @@ public class KeyInputHandler {
         } else if (KeyBindings.placeItem.isDown()) {
             DraconicNetwork.sendPlaceItem();
         }
+
+        Options options = Minecraft.getInstance().options;
+        boolean oldState = InputSync.getSprintState(player.getUUID());
+        boolean newState = options.keyUp.isDown() && options.keySprint.isDown();
+        if (oldState != newState) {
+            InputSync.setSprintState(player.getUUID(), newState);
+            DraconicNetwork.sendSprintState(newState);
+        }
+
 //        else if (KeyBindings.armorProfileChange.isPressed()) {
 ////            PacketDispatcher.dispatchToolProfileChange(true);
 //        }

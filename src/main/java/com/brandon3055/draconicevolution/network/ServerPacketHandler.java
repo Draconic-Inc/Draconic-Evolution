@@ -83,6 +83,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             case DraconicNetwork.S_PLACE_ITEM:
                 placeItem(sender, packet);
                 break;
+            case DraconicNetwork.S_BOOST_STATE:
+                InputSync.setSprintState(sender.getUUID(), packet.readBoolean());
+                break;
         }
     }
 
