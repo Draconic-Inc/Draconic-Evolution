@@ -5,6 +5,7 @@ import codechicken.lib.datagen.recipe.RecipeProvider;
 import codechicken.lib.datagen.recipe.ShapedRecipeBuilder;
 import codechicken.lib.datagen.recipe.ShapelessRecipeBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
@@ -34,7 +35,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class RecipeGenerator extends RecipeProvider {
 
     public RecipeGenerator(PackOutput pOutput) {
-        super(pOutput);
+        super(pOutput, MODID);
     }
 
     @Override
