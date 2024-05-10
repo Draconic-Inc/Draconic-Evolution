@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -22,6 +23,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,6 +44,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalDouble;
+
+import static net.minecraft.client.renderer.RenderStateShard.*;
 
 /**
  * Created by brandon3055 on 26/11/2016.
@@ -120,47 +126,46 @@ public class BinderHandler {
     public static Map<AABB, CCModel> modelCache = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderWorldOverlay(LocalPlayer player, PoseStack matrixStack, Level world, ItemStack stack, Minecraft mc, float partialTicks) {
+    public static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level world, ItemStack stack, Minecraft mc, float partialTicks) {
         if (!isBound(stack)) {
             return;
         }
 
-        Matrix4 mat = new Matrix4(matrixStack);
         BlockPos pos = getBound(stack);
         boolean valid = world.getBlockEntity(pos) instanceof ICrystalLink;
-        Camera renderInfo = mc.gameRenderer.getMainCamera();
-        double projectedX = renderInfo.getPosition().x;
-        double projectedY = renderInfo.getPosition().y;
-        double projectedZ = renderInfo.getPosition().z;
 
         BlockState state = world.getBlockState(pos);
-
         VoxelShape shape = state.getShape(world, pos);
         if (shape.isEmpty()) {
             shape = Shapes.block();
         }
-
-        MultiBufferSource.BufferSource getter = com.brandon3055.brandonscore.client.render.RenderUtils.getGuiBuffers();
-
         Cuboid6 cuboid6 = new Cuboid6(shape.bounds());
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.disableDepthTest();
 
-        CCRenderState ccrs = CCRenderState.instance();
-        mat.translate((double) pos.getX() - projectedX, (double) pos.getY() - projectedY, (double) pos.getZ() - projectedZ);
 
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(DERenderTypes.TRANS_COLOUR_TYPE), mat);
-        RenderUtils.bufferCuboidSolid(builder, cuboid6, valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
-        ccrs.draw();
+        MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        Vec3 cameraPos = camera.getPosition();
 
-        builder = new TransformingVertexConsumer(getter.getBuffer(RenderType.lines()), mat);
-        RenderUtils.bufferCuboidOutline(builder, cuboid6, 0, 0, 0, 1);
-        ccrs.draw();
+        pStack.pushPose();
+        pStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        pStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
-        getter.endBatch();
+        RenderUtils.bufferCuboidSolid(
+                new TransformingVertexConsumer(source.getBuffer(DERenderTypes.BOX_NO_DEPTH), pStack),
+                cuboid6,
+                valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F
+        );
+
+        source.endBatch();
+
+        RenderUtils.bufferCuboidOutline(
+                new TransformingVertexConsumer(source.getBuffer(DERenderTypes.OUTLINE_TYPE), pStack),
+                cuboid6,
+                0, 0, 0, 1
+        );
+
+        source.endBatch();
+        pStack.popPose();
     }
 
     private static CCModel modelForAABB(AABB aabb) {

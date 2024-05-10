@@ -7,6 +7,7 @@ import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.container.ContainerGuiProvider;
 import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
+import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiEntityFilter;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
@@ -39,18 +40,21 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
 
     @Override
     public void buildGui(ModularGui gui, ContainerScreenAccess<EntityDetectorMenu> screenAccess) {
-        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT);
+        gui.initStandardGui(GUI_WIDTH, GUI_HEIGHT + 80);
         EntityDetectorMenu menu = screenAccess.getMenu();
         TileEntityDetector tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
         TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
 
+        var playSlots = GuiSlots.player(root, screenAccess, menu.main, menu.hotBar);
+        GuiElement<?> playerRect = playSlots.container();
+        playSlots.stream().forEach(e -> e.setSlotTexture(slot -> BCGuiTextures.getThemed("slot")));
+        Constraints.placeInside(playSlots.container(), root, Constraints.LayoutPos.BOTTOM_CENTER, 0, -7);
+//        TOOLKIT.playerInvTitle(playSlots.container());
+
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
         buttonRow.addButton(TOOLKIT::createThemeButton);
-
-        GuiButton largeViewButton = TOOLKIT.createResizeButton(root)
-                .onPress(() -> largeView = !largeView);
-        Constraints.placeInside(largeViewButton, root, Constraints.LayoutPos.BOTTOM_RIGHT, -3, -30);
+        buttonRow.addButton(e -> TOOLKIT.createResizeButton(root).onPress(() -> largeView = !largeView));
 
         GuiButton closeLarge = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("close_large_view"))
                 .setEnabled(() -> largeView)
@@ -68,7 +72,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(TOP, relative(root.get(TOP), () -> largeView ? 4 : 14D))
                 .constrain(LEFT, relative(root.get(LEFT), () -> largeView ? 4 : 23D))
                 .constrain(RIGHT, relative(root.get(RIGHT), () -> largeView ? -4 : -15D))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), () -> largeView ? -4 : -30D));
+                .constrain(BOTTOM, relative(root.get(BOTTOM), () -> largeView ? -4 : -playerRect.ySize() - 35));
 
         GuiEntityFilter filterUI = new GuiEntityFilter(filterBG, tile.entityFilter)
                 .setNodeBgBuilder(e -> new GuiRectangle(e).shadedRect(() -> GuiToolkit.Palette.Ctrl.accentLight(false), () -> GuiToolkit.Palette.Ctrl.accentDark(false), () -> GuiToolkit.Palette.Ctrl.fill(false)))
@@ -90,7 +94,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(WIDTH, dynamic(() -> (root.xSize() - 8) / 5D))
                 .constrain(HEIGHT, literal(ctrlHeight))
                 .constrain(LEFT, relative(root.get(LEFT), 4))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), -4));
+                .constrain(BOTTOM, relative(playerRect.get(TOP), -2));
         Constraints.placeInside(new GuiText(range, TOOLKIT.translate("range"))
                         .setTooltip(TOOLKIT.translate("range.info"))
                         .setTooltipDelay(0)
@@ -117,7 +121,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(WIDTH, dynamic(() -> (root.xSize() - 8) / 5D))
                 .constrain(HEIGHT, literal(ctrlHeight))
                 .constrain(LEFT, match(range.get(RIGHT)))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), -4));
+                .constrain(BOTTOM, relative(playerRect.get(TOP), -2));
         Constraints.placeInside(new GuiText(minStr, TOOLKIT.translate("rsmin"))
                         .setTooltip(TOOLKIT.translate("rsmin.info"))
                         .setTooltipDelay(0)
@@ -143,7 +147,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(WIDTH, dynamic(() -> (root.xSize() - 8) / 5D))
                 .constrain(HEIGHT, literal(ctrlHeight))
                 .constrain(LEFT, match(minStr.get(RIGHT)))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), -4));
+                .constrain(BOTTOM, relative(playerRect.get(TOP), -2));
         Constraints.placeInside(new GuiText(maxStr, TOOLKIT.translate("rsmax"))
                         .setTooltip(TOOLKIT.translate("rsmax.info"))
                         .setTooltipDelay(0)
@@ -169,7 +173,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(WIDTH, dynamic(() -> (root.xSize() - 8) / 5D))
                 .constrain(HEIGHT, literal(ctrlHeight))
                 .constrain(LEFT, match(maxStr.get(RIGHT)))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), -4));
+                .constrain(BOTTOM, relative(playerRect.get(TOP), -2));
         Constraints.placeInside(new GuiText(rate, TOOLKIT.translate("pulse_rate"))
                         .setTooltip(TOOLKIT.translate("pulse_rate.info"))
                         .setTooltipDelay(0)
@@ -195,7 +199,7 @@ public class EntityDetectorGui extends ContainerGuiProvider<EntityDetectorMenu> 
                 .constrain(WIDTH, dynamic(() -> (root.xSize() - 8) / 5D))
                 .constrain(HEIGHT, literal(ctrlHeight))
                 .constrain(LEFT, match(rate.get(RIGHT)))
-                .constrain(BOTTOM, relative(root.get(BOTTOM), -4));
+                .constrain(BOTTOM, relative(playerRect.get(TOP), -2));
         Constraints.placeInside(new GuiText(mode, TOOLKIT.translate("pulse_mode"))
                         .setTooltip(TOOLKIT.translate("pulse_mode.info"))
                         .setTooltipDelay(0)

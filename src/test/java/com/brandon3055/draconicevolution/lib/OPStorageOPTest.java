@@ -23,7 +23,7 @@ public class OPStorageOPTest {
 
     @Test
     public void testToString() {
-        OPStorageOP storageOP = new OPStorageOP(() -> -1L);
+        OPStorageOP storageOP = new OPStorageOP(null, () -> -1L);
 
         //9,999,999,999,999                                         Tera            numprefix.draconicevolution.10-12
         storageOP.receiveOP(9876999999999L, false);

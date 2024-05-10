@@ -33,6 +33,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,22 +44,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TileDisenchanter extends TileBCore implements MenuProvider, IInteractTile {
 
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 3);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 3)
+            .setSlotValidator(0, stack -> stack.isEnchanted() && ModHelper.canRemoveEnchants(stack))
+            .setSlotValidator(1, itemStack -> itemStack.is(Items.BOOK));
 
     public TileDisenchanter(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISENCHANTER.get(), pos, state);
         capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
-        itemHandler.setStackValidator(this::isItemValidForSlot);
-    }
-
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        if (index == 0) {
-            return stack.isEnchanted() && ModHelper.canRemoveEnchants(stack);
-        }
-        else if (index == 1) {
-            return stack.getItem() == Items.BOOK;
-        }
-        else return false;
     }
 
     @Override

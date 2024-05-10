@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.raytracer.SubHitBlockHitResult;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -124,9 +125,11 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult clientHit) {
         if (player.level().isClientSide()) return InteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
+
+        HitResult hit = RayTracer.retrace(player);
         if (!(hit instanceof SubHitBlockHitResult)){
             return InteractionResult.PASS;
         }

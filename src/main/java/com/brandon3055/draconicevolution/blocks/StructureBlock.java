@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
+import com.brandon3055.brandonscore.lib.CustomTabHandling;
 import com.brandon3055.brandonscore.multiblock.StructurePart;
 import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
@@ -37,7 +38,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * <p>
  * Created by brandon3055 on 16/08/2022
  */
-public class StructureBlock extends EntityBlockBCore implements StructurePart {
+public class StructureBlock extends EntityBlockBCore implements StructurePart, CustomTabHandling {
     public static boolean buildingLock = false;
 
     public StructureBlock(Block.Properties properties) {

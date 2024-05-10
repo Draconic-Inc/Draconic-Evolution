@@ -96,12 +96,12 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            render.tex(BCGuiTextures.get("bars/food_empty"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+            render.texRect(BCGuiTextures.get("bars/food_empty"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    render.tex(BCGuiTextures.get("bars/food_full"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+                    render.texRect(BCGuiTextures.get("bars/food_full"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 } else {
-                    render.tex(BCGuiTextures.get("bars/food_half"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
+                    render.texRect(BCGuiTextures.get("bars/food_half"), x + 1 + i * size, y + height - size - 2, size + 1, size + 1);
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
+import com.brandon3055.brandonscore.lib.CustomTabHandling;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEDamage;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class ChaosCrystal extends EntityBlockBCore {
+public class ChaosCrystal extends EntityBlockBCore implements CustomTabHandling {
 
     private static VoxelShape SHAPE = Shapes.box(0, -2, 0, 1, 3, 1);
 

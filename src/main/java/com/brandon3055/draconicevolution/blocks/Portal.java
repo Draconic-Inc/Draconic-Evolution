@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.lib.CustomTabHandling;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePortal;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class Portal extends EntityBlockBCore {
+public class Portal extends EntityBlockBCore implements CustomTabHandling {
 
     public static final EnumProperty<Direction.Axis> AXIS = EnumProperty.create("axis", Direction.Axis.class);
     public static final BooleanProperty DRAW_UP = BooleanProperty.create("drawup");

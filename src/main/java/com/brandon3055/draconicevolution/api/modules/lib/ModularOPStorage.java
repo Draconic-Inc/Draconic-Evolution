@@ -96,4 +96,12 @@ public class ModularOPStorage extends OPStorage {
 
         return super.maxExtract() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).transfer();
     }
+
+    @Override
+    public void markDirty() {
+        super.markDirty();
+        if (tile != null) {
+            tile.setChanged();
+        }
+    }
 }

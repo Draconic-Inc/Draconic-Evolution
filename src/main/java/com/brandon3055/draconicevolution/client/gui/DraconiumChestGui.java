@@ -34,6 +34,10 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
     public static final int GUI_WIDTH = 478;
     public static final int GUI_HEIGHT = 268;
 
+    public GuiColourPicker colourDialog;
+    public GuiTexture craftIcon;
+    public GuiProgressIcon furnaceProgress;
+
     @Override
     public GuiElement<?> createRootElement(ModularGui gui) {
         GuiManipulable root = new GuiManipulable(gui).addMoveHandle(3).enableCursors(true);
@@ -62,7 +66,7 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
                 .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"));
         Constraints.placeOutside(craftIn, playInv.container(), Constraints.LayoutPos.MIDDLE_RIGHT, 12, 0);
 
-        GuiTexture craftIcon = new GuiTexture(root, BCGuiTextures.themedGetter("prog_arrow_right"));
+        craftIcon = new GuiTexture(root, BCGuiTextures.themedGetter("prog_arrow_right"));
         Constraints.size(craftIcon, 22, 15);
         Constraints.placeOutside(craftIcon, craftIn, Constraints.LayoutPos.MIDDLE_RIGHT, 7, 0);
 
@@ -99,7 +103,7 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
         Constraints.size(furnaceFlame, 88, 15);
         Constraints.placeOutside(furnaceFlame, furnaceIn, Constraints.LayoutPos.BOTTOM_CENTER, 0, 5);
 
-        GuiProgressIcon furnaceProgress = new GuiProgressIcon(furnaceContainer, BCGuiTextures.themedGetter("prog_arrow_up_tall"), BCGuiTextures.themedGetter("prog_arrow_up_tall_over"))
+        furnaceProgress = new GuiProgressIcon(furnaceContainer, BCGuiTextures.themedGetter("prog_arrow_up_tall"), BCGuiTextures.themedGetter("prog_arrow_up_tall_over"))
                 .setDirection(Direction.UP)
                 .setRotateToDirection(false)
                 .setProgress(() -> (double) tile.smeltingLogic.smeltProgress.get());
@@ -154,7 +158,6 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
                 .setEmptyIcon(BCGuiTextures.get("slots/energy"));
         Constraints.placeOutside(capInv, feedButton, Constraints.LayoutPos.BOTTOM_CENTER, 0, 3);
 
-
         // Button Row
         ButtonRow buttonRow = new ButtonRow(root, Direction.DOWN)
                 .setSpacing(1);
@@ -163,14 +166,14 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
         buttonRow.addButton(e -> TOOLKIT.createIconButton(e, 12, BCGuiTextures.getter("color_picker"))
                 .setTooltip(TOOLKIT.translate("color_picker"))
                 .onPress(() -> {
-                    GuiColourPicker picker = GuiColourPicker.create(root, ColourState.create(tile.colour::get, tile.colour::set), false);
-                    picker.enableCursors(true);
-                    picker.getContentElement().jeiExclude();
-                    picker.setBlockOutsideClicks(true);
-                    picker.setCancelOnOutsideClick(true);
-                    picker.getCancelButton().setEnabled(false);
-                    picker.addMoveHandle((int) picker.ySize());
-                    Constraints.placeInside(picker, root, BOTTOM_RIGHT, -16, -10);
+                    colourDialog = GuiColourPicker.create(root, ColourState.create(tile.colour::get, tile.colour::set), false);
+                    colourDialog.enableCursors(true);
+                    colourDialog.getContentElement().jeiExclude();
+                    colourDialog.setBlockOutsideClicks(true);
+                    colourDialog.setCancelOnOutsideClick(true);
+                    colourDialog.getCancelButton().setEnabled(false);
+                    colourDialog.addMoveHandle((int) colourDialog.ySize());
+                    Constraints.placeInside(colourDialog, root, BOTTOM_RIGHT, -16, -10);
                 })
         );
         buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));

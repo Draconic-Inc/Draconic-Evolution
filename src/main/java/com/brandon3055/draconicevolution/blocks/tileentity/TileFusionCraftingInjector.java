@@ -41,7 +41,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
         capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
         itemHandler.setContentsChangeListener(i -> inventoryChange());
-        capManager.set(CapabilityOP.OP, new OPStorage(0) {
+        capManager.set(CapabilityOP.OP, new OPStorage(this, 0) {
             @Override
             public long receiveOP(long maxReceive, boolean simulate) {
                 long opStored = getOPStored();

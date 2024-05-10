@@ -73,7 +73,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     public LinkedList<Byte> flowRates = new LinkedList<>();
     private LinkedList<BlockPos> linkedPosCache = null;
     //    protected EnergyStorage energyStorage = new EnergyStorage(0);
-    protected OPStorage opStorage = new OPStorage(0);
+    protected OPStorage opStorage = new OPStorage(this, 0);
     protected ENetFXHandler fxHandler;
     protected TechLevel techLevel;
 

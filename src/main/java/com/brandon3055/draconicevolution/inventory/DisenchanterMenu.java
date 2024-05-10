@@ -12,13 +12,13 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class DisenchanterMenu extends DETileMenu<TileDisenchanter> {
 
-    public final SlotGroup main = createSlotGroup(0);
-    public final SlotGroup hotBar = createSlotGroup(0);
-    public final SlotGroup armor = createSlotGroup(0);
+    public final SlotGroup main = createSlotGroup(0, 1, 2);
+    public final SlotGroup hotBar = createSlotGroup(0, 1, 2);
+    public final SlotGroup armor = createSlotGroup(0, 1, 2);
 
-    public final SlotGroup input = createSlotGroup(1);
-    public final SlotGroup books = createSlotGroup(2);
-    public final SlotGroup output = createSlotGroup(3);
+    public final SlotGroup input = createSlotGroup(1, 0);
+    public final SlotGroup books = createSlotGroup(2, 0);
+    public final SlotGroup output = createSlotGroup(3, 0);
 
     public DisenchanterMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(windowId, playerInv, getClientTile(playerInv, extraData));
@@ -33,6 +33,6 @@ public class DisenchanterMenu extends DETileMenu<TileDisenchanter> {
 
         input.addSlot(new ModularSlot(tile.itemHandler, 0));
         books.addSlot(new ModularSlot(tile.itemHandler, 1));
-        output.addSlot(new ModularSlot(tile.itemHandler, 2));
+        output.addSlot(new ModularSlot(tile.itemHandler, 2).output());
     }
 }

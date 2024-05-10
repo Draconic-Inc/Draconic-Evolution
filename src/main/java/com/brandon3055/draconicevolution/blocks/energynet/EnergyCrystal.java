@@ -5,7 +5,7 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
-import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
@@ -20,7 +20,6 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -39,7 +38,7 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements IHudBlock, EntityBlock {
+public class EnergyCrystal extends EntityBlockBCore implements IHudBlock {
     private final TechLevel techLevel;
     private final CrystalType crystalType;
     private static VoxelShape CRYSTAL_SHAPE = Shapes.create(new AABB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625));
@@ -65,7 +64,7 @@ public class EnergyCrystal extends BlockBCore implements IHudBlock, EntityBlock 
         return crystalType.createTile(techLevel, pos, state);
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> entityType) {
         if (entityType == crystalType.type.get()) {
             return (e, e2, e3, tile) -> ((TileBCore) tile).tick();

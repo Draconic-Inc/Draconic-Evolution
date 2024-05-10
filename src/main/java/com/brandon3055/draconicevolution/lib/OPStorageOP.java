@@ -12,6 +12,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.google.common.math.BigIntegerMath;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -43,12 +44,14 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     protected BigInteger overflowCount = BigInteger.ZERO;
 
     protected IOTracker ioTracker;
+    private final BlockEntity tile;
     private Supplier<Long> capacity;
 
     /**
      * @param capacity supplier for the maximum capacity of this storage or -1 for unlimited.
      */
-    public OPStorageOP(Supplier<Long> capacity) {
+    public OPStorageOP(BlockEntity tile, Supplier<Long> capacity) {
+        this.tile = tile;
         this.capacity = capacity;
     }
 
@@ -65,6 +68,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
                 if (ioTracker != null) {
                     ioTracker.energyExtracted(maxExtract);
                 }
+                if (maxExtract != 0 && tile != null) {
+                    tile.setChanged();
+                }
             }
             return maxExtract;
         }
@@ -75,6 +81,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             valueStorage -= energyExtracted;
             if (ioTracker != null) {
                 ioTracker.energyExtracted(energyExtracted);
+            }
+            if (energyExtracted != 0 && tile != null) {
+                tile.setChanged();
             }
         }
 
@@ -91,6 +100,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
                 valueStorage += energyReceived;
                 if (ioTracker != null) {
                     ioTracker.energyInserted(energyReceived);
+                }
+                if (energyReceived != 0 && tile != null) {
+                    tile.setChanged();
                 }
             }
             return energyReceived;
@@ -109,6 +121,9 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             }
             if (ioTracker != null) {
                 ioTracker.energyInserted(maxReceive);
+            }
+            if (maxReceive != 0 && tile != null) {
+                tile.setChanged();
             }
         }
 

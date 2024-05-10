@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static codechicken.lib.gui.modular.lib.geometry.Constraint.literal;
@@ -36,6 +37,8 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
     public static final int GUI_HEIGHT = 220;
 
     private IFusionRecipe currentRecipe = null;
+    public GuiItemStack stackIcon;
+    public Supplier<Boolean> hideRecipes;
 
     @Override
     public GuiElement<?> createRootElement(ModularGui gui) {
@@ -53,6 +56,8 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
         TileFusionCraftingCore tile = menu.tile;
         GuiElement<?> root = gui.getRoot();
         GuiText heading = TOOLKIT.createHeading(root, gui.getGuiTitle(), true);
+
+        hideRecipes = () -> tile.getActiveRecipe() != null;
 
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
         buttonRow.addButton(TOOLKIT::createThemeButton);
@@ -93,7 +98,7 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
         Constraints.placeOutside(craft, playInv.container(), Constraints.LayoutPos.TOP_CENTER, 0, -12);
 
         //Result Display
-        GuiItemStack stackIcon = new GuiItemStack(craftArea, ItemStack.EMPTY);
+        stackIcon = new GuiItemStack(craftArea, ItemStack.EMPTY);
         Constraints.size(stackIcon, 20, 20);
         Constraints.center(stackIcon, craftArea);
 

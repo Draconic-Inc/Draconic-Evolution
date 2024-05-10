@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -52,10 +52,16 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.CRAFTING_CORE, models().getExistingFile(modLoc("block/crafting/fusion_crafting_core")));
         simpleBlock(DEContent.DISLOCATION_INHIBITOR, models().cubeBottomTop("dislocation_inhibitor", modLoc("block/dislocation_inhibitor"), modLoc("block/parts/machine_top"), modLoc("block/parts/machine_top")));
 
-        multiLayerBlock(DEContent.OVERWORLD_DRACONIUM_ORE, mcLoc("block/stone"), modLoc("block/draconium_ore_overlay"));
-        multiLayerBlock(DEContent.NETHER_DRACONIUM_ORE, mcLoc("block/netherrack"), modLoc("block/draconium_ore_overlay"));
-        multiLayerBlock(DEContent.END_DRACONIUM_ORE, mcLoc("block/end_stone"), modLoc("block/draconium_ore_overlay"));
-        multiLayerBlock(DEContent.DEEPSLATE_DRACONIUM_ORE, mcLoc("block/deepslate"), modLoc("block/draconium_ore_overlay"));
+        //TODO
+//        multiLayerBlock(DEContent.OVERWORLD_DRACONIUM_ORE, mcLoc("block/stone"), modLoc("block/draconium_ore_overlay"));
+//        multiLayerBlock(DEContent.NETHER_DRACONIUM_ORE, mcLoc("block/netherrack"), modLoc("block/draconium_ore_overlay"));
+//        multiLayerBlock(DEContent.END_DRACONIUM_ORE, mcLoc("block/end_stone"), modLoc("block/draconium_ore_overlay"));
+//        multiLayerBlock(DEContent.DEEPSLATE_DRACONIUM_ORE, mcLoc("block/deepslate"), modLoc("block/draconium_ore_overlay"));
+
+        simpleBlock(DEContent.OVERWORLD_DRACONIUM_ORE);
+        simpleBlock(DEContent.NETHER_DRACONIUM_ORE);
+        simpleBlock(DEContent.END_DRACONIUM_ORE);
+        simpleBlock(DEContent.DEEPSLATE_DRACONIUM_ORE);
 
         directionalBlock(DEContent.BASIC_CRAFTING_INJECTOR, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconium")));
         directionalBlock(DEContent.WYVERN_CRAFTING_INJECTOR, models().getExistingFile(modLoc("block/crafting/crafting_injector_wyvern")));
@@ -241,14 +247,14 @@ public class BlockStateGenerator extends BlockStateProvider {
     }
 
     public void multiLayerBlock(Supplier<? extends Block> block, ResourceLocation solid, ResourceLocation overlay) {
-//        simpleBlock(block,
-//                models().getBuilder(ForgeRegistries.BLOCKS.getKey(block.get()).getPath())
-//                        .parent(models().getExistingFile(mcLoc("block/block"))).texture("particle", solid)
-////                        .customLoader(MultiLayerModelBuilder::begin)
-//                        .
-//                        .submodel(RenderType.solid(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", solid))
-//                        .submodel(RenderType.cutoutMipped(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", overlay))
-//                        .end());
+
+        simpleBlock(block,
+                models().getBuilder(ForgeRegistries.BLOCKS.getKey(block.get()).getPath())
+                        .parent(models().getExistingFile(mcLoc("block/block"))).texture("particle", solid)
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("base", models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).renderType("solid").texture("all", solid))
+                        .child("overlay", models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).renderType("cutout_mipped").texture("all", overlay))
+                        .end());
     }
 
     public MultiPartBlockStateBuilder getMultipartBuilder(Supplier<? extends Block> b) {
