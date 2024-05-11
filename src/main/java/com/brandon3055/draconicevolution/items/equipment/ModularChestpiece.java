@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.client.model.DummyHumanoidModel;
 import com.brandon3055.brandonscore.client.render.EquippedItemModel;
 import com.brandon3055.brandonscore.items.EquippedModelItem;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -36,9 +37,11 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -125,11 +128,11 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
-//    @Override
-//    @OnlyIn(Dist.CLIENT)
-//    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-//        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
-//    }
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
+    }
 
     @OnlyIn(Dist.CLIENT)
     private ModularChestpieceModel<?> model;

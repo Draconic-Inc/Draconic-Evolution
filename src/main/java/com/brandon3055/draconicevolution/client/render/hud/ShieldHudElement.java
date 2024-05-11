@@ -263,7 +263,7 @@ public class ShieldHudElement extends AbstractHudElement {
         float charge = (float) (shieldCharge >= 0 ? shieldCharge : 0);
         double bw = width - 4;
         Material mat = DEGuiTextures.get("hud/ryg_bar");
-        render.partialSprite(mat.renderType(GuiRender::texColType), 2, 2, bw * charge, shH, mat.sprite(), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
+        render.partialSprite(mat.renderType(GuiRender::texColType), 2, 2, 2 + (bw * charge), 2 + shH, mat.sprite(), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
         render.rect(2D + (bw * charge), 2, bw * (1D - charge), shH, scaleAlpha(0xFF01001b));
 
         render.rect(2, 2 + shH, width - 4, divH, scaleAlpha(0xff22072b));
@@ -282,7 +282,7 @@ public class ShieldHudElement extends AbstractHudElement {
         if (totemStatus.length > 0) {
             double x = width - 8;
             for (double state : totemStatus) {
-                render.tex(DEGuiTextures.get("hud/undying"), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
+                render.texRect(DEGuiTextures.get("hud/undying"), x, height + 1, 8, 8, scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
                 if (state != -1) {
                     RenderUtils.drawPieProgress(render, x, height + 1, 8, state, 0, 0x80FFFFFF);
                 }
@@ -300,7 +300,7 @@ public class ShieldHudElement extends AbstractHudElement {
         //Draw Text (after end batch otherwise font rendering will break)
         double tPos = width / 2D - mc.font.width(shieldText) / 2D;
 //        mc.font.drawInBatch(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
-        render.drawString(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
+        render.drawString(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF), false);
         if (numericEnergy && !energyText.isEmpty()) {
 //            mc.font.drawShadow(mStack, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF));
             render.drawString(energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF), true);

@@ -556,6 +556,8 @@
   "item_prop.draconicevolution.shield_mod.always_visible.info": "Purely cosmetic. If false, your shield will only be visible when it absorbs damage.",
   "item_prop.draconicevolution.shield_mod.enabled": "Shield Toggle",
   "item_prop.draconicevolution.shield_mod.enabled.info": "Allows you to disable your shield. This prevents your shield from using power but leaves you vulnerable to damage.",
+  "item_prop.draconicevolution.tool_aoe": "AOE",
+  "item_prop.draconicevolution.tool_aoe.info": "Allows you to adjust this tool's area of effect.",
   "item_prop.draconicevolution.tree_harvest_mod.leaves": "Harvest Leaves",
   "item_prop.draconicevolution.tree_harvest_mod.range": "Harvest Radius",
   "item_prop.draconicevolution.walk_speed": "Walk Speed",

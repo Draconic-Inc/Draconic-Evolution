@@ -164,6 +164,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("attack_aoe.info",                                           "Allows you to adjust the area covered by this weapon's swing.\nThis covers a 100 degree arc in the direction you are looking.");
         helper.add("mining_aoe",                                                "Mining AOE");
         helper.add("mining_aoe.info",                                           "Allows you to adjust this tool's mining area.");
+        helper.add("tool_aoe",                                                  "AOE");
+        helper.add("tool_aoe.info",                                             "Allows you to adjust this tool's area of effect.");
         helper.add("aoe_safe",                                                  "AOE Safe Mode");
         helper.add("aoe_safe.info",                                             "When enabled, this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half of your base with a single misclick.");
         helper.add("aoe_safe.blocked",                                          ChatFormatting.BLUE + "(" + ChatFormatting.GREEN + "AOE Safe Mode is enabled" + ChatFormatting.BLUE + ")" + ChatFormatting.RED + "Operation cancelled due to TileEntity within AOE range.");

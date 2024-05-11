@@ -164,10 +164,15 @@ public class ExplosionHelper {
                 chunk.setLightCorrect(false);
                 ThreadedLevelLightEngine lightManager = (ThreadedLevelLightEngine) helper.serverWorld.getLightEngine();
 
+
+                //                    level.getChunk(player.getOnPos()).setLightCorrect(false); //Works for chunk after reload
+//                    level.getLightEngine().checkBlock(player.getOnPos()); //Updates block after reload
+//                    level.getLightEngine().propagateLightSources(new ChunkPos(player.getOnPos())); //Works on chunk after reload
+
 //                lightManager.runUpdates()
-                lightManager.lightChunk(chunk, true)
-                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
-                                .forEach(e -> e.connection.send(new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null))));
+//                lightManager.lightChunk(chunk, true)
+//                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
+//                                .forEach(e -> e.connection.send(new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null))));
 
 //                ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true);
 //                helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false).forEach(e -> e.connection.send(packet));

@@ -276,7 +276,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
 
         @Override
         public double getPos() {
-            return MathHelper.map(prop.decimalValue, prop.minValue, prop.maxValue, 0, 1);
+            return MathHelper.map(prop.type == ConfigProperty.Type.INTEGER ? prop.integerValue : prop.decimalValue, prop.minValue, prop.maxValue, 0, 1);
         }
 
         @Override

@@ -311,7 +311,7 @@ public class DEConfig {
         serverTag.getValueList("grinderBlackList")
                 .syncTagToClient()
                 .setComment("Mob Grinder entity blacklist.")
-                .setDefaultStrings(Lists.newArrayList("evilcraft:vengeance_spirit"))
+                .setDefaultStrings(Lists.newArrayList("evilcraft:vengeance_spirit", "minecraft:armor_stand"))
                 .onSync((tag, type) -> grinderBlackList = new HashSet<>(tag.getStrings()));
         serverTag.getValue("allowGrindingPlayers")
                 .syncTagToClient()

@@ -97,10 +97,9 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
-//        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER); //TODO Restore this
-        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER, FilterType.ITEM_FILTER);
+        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
         entityFilter.setDirtyHandler(this::setChanged);
-//        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers); //TODO Restore this
+        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
@@ -229,7 +228,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         //Dont mess around. If we know the mob should die lets just make it die!
-        float damage = willKill ? Float.MAX_VALUE : ((float) cost / (float) eph) * 1.1F;
+        float damage = willKill ? Float.MAX_VALUE / 5F : ((float) cost / (float) eph) * 1.1F;
         DamageSource source = level.damageSources().playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
