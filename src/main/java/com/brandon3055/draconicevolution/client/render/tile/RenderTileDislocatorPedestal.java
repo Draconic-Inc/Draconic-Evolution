@@ -107,6 +107,7 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
 
         mStack.mulPose(Axis.YP.rotationDegrees((float) yawAngle));
         mStack.mulPose(Axis.XP.rotationDegrees((float) -pitchAngle));
+        mStack.scale(1, 1, -1);
 
         int textWidth = mc.font.width(name);
         mStack.translate(0, 0, -0.0125);
