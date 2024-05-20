@@ -1,0 +1,27 @@
+{
+  "feature": "draconicevolution:end_draconium_ore",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 3
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 0
+        },
+        "max_inclusive": {
+          "absolute": 70
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

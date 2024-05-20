@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "size": 8,
+    "discard_chance_on_air_exposure": 0,
+    "targets": [
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:end_stone"
+        },
+        "state": {
+          "Name": "draconicevolution:end_draconium_ore"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:base_stone_end"
+        },
+        "state": {
+          "Name": "draconicevolution:end_draconium_ore"
+        }
+      }
+    ]
+  }
+}

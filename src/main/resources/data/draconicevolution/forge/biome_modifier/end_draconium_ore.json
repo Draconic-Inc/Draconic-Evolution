@@ -1,0 +1,6 @@
+{
+  "type" : "forge:add_features",
+  "features": "draconicevolution:end_draconium_ore",
+  "biomes": "#minecraft:is_end",
+  "step": "underground_ores"
+}

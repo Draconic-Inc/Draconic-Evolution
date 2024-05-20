@@ -1,0 +1,6 @@
+{
+  "type" : "forge:add_features",
+  "features": "draconicevolution:chaos_island",
+  "biomes": "#minecraft:is_end",
+  "step": "raw_generation"
+}

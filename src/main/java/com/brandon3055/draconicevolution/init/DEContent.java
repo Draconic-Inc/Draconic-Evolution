@@ -35,6 +35,7 @@ import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
+import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -50,6 +51,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -80,6 +83,8 @@ public class DEContent {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIAL = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
     public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, MODID);
 
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
+
 
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -92,6 +97,7 @@ public class DEContent {
         RECIPE_TYPES.register(eventBus);
         RECIPE_SERIAL.register(eventBus);
         ENCHANTMENTS.register(eventBus);
+        FEATURES.register(eventBus);
         eventBus.addListener(DEContent::registerAttributes);
     }
 
@@ -103,7 +109,8 @@ public class DEContent {
     public static final Properties HARDENED_MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(20.0F, 600F).noOcclusion().requiresCorrectToolForDrops();
     public static final Properties STORAGE_BLOCK = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(30.0F, 600F).requiresCorrectToolForDrops();
     public static final Properties STONE_PROP = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6F).requiresCorrectToolForDrops();
-    public static final Properties ORE = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(6.0F, 16F).requiresCorrectToolForDrops();
+//    public static final Properties ORE = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(6.0F, 16F).requiresCorrectToolForDrops();
+    public static final Properties ORE = Properties.copy(Blocks.DIAMOND_ORE);
     //@formatter:off
     //Machines
     public static final RegistryObject<Generator> GENERATOR                             = BLOCKS.register("generator",                          () -> new Generator(MACHINE));
@@ -396,6 +403,11 @@ public class DEContent {
 
     public static final RegistryObject<Enchantment> ENCHANTMENT_REAPER              = ENCHANTMENTS.register("reaper_enchantment", EnchantmentReaper::new);
 
+    //#################################################################
+    // Features
+    //#################################################################
+
+    public static final RegistryObject<Feature<?>> CHAOS_ISLAND                     = FEATURES.register("chaos_island", () -> new ChaosIslandFeature(NoneFeatureConfiguration.CODEC));
 
     //#################################################################
     // Recipe Types

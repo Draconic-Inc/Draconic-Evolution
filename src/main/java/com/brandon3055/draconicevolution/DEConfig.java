@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import codechicken.lib.config.*;
-import com.brandon3055.draconicevolution.init.DEWorldGen;
+import com.brandon3055.draconicevolution.world.DEWorldGen;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.google.common.collect.Lists;
@@ -76,6 +76,12 @@ public class DEConfig {
     public static boolean allowBossSouls = false;
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
     public static Set<String> chestBlacklist = new HashSet<>();
+
+    public static boolean chaosIslandEnabled;
+    public static boolean chaosIslandVoidMode;
+    public static int chaosIslandYPosition;
+    public static int chaosIslandSeparation;
+    public static int chaosIslandSize;
 
     public static Long[] coreCapacity = new Long[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, -1L};
 
@@ -177,6 +183,29 @@ public class DEConfig {
                     .setComment("Number of chaos shards dropped by the chaos crystal when broken by a player")
                     .setDefaultInt(5)
                     .onSync((tag, type) -> chaosDropCount = tag.getInt());
+
+            ConfigCategory category = config.getCategory("Chaos Island");
+            chaosIslandEnabled = category.getValue("enableGeneration")
+                    .setComment("Allows you to disable generation of chaos islands")
+                    .setDefaultBoolean(true)
+                    .getBoolean();
+
+            chaosIslandVoidMode = category.getValue("chaosIslandVoidMode")
+                    .setComment("Allows you to disable generation of chaos islands")
+                    .setDefaultBoolean(false)
+                    .getBoolean();
+            chaosIslandYPosition = category.getValue("chaosIslandYPosition")
+                    .setComment("The island will generate so that the chaos crystal is at this y position")
+                    .setDefaultInt(80)
+                    .getInt();
+            chaosIslandSeparation = category.getValue("chaosIslandSeparation")
+                    .setComment("Toggles whether the full chaos island should spawn or just the guardian crystals, the chaos crystal, and the guardian.")
+                    .setDefaultInt(10000)
+                    .getInt();
+            chaosIslandSize = category.getValue("chaosIslandSize")
+                    .setComment("Rough radius of the main chaos island. If you prefer the smaller island from pre 1.18 set this to 80")
+                    .setDefaultInt(160)
+                    .getInt();
         }
 
         {

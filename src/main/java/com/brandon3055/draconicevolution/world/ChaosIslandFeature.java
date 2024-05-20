@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.world;
 
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.brandonscore.worldentity.WorldEntityHandler;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.DEWorldGen;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -22,21 +23,38 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import java.util.Random;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 05/11/2022
  */
 public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
-    public final int islandYPos; // The y position of the chaos crystal
-    public final int islandSeparation;
-    public final int islandSize;
 
-    public ChaosIslandFeature(Codec<NoneFeatureConfiguration> codec, int islandYPos, int islandSeparation, int islandSize) {
-        super(codec);
-        this.islandYPos = islandYPos;
-        this.islandSeparation = islandSeparation;
-        this.islandSize = islandSize;
+    public static final int CLEAR_RAD = 768;
+    public static final int TRANS_DIST = 128;
+
+    public ChaosIslandFeature(Codec<NoneFeatureConfiguration> pCodec) {
+        super(pCodec);
+    }
+
+    public static boolean overrideBiome(ChunkPos chunkPos, ChunkPos closestSpawn) {
+        BlockPos pos = chunkPos.getMiddleBlockPosition(0);
+        BlockPos closest = closestSpawn.getMiddleBlockPosition(0);
+        double distSqr = pos.distSqr(closest);
+        return distSqr < (CLEAR_RAD) * (CLEAR_RAD);
+    }
+
+    public static void overrideHeightValue(ChunkPos chunkPos, ChunkPos closestSpawn, float initialHeight, Consumer<Float> override) {
+        BlockPos pos = chunkPos.getMiddleBlockPosition(0);
+        BlockPos closest = closestSpawn.getMiddleBlockPosition(0);
+        double distSqr = pos.distSqr(closest);
+
+        if (distSqr < CLEAR_RAD * CLEAR_RAD) {
+            override.accept(-100F);
+        } else if (distSqr < (CLEAR_RAD + TRANS_DIST) * (CLEAR_RAD + TRANS_DIST)) {
+            double dist = MathHelper.sqrt(distSqr) - CLEAR_RAD;
+            override.accept((float) MathHelper.map(dist, 0, TRANS_DIST, -100F, initialHeight));
+        }
     }
 
     @Override
@@ -45,15 +63,19 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         ChunkPos chunkPos = new ChunkPos(origin);
         ChunkPos closestSpawn = getClosestSpawn(chunkPos);
 
+        if (!DEConfig.chaosIslandEnabled) {
+            return false;
+        }
+
         if (closestSpawn.x == 0 && closestSpawn.z == 0) {
             return false;
         }
 
         WorldGenLevel level = context.level();
         RandomSource rand = context.random();
-        BlockPos islandOrigin = closestSpawn.getBlockAt(0, islandYPos, 0);
+        BlockPos islandOrigin = closestSpawn.getBlockAt(0, DEConfig.chaosIslandYPosition, 0);
 
-        if (islandOrigin.distSqr(origin) > (islandSize * 5) * (islandSize * 5)) {
+        if (islandOrigin.distSqr(origin) > (DEConfig.chaosIslandSize * 5) * (DEConfig.chaosIslandSize * 5)) {
             return false;
         }
 
@@ -78,8 +100,8 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
 
     public boolean genIslandChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, RandomSource rand) {
         boolean chunkModified = false;
-        int minY = islandYPos - 40;
-        int maxY = islandYPos + 40;
+        int minY = DEConfig.chaosIslandYPosition - 40;
+        int maxY = DEConfig.chaosIslandYPosition + 40;
 
         for (BlockPos pos : BlockPos.betweenClosed(chunkOrigin.offset(0, minY - chunkOrigin.getY(), 0), chunkOrigin.offset(16, maxY - chunkOrigin.getY(), 16))) {
             int x = pos.getX() - islandOrigin.getX();
@@ -91,10 +113,10 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
             double density, centerFalloff, plateauFalloff, heightMapFalloff;
 
             //Scaling
-            xd = (double) x / islandSize;
+            xd = (double) x / DEConfig.chaosIslandSize;
             yd = 0.5 + ((double) y / (32));
-            zd = (double) z / islandSize;
-            dist *= 80D / islandSize;
+            zd = (double) z / DEConfig.chaosIslandSize;
+            dist *= 80D / DEConfig.chaosIslandSize;
 
             //Calculate Center Falloff
             centerFalloff = 1D / (dist * 0.05D);
@@ -149,8 +171,8 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         int originX = islandOrigin.getX();
         int originZ = islandOrigin.getZ();
 
-        for (int y = islandYPos - coreHeight; y <= islandYPos + coreHeight; y++) {
-            int yDist = Math.abs(y - islandYPos);
+        for (int y = DEConfig.chaosIslandYPosition - coreHeight; y <= DEConfig.chaosIslandYPosition + coreHeight; y++) {
+            int yDist = Math.abs(y - DEConfig.chaosIslandYPosition);
             int inRadius = yDist - 3;
             double yp = (coreHeight - yDist) / (double) coreHeight;
             int outRadius = (int) (yp * coreWidth);
@@ -176,7 +198,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     public boolean genCoreSlice(WorldGenLevel level, double distSq, double distXZSq, BlockPos pos, int ringRadius, int coreRadious, boolean fillIn, RandomSource rand) {
-        int yOffset = Math.abs(islandYPos - pos.getY());
+        int yOffset = Math.abs(DEConfig.chaosIslandYPosition - pos.getY());
         double oRad = coreRadious - (yOffset * yOffset) / 10D;
 
         if (distSq > (oRad - 3D) * (oRad - 3D) && rand.nextDouble() * 3D < distSq - ((oRad - 3D) * (oRad - 3D))) {
@@ -210,7 +232,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
 
     public boolean genRingChunk(WorldGenLevel level, BlockPos chunkOrigin, BlockPos islandOrigin, RandomSource rand) {
         boolean chunkModified = false;
-        int outerRadius = islandSize * 4;
+        int outerRadius = DEConfig.chaosIslandSize * 4;
         int rings = 4;
         int width = 20;
         int spacing = 20;
@@ -223,12 +245,12 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
                     int min = outerRadius - width - ((width + spacing) * i);
                     if (distSq < max * max && distSq >= min * min) {
                         int y = 10 + (int) ((double) (islandOrigin.getX() - x) * 0.1D) + (rand.nextInt(10) - 5);
-                        BlockPos setPos = new BlockPos(x, y + islandYPos, z);
+                        BlockPos setPos = new BlockPos(x, y + DEConfig.chaosIslandYPosition, z);
                         if (0.1F > rand.nextFloat()) {
                             level.setBlock(setPos, Blocks.END_STONE.defaultBlockState(), 3);
                             chunkModified = true;
                         }
-                        if (0.001F > rand.nextFloat() && DEWorldGen.DRACONIUM_ORE_PLACED_END != null) {
+                        if (0.001F > rand.nextFloat()/* && DEWorldGen.DRACONIUM_ORE_PLACED_END != null*/) {
                             level.setBlock(setPos, DEContent.END_DRACONIUM_ORE.get().defaultBlockState(), 3);
                             chunkModified = true;
                         }
@@ -240,8 +262,8 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         return chunkModified;
     }
 
-    public ChunkPos getClosestSpawn(ChunkPos pos) {
-        return new ChunkPos(MathUtils.getNearestMultiple(pos.x * 16, islandSeparation) / 16, MathUtils.getNearestMultiple(pos.z * 16, islandSeparation) / 16);
+    public static ChunkPos getClosestSpawn(ChunkPos pos) {
+        return new ChunkPos(MathUtils.getNearestMultiple(pos.x * 16, DEConfig.chaosIslandSeparation) / 16, MathUtils.getNearestMultiple(pos.z * 16, DEConfig.chaosIslandSeparation) / 16);
     }
 
     private static boolean inChunk(BlockPos ref, BlockPos test) {

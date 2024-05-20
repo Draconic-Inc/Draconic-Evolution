@@ -79,14 +79,6 @@ public class ClientEventHandler {
         });
     }
 
-//    @SubscribeEvent
-//    public void renderGameOverlay(RenderGuiOverlayEvent.Post event) {
-//        if (explosionPos != null && event.getOverlay() == RenderGameOverlayEvent.ElementType.ALL) {
-//            mc = Minecraft.getInstance();
-//            updateExplosionAnimation(mc, event.getMatrixStack(), event.getWindow(), mc.getFrameTime());
-//        }
-//    }
-
     public static void tickEnd(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != LogicalSide.CLIENT) {
             return;

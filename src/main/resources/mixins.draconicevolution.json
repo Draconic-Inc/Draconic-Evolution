@@ -1,15 +1,17 @@
 {
-    "required":           true,
-    "minVersion":         "0.8",
-    "package":            "com.brandon3055.draconicevolution.mixin",
-    "refmap":             "mixins.draconicevolution.refmap.json",
-    "target":             "@env(DEFAULT)",
-    "compatibilityLevel": "JAVA_17",
-    "mixins":             [
-        "ServerEntityMixin"
-    ],
-    "client":             [
-        "PlayerModelMixin",
-        "ServerboundSetCreativeModeSlotPacketMixin"
-    ]
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.brandon3055.draconicevolution.mixin",
+  "refmap": "mixins.draconicevolution.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "EndIslandDensityFunctionMixin",
+    "ServerEntityMixin",
+    "TheEndBiomeSourceMixin"
+  ],
+  "client": [
+    "PlayerModelMixin",
+    "ServerboundSetCreativeModeSlotPacketMixin"
+  ]
 }
