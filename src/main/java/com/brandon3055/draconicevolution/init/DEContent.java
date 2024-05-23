@@ -36,6 +36,7 @@ import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
+import com.brandon3055.draconicevolution.world.EnderCometFeature;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -163,6 +164,7 @@ public class DEContent {
     public static final RegistryObject<BlockBCore> INFUSED_OBSIDIAN                     = BLOCKS.register("infused_obsidian",                   () -> new BlockBCore(Properties.of().mapColor(MapColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setExplosionResistant());
 
     public static final RegistryObject<PlacedItem> PLACED_ITEM                          = BLOCKS.register("placed_item",                        () -> new PlacedItem(Properties.of().strength(5F, 12F).noOcclusion()));
+    public static final RegistryObject<CometSpawner> COMET_SPAWNER                      = BLOCKS.register("comet_spawner",                      () -> new CometSpawner(Properties.of()));
 
     //Energy Crystals
     public static final Properties CRYSTAL_B = Properties.of().mapColor(DyeColor.BLUE).strength(3.0F, 8F);
@@ -355,6 +357,8 @@ public class DEContent {
     public static final RegistryObject<BlockEntityType<TileCrystalDirectIO>>        TILE_IO_CRYSTAL                 = TILES_ENTITIES.register("io_crystal",            () -> BlockEntityType.Builder.of(TileCrystalDirectIO::new, BASIC_IO_CRYSTAL.get(), WYVERN_IO_CRYSTAL.get(), DRACONIC_IO_CRYSTAL.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileCrystalRelay>>           TILE_RELAY_CRYSTAL              = TILES_ENTITIES.register("relay_crystal",         () -> BlockEntityType.Builder.of(TileCrystalRelay::new, BASIC_RELAY_CRYSTAL.get(), WYVERN_RELAY_CRYSTAL.get(), DRACONIC_RELAY_CRYSTAL.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileCrystalWirelessIO>>      TILE_WIRELESS_CRYSTAL           = TILES_ENTITIES.register("wireless_crystal",      () -> BlockEntityType.Builder.of(TileCrystalWirelessIO::new, BASIC_WIRELESS_CRYSTAL.get(), WYVERN_WIRELESS_CRYSTAL.get(), DRACONIC_WIRELESS_CRYSTAL.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<CometSpawner.TileCometSpawner>>TILE_COMET_SPAWNER            = TILES_ENTITIES.register("comet_spawner",         () -> BlockEntityType.Builder.of(CometSpawner.TileCometSpawner::new,   COMET_SPAWNER.get()                   ).build(null));
     //@formatter:on
 
 
@@ -408,6 +412,7 @@ public class DEContent {
     //#################################################################
 
     public static final RegistryObject<Feature<?>> CHAOS_ISLAND                     = FEATURES.register("chaos_island", () -> new ChaosIslandFeature(NoneFeatureConfiguration.CODEC));
+    public static final RegistryObject<Feature<?>> END_COMET                        = FEATURES.register("end_comet", () -> new EnderCometFeature(NoneFeatureConfiguration.CODEC));
 
     //#################################################################
     // Recipe Types

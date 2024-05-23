@@ -1,4 +1,4 @@
-// 1.20.1	2024-02-07T21:33:25.633835159	Loot Tables
+// 1.20.1	2024-05-23T17:02:51.192106157	Loot Tables
 e2f5eb2c28534cd5431daa105fe5f76e63abe935 data/draconicevolution/loot_tables/blocks/awakened_crafting_injector.json
 fd5b12a6d6e0b04d418c8bbd89f59e3bb127a4d1 data/draconicevolution/loot_tables/blocks/awakened_draconium_block.json
 4be05b10711ccfdefe3b3d9de37025ab8b8e2375 data/draconicevolution/loot_tables/blocks/basic_crafting_injector.json
@@ -9,6 +9,7 @@ d2a0a89e3a682e9339efd0b68ea53f09778ca8bc data/draconicevolution/loot_tables/bloc
 26254d1b6ba127f87bcbe0bbd23bfa3613c25e01 data/draconicevolution/loot_tables/blocks/chaos_crystal.json
 8b29fa2740a0abf3c451f1b13917b8ce84cfdeaf data/draconicevolution/loot_tables/blocks/chaos_crystal_part.json
 312ff40ea99e4f5def0f4115b707f39fdbf15a54 data/draconicevolution/loot_tables/blocks/chaotic_crafting_injector.json
+b6b67aef43277611489a8f82fd6d0c40e7323819 data/draconicevolution/loot_tables/blocks/comet_spawner.json
 ff9e09784de83e6c0b60cd103e686d9e6d92307c data/draconicevolution/loot_tables/blocks/crafting_core.json
 14f7140e8189fc12aef84f0a12a6bc8296da8a5c data/draconicevolution/loot_tables/blocks/creative_op_capacitor.json
 9269935763c5dd349c16553bb8b47b610b9ef58f data/draconicevolution/loot_tables/blocks/deepslate_draconium_ore.json

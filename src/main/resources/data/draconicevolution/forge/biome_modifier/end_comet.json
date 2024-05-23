@@ -1,0 +1,6 @@
+{
+  "type" : "forge:add_features",
+  "features": "draconicevolution:end_comet",
+  "biomes": "#minecraft:is_end",
+  "step": "surface_structures"
+}

@@ -1,4 +1,4 @@
-// 1.20.1	2024-05-10T18:11:18.934854532	Draconic Evolution Blockstates
+// 1.20.1	2024-05-23T17:02:51.181193433	Draconic Evolution Blockstates
 ad96fc4dd31358900ef10516ad69d23af0d9aa3a assets/draconicevolution/blockstates/awakened_crafting_injector.json
 ed3a0b685ecde54faa81b188c12787e3f1f87162 assets/draconicevolution/blockstates/awakened_draconium_block.json
 8f0cac8f1dc8b6782485a5adb514ad03dc52c585 assets/draconicevolution/blockstates/basic_crafting_injector.json
@@ -9,6 +9,7 @@ a52f1bceffadd6a69e2b14dd3e0eca79f4c57e4f assets/draconicevolution/blockstates/ce
 dfb5366b053b4afc08c451ab019eda9d8376088f assets/draconicevolution/blockstates/chaos_crystal.json
 dfb5366b053b4afc08c451ab019eda9d8376088f assets/draconicevolution/blockstates/chaos_crystal_part.json
 b389b65bedc77e35ba33a7e36ef44f9b3a883be2 assets/draconicevolution/blockstates/chaotic_crafting_injector.json
+dfb5366b053b4afc08c451ab019eda9d8376088f assets/draconicevolution/blockstates/comet_spawner.json
 f51083db97ba959edbda7d46be9e5c1d79aa9843 assets/draconicevolution/blockstates/crafting_core.json
 8484852b3962e0ae4be751f18114739cc19e793c assets/draconicevolution/blockstates/creative_op_capacitor.json
 915ff50c97a652c54885431e40c7ffd7403db396 assets/draconicevolution/blockstates/deepslate_draconium_ore.json

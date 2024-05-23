@@ -98,6 +98,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         dummyBlock(DEContent.CHAOS_CRYSTAL);
         dummyBlock(DEContent.PLACED_ITEM);
         dummyBlock(DEContent.CHAOS_CRYSTAL_PART);
+        dummyBlock(DEContent.COMET_SPAWNER);
 
         dummyBlock(DEContent.DRACONIUM_CHEST);
         dummyBlock(DEContent.REACTOR_CORE);

@@ -1,0 +1,24 @@
+{
+  "feature": "draconicevolution:end_comet",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 128
+        },
+        "max_inclusive": {
+          "absolute": 175
+        }
+      }
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 10000
+    }
+  ]
+}

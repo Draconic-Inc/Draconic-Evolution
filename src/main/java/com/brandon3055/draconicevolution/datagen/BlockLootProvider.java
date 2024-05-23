@@ -82,6 +82,7 @@ public class BlockLootProvider extends BlockLootSubProvider {
         noDrop(DEContent.CHAOS_CRYSTAL);
         noDrop(DEContent.CHAOS_CRYSTAL_PART);
         noDrop(DEContent.PLACED_ITEM);
+        noDrop(DEContent.COMET_SPAWNER);
 
         //Fortune
         add(DEContent.OVERWORLD_DRACONIUM_ORE.get(), (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(DEContent.DUST_DRACONIUM.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F))).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));

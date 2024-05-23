@@ -78,6 +78,7 @@ public class DEConfig {
     public static Set<String> chestBlacklist = new HashSet<>();
 
     public static boolean chaosIslandEnabled;
+    public static boolean enderCometEnabled;
     public static boolean chaosIslandVoidMode;
     public static int chaosIslandYPosition;
     public static int chaosIslandSeparation;
@@ -187,6 +188,11 @@ public class DEConfig {
             ConfigCategory category = config.getCategory("Chaos Island");
             chaosIslandEnabled = category.getValue("enableGeneration")
                     .setComment("Allows you to disable generation of chaos islands")
+                    .setDefaultBoolean(true)
+                    .getBoolean();
+
+            enderCometEnabled = category.getValue("enderCometEnabled")
+                    .setComment("Allows you to disable generation of end comets")
                     .setDefaultBoolean(true)
                     .getBoolean();
 
