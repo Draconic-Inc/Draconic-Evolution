@@ -3,8 +3,10 @@ package com.brandon3055.draconicevolution.inventory;
 import codechicken.lib.gui.modular.lib.container.SlotGroup;
 import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
 import codechicken.lib.inventory.container.modular.ModularSlot;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
@@ -202,7 +204,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
                             NetworkHooks.openScreen((ServerPlayer) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
                         } else {
-                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                            player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 0.25F, 1F);
                         }
                         return;
                     }
