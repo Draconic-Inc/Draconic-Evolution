@@ -44,7 +44,7 @@ public class DEWorldGen {
 
 //    public static RegistryObject<PlacedFeature> ISLAND_FEATURE;
 
-    public static boolean chaosIslandVoidMode;
+//    public static boolean chaosIslandVoidMode;
 
     public static void init(ConfigCategory configTag) {
         LOCK.lock();

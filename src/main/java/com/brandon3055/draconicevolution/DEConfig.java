@@ -197,7 +197,7 @@ public class DEConfig {
                     .getBoolean();
 
             chaosIslandVoidMode = category.getValue("chaosIslandVoidMode")
-                    .setComment("Allows you to disable generation of chaos islands")
+                    .setComment("Toggles whether the full chaos island should spawn or just the guardian crystals, the chaos crystal, and the guardian.")
                     .setDefaultBoolean(false)
                     .getBoolean();
             chaosIslandYPosition = category.getValue("chaosIslandYPosition")
@@ -205,7 +205,7 @@ public class DEConfig {
                     .setDefaultInt(80)
                     .getInt();
             chaosIslandSeparation = category.getValue("chaosIslandSeparation")
-                    .setComment("Toggles whether the full chaos island should spawn or just the guardian crystals, the chaos crystal, and the guardian.")
+                    .setComment("Allows you to adjust the chaos island spawn grid size.")
                     .setDefaultInt(10000)
                     .getInt();
             chaosIslandSize = category.getValue("chaosIslandSize")

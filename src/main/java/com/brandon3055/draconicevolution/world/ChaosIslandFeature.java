@@ -80,7 +80,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         boolean chunkModified = false;
-        if (!DEWorldGen.chaosIslandVoidMode) {
+        if (!DEConfig.chaosIslandVoidMode) {
             chunkModified = genIslandChunk(level, origin, islandOrigin, rand);
             chunkModified |= genCoreChunk(level, origin, islandOrigin, rand);
             chunkModified |= genRingChunk(level, origin, islandOrigin, rand);
@@ -279,7 +279,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
             world.addFreshEntity(entity);
         }
 
-        if (DEWorldGen.chaosIslandVoidMode) return;
+        if (DEConfig.chaosIslandVoidMode) return;
 
         int r = 3;
         BlockPos.betweenClosedStream(genPos.offset(-r, -25, -r), genPos.offset(r, 4, r)).forEach(pos -> {
