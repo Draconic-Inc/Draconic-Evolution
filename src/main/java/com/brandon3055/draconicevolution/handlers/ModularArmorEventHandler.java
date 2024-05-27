@@ -59,9 +59,9 @@ public class ModularArmorEventHandler {
         MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
 
         ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(FLY_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
 //        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight); //TODO 1.20.2+, 1.20.1 requires STEP_HEIGHT_ADDITION for forge support
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT_ADDITION, ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT_ADDITION, ModularArmorEventHandler::getStepHeight);
     }
 
     @Nullable
