@@ -125,9 +125,9 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
             //Draw Slots
             for (Slot slot : slots) {
-                render.tex(slotTex, slot.x, slot.y, slot.size, slot.size);
+                render.texRect(slotTex, slot.x, slot.y, slot.size, slot.size);
                 if (overlayTex == null || filterStacks.containsKey(slot.index)) continue;
-                render.tex(overlayTex, slot.x, slot.y, slot.size, slot.size);
+                render.texRect(overlayTex, slot.x, slot.y, slot.size, slot.size);
             }
 
             render.pose().translate(0, 0, 100);
@@ -172,10 +172,10 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
             if (iar * width <= height) { //Fit Width
                 double h = width * iar;
-                render.tex(texture, x, y + (height / 2D) - (h / 2D), width, h, 1F, 1F, 1F, alpha);
+                render.texRect(texture, x, y + (height / 2D) - (h / 2D), width, h, 1F, 1F, 1F, alpha);
             } else { //Fit height
                 double w = height * ar;
-                render.tex(texture, x + (width / 2D) - (w / 2D), y, w, height, 1F, 1F, 1F, alpha);
+                render.texRect(texture, x + (width / 2D) - (w / 2D), y, w, height, 1F, 1F, 1F, alpha);
             }
         }
     }

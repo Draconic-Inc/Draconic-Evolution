@@ -315,7 +315,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         if (!startupInitialized.get()) {
             double totalFuel = reactableFuel.get() + convertedFuel.get();
             maxShieldCharge.set(totalFuel * 96.45061728395062 * 100);
-            maxSaturation.set((int) (totalFuel * 96.45061728395062 * 1000));
+            maxSaturation.set((long) (totalFuel * 96.45061728395062 * 1000));
 
             if (saturation.get() > maxSaturation.get()) {
                 saturation.set(maxSaturation.get());
