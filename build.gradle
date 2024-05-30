@@ -99,6 +99,7 @@ configurations {
 
 
 repositories {
+    flatDir { dirs 'libs' }
     mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
@@ -129,7 +130,7 @@ dependencies {
 
     compileOnly("cc.tweaked:cc-tweaked-${config.mc_version}-core-api:${config.cct_version}")
     compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge-api:${config.cct_version}"))
-    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge:${config.cct_version}"))
+    implementation(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge:${config.cct_version}"))
 
     // For Testing
 //    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core

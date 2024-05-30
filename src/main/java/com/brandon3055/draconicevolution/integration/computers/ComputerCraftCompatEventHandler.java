@@ -30,12 +30,6 @@ public class ComputerCraftCompatEventHandler {
 	            event.addCapability(new ResourceLocation(DraconicEvolution.MODID, peripheral.getType()), peripheral);
 	            event.addListener(peripheral::invalidate);
 	        }
-	    	else if (tile instanceof TileFlowGate) {
-	    		TileFlowGate tileEntity = (TileFlowGate)tile;
-	    		PeripheralFlowGate peripheral = new PeripheralFlowGate((TileFlowGate)tile);
-	            event.addCapability(new ResourceLocation(DraconicEvolution.MODID, peripheral.getType()), peripheral);
-	            event.addListener(peripheral::invalidate);
-	        }
 	    	else if (tile instanceof TileFluidGate) {
 	    		TileFluidGate tileEntity = (TileFluidGate)tile;
 	    		PeripheralFluidGate peripheral = new PeripheralFluidGate((TileFluidGate)tile);
@@ -48,6 +42,12 @@ public class ComputerCraftCompatEventHandler {
 	            event.addCapability(new ResourceLocation(DraconicEvolution.MODID, peripheral.getType()), peripheral);
 	            event.addListener(peripheral::invalidate);
 	        }
+			else if (tile instanceof TileFlowGate) {
+				TileFlowGate tileEntity = (TileFlowGate)tile;
+				PeripheralFlowGate peripheral = new PeripheralFlowGate((TileFlowGate)tile);
+				event.addCapability(new ResourceLocation(DraconicEvolution.MODID, peripheral.getType()), peripheral);
+				event.addListener(peripheral::invalidate);
+			}
 	    }
     }
 }

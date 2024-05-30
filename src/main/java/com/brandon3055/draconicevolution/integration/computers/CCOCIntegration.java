@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
-import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.ForgeComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +29,7 @@ public class CCOCIntegration {
 
 //    @Optional.Method(modid = "computercraft")
     public static void initCC() {
-//        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
+        ForgeComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
     }
 
 //    @Optional.Method(modid = "opencomputers")
@@ -76,7 +76,7 @@ public class CCOCIntegration {
          * @param pos   The position the block is at.
          * @param side  The side to get the peripheral from.
          * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
-         * @see ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
+         * @see ForgeComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
          */
         @Nullable
         @Override
@@ -86,7 +86,7 @@ public class CCOCIntegration {
             	setPeripheral((IPeripheral)tile);
                 return holderPeripheral;
             }
-            else return null;
+            return LazyOptional.empty();
         }
         
         protected void setPeripheral(IPeripheral peripheral) {
