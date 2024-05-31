@@ -220,6 +220,18 @@ public class ClientInit {
         ItemBlockRenderTypes.setRenderLayer(DEContent.DEEPSLATE_DRACONIUM_ORE.get(), renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
     }
 
+    public static boolean deElytraVisible(ItemStack stack, LivingEntity entity) {
+        if (ContributorHandler.shouldCancelElytra(entity)) return false;
+        if (stack.getItem() instanceof IModularArmor item) {
+            return item.canElytraFlyBC(stack, entity);
+        }
+        if (BrandonsCore.equipmentManager != null) {
+            ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
+            return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
+        }
+        return false;
+    }
+
     @SuppressWarnings ({"rawtypes", "unchecked"})
     private static void onAddRenderLayers(EntityRenderersEvent.AddLayers event) {
         for (String skin : event.getSkins()) {
@@ -228,15 +240,7 @@ public class ClientInit {
             renderer.addLayer(new ElytraLayer(renderer, event.getEntityModels()) {
                 @Override
                 public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-                    if (ContributorHandler.shouldCancelElytra(entity)) return false;
-                    if (stack.getItem() instanceof IModularArmor item) {
-                        return item.canElytraFlyBC(stack, entity);
-                    }
-                    if (BrandonsCore.equipmentManager != null) {
-                        ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
-                        return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
-                    }
-                    return false;
+                    return deElytraVisible(stack, entity);
                 }
             });
         }
