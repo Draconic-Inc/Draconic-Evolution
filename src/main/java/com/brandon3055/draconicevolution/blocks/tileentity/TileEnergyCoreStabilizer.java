@@ -141,6 +141,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     }
 
     private void buildMultiBlock(Direction.Axis axis) {
+        coreOffset.set(null);
         StructureBlock.buildingLock = true;
         for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
             level.setBlockAndUpdate(worldPosition.offset(offset), DEContent.STRUCTURE_BLOCK.get().defaultBlockState());

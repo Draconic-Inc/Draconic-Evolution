@@ -104,6 +104,8 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(Generator.ACTIVE, active.get()));
         }
 
+        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.maxExtract(), opStorage.getOPStored()));
+
         if (active.get()) {
             double genRate = 1F - ((double) opStorage.getOPStored() / (double) opStorage.getMaxOPStored());
             genRate = Math.min(1F, genRate * 4F);
@@ -137,8 +139,6 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         if (isTileEnabled() && fuelRemaining.get() <= 0) {
             tryRefuel();
         }
-
-        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.maxExtract(), opStorage.getOPStored()));
     }
 
     public void tryRefuel() {

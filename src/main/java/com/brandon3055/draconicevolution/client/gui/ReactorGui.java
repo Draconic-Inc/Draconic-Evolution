@@ -11,6 +11,7 @@ import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Align;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
@@ -225,34 +226,18 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
                 .setWrap(true)
                 .setShadow(false)
                 .setTextColour(0xB0B0B0);
-        Constraints.size(goBoom, 161, 77);
+        Constraints.size(goBoom, 155, 77);
         Constraints.center(goBoom, statusPanel);
 
         GuiText eta = new GuiText(statusPanel, Component.literal("ETA"))
                 .setEnabled(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
-                .setTextSupplier(() -> Component.literal("Estimated\nTime\nUntil\nDetonation\n\n" + ChatFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating..")))
+                .setTextSupplier(() -> Component.literal("Estimated Time Until Detonation\n\n" + ChatFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating..")))
                 .setAlignment(Align.LEFT)
                 .setWrap(true)
                 .setShadow(false)
                 .setTextColour(0xFF0000);
         Constraints.size(eta, 68, 80);
-        Constraints.center(eta, statusPanel);
-
-        //Status Label
-        GuiText statusText = new GuiText(statusPanel)
-                .setShadow(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-                .setTextSupplier(() -> {
-                    String s = tile.reactorState.get().localize();
-                    if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && TimeKeeper.getClientTick() % 10 > 5) {
-                        s = ChatFormatting.DARK_RED + "**" + s + "**";
-                    } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-                        s = ChatFormatting.DARK_RED + "--" + s + "--";
-                    }
-                    return TOOLKIT.translate("status").withStyle(ChatFormatting.GOLD).append(": " + s);
-                })
-                .setAlignment(Align.LEFT);
-        Constraints.size(statusText, 160, 12);
-        Constraints.placeInside(statusText, statusPanel, Constraints.LayoutPos.TOP_LEFT, -5, -12);
+        Constraints.placeOutside(eta, statusPanel, Constraints.LayoutPos.MIDDLE_RIGHT, 5, 0);
 
         //Indicators
         GuiTexture tempBg = new GuiTexture(root, DEGuiTextures.get("reactor/temp_gauge"))
@@ -313,6 +298,22 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
         };
         Constraints.size(coreBg, 128, 128);
         Constraints.placeInside(coreBg, root, Constraints.LayoutPos.TOP_CENTER, 0, 10);
+
+        //Status Label
+        GuiText statusText = new GuiText(root)
+                .setShadow(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setTextSupplier(() -> {
+                    String s = tile.reactorState.get().localize();
+                    if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && TimeKeeper.getClientTick() % 10 > 5) {
+                        s = ChatFormatting.DARK_RED + "**" + s + "**";
+                    } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+                        s = ChatFormatting.DARK_RED + "--" + s + "--";
+                    }
+                    return TOOLKIT.translate("status").withStyle(ChatFormatting.GOLD).append(": " + s);
+                })
+                .setAlignment(Align.LEFT);
+        Constraints.size(statusText, 160, 12);
+        Constraints.placeInside(statusText, statusPanel, Constraints.LayoutPos.TOP_LEFT, -5, -12);
 
         //RS Buttons
         GuiRectangle rsPanel = new GuiRectangle(root)
@@ -390,7 +391,7 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
 
         @Override
         public double getPos() {
-            return 1 - pos.get();
+            return MathHelper.clip(1 - pos.get(), 0, 1);
         }
 
         @Override
