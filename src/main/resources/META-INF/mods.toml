@@ -8,6 +8,8 @@ license="CoFH \"Don't Be a Jerk\" License"
 	version="${file.jarVersion}"
 	authors="brandon3055"
 	description=''''''
+	updateJSONURL="https://version-check.covers1624.net/check/?mod=Draconic-Evolution&mc=${mc_version}"
+
 [[dependencies.draconicevolution]]
 	modId="forge"
 	mandatory=true

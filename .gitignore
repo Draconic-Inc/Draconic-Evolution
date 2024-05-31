@@ -9,7 +9,7 @@
 !gradlew
 !gradlew.bat
 !build.gradle
-!build.properties
+!gradle.properties
 !settings.gradle
 
 # Git Stuff

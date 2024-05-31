@@ -1,8 +1,10 @@
+import groovy.json.JsonOutput
+
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'signing'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id "net.covers1624.signing" version '1.1.4'
     id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
 }
@@ -19,38 +21,13 @@ archivesBaseName = "Draconic-Evolution"
 
 sourceSets.main.resources.srcDirs += "src/main/generated"
 
-file('build.properties').withReader {
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-def signProps = [:]
-if (System.getenv("KEY_STORE")) {
-    println "Using Env variables for jar signing."
-    signProps['keyStore'] = System.getenv("KEY_STORE")
-    file(System.getenv("KEY_STORE_PROPS")).withReader {
-        def props = new Properties()
-        props.load(it)
-        signProps.putAll(props)
-    }
-} else if (project.hasProperty('keyStore')) {
-    println "Using Project properties for jar signing."
-    signProps['keyStore'] = project.getProperty('keyStore')
-    signProps['storePass'] = project.getProperty('keyStorePass')
-    signProps['alias'] = project.getProperty('keyStoreAlias')
-    signProps['keyPass'] = project.getProperty('keyStoreKeyPass')
-} else {
-    println 'No signing secrets found, build will not be signed.'
-}
-
-config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "9999")
-version = "${config.mc_version}-${config.mod_version}"
-println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
-println "Using Forge: ${config.neo_version}, for Minecraft: ${config.mc_version}"
+mod_version = "${mod_version}." + (System.getenv("BUILD_NUMBER") ?: "9999")
+version = "${mc_version}-${mod_version}"
+println "Starting build of ${archivesBaseName}, Version: ${mod_version}"
+println "Using Forge: ${neo_version}, for Minecraft: ${mc_version}"
 
 minecraft {
-    mappings channel: 'official', version: config.mc_version
+    mappings channel: 'official', version: mc_version
     accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
@@ -73,30 +50,9 @@ mixin {
     add(sourceSets.main, "mixins.draconicevolution.refmap.json")
 }
 
-processResources {
-    inputs.property 'mod_version', config.mod_version
-    inputs.property 'mc_version', config.mc_version
-    inputs.property 'ccl_version', config.ccl_version
-    inputs.property 'bcore_version', config.bcore_version
-
-    filesMatching('META-INF/mods.toml') {
-        expand 'file': ['jarVersion': config.mod_version],
-                'mc_version': config.mc_version,
-                'neo_version': config.neo_version,
-                'pi_version': config.pi_version,
-                'bcore_version': config.bcore_version,
-                'cct_version': config.cct_version,
-                'lang_version': config.neo_version.split('\\.')[0],
-                'ccl_version': "[${config.ccl_version.replace(".+", "")},${config.ccl_version_max})"
-    }
-}
-
 configurations {
-//    shadow
-//    implementation.extendsFrom shadow
     annotationProcessor.extendsFrom minecraft
 }
-
 
 repositories {
     mavenLocal()
@@ -110,26 +66,26 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${config.mc_version}-${config.neo_version}"
+    minecraft "net.neoforged:forge:${mc_version}-${neo_version}"
 
-    implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:universal")
-    implementation fg.deobf("io.codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:universal")
-    implementation fg.deobf("io.codechicken:EnderStorage:${config.mc_version}-${config.ender_storage_version}:universal")
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${config.mc_version}:${config.crt_version}")
+    implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${mc_version}-${bcore_version}:universal")
+    implementation fg.deobf("io.codechicken:CodeChickenLib:${mc_version}-${ccl_version}:universal")
+    implementation fg.deobf("io.codechicken:EnderStorage:${mc_version}-${ender_storage_version}:universal")
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
-    compileOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-common-api:${config.jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-forge-api:${config.jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${config.mc_version}-forge:${config.jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
 
-    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${config.curios_version}:api"))
-    runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${config.curios_version}"))
+    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api"))
+    runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
 
-    compileOnly("cc.tweaked:cc-tweaked-${config.mc_version}-core-api:${config.cct_version}")
-    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge-api:${config.cct_version}"))
-    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${config.mc_version}-forge:${config.cct_version}"))
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
+    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
+    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
 
     // For Testing
 //    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
@@ -142,45 +98,106 @@ test {
     useJUnitPlatform()
 }
 
-signing {
-    if (!signProps.isEmpty()) {
-        jars {
-            sign jar
-            after 'reobfJar'
+processResources {
+    inputs.property 'mod_version', mod_version
+    inputs.property 'mc_version', mc_version
+    inputs.property 'ccl_version', ccl_version
+    inputs.property 'bcore_version', bcore_version
 
-            keyStore = signProps.keyStore
-            alias = signProps.alias
-            storePass = signProps.storePass
-            keyPass = signProps.keyPass
-        }
+    filesMatching('META-INF/mods.toml') {
+        expand 'file': ['jarVersion': mod_version],
+                'mc_version': mc_version,
+                'neo_version': neo_version,
+                'pi_version': pi_version,
+                'bcore_version': bcore_version,
+                'cct_version': cct_version,
+                'lang_version': neo_version.split('\\.')[0],
+                'ccl_version': "[${ccl_version.replace(".+", "")},${ccl_version_max})"
     }
 }
 
-def commonManifest = {
-    attributes 'Specification-Title': archivesBaseName
-    attributes 'Specification-Vendor': 'brandon3055'
-    attributes 'Specification-Version': "1"
-    attributes 'Implementation-Title': archivesBaseName
-    attributes 'Implementation-Vendor': 'brandon3055'
-    attributes 'Implementation-Version': version
-    attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    attributes 'MixinConfigs': 'mixins.draconicevolution.json'
+def publishingMetadata = project.layout.buildDirectory.file("libs/$archivesBaseName-$version-publishing.json")
+def publishingMetadataTask = tasks.register("publishingMetadata") {
+    outputs.file(publishingMetadata)
+    doFirst {
+        publishingMetadata.get().asFile.text = JsonOutput.prettyPrint(JsonOutput.toJson([
+                [
+                        'displayName' : "Draconic Evolution ${version}",
+                        'mcVersion'   : "${mc_version}",
+                        'version'     : "${mod_version}",
+                        'classifier'  : 'universal',
+                        'modLoader'   : ['neoforge', 'forge'],
+                        'curseforgeId': '223565',
+                        'modrinthId'  : 'nBqivi8H',
+                        'dependencies': [
+                                [
+                                        'modId'       : 'codechickenlib',
+                                        'type'        : 'required',
+                                        'modrinthId'  : '2gq0ALnz',
+                                        'curseforgeId': 'codechicken-lib-1-8'
+                                ],
+                                [
+                                        'modId'       : 'brandonscore',
+                                        'type'        : 'required',
+                                        'modrinthId'  : 'iFDWVIFV',
+                                        'curseforgeId': 'brandons-core'
+                                ]
+//                                [
+//                                        'modId'       : '',
+//                                        'type'        : 'optional',
+//                                        'modrinthId'  : '',
+//                                        'curseforgeId': 'project-intelligence'
+//                                ]
+                        ]
+                ]
+        ]))
+    }
 }
-
-
 
 jar {
     finalizedBy 'reobfJar'
+    finalizedBy 'signJar'
     archiveClassifier = 'universal'
+    manifest {
+        attributes 'Specification-Title': archivesBaseName
+        attributes 'Specification-Vendor': 'brandon3055'
+        attributes 'Specification-Version': "1"
+        attributes 'Implementation-Title': archivesBaseName
+        attributes 'Implementation-Vendor': 'brandon3055'
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        attributes 'MixinConfigs': 'mixins.draconicevolution.json'
+    }
     from file("LICENSE")
-    manifest commonManifest
 }
 
-task srcJar(type: Jar) {
-    build.dependsOn it
-    from sourceSets.main.allSource
-    archiveClassifier = 'sources'
-    from file("LICENSE")
+tasks.register("signJar") {
+    dependsOn("jar")
+    dependsOn("reobfJar")
+
+    doFirst {
+        def args = [:]
+        args['jar'] = jar.archiveFile.get().asFile
+        if (System.getenv("KEY_STORE")) {
+            args['keyStore'] = System.getenv("KEY_STORE")
+            file(System.getenv("KEY_STORE_PROPS")).withReader {
+                def props = new Properties()
+                props.load(it)
+                args.putAll(props)
+            }
+        } else if (project.hasProperty('keyStore')) {
+            args['keyStore'] = project.getProperty('keyStore')
+            args['alias'] = project.getProperty('keyStoreAlias')
+            args['storePass'] = project.getProperty('keyStorePass')
+            args['keyPass'] = project.getProperty('keyStoreKeyPass')
+        } else {
+            println "No signing properties."
+            state.setOutcome(org.gradle.api.internal.tasks.TaskExecutionOutcome.UP_TO_DATE)
+            didWork = false
+            return
+        }
+        project.ant.invokeMethod('signjar', args)
+    }
 }
 
 publishing {
@@ -201,22 +218,24 @@ publishing {
             artifactId project.archivesBaseName
             version project.version
             artifact jar
-            artifact srcJar
-
+            artifact sourcesJar
+            artifact(publishingMetadata) {
+                builtBy publishingMetadataTask
+                classifier 'publishing'
+            }
             pom {
                 name = archivesBaseName
                 description = archivesBaseName
-                //The publish plugin doesnt like GString's here apparently..
-                url = "https://github.com/brandon3055/${archivesBaseName}".toString()
+                url = "https://github.com/brandon3055/${archivesBaseName}"
                 scm {
-                    url = "https://github.com/brandon3055/${archivesBaseName}".toString()
-                    connection = "scm:git:git://github.com/brandon3055/${archivesBaseName}.git".toString()
-                    connection = "scm:git:git@github.com:brandon3055/${archivesBaseName}.git".toString()
+                    url = "https://github.com/brandon3055/${archivesBaseName}"
+                    connection = "scm:git:git://github.com/brandon3055/${archivesBaseName}.git"
+                    connection = "scm:git:git@github.com:brandon3055/${archivesBaseName}.git"
                 }
 
                 issueManagement {
                     system = 'github'
-                    url = "https://github.com/brandon3055/${archivesBaseName}/issues".toString()
+                    url = "https://github.com/brandon3055/${archivesBaseName}/issues"
                 }
                 licenses {
                     license {
@@ -236,33 +255,19 @@ publishing {
     }
 }
 
-
-/**
- * Polls the 'compile' configuration for a dependency with the given module name
- * and resolves, and returns its version. E.g: '1.2.+' will resolve to '1.2.3.4'
- *
- * @param module The module to search for.
- * @param chop If the string should be chopped on the last '-' in its string.
- * @param configuration The name of the configuration to search.
- * @param errorMissing If an error should be thrown if it can't be found.
- * @return The version string, '0' if 'errorMissing' is false and nothing was found.
- */
-def resolve(module, chop = true, configuration = 'compile', errorMissing = true) {
-    //Copy and lenient resolve the configuration, Forge cant be resolved at this time so lenient is required.
-    def filtered = configurations.getByName(configuration).copy().incoming.artifactView({ it.lenient = true }).artifacts
-            .findAll { it.id.componentIdentifier.module == module }
-            .collect { it.id.componentIdentifier.version }
-    if (filtered.size() > 1) {
-        println "WARNING: Found ${filtered.size()} Dependencies with ModuleName '${module}' in configuration '${configuration.name}'"
+signing {
+    if (System.getenv('GPG_PRIVATE_KEY')) {
+        useInMemoryPgpKeys(
+                new File(System.getenv('GPG_PRIVATE_KEY')).text,
+                System.getenv('GPG_PRIVATE_KEY_PASS')
+        )
+    } else if (project.hasProperty('gpgPrivateKey')) {
+        useInMemoryPgpKeys(
+                new File(project.getProperty('gpgPrivateKey')).text,
+                project.getProperty('gpgPrivateKeyPass')
+        )
+    } else {
+        return
     }
-    if (errorMissing && filtered.isEmpty()) {
-        throw new RuntimeException("Failed resolve dependency version for '${module}'")
-    }
-    if (filtered.isEmpty()) return "0"
-    def version = filtered.first() as String
-    if (chop) {
-        def idx = version.lastIndexOf('-')
-        return version.substring(idx + 1)
-    }
-    return version
+    sign publishing.publications.DraconicEvolution
 }
