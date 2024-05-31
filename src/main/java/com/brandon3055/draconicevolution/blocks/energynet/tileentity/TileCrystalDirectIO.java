@@ -67,7 +67,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown() && !level.isClientSide) {
             outputMode.invert();
             updateRotation(facing.get());
             return true;
@@ -116,7 +116,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void updateRotation(Direction newDirection) {
         facing.set(newDirection);
         capManager.remove(CapabilityOP.OP);
-//        opStorage.setIOMode(!outputMode.get());
+        opStorage.setIOMode(!outputMode.get()); //TODO, not sure why I had this commented out... Was there a reason?
         capManager.setSide(CapabilityOP.OP, opStorage, newDirection);
     }
 
