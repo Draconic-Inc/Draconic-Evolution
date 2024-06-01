@@ -86,7 +86,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
             int mh = entity.getHeight() * cs;
             int x = (int) xMin() + (entity.getGridX() * cs);
             int y = (int) yMin() + (entity.getGridY() * cs);
-            boolean mouseOver = GuiRender.isInRect(x, y, mw, mh, mouseX, mouseY);
+            boolean mouseOver = GuiRender.isInRect(x, y, mw, mh, mouseX, mouseY) && isMouseOver();
             if (entity.renderModuleOverlay(this, grid.container.getModuleContext(), render, x, y, mw, mh, mouseX, mouseY, partialTicks, mouseOver ? hoverTime : 0)) {
                 return true;
             }
