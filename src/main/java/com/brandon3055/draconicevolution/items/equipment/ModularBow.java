@@ -76,7 +76,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -87,25 +87,18 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int pRemainingUseDuration) {
-        super.onUseTick(pLevel, player, stack, pRemainingUseDuration);
-
-        //TODO Has the count actually changed?
+    public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int count) {
+        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
+            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+            if (entity != null && entity.getAutoFireEnabled()) {
+                // auto fire
+                InteractionHand usingHand = player.getUsedItemHand();
+                player.stopUsingItem();
+                stack.releaseUsing(player.level(), player, 0);
+                player.startUsingItem(usingHand);
+            }
+        }
     }
-
-//    @Override
-//    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-//        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
-//            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
-//            if (entity != null && entity.getAutoFireEnabled()) {
-//                // auto fire
-//                InteractionHand usingHand = player.getUsedItemHand();
-//                player.stopUsingItem();
-//                stack.releaseUsing(player.level(), player, 0);
-//                player.startUsingItem(usingHand);
-//            }
-//        }
-//    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {

@@ -81,11 +81,11 @@ public class DEDamage {
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type, @Nullable Entity attacker) {
-        return SOURCES.computeIfAbsent(type, e -> new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(e), attacker));
+        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), attacker);
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type, @Nullable Entity projectile, @Nullable Entity owner) {
-        return SOURCES.computeIfAbsent(type, e -> new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(e), projectile, owner));
+        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), projectile, owner);
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type) {
