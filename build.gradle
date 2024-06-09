@@ -62,7 +62,7 @@ repositories {
     maven { url = "https://maven.theillusivec4.top/" }
     maven { url = "https://squiddev.cc/maven/" }
     maven { url = "https://maven.blamejared.com/" }
-    maven { url = "https://modmaven.dev/" }
+//    maven { url = "https://modmaven.dev/" }
 }
 
 dependencies {
@@ -71,7 +71,7 @@ dependencies {
     implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${mc_version}-${bcore_version}:universal")
     implementation fg.deobf("io.codechicken:CodeChickenLib:${mc_version}-${ccl_version}:universal")
     implementation fg.deobf("io.codechicken:EnderStorage:${mc_version}-${ender_storage_version}:universal")
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
+//    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
