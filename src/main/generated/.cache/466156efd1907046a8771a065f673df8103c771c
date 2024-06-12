@@ -1,4 +1,4 @@
-// 1.20.1	2024-02-07T21:33:25.632577742	Draconic Evolution Item Models
+// 1.20.1	2024-06-12T10:31:32.367969433	Draconic Evolution Item Models
 5642d72776b473bb495281774e88805ec27af95f assets/draconicevolution/models/item/advanced_dislocator.json
 0c03264f3cccd52c1cbb84304cb456a898dd82c1 assets/draconicevolution/models/item/advanced_magnet.json
 f7a728f1819a60301ab12bbbac3b3fe82c5129d1 assets/draconicevolution/models/item/awakened_core.json
@@ -115,6 +115,7 @@ ae7c27a08f13267b16f92ddc458e2a7a1b5dc470 assets/draconicevolution/models/item/it
 5ad397f0b3606a667be6f82b4436a4d2d7427e84 assets/draconicevolution/models/item/item_draconium_jump.json
 b5b411891acb41108e0f5349db113076b0399b1f assets/draconicevolution/models/item/item_draconium_speed.json
 0e77548794ca65ff945a42b86acb86d19d6c21d0 assets/draconicevolution/models/item/item_wyvern_aoe.json
+edac49f4d62561ca27f364a82c7983d65493fcc1 assets/draconicevolution/models/item/item_wyvern_aqua_adapt.json
 d2ac40bc3c04151a1216fafccdad2a4cc62e75df assets/draconicevolution/models/item/item_wyvern_auto_feed.json
 ab6e20a88f8c054946e0366b6258d492e5b268d8 assets/draconicevolution/models/item/item_wyvern_auto_fire.json
 4f6b153eac068fe52dafeab7c206ebe1f1e50c58 assets/draconicevolution/models/item/item_wyvern_damage.json
@@ -126,6 +127,7 @@ db33b35d27a269756379b5445127ef740b787500 assets/draconicevolution/models/item/it
 b0eaa9d770d7642bf70b19b99cca38af815cff28 assets/draconicevolution/models/item/item_wyvern_jump.json
 defd060882d94da29694bcc2f2af78eb479d163b assets/draconicevolution/models/item/item_wyvern_junk_filter.json
 c4ed0dd992a80a016ab88d73ac51a90bebd9f474 assets/draconicevolution/models/item/item_wyvern_large_shield_capacity.json
+de5c5a8dff4408d2ad13f439c4180bd197f116ec assets/draconicevolution/models/item/item_wyvern_mining_stability.json
 0d861bb371ff1da8810e97ce53aee5cb13c83337 assets/draconicevolution/models/item/item_wyvern_night_vision.json
 dc0689bfc5164494efe2bf595ab83ae22523c9b7 assets/draconicevolution/models/item/item_wyvern_proj_accuracy.json
 a2dfd94a0c1525b48fb04b8088b20dba1b2d81e7 assets/draconicevolution/models/item/item_wyvern_proj_damage.json

@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.data.FlightData;
 import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
@@ -17,6 +18,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.core.NonNullList;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,10 +27,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +61,8 @@ public class ModularArmorEventHandler {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ModularArmorEventHandler::onEntityDeath);
         MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::livingTick);
         MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::breakSpeed);
+        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onPlayerLogin);
 
         ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
         ATTRIBUTE_HANDLER.register(FLY_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
@@ -405,6 +411,49 @@ public class ModularArmorEventHandler {
         float jumpBoost = getJumpBoost(entity, false);
         if (jumpBoost > 0 && !entity.isShiftKeyDown()) {
             entity.push(0, 0.1F * (jumpBoost + 1), 0);
+        }
+    }
+
+    private static void breakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        if (player == null) return;
+
+        float newDigSpeed = event.getOriginalSpeed();
+
+        ItemStack chestStack = ModularChestpiece.getChestpiece(player);
+        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        if (!optional.isPresent()) return;
+
+        ModuleHost host = optional.orElseThrow(IllegalStateException::new);
+
+        if (host.getModuleData(ModuleTypes.AQUA_ADAPT) != null) {
+            if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
+                newDigSpeed *= 5f;
+            }
+        }
+
+        if (!player.onGround() && host.getModuleData(ModuleTypes.MINING_STABILITY) != null) {
+            newDigSpeed *= 5f;
+        }
+
+        if (newDigSpeed != event.getOriginalSpeed()) {
+            event.setNewSpeed(newDigSpeed);
+        }
+    }
+
+    private static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        if (player.onGround()) return;
+
+        ItemStack chestStack = ModularChestpiece.getChestpiece(player);
+        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        if (optional.isPresent()) {
+            ModuleHost host = optional.orElseThrow(IllegalStateException::new);
+            FlightData flightData = host.getModuleData(ModuleTypes.FLIGHT);
+            if (flightData != null && flightData.creative()) {
+                player.getAbilities().flying = true;
+                player.onUpdateAbilities();
+            }
         }
     }
 

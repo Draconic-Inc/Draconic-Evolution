@@ -320,9 +320,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("jump.value",                                                "+%s%%");
 
         helper.addModule(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
-//        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
+        helper.addModule(DEModules.WYVERN_AQUA_ADAPT,                                 "Aqua Adapt Module");
 
         helper.addModule(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
+        helper.addModule(DEModules.WYVERN_MINING_STABILITY,                           "Mining Stabilizer Module");
 
         helper.addModule(ModuleTypes.AOE,                                             "AOE");
         helper.addModule(DEModules.DRACONIUM_AOE,                                      "AOE Module");
