@@ -5,7 +5,6 @@ import codechicken.lib.datagen.recipe.RecipeProvider;
 import codechicken.lib.datagen.recipe.ShapedRecipeBuilder;
 import codechicken.lib.datagen.recipe.ShapelessRecipeBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
@@ -1079,19 +1078,17 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DEModules.DRACONIC_AOE.get().getItem())
                 .key('B', DEContent.CORE_CHAOTIC);
 
-        //        //Mining Stability
-        //        shapedRecipe(DEModules.wyvernMiningStability.getItem())
-        //                .patternLine("#C#")
-        //                .patternLine("ABA")
-        //                .patternLine("#D#")
-        //                .key('#', INGOTS_DRACONIUM)
-        //                .key('A', core_draconium)
-        //                .key('B', module_core)
-        //                .key('C', PHANTOM_MEMBRANE)
-        //                .key('D', GOLDEN_PICKAXE)
-        //                .unlockedBy("has_module_core", has(module_core))
-        //                .save(consumer, folder("modules", DEModules.wyvernMiningStability));
-        //
+        //Mining Stability
+        shapedRecipe(DEModules.WYVERN_MINING_STABILITY.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.PHANTOM_MEMBRANE)
+                .key('D', Items.GOLDEN_PICKAXE);
+
         shapedRecipe(DEModules.WYVERN_JUNK_FILTER.get().getItem(), "modules")
                 .patternLine("#C#")
                 .patternLine("ABA")
@@ -1410,18 +1407,16 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DEModules.DRACONIC_JUMP.get().getItem())
                 .key('C', DEContent.CHAOS_FRAG_MEDIUM);
 
-        //        //Aqua
-        //        shapedRecipe(DEModules.wyvernAquaAdapt.getItem())
-        //                .patternLine("#C#")
-        //                .patternLine("ABA")
-        //                .patternLine("#D#")
-        //                .key('#', INGOTS_DRACONIUM)
-        //                .key('A', core_draconium)
-        //                .key('B', module_core)
-        //                .key('C', HEART_OF_THE_SEA)
-        //                .key('D', IRON_PICKAXE)
-        //                .unlockedBy("has_module_core", has(module_core))
-        //                .save(consumer, folder("modules", DEModules.wyvernAquaAdapt));
+        //Aqua
+        shapedRecipe(DEModules.WYVERN_AQUA_ADAPT.get().getItem(), "modules")
+                .patternLine("#C#")
+                .patternLine("ABA")
+                .patternLine("#D#")
+                .key('#', DETags.Items.INGOTS_DRACONIUM)
+                .key('A', DEContent.CORE_DRACONIUM)
+                .key('B', DEContent.MODULE_CORE)
+                .key('C', Items.HEART_OF_THE_SEA)
+                .key('D', Items.IRON_PICKAXE);
 
         //Hill Step
         shapedRecipe(DEModules.WYVERN_HILL_STEP.get().getItem(), "modules")
