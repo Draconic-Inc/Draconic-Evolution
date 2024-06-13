@@ -1,7 +1,8 @@
-// 1.20.1	2024-06-14T07:38:39.757240689	Recipes
+// 1.20.1	2024-06-14T07:57:24.627266628	Recipes
 024ed27c11ac555feff69786a317692a71c3cbca data/draconicevolution/recipes/awakened_draconium_block.json
 b26abb362f214e2245ac2d103948d0c85389c03c data/draconicevolution/recipes/celestial_manipulator.json
 f018464c99d00fc585fe34c025f816ba7681cd5d data/draconicevolution/recipes/components/awakened_core.json
+48624479b3c0a377ae66223970768953a7d5a0e7 data/draconicevolution/recipes/components/awakened_draconium_ingot_from_dust.json
 73e78286ab9367358429d2600e0172fe8ab70c18 data/draconicevolution/recipes/components/chaotic_core.json
 09c8d517adeac5e10e8b590ed3f93b6a578f3c28 data/draconicevolution/recipes/components/chaotic_energy_core.json
 234d81bf38cd9923b5ac29fbb90cb99827677cce data/draconicevolution/recipes/components/draconic_energy_core.json

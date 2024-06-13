@@ -79,6 +79,10 @@ public class RecipeGenerator extends RecipeProvider {
                 .cookingTime(200)
                 .experience(1);
 
+        smelting(DEContent.INGOT_DRACONIUM_AWAKENED, "components", s -> s + "_from_dust")
+                .ingredient(Ingredient.of(DETags.Items.DUSTS_DRACONIUM_AWAKENED))
+                .cookingTime(200)
+                .experience(0);
 
         shapedRecipe(DEContent.CORE_DRACONIUM, "components")
                 .patternLine("ABA")
