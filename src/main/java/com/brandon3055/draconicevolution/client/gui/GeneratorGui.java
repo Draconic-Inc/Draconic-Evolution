@@ -45,6 +45,7 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
     private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
+//    private ModuleGridPanel gridPanel;
 
     static {
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
@@ -73,10 +74,14 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
         infoPanel.labeledValue(TOOLKIT.translate("output_power").withStyle(GOLD), () -> Component.literal(tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t").withStyle(GRAY));
         infoPanel.labeledValue(TOOLKIT.translate("current_fuel_value").withStyle(GOLD), () -> Component.literal(tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()).withStyle(GRAY));
 
+//        gridPanel = new ModuleGridPanel(root, menu)
+//                .setGridPos(ModuleGridPanel.GridPos.BOTTOM_RIGHT, 2);
+
         ButtonRow buttonRow = ButtonRow.topRightInside(root, Direction.DOWN, 3, 3).setSpacing(1);
         buttonRow.addButton(e -> TOOLKIT.createThemeButton(e));
         buttonRow.addButton(e -> TOOLKIT.createInfoButton(e, infoPanel));
         buttonRow.addButton(e -> TOOLKIT.createRSSwitch(e, screenAccess.getMenu().tile));
+//        buttonRow.addButton(e -> TOOLKIT.createThemedIconButton(e, "grid_small").onPress(gridPanel::toggleExpanded));
 
         StorageRenderer fancyBg = new StorageRenderer(root);
         Constraints.bind(fancyBg, root);
@@ -145,5 +150,13 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
             super(menu, inv, new GeneratorGui());
             getModularGui().setGuiTitle(title);
         }
+
+//        @Override
+//        public void renderFloatingItem(GuiRender render, ItemStack itemStack, int x, int y, String string) {
+//            GeneratorGui gui = (GeneratorGui) modularGui.getProvider();
+//            if (!gui.gridPanel.gridRenderer.renderStackOverride(render, itemStack, x, y, string)) {
+//                super.renderFloatingItem(render, itemStack, x, y, string);
+//            }
+//        }
     }
 }

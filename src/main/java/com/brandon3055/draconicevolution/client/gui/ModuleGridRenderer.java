@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.Util;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -126,11 +127,9 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
 
 
                 render.pose().pushPose();
-//                render.pose().translate(0.0F, 0.0F, 50F);
                 entity.renderModule(this, render, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, mc().getDeltaFrameTime());
                 if (stack.getCount() > 1 || altText != null) {
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
-//                    render.pose().translate(0, 0, 250);
                     render.drawString(s, (float) (x - font().width(s)) + (mw / 2F) + 1, (float) (y - font().lineHeight) + (mh / 2F) + 2, 0xffffff, true);
                 }
                 render.pose().popPose();
@@ -146,6 +145,10 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
         lastError = null;
 
         if (isMouseOver()) {
+            if (getModularGui().getScreen() instanceof AbstractContainerScreen<?> containerScreen) {
+                containerScreen.skipNextRelease = true;
+            }
+
             InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
             boolean pickBlock = mc().options.keyPickItem.isActiveAndMatches(mouseKey);
             ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, true);
