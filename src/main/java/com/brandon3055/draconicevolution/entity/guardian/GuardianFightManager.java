@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.entity.guardian;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.worldentity.ITickableWorldEntity;
 import com.brandon3055.brandonscore.worldentity.WorldEntity;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseType;
@@ -294,7 +296,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         if (dmgSrc.getEntity() instanceof DraconicGuardianEntity) {
             crystal.destabilize();
             return 0.1F; //Still want the player to have to do some work here
-        } else if (dmgSrc.is(DEDamage.Tags.CHAOTIC) && DEConfig.chaoticBypassCrystalShield) {
+        } else if (DEDamage.getDamageLevel(dmgSrc) == TechLevel.CHAOTIC && DEConfig.chaoticBypassCrystalShield) {
             crystal.destabilize();
             return 1F;
         }

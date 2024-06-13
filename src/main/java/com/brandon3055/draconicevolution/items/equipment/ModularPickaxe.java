@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
+public class ModularPickaxe extends PickaxeItem implements IModularMiningTool, IDraconicMelee {
     private final TechLevel techLevel;
     private final DETier itemTier;
 

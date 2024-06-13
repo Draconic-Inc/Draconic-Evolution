@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +80,7 @@ public class DEDamage {
             case DRACONIC -> bypassImmune ? DRACONIC_ARROW_SPOOF : DRACONIC_ARROW;
             case CHAOTIC -> bypassImmune ? CHAOTIC_ARROW_SPOOF : CHAOTIC_ARROW;
         };
-        return getSource(level, key, projectile, owner);
+        return getSource(level, key, bypassImmune ? null : projectile, owner);
     }
 
     private static DamageSource getSource(Level level, ResourceKey<DamageType> type, @Nullable Entity attacker) {
@@ -99,5 +102,25 @@ public class DEDamage {
         public static final TagKey<DamageType> DRACONIUM = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconium"));
 
         public static final TagKey<DamageType> PROJECTILE_ANTI_DODGE = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "proj_anti_dodge"));
+    }
+
+    /**
+     * This is the recommended way to check the draconic tech level of a damage source.
+     *
+     * @param source The damage source being tested.
+     */
+    @Nullable
+    public static TechLevel getDamageLevel(DamageSource source) {
+        if (source.is(DEDamage.Tags.CHAOTIC)) return TechLevel.CHAOTIC;
+        if (source.is(DEDamage.Tags.DRACONIC)) return TechLevel.DRACONIC;
+        if (source.is(DEDamage.Tags.WYVERN)) return TechLevel.WYVERN;
+        if (source.is(DEDamage.Tags.DRACONIUM)) return TechLevel.DRACONIUM;
+        if (source.getEntity() instanceof Player player) {
+            ItemStack stack = player.getMainHandItem();
+            if (stack.getItem() instanceof IDraconicMelee melee) {
+                return melee.getTechLevel();
+            }
+        }
+        return null;
     }
 }
