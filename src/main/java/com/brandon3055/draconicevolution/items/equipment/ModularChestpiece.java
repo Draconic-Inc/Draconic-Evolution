@@ -154,14 +154,6 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         return activeModel;
     }
 
-    public static ItemStack getChestpiece(LivingEntity entity) {
-        ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
-        if (stack.getItem() instanceof ModularChestpiece) {
-            return stack;
-        }
-        return EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, entity);
-    }
-
     @Override
     public boolean canBeHurtBy(DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);

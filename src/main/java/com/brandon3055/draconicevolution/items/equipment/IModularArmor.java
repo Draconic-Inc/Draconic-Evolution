@@ -9,9 +9,11 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.network.InputSync;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -90,5 +92,13 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
         });
 
         return true;
+    }
+
+    static ItemStack getArmor(LivingEntity entity) {
+        ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
+        if (stack.getItem() instanceof IModularArmor) {
+            return stack;
+        }
+        return EquipmentManager.findItem(e -> e.getItem() instanceof IModularArmor, entity);
     }
 }

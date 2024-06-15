@@ -14,8 +14,8 @@ import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
-import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.FluidTags;
@@ -105,7 +105,7 @@ public class ModularArmorEventHandler {
 
     @Nullable
     private static AttributeModifier getStepHeight(LivingEntity entity, ArmorAbilities abilities) {
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        ItemStack chestStack = IModularArmor.getArmor(entity);
         LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
         boolean hasHighStep = hasHost && optional.orElseThrow(WTFException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
@@ -129,7 +129,7 @@ public class ModularArmorEventHandler {
             return;
         }
 
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        ItemStack chestStack = IModularArmor.getArmor(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
         if (chestStack.isEmpty() || !optionalHost.isPresent()) {
@@ -163,7 +163,7 @@ public class ModularArmorEventHandler {
             return;
         }
 
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        ItemStack chestStack = IModularArmor.getArmor(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
         if (chestStack.isEmpty() || !optionalHost.isPresent()) {
@@ -370,7 +370,7 @@ public class ModularArmorEventHandler {
     }
 
     private static float getJumpBoost(LivingEntity entity, boolean max) {
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        ItemStack chestStack = IModularArmor.getArmor(entity);
         LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         if (optional.isPresent()) {
             ModuleHost host = optional.orElseThrow(IllegalStateException::new);
@@ -420,7 +420,7 @@ public class ModularArmorEventHandler {
 
         float newDigSpeed = event.getOriginalSpeed();
 
-        ItemStack chestStack = ModularChestpiece.getChestpiece(player);
+        ItemStack chestStack = IModularArmor.getArmor(player);
         LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         if (!optional.isPresent()) return;
 
@@ -445,7 +445,7 @@ public class ModularArmorEventHandler {
         Player player = event.getEntity();
         if (player.onGround()) return;
 
-        ItemStack chestStack = ModularChestpiece.getChestpiece(player);
+        ItemStack chestStack = IModularArmor.getArmor(player);
         LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         if (optional.isPresent()) {
             ModuleHost host = optional.orElseThrow(IllegalStateException::new);
