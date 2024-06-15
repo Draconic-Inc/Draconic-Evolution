@@ -73,15 +73,13 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     public float rotationSpeed = 0;
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(this, 4);
-    public SimpleModuleHost moduleHost = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
+//    public SimpleModuleHost moduleHost = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
     public OPStorage opStorage = new ModularOPStorage(this, 100000, 0, 32000);
 
     public TileGenerator(BlockPos pos, BlockState state) {
         super(DEContent.TILE_GENERATOR.get(), pos, state);
 
-        capManager.setManaged("module_host", DECapabilities.MODULE_HOST_CAPABILITY, moduleHost).saveBoth().syncContainer();
-        moduleHost.addModule(null, new LimitedModuleContext(ItemStack.EMPTY, null, null, null));
-
+//        capManager.setManaged("module_host", DECapabilities.MODULE_HOST_CAPABILITY, moduleHost).saveBoth().syncContainer();
 
         //Power Cap
         capManager.setManaged("energy", DECapabilities.OP_STORAGE, opStorage).saveBoth().syncContainer();

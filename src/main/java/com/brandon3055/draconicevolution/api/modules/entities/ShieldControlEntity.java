@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.ShieldControlData;
 import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
@@ -72,6 +73,9 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     private float shieldHitIndicator;
     private int shieldColour;
 
+    private int tick;
+    private boolean conflict = false;
+
     public ShieldControlEntity(Module<ShieldControlData> module) {
         super(module);
         this.shieldColour = getDefaultShieldColour(module.getModuleTechLevel());
@@ -89,7 +93,9 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
             return;
         }
 
-        ShieldData data = getShieldData();
+        if (tick++ % 10 == 0) clearCaches();
+
+        ShieldData data = getShieldData(context.getEntity());
         shieldCapacity = data.shieldCapacity();
         double chargeRate = data.shieldRecharge();
         boolean enabled = shieldEnabled.getValue() && getShieldPoints() > 0;
@@ -101,7 +107,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         //# Rendering #
         //Hit Indicator (Controls the effect where the shield flashes brighter when hit)
         if (shieldHitIndicator > 0) {
-            shieldHitIndicator -= 0.1;
+            shieldHitIndicator -= 0.1F;
         }
 
         shieldVisible = enabled && (alwaysVisible.getValue() || System.currentTimeMillis() - lastHitTime < 5000);
@@ -115,6 +121,12 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
 
         //# Logic #
         if (!context.isEquipped()) {
+            return;
+        }
+
+        if (conflict) {
+            shieldCapacity = 0;
+            shieldPoints = 0;
             return;
         }
 
@@ -266,9 +278,15 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         }
     }
 
-    private ShieldData getShieldData() {
+    private ShieldData getShieldData(LivingEntity entity) {
         if (shieldCache == null) {
-            shieldCache = host.getModuleData(ModuleTypes.SHIELD_BOOST, new ShieldData(0, 0));
+            conflict = false;
+            if (entity == null){
+                shieldCache = host.getModuleData(ModuleTypes.SHIELD_BOOST, new ShieldData(0, 0));
+            } else {
+                shieldCache = ModuleHelper.getCombinedEquippedData(entity, ModuleTypes.SHIELD_BOOST, new ShieldData(0, 0));
+                conflict = ModuleHelper.getEquippedModules(entity, ModuleTypes.SHIELD_CONTROLLER).size() > 1;
+            }
         }
         return shieldCache;
     }
@@ -329,7 +347,6 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     public void clearCaches() {
         shieldCache = null;
     }
-
 
     @Override
     public void writeToNBT(CompoundTag compound) {
