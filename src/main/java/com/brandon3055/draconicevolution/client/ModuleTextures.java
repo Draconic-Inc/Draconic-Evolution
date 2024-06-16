@@ -21,16 +21,16 @@ public class ModuleTextures {
       return ATLAS_HOLDER;
    }
 
-   protected static Material get(String texture) {
-      return MATERIAL_CACHE.computeIfAbsent(MODID + ":" + texture, e -> getUncached(texture));
+   protected static Material get(ResourceLocation texture) {
+      return MATERIAL_CACHE.computeIfAbsent(texture.getNamespace() + ":" + texture.getPath(), e -> getUncached(texture));
    }
 
-   protected static Material getUncached(String texture) {
-      return new Material(ATLAS_HOLDER.atlasLocation(), new ResourceLocation(MODID, "module/" + texture), ATLAS_HOLDER::getSprite);
+   protected static Material getUncached(ResourceLocation texture) {
+      return new Material(ATLAS_HOLDER.atlasLocation(), new ResourceLocation(texture.getNamespace(), "module/" + texture.getPath()), ATLAS_HOLDER::getSprite);
    }
 
    public static Material get(Module<?> module) {
       ResourceLocation location = DEModules.REGISTRY.getKey(module);
-      return get(location.getPath());
+      return get(location);
    }
 }
