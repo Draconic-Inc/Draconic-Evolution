@@ -19,6 +19,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.brandon3055.brandonscore.api.TechLevel.*;
@@ -35,6 +37,8 @@ public class DEModules {
 
     public static final DeferredRegister<Module<?>> MODULES = DeferredRegister.create(MODULE_KEY, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+
+    public static final Set<String> MODULE_PROVIDING_MODS = new HashSet<>();
 
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();

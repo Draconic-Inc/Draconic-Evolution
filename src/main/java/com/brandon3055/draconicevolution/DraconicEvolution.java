@@ -54,5 +54,6 @@ public class DraconicEvolution {
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientInit::init);
+        DraconicAPI.addModuleProvider(MODID);
     }
 }
