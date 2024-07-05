@@ -203,9 +203,6 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         ItemStack weapon = itemHandler.getStackInSlot(1);
-        if (weapon.isEmpty() || weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
-            weapon = ItemStack.EMPTY;
-        }
         getFakePlayer().setItemInHand(InteractionHand.MAIN_HAND, weapon);
 
         int eph = DEConfig.grinderEnergyPerHeart;
