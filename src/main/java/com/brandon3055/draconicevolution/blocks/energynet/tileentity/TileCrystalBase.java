@@ -45,7 +45,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -287,25 +286,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     //endregion
 
-    //region IEnergyHandler
-
-//    @Override
-//    public boolean canConnectEnergy(Direction from) {
-//        return false;
-//    }
-//
-//    @Override
-//    public int getEnergyStored(Direction from) {
-//        return getEnergyStored();
-//    }
-//
-//    @Override
-//    public int getMaxEnergyStored(Direction from) {
-//        return getMaxEnergyStored();
-//    }
-
-    //endregion
-
     //region ICrystalLink and some other stuffs...
 
     @Override
@@ -440,16 +420,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     //region Render
 
-//    @Override
-//    public boolean canRenderBreaking() {
-//        return true;
-//    }
-
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return pass == 0 || !DEShaders.useShaders();
-//    }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public abstract CrystalFXBase createStaticFX();
@@ -529,7 +499,6 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         super.writeToItemStack(compound, willHarvest);
     }
 
-    @Nullable
     @Override
     public void readFromItemStack(CompoundTag compound) {
         super.readFromItemStack(compound);

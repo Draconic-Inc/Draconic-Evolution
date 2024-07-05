@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution.inventory;
 import codechicken.lib.gui.modular.lib.container.SlotGroup;
 import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
 import codechicken.lib.inventory.container.modular.ModularSlot;
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
@@ -17,8 +14,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -160,8 +155,8 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         return moduleGrid;
     }
 
-//    @Override
-    @OnlyIn(Dist.CLIENT)
+    //    @Override
+    @OnlyIn (Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
         if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
