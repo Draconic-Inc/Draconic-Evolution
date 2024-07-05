@@ -49,7 +49,7 @@
   "block.draconicevolution.wyvern_relay_crystal": "Wyvern Energy Relay Crystal",
   "block.draconicevolution.wyvern_wireless_crystal": "Wyvern Wireless Energy Crystal",
   "death.attack.administrative.kill": "%1$s deserved to die by the powers that be",
-  "death.attack.draconicevolution.draconic_guardian": "%1$s was torn apart by %2$s",
+  "death.attack.draconicevolution.guardian": "%1$s was torn apart by %2$s",
   "death.attack.draconicevolution.guardian_laser": "%1$s was vaporized by %2$s using a frickin laser beam",
   "death.attack.draconicevolution.guardian_projectile": "%1$s was obliterated by %2$s",
   "disenchanter.draconicevolution.not_enough_levels": "You require %s levels to extract that enchantment!",
