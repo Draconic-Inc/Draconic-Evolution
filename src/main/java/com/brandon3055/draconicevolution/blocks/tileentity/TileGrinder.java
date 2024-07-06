@@ -427,9 +427,6 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     @Override
     public AABB getRenderBoundingBox() {
-        if (showAOE.get()) {
-            return INFINITE_EXTENT_AABB;
-        }
-        return super.getRenderBoundingBox();
+       return new AABB(getBlockPos().offset(-8, -8, -8), getBlockPos().offset(9, 9, 9));
     }
 }
