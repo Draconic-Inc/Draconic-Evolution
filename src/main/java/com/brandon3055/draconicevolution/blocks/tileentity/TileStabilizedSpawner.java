@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -145,19 +146,21 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     //region Spawner Tier
 
     public enum SpawnerTier {
-        BASIC(4, true, false),
-        WYVERN(6, false, false),
-        DRACONIC(8, false, true),
-        CHAOTIC(12, false, true);
+        BASIC(4, true, false, TechLevel.DRACONIUM),
+        WYVERN(6, false, false, TechLevel.WYVERN),
+        DRACONIC(8, false, true, TechLevel.DRACONIC),
+        CHAOTIC(12, false, true, TechLevel.CHAOTIC);
 
-        private int spawnCount;
-        private boolean requiresPlayer;
-        private boolean ignoreSpawnReq;
+        private final int spawnCount;
+        private final boolean requiresPlayer;
+        private final boolean ignoreSpawnReq;
+        private final TechLevel techLevel;
 
-        SpawnerTier(int spawnCount, boolean requiresPlayer, boolean ignoreSpawnReq) {
+        SpawnerTier(int spawnCount, boolean requiresPlayer, boolean ignoreSpawnReq, TechLevel techLevel) {
             this.spawnCount = spawnCount;
             this.requiresPlayer = requiresPlayer;
             this.ignoreSpawnReq = ignoreSpawnReq;
+            this.techLevel = techLevel;
         }
 
         public int getRandomSpawnDelay(Random random) {
@@ -192,6 +195,10 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
 
         public static SpawnerTier getTierFromCore(ItemCore core) {
             return core == DEContent.CORE_CHAOTIC.get() ? CHAOTIC : core == DEContent.CORE_WYVERN.get() ? WYVERN : core == DEContent.CORE_AWAKENED.get() ? DRACONIC : SpawnerTier.BASIC;
+        }
+
+        public TechLevel getTechLevel() {
+            return techLevel;
         }
     }
     //endregion

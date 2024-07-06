@@ -55,7 +55,9 @@ public class ItemCore extends Item {
                 CompoundTag managedData = new CompoundTag();
                 spawner.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
                 managedData.put("mob_soul", soul.serializeNBT());
-                managedData.putByte("spawner_tier", (byte) tier.ordinal());
+                CompoundTag tierData = new CompoundTag();
+                tierData.putByte("value", (byte) tier.ordinal());
+                managedData.put("spawner_tier", tierData);
 
                 world.removeBlock(pos, false);
                 world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));
