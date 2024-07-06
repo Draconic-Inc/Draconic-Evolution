@@ -48,6 +48,7 @@ import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
@@ -232,7 +233,10 @@ public class DraconicArrowEntity extends AbstractArrow {
                     }
                 }
 
-                if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag) {
+                    if (ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                        break;
+                    }
                     this.onHit(raytraceresult);
                     this.hasImpulse = true;
                 }
