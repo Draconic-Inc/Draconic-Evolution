@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.handlers;
 
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -278,7 +279,9 @@ public class ModularArmorEventHandler {
             }
         }
 
-        ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
+        if (!entity.level().isClientSide() && TimeKeeper.getServerTick() % 10 == 0) {
+            ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
+        }
 
         //region/*----------------- Flight ------------------*/
 
