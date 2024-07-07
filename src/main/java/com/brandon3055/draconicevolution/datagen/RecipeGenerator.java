@@ -1272,7 +1272,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DEContent.CHAOS_FRAG_LARGE)
                 .key('B', DEModules.DRACONIC_SHIELD_RECOVERY.get().getItem())
                 .key('C', DEContent.CORE_WYVERN)
-                .key('D', DEContent.CORE_CHAOTIC);
+                .key('D', DEContent.CORE_AWAKENED);
 
         //Flight
         shapedRecipe(DEModules.WYVERN_FLIGHT.get().getItem(), "modules")

@@ -1,4 +1,4 @@
-// 1.20.1	2024-06-14T07:57:24.627266628	Recipes
+// 1.20.1	2024-07-08T09:42:43.605127672	Recipes
 024ed27c11ac555feff69786a317692a71c3cbca data/draconicevolution/recipes/awakened_draconium_block.json
 b26abb362f214e2245ac2d103948d0c85389c03c data/draconicevolution/recipes/celestial_manipulator.json
 f018464c99d00fc585fe34c025f816ba7681cd5d data/draconicevolution/recipes/components/awakened_core.json
@@ -83,7 +83,7 @@ f8d45a855bc4ecab8844aed5d0f04d68c5c99f28 data/draconicevolution/recipes/modules/
 42600063f582c6f83299c062d19c4b714328a976 data/draconicevolution/recipes/modules/item_chaotic_shield_capacity.json
 a57fb607ba004982e2ac306dd5b44fed02567cff data/draconicevolution/recipes/modules/item_chaotic_shield_capacity_uncraft.json
 0d8084cb2cc9b53d87f58f04bb42502b909de15d data/draconicevolution/recipes/modules/item_chaotic_shield_control.json
-f7e58dd96626889617efb753d388a9cde838e14e data/draconicevolution/recipes/modules/item_chaotic_shield_recovery.json
+50d3439d39435d6bda51cd68f5b16938a2bb6b72 data/draconicevolution/recipes/modules/item_chaotic_shield_recovery.json
 b27c0462fcf8d0f6dc8bb09df6751be14d7e678c data/draconicevolution/recipes/modules/item_chaotic_speed.json
 807ee7668a06749c476cad519ebb0c63bc352632 data/draconicevolution/recipes/modules/item_chaotic_tree_harvest.json
 02bb328287b1df46aa9ce9eaec1299d0862eda39 data/draconicevolution/recipes/modules/item_chaotic_undying.json
