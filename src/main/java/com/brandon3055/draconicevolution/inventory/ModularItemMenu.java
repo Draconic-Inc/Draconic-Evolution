@@ -133,13 +133,10 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     @Override
     public boolean stillValid(Player playerIn) {
-        if (moduleHost == null || hostStack != slot.getStackInSlot(player)) {
+        if (hostStack.isEmpty() || moduleHost == null || hostStack != slot.getStackInSlot(player)) {
             return false;
         }
-        if (moduleHost != hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null)) {
-            return false; //I dont think this is actually possible... But just in case.
-        }
-        return true;//moduleHost != null && hostStack == slot.getStackInSlot(player);
+        return moduleHost == hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null);
     }
 
     @Override
