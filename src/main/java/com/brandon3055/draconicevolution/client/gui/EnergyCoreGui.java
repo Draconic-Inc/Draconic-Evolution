@@ -266,7 +266,7 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
             return 0;
         }
         BigDecimal target = new BigDecimal(sanitizeNumStr(tile.energyTarget.get()));
-        if (target.equals(BigDecimal.ZERO)) {
+        if (target.compareTo(BigDecimal.ONE) < 0) {
             return 0;
         }
         double val = new BigDecimal(tile.energy.getStoredBig()).divide(target, 6, RoundingMode.HALF_EVEN).doubleValue();
