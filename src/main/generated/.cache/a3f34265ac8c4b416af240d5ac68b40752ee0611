@@ -1,7 +1,8 @@
-// 1.20.1	2024-02-07T21:33:25.633707858	Tags for minecraft:damage_type mod id draconicevolution
+// 1.20.1	2024-06-14T07:38:39.75588	Tags for minecraft:damage_type mod id draconicevolution
 2808562e634fd4e3eb34f75541400554ea41f81e data/draconicevolution/tags/damage_type/chaotic.json
 7f2e7dc8bfc7a261ac080cf590335271d4e0c554 data/draconicevolution/tags/damage_type/draconic.json
 4e61c033e4607bac16ab0b7400438a0009215153 data/draconicevolution/tags/damage_type/draconium.json
+d260297bbbba57efb95314e3e93e601d54de4d84 data/draconicevolution/tags/damage_type/proj_anti_dodge.json
 5100ef182098825430d88fdb53972d0713a83170 data/draconicevolution/tags/damage_type/wyvern.json
 a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_armor.json
 a97aa33ac55999b3a11ee357ca8867188e3e3e56 data/minecraft/tags/damage_type/bypasses_cooldown.json

@@ -22,34 +22,47 @@ public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntit
       this.name = name;
    }
 
+   @Override
    protected void defineSynchedData() {
    }
 
+   @Override
    protected void readAdditionalSaveData(CompoundTag compound) {
 
    }
 
+   @Override
    protected void addAdditionalSaveData(CompoundTag compound) {
 
    }
 
+   @Override
    public boolean isPickable() {
       return true;
    }
 
+   @Override
    public boolean hurt(DamageSource source, float amount) {
       return !this.isInvulnerableTo(source) && this.dragon.attackEntityPartFrom(this, source, amount);
    }
 
+   @Override
    public boolean is(Entity entityIn) {
       return this == entityIn || this.dragon == entityIn;
    }
 
+   @Override
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public EntityDimensions getDimensions(Pose poseIn) {
       return this.size;
+   }
+
+   @Override
+   public boolean shouldBeSaved() {
+      return false;
    }
 }

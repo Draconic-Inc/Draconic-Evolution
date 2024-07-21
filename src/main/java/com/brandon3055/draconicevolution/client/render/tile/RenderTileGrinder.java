@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
 import java.util.OptionalDouble;
@@ -135,8 +136,6 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     }
 
     private Vector3 getEntityMovingVec(Entity entity, float partialTicks) {
-        Vector3 vec = new Vector3(entity.xOld, entity.yOld - entity.getMyRidingOffset() + (double) (entity.getBbHeight() / 2.0F), entity.zOld);
-        vec.add(Vector3.fromEntityCenter(entity).subtract(entity.xOld, entity.yOld - entity.getMyRidingOffset() + (double) (entity.getBbHeight() / 2.0F), entity.zOld).multiply(partialTicks));
-        return vec;
+        return new Vector3(entity.getPosition(partialTicks)).add(0, entity.getBbHeight() / 2D, 0);
     }
 }

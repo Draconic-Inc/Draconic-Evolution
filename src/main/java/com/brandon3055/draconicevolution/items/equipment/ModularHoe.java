@@ -5,6 +5,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
+import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -54,7 +55,7 @@ import java.util.function.Predicate;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularHoe extends HoeItem implements IModularTieredItem {
+public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconicMelee {
     private final TechLevel techLevel;
     private final DETier itemTier;
 

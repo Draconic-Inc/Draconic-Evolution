@@ -320,9 +320,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("jump.value",                                                "+%s%%");
 
         helper.addModule(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
-//        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
+        helper.addModule(DEModules.WYVERN_AQUA_ADAPT,                                 "Aqua Adapt Module");
 
         helper.addModule(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
+        helper.addModule(DEModules.WYVERN_MINING_STABILITY,                           "Mining Stabilizer Module");
 
         helper.addModule(ModuleTypes.AOE,                                             "AOE");
         helper.addModule(DEModules.DRACONIUM_AOE,                                      "AOE Module");
@@ -881,7 +882,7 @@ public class LangGenerator extends LanguageProvider {
         add("entity." + MODID + ".draconic_arrow",            "Draconic Arrow");
 
         //Death messages
-        add("death.attack." + MODID + ".draconic_guardian",   "%1$s was torn apart by %2$s");
+        add("death.attack." + MODID + ".guardian",            "%1$s was torn apart by %2$s");
         add("death.attack." + MODID + ".guardian_projectile", "%1$s was obliterated by %2$s");
         add("death.attack." + MODID + ".guardian_laser",      "%1$s was vaporized by %2$s using a frickin laser beam");
         add("death.attack.administrative.kill",                                 "%1$s deserved to die by the powers that be");

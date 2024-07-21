@@ -3,8 +3,6 @@ package com.brandon3055.draconicevolution.client.render.hud;
 import codechicken.lib.gui.modular.elements.GuiContextMenu;
 import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.sprite.Material;
-import codechicken.lib.math.MathHelper;
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
@@ -16,13 +14,11 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
-import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
-import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
+import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
@@ -125,7 +121,7 @@ public class ShieldHudElement extends AbstractHudElement {
         }
 
         //Get and validate the armor chestpiece
-        ItemStack chestStack = ModularChestpiece.getChestpiece(mc.player);
+        ItemStack chestStack = IModularArmor.getArmor(mc.player);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         LazyOptional<IOPStorage> optionalStorage = chestStack.getCapability(DECapabilities.OP_STORAGE);
         if (chestStack.isEmpty() || !optionalHost.isPresent() || !optionalStorage.isPresent()) {

@@ -172,7 +172,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
             float u = (hp * 3) + ((hp*8) * (colours[i].getWoolMeta() % 4));
             //noinspection IntegerDivisionInFloatingPointContext
             float v = (hp * 2) +  ((hp*8) * (colours[i].getWoolMeta() / 4));
-            render.partialSprite(mat.renderType(GuiRender::texColType), px, py, w, h, mat.sprite(), u, v, u + (hp * 2), v + (hp * 4), 1, 1, 1, alpha);
+            render.partialSprite(mat.renderType(GuiRender::texColType), px, py, px + w, py + h, mat.sprite(), u, v, u + (hp * 2), v + (hp * 4), 1, 1, 1, alpha);
         }
         if (alpha != 1) {
             render.pose().translate(0, 0, -201);

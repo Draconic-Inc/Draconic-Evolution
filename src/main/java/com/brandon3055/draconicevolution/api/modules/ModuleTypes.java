@@ -33,7 +33,7 @@ public class ModuleTypes {
     public static final ModuleType<NoData>               AQUA_ADAPT          = new ModuleTypeImpl<>("aqua_adapt",        1, 1, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST);
 
     //Tool Specific
-    public static final ModuleType<NoData>               MINING_STABILITY    = new ModuleTypeImpl<>("mining_stability",  1, 1, ModuleCategory.MINING_TOOL);
+    public static final ModuleType<NoData>               MINING_STABILITY    = new ModuleTypeImpl<>("mining_stability",  1, 1, ModuleCategory.CHESTPIECE);
     public static final ModuleType<TreeHarvestData>      TREE_HARVEST        = new ModuleTypeImpl<>("tree_harvest",      2, 2, TreeHarvestEntity::new, ModuleCategory.TOOL_AXE).setMaxInstallable(1);
     //Shootables
     public static final ModuleType<NoData>               AUTO_FIRE           = new ModuleTypeImpl<>("auto_fire",         2, 1, AutoFireEntity::new, ModuleCategory.RANGED_WEAPON).setMaxInstallable(1);

@@ -104,7 +104,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
                     return data == null ? 0 : data.multiplier();
                 };
 
-                props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                props.add(new DecimalProperty("jump_boost_run", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
                 props.add(new DecimalProperty("jump_boost", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
             }
         });
@@ -152,14 +152,6 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
         ForgeHooksClient.copyModelProperties(parentModel, activeModel);
         return activeModel;
-    }
-
-    public static ItemStack getChestpiece(LivingEntity entity) {
-        ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
-        if (stack.getItem() instanceof ModularChestpiece) {
-            return stack;
-        }
-        return EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, entity);
     }
 
     @Override

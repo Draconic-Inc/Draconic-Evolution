@@ -53,6 +53,7 @@ public class DEConfig {
     public static int guardianShield;
     public static List<String> projectileAntiImmuneEntities;
     public static int dislocatorMaxFuel;
+    public static int dislocatorBlinkCooldown;
     public static int portalMaxArea;
     public static int portalMaxDistanceSq;
     public static int chaosDropCount;
@@ -254,6 +255,12 @@ public class DEConfig {
                 .setComment("Sets the maximum fuel that can be added to an Advanced Dislocator.")
                 .setDefaultInt(1024)
                 .onSync((tag, type) -> dislocatorMaxFuel = tag.getInt());
+
+        serverTag.getValue("dislocatorBlinkCooldown")
+                .syncTagToClient()
+                .setComment("Sets blink cooldown in ticks")
+                .setDefaultInt(5)
+                .onSync((tag, type) -> dislocatorBlinkCooldown = tag.getInt());
 
         serverTag.getValue("portalMaxArea")
                 .syncTagToClient()

@@ -51,36 +51,6 @@ public class ExplosionFX extends Particle {
     private LinkedList<EffectPart> effectParts = new LinkedList<>();
     private static final Random rand = new Random();
 
-    public static ShaderProgram leadingWaveProgram = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_leading_wave.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("scale", UniformType.FLOAT)
-                    .uniform("alpha", UniformType.FLOAT)
-            )
-            .build();
-
-    public static ShaderProgram blastWaveProgram = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_blast_wave.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("scale", UniformType.FLOAT)
-                    .uniform("alpha", UniformType.FLOAT)
-            )
-            .build();
-
-    public static ShaderProgram coreEffectProgram = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_core_effect.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("scale", UniformType.FLOAT)
-                    .uniform("alpha", UniformType.FLOAT)
-            )
-            .build();
-
     private static final RenderStateShard.DepthTestStateShard DISABLE_DEPTH = new RenderStateShard.DepthTestStateShard("none", 519) {
         @Override
         public void setupRenderState() {

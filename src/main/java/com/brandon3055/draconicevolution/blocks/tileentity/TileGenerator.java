@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
@@ -15,10 +16,14 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
+import com.brandon3055.draconicevolution.api.modules.lib.LimitedModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
+import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleHost;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;

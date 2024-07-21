@@ -46,7 +46,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -128,14 +127,14 @@ public class DislocatorAdvanced extends Dislocator {
         } else if (!world.isClientSide) {
             if (blink) {
                 handleBlink((ServerPlayer) player, stack, false);
-            }else {
+            } else {
                 handleTeleport(player, stack, location, false);
             }
         }
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private void openGui(ItemStack stack, Player player) {
         Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
     }
@@ -146,7 +145,7 @@ public class DislocatorAdvanced extends Dislocator {
             messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
         } else if (useFuel(stack, player)) {
             dislocateEntity(stack, player, player, targetPos);
-            if (showFuel){
+            if (showFuel) {
                 player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
         }
@@ -154,20 +153,25 @@ public class DislocatorAdvanced extends Dislocator {
 
     private void handleBlink(ServerPlayer player, ItemStack stack, boolean showFuel) {
         if (!player.getAbilities().instabuild) {
+            if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+                return;
+            }
             int blinkFuel = stack.getOrCreateTag().getByte("blink_fuel");
             if (blinkFuel <= 0) {
                 if (!useFuel(stack, player)) {
                     messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
                     return;
-                }else {
+                } else {
                     blinkFuel = DEConfig.dislocatorBlinksPerPearl;
                 }
             }
+
             blinkFuel--;
             stack.getOrCreateTag().putByte("blink_fuel", (byte) blinkFuel);
-            if (showFuel){
+            if (showFuel) {
                 player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
+            player.getCooldowns().addCooldown(stack.getItem(), 5);
         }
 
         Vec3 playerVec = player.getEyePosition(1);
@@ -203,6 +207,7 @@ public class DislocatorAdvanced extends Dislocator {
         }
 
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.BLINK.get(), SoundSource.PLAYERS, 1F, 1F);
+
     }
 
     @Override
@@ -210,7 +215,7 @@ public class DislocatorAdvanced extends Dislocator {
         return DataUtils.safeGet(getTargetList(stack), getSelectedIndex(stack));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flagIn) {
         DislocatorTarget selected = getTargetPos(stack, world);
@@ -423,7 +428,8 @@ public class DislocatorAdvanced extends Dislocator {
         private String name;
         private boolean locked;
 
-        public DislocatorTarget() {}
+        public DislocatorTarget() {
+        }
 
         public DislocatorTarget(Entity entity) {
             super(entity);

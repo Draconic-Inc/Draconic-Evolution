@@ -1,12 +1,19 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.gui.modular.elements.GuiElement;
+import codechicken.lib.gui.modular.elements.*;
+import codechicken.lib.gui.modular.lib.Constraints;
 import codechicken.lib.gui.modular.lib.GuiRender;
+import codechicken.lib.gui.modular.lib.TextState;
+import codechicken.lib.gui.modular.lib.geometry.Align;
+import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiDialogBase;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -36,13 +43,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITagManager;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
+import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
@@ -101,11 +109,11 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
     //Render
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     protected abstract Material getSlotOverlay();
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         if (slotsCount == 0) {
             super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
@@ -166,7 +174,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             render.borderRect(x, y, width, height, 1, bgColour, GuiRender.mixColours(bgColour, 0x20202000, true));
 
             Material texture = ModuleTextures.get(module);
-            TextureAtlasSprite sprite = texture.sprite();;
+            TextureAtlasSprite sprite = texture.sprite();
+            ;
             float ar = (float) sprite.contents().width() / (float) sprite.contents().height();
             float iar = (float) sprite.contents().height() / (float) sprite.contents().width();
 
@@ -181,7 +190,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (slotsCount == 0) {
             return super.renderModuleOverlay(parent, context, render, x, y, width, height, mouseX, mouseY, partialTicks, hoverTicks);
@@ -230,7 +239,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     //Interact
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public boolean clientModuleClicked(GuiElement<?> parent, Player player, int x, int y, int width, int height, double mouseX, double mouseY, int button) {
         if (slotsCount == 0) {
             return false;
@@ -267,142 +276,164 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private void displayTagDialog(GuiElement<?> parent, int index) {
-        throw new NotImplementedException("TODO");
-//        GuiTexture bg = GuiTexture.newDynamicTexture(148, 150, () -> BCGuiSprites.getThemed("background_dynamic"));
-//        GuiPopUpDialogBase<?> dialog = new GuiPopUpDialogBase<>(parent);
-//        dialog.setPosAndSize(bg);
-//        dialog.setDragBar(20);
-//        dialog.addChild(bg);
-//
-//        GuiLabel heading = bg.addChild(new GuiLabel(Component.translatable("module." + MODID + ".filtered_module.filter_by_tag")))
-//                .setRelPos(bg, 0, 5)
-//                .setSize(bg.xSize(), 9)
-//                .setTextColGetter(GuiToolkit.Palette.BG::text)
-//                .setShadowStateSupplier(() -> BCConfig.darkMode);
-//
-//        GuiTextField textField = bg.addChild(new GuiTextField())
-//                .setPos(bg.xPos() + 5, heading.maxYPos() + 2)
-//                .setMaxXPos(bg.maxXPos() - 5, true)
-//                .setYSize(12)
-//                .setTextColor(GuiToolkit.Palette.Ctrl::text)
-//                .setShadow(false)
-//                .addBackground(GuiToolkit.Palette.Ctrl::fill, hovering -> GuiToolkit.Palette.Ctrl.accentLight(false))
-//                .setSuggestion(I18n.get("module." + MODID + ".filtered_module.filter_example"));
-//
-//        GuiLabel matchingLabel = bg.addChild(new GuiLabel(I18n.get("module." + MODID + ".filtered_module.matching")))
-//                .setPos(bg.xPos(), textField.maxYPos() + 6)
-//                .setSize(bg.xSize(), 9)
-//                .setTextColGetter(GuiToolkit.Palette.BG::text)
-//                .setShadowStateSupplier(() -> BCConfig.darkMode);
-//
-//        GuiElement<?> matchContainer = bg.addChild(new GuiBorderedRect())
-//                .setPos(textField.xPos(), matchingLabel.maxYPos() + 2)
-//                .setMaxPos(textField.maxXPos(), bg.maxYPos() - 5, true)
-//                .setColours(GuiToolkit.Palette.Slot.fill(), GuiToolkit.Palette.Slot.accentDark(), GuiToolkit.Palette.Slot.accentLight());
-//
-//        GuiSlideControl scrollBar = new GuiSlideControl(GuiSlideControl.SliderRotation.VERTICAL)
-//                .setPos(matchContainer.maxXPos() - 11, matchContainer.yPos() + 1)
-//                .setMaxPos(matchContainer.maxXPos() - 1, matchContainer.maxYPos() - 1, true)
-//                .setBackgroundElement(GuiTexture.newDynamicTexture(BCGuiSprites.themedGetter("button_disabled")))
-//                .setSliderElement(GuiTexture.newDynamicTexture(BCGuiSprites.themedGetter("button_borderless")))
-//                .onReload(GuiSlideControl::updateElements)
-//                .setEnabledCallback(() -> true);
-//
-//        GuiScrollElement scrollElement = matchContainer.addChild(new GuiScrollElement())
-//                .setRelPos(matchContainer, 1, 1)
-//                .setListMode(GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH)
-//                .setMaxPos(matchContainer.maxXPos() - 11, matchContainer.maxYPos() - 2, true)
-//                .setVerticalScrollBar(scrollBar)
-//                .setStandardScrollBehavior();
-//
-//        List<TagKey<Item>> tagOps = new ArrayList<>();
-//        ItemStack filterStack = filterStacks.getOrDefault(index, ItemStack.EMPTY);
-//        if (!filterStack.isEmpty()) {
-//            tagOps.addAll(filterStack.getTags().toList());
-//        }
-//
-//        if (!tagOps.isEmpty()) {
-//            GuiButton fromItemButton = bg.addChild(new GuiButton(""))
-//                    .setSize(12, 12)
-//                    .setMaxPos(matchContainer.maxXPos(), matchContainer.yPos() - 1, false);
-//            fromItemButton.addChild(new GuiStackIcon(filterStack))
-//                    .setPosAndSize(fromItemButton)
-//                    .setInsets(0, 0, 0, 0)
-//                    .setHoverOverride(Collections.singletonList(Component.translatable("module." + MODID + ".filtered_module.select_from_item")));
-//
-//            fromItemButton.onPressed(() -> {
-//                scrollElement.clearElements();
-//                scrollElement.resetScrollPositions();
-//                matchingLabel.setLabelText(I18n.get("module." + MODID + ".filtered_module.select_or_enter"));
-//                for (TagKey<Item> tag : tagOps) {
-//                    GuiButton button = new GuiButton(tag.location().toString())
-//                            .setYSize(12)
-//                            .setRectFillColourGetter((hovering, disabled) -> GuiToolkit.Palette.Ctrl.fill(hovering))
-//                            .setRectBorderColourGetter((hovering, disabled) -> 0)
-//                            .setHoverText(tag.location().toString());
-//                    scrollElement.addElement(button);
-//                    button.onPressed(() -> {
-//                        filterTags.remove(index); //Ensures the scroll element is reloaded even if this tag was already selected.
-//                        textField.setValue(tag.location().toString());
-//                    });
-//                }
-//                scrollElement.reloadElement();
-//            });
-//        }
-//
-//        textField.onValueChanged(s -> {
-//            ResourceLocation location = ResourceLocation.tryParse(s);
-//            TagKey<Item> key = filterTags.get(index);
-//            if (s.isEmpty() && key == null) return;
-//            if (location == null && filterTags.containsKey(index)) {
-//                filterTags.remove(index);
-//                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
-//                return;
-//            } else if (location == null || (key != null && location.equals(key.location()) && !scrollElement.getScrollingElements().isEmpty())) {
-//                return;
-//            }
-//
-//            key = ItemTags.create(location);
-//            ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
-//            if (tags == null) return;
-//
-//            scrollElement.clearElements();
-//            scrollElement.resetScrollPositions();
-//            matchingLabel.setLabelText(I18n.get("module." + MODID + ".filtered_module.matching"));
-//
-//            List<Item> matchingItems = tags.getTag(key).stream().toList();
-//            if (matchingItems.isEmpty()) {
-//                filterTags.remove(index);
-//                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
-//                return;
-//            }
-//
-//            GuiElement<?> container = new GuiElement<>();
-//
-//            for (int i = 0; i < matchingItems.size(); i++) {
-//                Item item = matchingItems.get(i);
-//                GuiStackIcon icon = new GuiStackIcon(new ItemStack(item));
-//                icon.setPos((i % 7) * 18, (i / 7) * 18);
-//                container.addChild(icon);
-//            }
-//            container.setBoundsToChildren();
-//
-//            scrollElement.addElement(container);
-//            scrollElement.reloadElement();
-//
-//            filterTags.put(index, key);
-//            sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
-//        });
-//
-//        textField.onReturnPressed(dialog::close);
-//
-//        dialog.showCenter((int) parent.getRenderZLevel() + 200);
-//
-//        if (filterTags.containsKey(index)) {
-//            textField.setValue(filterTags.get(index).location().toString());
-//        }
+        GuiDialogBase dialog = new GuiDialogBase(parent);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.addMoveHandle(20);
+        dialog.enableCursors(true);
+        Constraints.size(dialog, 152, 150);
+        dialog.placeCenter();
+
+        GuiElement<?> root = dialog.getContentElement();
+        root.setOpaque(true);
+        root.jeiExclude();
+
+        Constraints.bind(new GuiTexture(root, () -> BCGuiTextures.getThemed("background_dynamic")), root);
+
+        GuiText heading = new GuiText(root, Component.translatable("module." + MODID + ".filtered_module.filter_by_tag"))
+                .constrain(WIDTH, relative(root.get(WIDTH), -10))
+                .constrain(HEIGHT, literal(9))
+                .setTextColour(GuiToolkit.Palette.BG::text)
+                .setShadow(() -> BCConfig.darkMode)
+                .setAlignment(Align.CENTER);
+        Constraints.placeInside(heading, root, Constraints.LayoutPos.TOP_CENTER, 0, 5);
+
+        GuiRectangle fieldBg = new GuiRectangle(root)
+                .constrain(WIDTH, relative(root.get(WIDTH), -10))
+                .constrain(HEIGHT, literal(12));
+        fieldBg.rectangle(() -> GuiToolkit.Palette.Ctrl.fill(fieldBg.isMouseOver()), () -> GuiToolkit.Palette.Ctrl.accentLight(false));
+
+        GuiTextField textField = new GuiTextField(fieldBg)
+                .setMaxLength(512)
+                .setTextColor(GuiToolkit.Palette.Ctrl::text)
+                .setShadow(false)
+                .setSuggestionShadow(false)
+                .setSuggestion(Component.translatable("module." + MODID + ".filtered_module.filter_example"));
+        Constraints.bind(textField, fieldBg, 0, 4, 0, 4);
+        Constraints.placeOutside(fieldBg, heading, Constraints.LayoutPos.BOTTOM_CENTER, 0, 2);
+
+        GuiText matchingLabel = new GuiText(root, Component.translatable("module." + MODID + ".filtered_module.matching"))
+                .constrain(WIDTH, relative(root.get(WIDTH), -10))
+                .constrain(HEIGHT, literal(9))
+                .setTextColour(GuiToolkit.Palette.BG::text)
+                .setShadow(() -> BCConfig.darkMode)
+                .setAlignment(Align.CENTER);
+        Constraints.placeOutside(matchingLabel, fieldBg, Constraints.LayoutPos.BOTTOM_CENTER, 0, 4);
+
+        GuiRectangle matchContainer = new GuiRectangle(root)
+                .constrain(WIDTH, relative(root.get(WIDTH), -10))
+                .constrain(LEFT, relative(root.get(LEFT), 5))
+                .constrain(TOP, relative(matchingLabel.get(BOTTOM), 2))
+                .constrain(BOTTOM, relative(root.get(BOTTOM), -5))
+                .shadedRect(GuiToolkit.Palette.Slot::accentDark, GuiToolkit.Palette.Slot::accentLight, GuiToolkit.Palette.Slot::fill);
+
+        var scrollBar = GuiSlider.vanillaScrollBar(matchContainer, Axis.Y);
+        scrollBar.container().shadedRect(() -> 0, () -> 0, () -> scrollBar.container().isMouseOver() ? 0x30FFFFFF : 0);
+        scrollBar.container()
+                .constrain(WIDTH, literal(8))
+                .constrain(TOP, match(matchContainer.get(TOP)))
+                .constrain(BOTTOM, match(matchContainer.get(BOTTOM)))
+                .constrain(RIGHT, match(matchContainer.get(RIGHT)));
+
+        GuiScrolling scrolling = new GuiScrolling(matchContainer)
+                .constrain(LEFT, relative(matchContainer.get(LEFT), 2))
+                .constrain(RIGHT, relative(scrollBar.container().get(LEFT), 0))
+                .constrain(TOP, relative(matchContainer.get(TOP), 2))
+                .constrain(BOTTOM, relative(matchContainer.get(BOTTOM), -2));
+
+        scrolling.installContainerElement(new GuiElement<>(scrolling));
+        scrolling.getContentElement()
+                .constrain(WIDTH, null)
+                .constrain(LEFT, match(scrolling.get(LEFT)))
+                .constrain(RIGHT, match(scrolling.get(RIGHT)));
+
+        scrollBar.slider().setSliderState(scrolling.scrollState(Axis.Y));
+        scrollBar.slider().setScrollableElement(scrolling);
+
+        List<TagKey<Item>> tagOps = new ArrayList<>();
+        ItemStack filterStack = filterStacks.getOrDefault(index, ItemStack.EMPTY);
+        if (!filterStack.isEmpty()) {
+            tagOps.addAll(filterStack.getTags().toList());
+        }
+
+        if (!tagOps.isEmpty()) {
+            GuiButton fromItemButton = new GuiButton(root);
+            Constraints.size(fromItemButton, 12, 12);
+            Constraints.placeOutside(fromItemButton, matchContainer, Constraints.LayoutPos.TOP_RIGHT, -12, -1);
+            Constraints.bind(new GuiItemStack(fromItemButton, filterStack).setTooltip(Component.translatable("module." + MODID + ".filtered_module.select_from_item")), fromItemButton);
+
+            fromItemButton.onPress(() -> {
+                GuiElement<?> content = scrolling.getContentElement();
+                content.getChildren().forEach(content::removeChild);
+                scrolling.scrollState(Axis.Y).setPos(0);
+                matchingLabel.setText(Component.translatable("module." + MODID + ".filtered_module.select_or_enter"));
+
+                int yOffset = 0;
+                for (TagKey<Item> tag : tagOps) {
+                    GuiButton button = GuiButton.flatColourButton(content, () -> Component.literal(tag.location().toString()), GuiToolkit.Palette.Ctrl::fill)
+                            .constrain(HEIGHT, literal(12))
+                            .constrain(LEFT, match(content.get(LEFT)))
+                            .constrain(RIGHT, match(content.get(RIGHT)))
+                            .constrain(TOP, relative(content.get(TOP), yOffset))
+                            .setTooltip(Component.literal(tag.location().toString()));
+                    button.getLabel().setTrim(true);
+                    button.onPress(() -> {
+                        filterTags.remove(index); //Ensures the scroll element is reloaded even if this tag was already selected.
+                        textField.setValue(tag.location().toString());
+                    });
+                    yOffset += 13;
+                }
+            });
+        }
+
+        textField.setTextState(TextState.simpleState("", s -> {
+            ResourceLocation location = ResourceLocation.tryParse(s);
+            TagKey<Item> key = filterTags.get(index);
+            if (s.isEmpty() && key == null) return;
+
+            GuiElement<?> content = scrolling.getContentElement();
+
+            if (location == null && filterTags.containsKey(index)) {
+                filterTags.remove(index); //Remove old key from server
+                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+                return;
+            } else if (location == null || (key != null && location.equals(key.location()) && !content.getChildren().isEmpty())) {
+                return;
+            }
+
+            key = ItemTags.create(location);
+            ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
+            if (tags == null) return;
+
+
+            content.getChildren().forEach(content::removeChild);
+            scrolling.scrollState(Axis.Y).setPos(0);
+            matchingLabel.setText(Component.translatable("module." + MODID + ".filtered_module.matching"));
+
+            List<Item> matchingItems = tags.getTag(key).stream().toList();
+            if (matchingItems.isEmpty()) {
+                filterTags.remove(index);
+                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+                return;
+            }
+
+            for (int i = 0; i < matchingItems.size(); i++) {
+                Item item = matchingItems.get(i);
+                GuiItemStack icon = new GuiItemStack(content, new ItemStack(item));
+                Constraints.size(icon, 18, 18);
+                Constraints.placeInside(icon, content, Constraints.LayoutPos.TOP_LEFT, (int) (i % 7) * 19, (int) (i / 7) * 19D);
+            }
+
+            filterTags.put(index, key);
+            sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+        }));
+
+        textField.setEnterPressed(dialog::close);
+
+        if (filterTags.containsKey(index)) {
+            textField.setValue(filterTags.get(index).location().toString());
+        }
     }
 
     @Override

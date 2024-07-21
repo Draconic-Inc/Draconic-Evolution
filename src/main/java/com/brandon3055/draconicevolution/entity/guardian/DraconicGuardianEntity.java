@@ -108,6 +108,15 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         this.noPhysics = true;
         this.noCulling = true;
         this.phaseManager = new PhaseManager(this);
+        this.setId(ENTITY_COUNTER.getAndAdd(this.dragonParts.length + 1) + 1);
+    }
+
+    @Override
+    public void setId(int id) {
+        super.setId(id);
+        for (int i = 0; i < this.dragonParts.length; i++){
+            this.dragonParts[i].setId(id + i + 1);
+        }
     }
 
     @Override
@@ -193,7 +202,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public void aiStep() {
         speedMult = codechicken.lib.math.MathHelper.approachLinear(speedMult, phaseManager.getCurrentPhase().getGuardianSpeed(), 0.1);
-//        phaseManager.setPhase(PhaseType.START);
         if (this.level().isClientSide) {
             this.setHealth(this.getHealth());
             if (!this.isSilent()) {
@@ -208,8 +216,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     this.growlTime = 200 + this.random.nextInt(200);
                 }
             }
-        } else {
-//            updateShieldState();
         }
 
         this.oFlapTime = this.flapTime;
@@ -696,9 +702,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
         Node nextPoint = startPoint;
         int startIndex = 0;
-//        if (this.fightManager == null || this.fightManager.getNumAliveCrystals() == 0) {
-//            startIndex = 12;
-//        }
 
         while (!this.pathFindQueue.isEmpty()) {
             Node testPoint = this.pathFindQueue.pop();
@@ -717,17 +720,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             }
 
             testPoint.closed = true;
-            int testPointIntex = 0;
-
-            for (int l = 0; l < 24; ++l) {
-                if (this.pathPoints[l] == testPoint) {
-                    testPointIntex = l;
-                    break;
-                }
-            }
 
             for (int index = startIndex; index < 24; ++index) {
-//                if ((this.neighbors[testPointIntex] & 1 << index) > 0) {
                 Node pathpoint3 = this.pathPoints[index];
                 if (!pathpoint3.closed) {
                     float f = testPoint.g + testPoint.distanceTo(pathpoint3);
@@ -743,7 +737,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                         }
                     }
                 }
-//                }
             }
         }
 
@@ -850,7 +843,6 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         IPhase iphase = this.phaseManager.getCurrentPhase();
         PhaseType<? extends IPhase> phasetype = iphase.getType();
         double d0;
-//        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
         if (iphase.getIsStationary()) {
             d0 = p_184667_1_;
         } else if (p_184667_1_ == 6) {
@@ -858,41 +850,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         } else {
             d0 = headPartOffsets[1] - spineEndOffsets[1];
         }
-//        } else {
-//            BlockPos blockpos = this.level().getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
-//            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
-//            d0 = (float) p_184667_1_ / f;
-//        }
 
         return (float) d0;
-    }
-
-    public Vec3 getHeadLookVec(float partialTicks) {
-        IPhase iphase = this.phaseManager.getCurrentPhase();
-        PhaseType<? extends IPhase> phasetype = iphase.getType();
-        Vec3 vector3d;
-//        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
-        if (iphase.getIsStationary()) {
-            float f4 = this.getXRot();
-            float f5 = 1.5F;
-            this.setXRot(-45.0F);
-            vector3d = this.getViewVector(partialTicks);
-            this.setXRot(f4);
-        } else {
-            vector3d = this.getViewVector(partialTicks);
-        }
-//        } else {
-//            BlockPos blockpos = this.level().getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
-//            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
-//            float f1 = 6.0F / f;
-//            float f2 = this.xRot;
-//            float f3 = 1.5F;
-//            this.xRot = -f1 * 1.5F * 5.0F;
-//            vector3d = this.getViewVector(partialTicks);
-//            this.xRot = f2;
-//        }
-
-        return vector3d;
     }
 
     public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, float damage, boolean destroyed) {

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "tag": "forge:dusts/draconium_awakened"
+  },
+  "result": {
+    "item": "draconicevolution:awakened_draconium_ingot"
+  }
+}

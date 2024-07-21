@@ -19,6 +19,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.brandon3055.brandonscore.api.TechLevel.*;
@@ -35,6 +37,8 @@ public class DEModules {
 
     public static final DeferredRegister<Module<?>> MODULES = DeferredRegister.create(MODULE_KEY, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+
+    public static final Set<String> MODULE_PROVIDING_MODS = new HashSet<>();
 
     public static void init() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -102,8 +106,8 @@ public class DEModules {
     public static final RegistryObject<ModuleItem<?>> ITEM_DRACONIC_AOE                     = ITEMS.register("item_draconic_aoe",                       () -> new ModuleItem<>(DRACONIC_AOE));
     public static final RegistryObject<ModuleItem<?>> ITEM_CHAOTIC_AOE                      = ITEMS.register("item_chaotic_aoe",                        () -> new ModuleItem<>(CHAOTIC_AOE));
 
-//    public static final RegistryObject<Module<?>> WYVERN_MINING_STABILITY                   = MODULES.register("wyvern_mining_stability",               () -> new ModuleImpl<>(MINING_STABILITY,                WYVERN,                 noData())); //TODO
-//    public static final RegistryObject<ModuleItem<?>> ITEM_WYVERN_MINING_STABILITY          = ITEMS.register("item_wyvern_mining_stability",            () -> new ModuleItem<>(WYVERN_MINING_STABILITY));
+    public static final RegistryObject<Module<?>> WYVERN_MINING_STABILITY                   = MODULES.register("wyvern_mining_stability",               () -> new ModuleImpl<>(MINING_STABILITY,                WYVERN,                 noData()));
+    public static final RegistryObject<ModuleItem<?>> ITEM_WYVERN_MINING_STABILITY          = ITEMS.register("item_wyvern_mining_stability",            () -> new ModuleItem<>(WYVERN_MINING_STABILITY));
 
     public static final RegistryObject<Module<?>> WYVERN_TREE_HARVEST                       = MODULES.register("wyvern_tree_harvest",                   () -> new ModuleImpl<>(TREE_HARVEST,                    WYVERN,                 treeHarvestData(16, 5)));
     public static final RegistryObject<Module<?>> DRACONIC_TREE_HARVEST                     = MODULES.register("draconic_tree_harvest",                 () -> new ModuleImpl<>(TREE_HARVEST,                    DRACONIC,               treeHarvestData(48, 15)));
@@ -243,8 +247,8 @@ public class DEModules {
     public static final RegistryObject<ModuleItem<?>> ITEM_DRACONIC_JUMP                    = ITEMS.register("item_draconic_jump",                      () -> new ModuleItem<>(DRACONIC_JUMP));
     public static final RegistryObject<ModuleItem<?>> ITEM_CHAOTIC_JUMP                     = ITEMS.register("item_chaotic_jump",                       () -> new ModuleItem<>(CHAOTIC_JUMP));
 
-//    public static final RegistryObject<Module<?>> WYVERN_AQUA_ADAPT                         = MODULES.register("wyvern_aqua_adapt",                     () -> new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData())); //TODO
-//    public static final RegistryObject<ModuleItem<?>> ITEM_WYVERN_AQUA_ADAPT                = ITEMS.register("item_wyvern_aqua_adapt",                  () -> new ModuleItem<>(WYVERN_AQUA_ADAPT));
+    public static final RegistryObject<Module<?>> WYVERN_AQUA_ADAPT                         = MODULES.register("wyvern_aqua_adapt",                     () -> new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData())); //TODO
+    public static final RegistryObject<ModuleItem<?>> ITEM_WYVERN_AQUA_ADAPT                = ITEMS.register("item_wyvern_aqua_adapt",                  () -> new ModuleItem<>(WYVERN_AQUA_ADAPT));
     //@formatter:on
 
 

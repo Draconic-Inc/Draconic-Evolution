@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution.inventory;
 import codechicken.lib.gui.modular.lib.container.SlotGroup;
 import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
 import codechicken.lib.inventory.container.modular.ModularSlot;
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
@@ -17,8 +14,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -138,13 +133,10 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     @Override
     public boolean stillValid(Player playerIn) {
-        if (moduleHost == null || hostStack != slot.getStackInSlot(player)) {
+        if (hostStack.isEmpty() || moduleHost == null || hostStack != slot.getStackInSlot(player)) {
             return false;
         }
-        if (moduleHost != hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null)) {
-            return false; //I dont think this is actually possible... But just in case.
-        }
-        return true;//moduleHost != null && hostStack == slot.getStackInSlot(player);
+        return moduleHost == hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null);
     }
 
     @Override
@@ -160,8 +152,8 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         return moduleGrid;
     }
 
-//    @Override
-    @OnlyIn(Dist.CLIENT)
+    //    @Override
+    @OnlyIn (Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
         if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
@@ -200,7 +192,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
                             PlayerSlot playerSlot;
                             if (slotId >= 41) playerSlot = new PlayerSlot(slotId - 41, PlayerSlot.EnumInvCategory.EQUIPMENT);
                             else if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
-                            else if (slotId >= 36) playerSlot = new PlayerSlot(slotId - 36, PlayerSlot.EnumInvCategory.ARMOR);
+                            else if (slotId >= 36) playerSlot = new PlayerSlot(3 - (slotId - 36), PlayerSlot.EnumInvCategory.ARMOR);
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
                             NetworkHooks.openScreen((ServerPlayer) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
                         } else {

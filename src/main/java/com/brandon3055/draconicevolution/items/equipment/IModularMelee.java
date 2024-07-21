@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 5/7/20
  */
-public interface IModularMelee extends IModularTieredItem {
+public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
 
     @Override
     default boolean onLeftClickEntity(ItemStack stack, Player player, Entity target) {
@@ -89,5 +91,4 @@ public interface IModularMelee extends IModularTieredItem {
             extractEnergy(player, stack, energyPerHit);
         }
     }
-
 }

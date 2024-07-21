@@ -126,13 +126,9 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
         updateRotation(facing.get());
     }
 
-    //    public void updateRotation(Direction newDirection) {
-//        facing.set(newDirection);
-//        updateCapabilityIO();
-//    }
-//
-//    public void updateCapabilityIO() {
-//        capManager.remove(CapabilityOP.OP);
-//        capManager.setSide(CapabilityOP.OP, new OPIOControl(opStorage).setIOMode(!outputMode.get()), facing.get());
-//    }
+    @Override
+    public void readFromItemStack(CompoundTag compound) {
+        super.readFromItemStack(compound);
+        updateRotation(facing.get());
+    }
 }
