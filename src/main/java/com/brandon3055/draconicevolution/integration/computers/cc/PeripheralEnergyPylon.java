@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.integration.computers;
+package com.brandon3055.draconicevolution.integration.computers.cc;
 
 import com.brandon3055.brandonscore.api.power.IOInfo;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.brandon3055.draconicevolution.integration.computers.CCOCIntegration.ENERGY_PYLON;
+
 public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	
 	TileEnergyPylon tile;
@@ -28,7 +30,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	
 	@Override
 	public String getType() {
-		return "draconic_rf_storage";
+		return ENERGY_PYLON;
 	}
 
 	@Override

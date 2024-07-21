@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.integration.computers;
+package com.brandon3055.draconicevolution.integration.computers.cc;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -7,14 +7,24 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
+import dan200.computercraft.api.ForgeComputerCraftAPI;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class ComputerCraftCompatEventHandler {
-    
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onAttachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
     	if (event.getObject() instanceof TileBCore) {

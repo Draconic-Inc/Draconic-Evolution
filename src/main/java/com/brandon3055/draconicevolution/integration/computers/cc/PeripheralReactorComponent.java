@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.integration.computers;
+package com.brandon3055.draconicevolution.integration.computers.cc;
 
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.brandon3055.draconicevolution.integration.computers.CCOCIntegration.DRACONIC_REACTOR;
+
 public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvider {
 	
 	TileReactorComponent tile;
@@ -28,7 +30,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public String getType() {
-		return "draconic_reactor";
+		return DRACONIC_REACTOR;
 	}
 
 	@Override
