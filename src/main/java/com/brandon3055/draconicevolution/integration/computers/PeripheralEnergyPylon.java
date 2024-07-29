@@ -31,20 +31,20 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return false;
+		return other instanceof PeripheralEnergyPylon o && tile == o.tile;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getEnergyStored() {
 		return tile.opAdapter.getOPStored();
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getMaxEnergyStored() {
 		return tile.opAdapter.getMaxOPStored();
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final Map<Object, Object> getEnergyStoredInNotation() {
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		String[] split = tile.getCore().energy.getScientific().split("E", 2);
@@ -53,7 +53,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 		return map;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final Map<Object, Object> getMaxEnergyStoredInNotation() {
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		long maxEnergy = tile.opAdapter.getMaxOPStored();
@@ -63,7 +63,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 		return map;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getTransferPerTick() {
 		if (tile.coreOffset.isNull() || tile.getCore() == null) {
             return 0;
@@ -72,7 +72,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 		return io == null ? 0 : io.currentInput() - io.currentOutput();
 	}
 
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getInputPerTick() {
 		if (tile.coreOffset.isNull() || tile.getCore() == null) {
 			return 0;
@@ -81,7 +81,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 		return io == null ? 0 : io.currentInput();
 	}
 
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getOutputPerTick() {
 		if (tile.coreOffset.isNull() || tile.getCore() == null) {
 			return 0;
@@ -92,15 +92,16 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		//TODO?
-//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-//            if (self == null) self = LazyOptional.of(() -> this);
-//            return self.cast();
-//        }
-        return LazyOptional.empty();
+		if (CCOCIntegration.isPeripheral(cap)) {
+			if (self == null) self = LazyOptional.of(() -> this);
+			return self.cast();
+		}
+		return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-//        self = CapabilityUtil.invalidate(self);
+		if (self == null) return;
+		self.invalidate();
+		self = null;
     }
 }

@@ -24,60 +24,61 @@ public class PeripheralFlowGate implements IPeripheral, ICapabilityProvider {
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return false;
+		return other instanceof PeripheralFlowGate o && tile == o.tile;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getFlow() {
 		return tile.getFlow();
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final void setOverrideEnabled(boolean state) {
 		tile.flowOverridden.set(state);
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final boolean getOverrideEnabled() {
 		return tile.flowOverridden.get();
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final void setFlowOverride(long amount) {
 		tile.flowOverride.set(amount);
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final void setSignalHighFlow(long amount) {
 		tile.maxFlow.set(amount);
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getSignalHighFlow() {
 		return tile.maxFlow.get();
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final void setSignalLowFlow(long amount) {
 		tile.minFlow.set(amount);
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final long getSignalLowFlow() {
 		return tile.minFlow.get();
 	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		//TODO?
-//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-//            if (self == null) self = LazyOptional.of(() -> this);
-//            return self.cast();
-//        }
-        return LazyOptional.empty();
+		if (CCOCIntegration.isPeripheral(cap)) {
+			if (self == null) self = LazyOptional.of(() -> this);
+			return self.cast();
+		}
+		return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-//        self = CapabilityUtil.invalidate(self);
+		if (self == null) return;
+		self.invalidate();
+		self = null;
     }
 }

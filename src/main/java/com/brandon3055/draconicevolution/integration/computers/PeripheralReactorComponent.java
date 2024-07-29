@@ -31,7 +31,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return false;
+		return other instanceof PeripheralReactorComponent o && tile == o.tile;
 	}
 	
 	private boolean refreshCoreStatus() {
@@ -42,7 +42,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
         return true;
 	}
 
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final Map<Object, Object> getReactorInfo() {
 		if (refreshCoreStatus()) {
 			Map<Object, Object> map = new HashMap<Object, Object>();
@@ -63,7 +63,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 		return null;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final boolean chargeReactor() {
 		if (refreshCoreStatus()) {
 			reactor.chargeReactor();
@@ -72,7 +72,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
         return false;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final boolean activateReactor() {
 		if (refreshCoreStatus()) {
 			reactor.activateReactor();
@@ -81,7 +81,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
         return false;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final boolean stopReactor() {
 		if (refreshCoreStatus()) {
 			reactor.shutdownReactor();
@@ -90,7 +90,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
         return false;
 	}
 	
-	@LuaFunction
+	@LuaFunction(mainThread = true)
 	public final boolean toggleFailSafe() {
 		if (refreshCoreStatus()) {
 			reactor.toggleFailSafe();
@@ -101,15 +101,16 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		//TODO Does CC still have caps?
-//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-//            if (self == null) self = LazyOptional.of(() -> this);
-//            return self.cast();
-//        }
-        return LazyOptional.empty();
+		if (CCOCIntegration.isPeripheral(cap)) {
+			if (self == null) self = LazyOptional.of(() -> this);
+			return self.cast();
+		}
+		return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-//        self = CapabilityUtil.invalidate(self);
+		if (self == null) return;
+		self.invalidate();
+		self = null;
     }
 }
