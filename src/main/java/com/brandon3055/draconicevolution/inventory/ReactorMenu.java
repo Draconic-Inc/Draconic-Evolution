@@ -6,6 +6,7 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,7 +43,6 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
         output.addSlots(3, 0, e -> new SlotReactor(tile, 3 + e));
     }
 
-    @Nullable
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         int maxFuel = 10368 + 15;
@@ -85,7 +86,7 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
         }
     }
 
-    private int getFuelValue(ItemStack stack) {
+    private static int getFuelValue(ItemStack stack) {
         if (stack.isEmpty()) {
             return 0;
         }
@@ -101,7 +102,7 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
         return 0;
     }
 
-    private int getChaosValue(ItemStack stack) {
+    private static int getChaosValue(ItemStack stack) {
         if (stack.isEmpty()) {
             return 0;
         }
@@ -143,7 +144,7 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
             return false;
         }
 
-        @Nullable
+        @NotNull
         @Override
         public ItemStack getItem() {
             int index = getSlotIndex();
@@ -185,6 +186,19 @@ public class ReactorMenu extends DETileMenu<TileReactorCore> {
 
         @Override
         public void set(@Nonnull ItemStack stack) {
+            if (!(tile.getLevel() instanceof ServerLevel)) return;
+            int index = getSlotIndex();
+            if (index < 3) {
+                double prevValue = getFuelValue(getItem());
+                double newValue = getFuelValue(stack);
+                double change = newValue - prevValue;
+                tile.reactableFuel.add(change);
+            } else {
+                double prevValue = getChaosValue(getItem());
+                double newValue = getChaosValue(stack);
+                double change = newValue - prevValue;
+                tile.convertedFuel.add(change);
+            }
             this.setChanged();
         }
 
