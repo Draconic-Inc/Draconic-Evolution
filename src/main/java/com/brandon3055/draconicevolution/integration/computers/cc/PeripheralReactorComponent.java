@@ -1,10 +1,12 @@
-package com.brandon3055.draconicevolution.integration.computers;
+package com.brandon3055.draconicevolution.integration.computers.cc;
 
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.Capabilities;
+import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -13,6 +15,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.brandon3055.draconicevolution.integration.computers.CCOCIntegration.DRACONIC_REACTOR;
 
 public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvider {
 	
@@ -26,7 +30,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public String getType() {
-		return "draconic_reactor";
+		return DRACONIC_REACTOR;
 	}
 
 	@Override
@@ -101,15 +105,15 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		//TODO Does CC still have caps?
-//		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
-//            if (self == null) self = LazyOptional.of(() -> this);
-//            return self.cast();
-//        }
+
+		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
+            if (self == null) self = LazyOptional.of(() -> this);
+            return self.cast();
+        }
         return LazyOptional.empty();
 	}
 	
 	public void invalidate() {
-//        self = CapabilityUtil.invalidate(self);
+        self = CapabilityUtil.invalidate(self);
     }
 }

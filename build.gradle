@@ -55,6 +55,7 @@ configurations {
 }
 
 repositories {
+    flatDir { dirs 'libs' }
     mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
@@ -62,6 +63,19 @@ repositories {
     maven { url = "https://maven.theillusivec4.top/" }
     maven { url = "https://squiddev.cc/maven/" }
     maven { url = "https://maven.blamejared.com/" }
+    maven {
+        url "https://maven.architectury.dev"
+        content {
+            includeGroup 'dev.architectury'
+        }
+    }
+    maven {
+        name 'CurseMaven'
+        url 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
 //    maven { url = "https://modmaven.dev/" }
 }
 
@@ -85,8 +99,13 @@ dependencies {
 
     compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
     compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
-    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
+    implementation(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
 
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+
+    implementation fg.deobf("curse.maven:sedna-511276:${sedna_version}")
+    implementation fg.deobf("curse.maven:markdownmanual-502485:${md_version}")
+    implementation fg.deobf("curse.maven:oc2r-1037738:${oc2_version}")
     // For Testing
 //    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
 //    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:additions")// Mekanism: Additions
