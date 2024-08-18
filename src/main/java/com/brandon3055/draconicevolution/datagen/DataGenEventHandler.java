@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.integration.equipment.CuriosIntegration;
@@ -73,13 +75,16 @@ public class DataGenEventHandler {
             tag(DETags.Items.INGOTS_DRACONIUM_AWAKENED).add(DEContent.INGOT_DRACONIUM_AWAKENED.get());
             tag(Tags.Items.INGOTS).addTags(DETags.Items.INGOTS_DRACONIUM_AWAKENED, DETags.Items.INGOTS_DRACONIUM);
 
-
             tag(DETags.Items.STORAGE_BLOCKS_DRACONIUM).add(DEContent.ITEM_DRACONIUM_BLOCK.get());
             tag(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.ITEM_AWAKENED_DRACONIUM_BLOCK.get());
             tag(Tags.Items.STORAGE_BLOCKS).addTags(DETags.Items.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
 
             tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ITEM_END_DRACONIUM_ORE.get(), DEContent.ITEM_NETHER_DRACONIUM_ORE.get(), DEContent.ITEM_OVERWORLD_DRACONIUM_ORE.get());
             tag(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
+
+            for (Module<?> module : ModuleRegistry.getRegistry().getValues()) {
+                tag(DETags.Items.MODULES).add(module.getItem());
+            }
 
             if (ModList.get().isLoaded("curios")) {
                 CuriosIntegration.generateTags(this::tag);

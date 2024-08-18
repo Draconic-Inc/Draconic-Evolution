@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.init;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -34,6 +35,8 @@ public class DETags {
         public static final TagKey<Item> STORAGE_BLOCKS_DRACONIUM_AWAKENED = tag("storage_blocks/draconium_awakened");
 
         public static final TagKey<Item> ORES_DRACONIUM = tag("ores/draconium");
+
+        public static final TagKey<Item> MODULES = ItemTags.create(new ResourceLocation(DraconicEvolution.MODID, "modules"));
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(new ResourceLocation("forge", name));
