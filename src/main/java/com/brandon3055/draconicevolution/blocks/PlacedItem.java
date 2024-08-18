@@ -210,7 +210,7 @@ public class PlacedItem extends EntityBlockBCore implements CustomTabHandling {
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
-            ((TilePlacedItem) tile).onBroken(player, Vector3.fromTileCenter(tile), false);
+            ((TilePlacedItem) tile).onBroken(player, pos, false);
         }
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }

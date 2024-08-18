@@ -153,7 +153,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
 
         if (index == -1) {
-            onBroken(player, Vector3.fromEntityCenter(player), true);
+            onBroken(player, player.getOnPos().above(), true);
             level.removeBlock(getBlockPos(), false);
             return InteractionResult.SUCCESS;
         }
@@ -187,7 +187,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
     }
 
-    public void onBroken(Player player, Vector3 dropPos, boolean noPickupDelay) {
+    public void onBroken(Player player, BlockPos dropPos, boolean noPickupDelay) {
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             if (!player.getAbilities().instabuild) {
                 popResource(level, dropPos, itemHandler.getStackInSlot(i), noPickupDelay);
@@ -196,12 +196,12 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
     }
 
-    public static void popResource(Level world, Vector3 pos, ItemStack stack, boolean noPickupDelay) {
+    public static void popResource(Level world, BlockPos pos, ItemStack stack, boolean noPickupDelay) {
         if (!world.isClientSide && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
             double d0 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
             double d2 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
-            ItemEntity itementity = new ItemEntity(world, pos.x + d0, pos.y + d1, pos.z + d2, stack);
+            ItemEntity itementity = new ItemEntity(world, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2, stack);
             if (noPickupDelay) {
                 itementity.setNoPickUpDelay();
             } else {
