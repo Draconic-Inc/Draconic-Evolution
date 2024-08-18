@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.init;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.integration.computers.CCOCIntegration;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,7 +18,7 @@ public class ModCapabilities {
 
     public static void init() {
         LOCK.lock();
-
+        CCOCIntegration.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModCapabilities::register);
     }

@@ -1,6 +1,8 @@
-package com.brandon3055.draconicevolution.integration.computers;
+package com.brandon3055.draconicevolution.integration.computers.cc;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
+
+import static com.brandon3055.draconicevolution.integration.computers.CCOCIntegration.FLUID_GATE;
 
 public class PeripheralFluidGate extends PeripheralFlowGate {
 	
@@ -11,6 +13,6 @@ public class PeripheralFluidGate extends PeripheralFlowGate {
 	
 	@Override
 	public String getType() {
-		return "fluid_gate";
+		return FLUID_GATE;
 	}
 }
