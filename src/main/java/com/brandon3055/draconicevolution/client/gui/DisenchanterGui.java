@@ -161,8 +161,9 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
             int lvl = cTag.getShort("lvl");
             Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(cTag.getString("id")));
 
+            Enchantment enchForLevel = tile.getEnchantmentFromTag(cTag);
             GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), () -> Component.translatable(enchantment.getDescriptionId()))
-                    .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(tile.getEnchantmentFromTag(cTag), lvl)))
+                    .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", enchForLevel == null ? 0 : tile.getCostInLevels(enchForLevel, lvl)))
                     .onPress(() -> tile.sendPacketToServer(output -> output.writeString(cTag.getString("id")), 1))
                     .constrain(HEIGHT, literal(14))
                     .constrain(LEFT, match(scroll.getContentElement().get(LEFT)))
