@@ -45,7 +45,7 @@ public class SupportedModulesIcon extends GuiElement<SupportedModulesIcon> {
     public SupportedModulesIcon(GuiParent<?> parent, ModuleHost host) {
         super(parent);
         for (Module<?> module : ModuleRegistry.getRegistry().getValues()) {
-            if (host.isModuleSupported(module.createEntity())) {
+            if (host.getHostTechLevel().index >= module.getModuleTechLevel().index && host.isModuleSupported(module.createEntity())) {
                 supported.computeIfAbsent(module.getType(), e -> new ArrayList<>()).add(module);
                 moduleStacks.put(module, new ItemStack(module.getItem()));
             }
