@@ -64,6 +64,7 @@ import java.util.*;
  * Created by brandon3055 on 16/07/2016.
  */
 public class TileDislocatorReceptacle extends TileBCore implements IInteractTile, IHudBlock, IRSSwitchable, DislocatorEndPoint, ICrystalLink, IENetEffectTile {
+    private static final Random rand = new Random();
 
     public final ManagedPos arrivalPos = register(new ManagedPos("arrival_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedByte ignitionStage = register(new ManagedByte("ignition_stage", (byte) 0, DataFlags.SYNC_TILE));
@@ -189,7 +190,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
                     return;
                 }
 
-                BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, entity.level().random.nextFloat() * 0.1F + 0.9F, false);
+                BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, rand.nextFloat() * 0.1F + 0.9F, false);
                 entity.setPortalCooldown();
                 target.teleport(entity);
                 if (entity instanceof ServerPlayer) {
@@ -199,7 +200,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
                     DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
                 }
                 entity.setPortalCooldown();
-                DelayedTask.run(1, () -> BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, entity.level().random.nextFloat() * 0.1F + 0.9F, false));
+                DelayedTask.run(1, () -> BCoreNetwork.sendSound(entity.level(), entity.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, rand.nextFloat() * 0.1F + 0.9F, false));
             }
             teleportQ.clear();
         }
