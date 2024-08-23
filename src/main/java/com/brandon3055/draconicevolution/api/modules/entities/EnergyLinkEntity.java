@@ -55,7 +55,9 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         Level level = context.getEntity().level();
         if (!(level instanceof ServerLevel serverLevel)) return;
 
+        boolean crossDimension = false;
         if (!level.dimension().equals(dimKey)) {
+            crossDimension = true;
             level = serverLevel.getServer().getLevel(dimKey);
             if (level == null) return;
         }
@@ -68,12 +70,12 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             return;
         }
 
-        if (!enabled.getValue()) {
+        EnergyLinkData data = module.getData();
+        if (!enabled.getValue() || (crossDimension && !data.xDimensional())) {
             disconnect();
             return;
         }
 
-        EnergyLinkData data = module.getData();
         if (!updateConnection(data, storage, core)) return;
 
         long inserted = core.energy.extractOP(storage.modifyEnergyStored(core.energy.extractOP(data.transferLimit(), true)), false);
@@ -129,8 +131,15 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         if (linkCharge >= data.activationEnergy()) return;
         double progress = linkCharge / (double) data.activationEnergy();
 
+        boolean crossDimension = render.mc().level.dimension() != dimKey;
+        if (crossDimension && !data.xDimensional()) {
+            render.rect(x, y, width, height, 0x60FF0000);
+            return;
+        }
+
         String pText = (int) (progress * 100) + "%";
-        drawChargeProgress(render, x, y, width, height, progress, pText, I18n.get("module.draconicevolution.energy_link.charging") + StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4)));
+        String progressText = I18n.get("module.draconicevolution.energy_link.charging") + StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4));
+        drawChargeProgress(render, x, y, width, height, progress, pText, progressText);
     }
 
     @Override
