@@ -24,8 +24,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -73,7 +73,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                     if (foodStats.needsFood() && storedFood > 1) {
                         foodStats.eat((int)consumeFood(Math.min(1, 20 - foodStats.getFoodLevel())), 0);
                     }else if (foodStats.getSaturationLevel() < maxSat && storedFood > 0) {
-                        foodStats.saturationLevel += (float) consumeFood(Math.min(1, maxSat - foodStats.getSaturationLevel()));
+                        foodStats.setSaturation(foodStats.getSaturationLevel() + (float) consumeFood(Math.min(1, maxSat - foodStats.getSaturationLevel())));
                     }
                 }
             }

@@ -5,45 +5,81 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:chaotic_core"
   },
-  "tier": "DRACONIC",
-  "total_energy": 100000000
+  "techLevel": "draconic",
+  "totalEnergy": 100000000
 }

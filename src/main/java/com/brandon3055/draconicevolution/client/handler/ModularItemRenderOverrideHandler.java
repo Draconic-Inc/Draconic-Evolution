@@ -6,7 +6,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
-import com.brandon3055.draconicevolution.lib.WTFException;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
@@ -14,7 +13,6 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -22,9 +20,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Created by brandon3055 on 9/2/21
@@ -35,7 +32,7 @@ public class ModularItemRenderOverrideHandler {
     public static void init() {
         LOCK.lock();
 
-        MinecraftForge.EVENT_BUS.addListener(ModularItemRenderOverrideHandler::renderHandEvent);
+        NeoForge.EVENT_BUS.addListener(ModularItemRenderOverrideHandler::renderHandEvent);
     }
 
     private static void renderHandEvent(RenderHandEvent event) {
@@ -49,9 +46,8 @@ public class ModularItemRenderOverrideHandler {
         if (renderingMainHand && player.isUsingItem() && player.getUsedItemHand() != hand && player.getUseItemRemainingTicks() > 0) {
             ItemStack usingItem = player.getUseItem();
             if (usingItem.getItem() instanceof IModularItem) {
-                LazyOptional<ModuleHost> opt = usingItem.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-                if (opt.isPresent()) {
-                    ModuleHost host = opt.orElseThrow(WTFException::new);
+                ModuleHost host = usingItem.getCapability(DECapabilities.Host.ITEM);
+                if (host != null) {
                     for (ModuleEntity<?> entity : host.getModuleEntities()) {
                         if (entity instanceof EntityOverridesItemUse override && override.overrideUsingPose(usingItem)) {
                             event.setCanceled(true);
@@ -101,14 +97,15 @@ public class ModularItemRenderOverrideHandler {
         AbstractClientPlayer player = mc.player;
         if (player == null || player.isScoping() || !player.isUsingItem() || player.getUseItemRemainingTicks() <= 0 || player.getUsedItemHand() != event.getHand()) return;
 
-        stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (host != null) {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
                 if (entity instanceof EntityOverridesItemUse override) {
                     if (!override.overrideUsingPose(stack)) return;
 
                     event.setCanceled(true);
 
-                    ItemInHandRenderer renderer = mc.gameRenderer.itemInHandRenderer;;
+                    ItemInHandRenderer renderer = mc.gameRenderer.itemInHandRenderer;
                     if (event.getHand() == InteractionHand.MAIN_HAND) {
                         renderArmWithItem(event, override, renderer, mc.player, InteractionHand.MAIN_HAND, event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
                     } else {
@@ -116,7 +113,7 @@ public class ModularItemRenderOverrideHandler {
                     }
                 }
             }
-        });
+        }
     }
 
     private static void renderArmWithItem(RenderHandEvent event, EntityOverridesItemUse override, ItemInHandRenderer renderer, AbstractClientPlayer clientPlayer, InteractionHand hand, ItemStack stack, float handHeight, PoseStack poseStack, MultiBufferSource getter, int packedLight) {
@@ -140,13 +137,14 @@ public class ModularItemRenderOverrideHandler {
         HumanoidArm arm = mainHand ? player.getMainArm() : player.getMainArm().getOpposite();
         boolean leftHand = arm == HumanoidArm.LEFT;
 
-        stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (host != null) {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
                 if (entity instanceof EntityOverridesItemUse override) {
                     if (!override.overrideUsingPose(stack)) return;
                     override.modifyPlayerModelPose(player, model, leftHand);
                 }
             }
-        });
+        }
     }
 }

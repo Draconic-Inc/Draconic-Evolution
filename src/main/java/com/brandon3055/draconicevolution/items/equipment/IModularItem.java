@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -29,7 +28,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -41,35 +39,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.extensions.IForgeItem;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.extensions.IItemExtension;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 16/6/20
  */
-public interface IModularItem extends IForgeItem, IFusionDataTransfer {
+public interface IModularItem extends IItemExtension, IFusionDataTransfer {
 
     TechLevel getTechLevel();
 
-    @Override
-    default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        if (DECapabilities.MODULE_HOST_CAPABILITY == null || DECapabilities.PROPERTY_PROVIDER_CAPABILITY == null || DECapabilities.OP_STORAGE == null) {
-            return null;
-        }
-        MultiCapabilityProvider provider = new MultiCapabilityProvider();
-        ModuleHostImpl host = createHost(stack);
-        provider.addCapability(host, "module_host", DECapabilities.MODULE_HOST_CAPABILITY, DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
-        ModularOPStorage opStorage = createOPStorage(stack, host);
-        if (opStorage != null) {
-            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, ForgeCapabilities.ENERGY);
+    default ModuleHost createHostCapForRegistration(ItemStack stack) {
+        ModuleHostImpl host = instantiateHost(stack);
+        if (this instanceof IModularEnergyItem) {
             host.addCategories(ModuleCategory.ENERGY);
         }
 
@@ -95,28 +85,89 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             });
         }
 
-        initCapabilities(stack, host, provider);
-        MinecraftForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
-        return provider;
+        NeoForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
+        return host;
     }
 
-    default void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {}
 
-    ModuleHostImpl createHost(ItemStack stack);
 
-    @Nullable
-    ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host);
+//    idk about this. I may want to re implement my own optional type delio...
+//    Or, maybe just split this up into seperate capabiluty builders that can be overidden in order to add things?
+//    Yea, I think i like that.
+//    Then MultiCapabilityProvider can probably go away.
+//    Yea, will have an init for each capability, and a modify capability method for each that can be used to add additional stuff.
+//    default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+//        MultiCapabilityProvider provider = new MultiCapabilityProvider()
+//        ModuleHostImpl host = createHost(stack);
+//        provider.addCapability(host, "module_host", DECapabilities.Host.ITEM, DECapabilities.Properties.ITEM);
+//        ModularOPStorage opStorage = createOPStorage(stack, host);
+//        if (opStorage != null) {
+//            provider.addCapability(opStorage, "energy", CapabilityOP.ITEM, Capabilities.EnergyStorage.ITEM);
+//            host.addCategories(ModuleCategory.ENERGY);
+//        }
 
-    @OnlyIn(Dist.CLIENT)
+//        if (this instanceof IModularMiningTool) {
+//            host.addCategories(ModuleCategory.MINING_TOOL);
+//            host.addPropertyBuilder(props -> {
+//                props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(DecimalFormatter.PERCENT_1));
+//                AOEData aoe = host.getModuleData(ModuleTypes.AOE);
+//                if (aoe != null) {
+//                    props.add(new IntegerProperty("mining_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(IntegerFormatter.AOE));
+//                    props.add(new BooleanProperty("aoe_safe", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
+//                }
+//            });
+//        }
+
+//        if (this instanceof IModularMelee) {
+//            host.addCategories(ModuleCategory.MELEE_WEAPON);
+//            host.addPropertyBuilder(props -> {
+//                AOEData aoe = host.getModuleData(ModuleTypes.AOE);
+//                if (aoe != null) {
+//                    props.add(new DecimalProperty("attack_aoe", aoe.aoe() * 1.5).range(0, aoe.aoe() * 1.5).setFormatter(DecimalFormatter.AOE_1));
+//                }
+//            });
+//        }
+
+//        initCapabilities(stack, host, provider);
+//        NeoForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
+//        return provider;
+//    }
+
+//    default void initHostCapability(ItemStack stack) {
+//        ModuleHostImpl host = createHost(stack);
+//        wait... how do i save changes?...
+//        ron can deal with this.
+//
+//    }
+
+//    default void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
+//    }
+
+//    public static void register(RegisterCapabilitiesEvent event) {
+//        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, CapabilityOP.BLOCK);
+//        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, Capabilities.ItemHandler.BLOCK);
+//    }
+
+//    static <T, C> void capability(RegisterCapabilitiesEvent event, Supplier<ItemLike> type, ItemCapability<T, C> capability) {
+//        event.registerItem(capability, (stack, context) -> , type.get());
+//    }
+
+    @NotNull
+    ModuleHostImpl instantiateHost(ItemStack stack);
+
+    @NotNull
+    ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier);
+
+    @OnlyIn (Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 
-        if (DECapabilities.MODULE_HOST_CAPABILITY != null) {
-            LazyOptional<ModuleHost> opt = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-            opt.ifPresent(host -> host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, worldIn, tooltip, flagIn)));
-            opt.ifPresent(host -> host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, worldIn, tooltip, flagIn)));
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (host != null) {
+            host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, worldIn, tooltip, flagIn));
+            host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, worldIn, tooltip, flagIn));
         }
 
         EnergyUtils.addEnergyInfo(stack, tooltip);
@@ -139,7 +190,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     }
 
     default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         StackModuleContext context = new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot);
         host.handleTick(context);
     }
@@ -158,7 +209,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     }
 
     default float getDestroySpeed(ItemStack stack, BlockState state) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
@@ -193,24 +244,24 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
 
     @Override
     default boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IForgeItem.super.isCorrectToolForDrops(stack, state);
+        return IItemExtension.super.isCorrectToolForDrops(stack, state);
     }
 
     default float getBaseEfficiency() {
         return 1F;
     }
 
-    @Nullable
-    @Override
-    default CompoundTag getShareTag(ItemStack stack) {
-        return DECapabilities.writeToShareTag(stack, stack.getTag());
-    }
-
-    @Override
-    default void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-        stack.setTag(nbt);
-        DECapabilities.readFromShareTag(stack, nbt);
-    }
+//    @Nullable
+//    @Override
+//    default CompoundTag getShareTag(ItemStack stack) {
+//        return DECapabilities.writeToShareTag(stack, stack.getTag());
+//    }
+//
+//    @Override
+//    default void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
+//        stack.setTag(nbt);
+//        DECapabilities.readFromShareTag(stack, nbt);
+//    }
 
     default long getEnergyStored(ItemStack stack) {
         return EnergyUtils.getEnergyStored(stack);

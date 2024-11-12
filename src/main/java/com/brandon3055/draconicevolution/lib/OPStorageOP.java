@@ -13,7 +13,7 @@ import com.google.common.math.BigIntegerMath;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;

@@ -40,4 +40,10 @@ public class RenderModularHoe extends ToolRenderBase {
         tracePart.render(context, buffers, mat);
         gemPart.render(context, buffers, mat);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class HOE_WYVERN extends RenderModularHoe { public HOE_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class HOE_DRACONIC extends RenderModularHoe { public HOE_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class HOE_CHAOTIC extends RenderModularHoe { public HOE_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

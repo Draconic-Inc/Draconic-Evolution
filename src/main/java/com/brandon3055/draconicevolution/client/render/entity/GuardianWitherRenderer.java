@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.entity.layers.WitherArmorLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianWitherRenderer extends MobRenderer<WitherBoss, WitherBossModel<WitherBoss>> {

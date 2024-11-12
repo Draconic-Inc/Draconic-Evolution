@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "A": {
       "tag": "forge:dusts/glowstone"
@@ -14,10 +15,10 @@
       "tag": "forge:ingots/iron"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:strength\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strength\"}"
     }
   },
   "pattern": [

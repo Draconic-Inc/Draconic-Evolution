@@ -5,9 +5,6 @@ import com.brandon3055.draconicevolution.init.DEDamage;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -19,12 +16,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
-public class GuardianProjectileEntity extends AbstractHurtingProjectile implements IEntityAdditionalSpawnData {
+public class GuardianProjectileEntity extends AbstractHurtingProjectile {
     private Vec3 target;
     private double splashRange = 15;
     private double power = 10;
@@ -122,20 +117,5 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile implemen
     @Override
     protected boolean shouldBurn() {
         return false;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-
     }
 }

@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +26,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -54,7 +54,7 @@ public class DraconiumChest extends EntityBlockBCore {
 
     public static boolean isStackValid(ItemStack stack) {
         if (!stack.isEmpty()) {
-            ResourceLocation name = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            ResourceLocation name = BuiltInRegistries.ITEM.getKey(stack.getItem());
             for (String key : DEConfig.chestBlacklist) {
                 if (key.contains(":") ? name.toString().contains(key) : name.getPath().contains(key)) {
                     return false;

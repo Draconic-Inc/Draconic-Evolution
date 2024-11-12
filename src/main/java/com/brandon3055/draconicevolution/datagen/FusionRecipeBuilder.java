@@ -2,24 +2,18 @@ package com.brandon3055.draconicevolution.datagen;
 
 import codechicken.lib.datagen.recipe.AbstractItemStackRecipeBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
-import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.brandon3055.draconicevolution.api.crafting.StackIngredient;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -31,7 +25,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     private List<FusionRecipe.FusionIngredient> ingredients = new ArrayList<>();
 
     protected FusionRecipeBuilder(ResourceLocation id, ItemStack result) {
-        super(DraconicAPI.FUSION_RECIPE_SERIALIZER.get(), id, result);
+        super(id, result);
         this.result = result;
     }
 
@@ -48,7 +42,7 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     }
 
     public static FusionRecipeBuilder builder(ItemStack result) {
-        return builder(result, ForgeRegistries.ITEMS.getKey(result.getItem()));
+        return builder(result, BuiltInRegistries.ITEM.getKey(result.getItem()));
     }
 
     public static FusionRecipeBuilder builder(ItemStack result, ResourceLocation id) {
@@ -72,19 +66,19 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
     }
 
     public FusionRecipeBuilder catalyst(int count, TagKey<Item> catalyst) {
-        return catalyst(IngredientStack.fromTag(catalyst, count));
+        return catalyst(StackIngredient.fromTag(catalyst, count));
     }
 
     public FusionRecipeBuilder catalyst(int count, ItemLike... catalyst) {
-        return catalyst(IngredientStack.fromItems(count, catalyst));
+        return catalyst(StackIngredient.fromItems(count, catalyst));
     }
 
     public FusionRecipeBuilder catalyst(int count, Supplier<? extends ItemLike> catalyst) {
-        return catalyst(IngredientStack.fromItems(count, catalyst.get()));
+        return catalyst(StackIngredient.fromItems(count, catalyst.get()));
     }
 
     public FusionRecipeBuilder catalyst(int count, ItemStack... catalyst) {
-        return catalyst(IngredientStack.fromStacks(count, catalyst));
+        return catalyst(StackIngredient.fromStacks(count, catalyst));
     }
 
     public FusionRecipeBuilder catalyst(Ingredient catalyst) {
@@ -143,21 +137,6 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
         return ingredient(true, ingredient);
     }
 
-//    @Override
-//    public void build(Consumer<FinishedRecipe> consumer) {
-//        build(consumer, result.getItem().getRegistryName());
-//    }
-//
-//    public void build(Consumer<FinishedRecipe> consumer, String save) {
-//        ResourceLocation resourcelocation = result.getItem().getRegistryName();
-//        if ((new ResourceLocation(save)).equals(resourcelocation)) {
-//            throw new IllegalStateException("Fusion Recipe " + save + " should remove its 'save' argument");
-//        } else {
-//            this.build(consumer, new ResourceLocation(save));
-//        }
-//    }
-
-
     @Override
     protected void validate() {
         super.validate();
@@ -172,81 +151,8 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
         }
     }
 
-    public static JsonObject writeItemStack(ItemStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty("item", ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
-        if (stack.getCount() != 1) {
-            json.addProperty("count", stack.getCount());
-        }
-
-        if (stack.hasTag()) {
-            json.addProperty("nbt", stack.getTag().toString());
-        }
-        return json;
-    }
-
     @Override
-    public AbstractItemStackRecipeBuilder<FusionRecipeBuilder>.AbstractItemStackFinishedRecipe _build() {
-        return new Result(id, result, catalyst, energy, techLevel, ingredients);
-    }
-
-    public class Result extends AbstractItemStackFinishedRecipe {
-        private final ResourceLocation id;
-        private final ItemStack result;
-        private final Ingredient catalyst;
-        private final TechLevel techLevel;
-        private final Collection<FusionRecipe.FusionIngredient> ingredients;
-        private final long energy;
-
-        public Result(ResourceLocation id, ItemStack result, Ingredient catalyst, long energy, TechLevel techLevel, Collection<FusionRecipe.FusionIngredient> ingredients) {//, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
-            this.id = id;
-            this.result = result;
-            this.catalyst = catalyst;
-            this.energy = energy;
-            this.techLevel = techLevel;
-            this.ingredients = ingredients;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            json.add("result", writeItemStack(result));
-            json.add("catalyst", catalyst.toJson());
-            json.addProperty("total_energy", energy);
-            json.addProperty("tier", techLevel.name());
-
-            JsonArray ingredientArray = new JsonArray();
-            for (FusionRecipe.FusionIngredient ingredient : ingredients) {
-                JsonElement element = ingredient.get().toJson();
-                if (!ingredient.consume()) {
-                    JsonObject object = new JsonObject();
-                    object.addProperty("consume", false);
-                    object.add("ingredient", element);
-                    ingredientArray.add(object);
-                } else {
-                    ingredientArray.add(element);
-                }
-            }
-            json.add("ingredients", ingredientArray);
-        }
-
-        @Override
-        public RecipeSerializer<?> getType() {
-            return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return this.id;
-        }
-
-        @Nullable
-        public JsonObject serializeAdvancement() {
-            return null;//this.advancementBuilder.serialize();
-        }
-
-        @Nullable
-        public ResourceLocation getAdvancementId() {
-            return null;//this.advancementId;
-        }
+    public Recipe<?> _build() {
+        return new FusionRecipe(result, catalyst, energy, techLevel, ingredients);
     }
 }

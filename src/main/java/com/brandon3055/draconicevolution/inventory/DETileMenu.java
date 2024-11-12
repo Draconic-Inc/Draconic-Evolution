@@ -15,8 +15,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -38,11 +37,11 @@ public abstract class DETileMenu<T extends TileBCore> extends ContainerBCTile<T>
     }
 
     protected void initHost(T tile, Inventory player) {
-        LazyOptional<ModuleHost> opt = tile.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        opt.ifPresent(host -> {
+        ModuleHost host = DECapabilities.Host.fromBlockEntity(tile);
+        if (host != null) {
             this.moduleHost = host;
             this.moduleGrid = new ModuleGrid(this, player);
-        });
+        }
     }
 
     @Override

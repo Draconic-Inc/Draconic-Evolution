@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:strong_swiftness\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strong_swiftness\"}"
     },
     "A": {
       "item": "draconicevolution:awakened_core"

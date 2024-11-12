@@ -42,4 +42,10 @@ public class RenderModularShovel extends ToolRenderBase {
         tracePart.render(context, buffers, mat);
         gemPart.render(context, buffers, mat);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class SHOVEL_WYVERN extends RenderModularShovel { public SHOVEL_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class SHOVEL_DRACONIC extends RenderModularShovel { public SHOVEL_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class SHOVEL_CHAOTIC extends RenderModularShovel { public SHOVEL_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
@@ -387,5 +388,10 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     private static float[] unpack(int colour) {
         return new float[]{((colour >> 16) & 0xFF) / 255F, ((colour >> 8) & 0xFF) / 255F, (colour & 0xFF) / 255F};
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEnergyCore blockEntity) {
+        return INFINITE_EXTENT_AABB;
     }
 }

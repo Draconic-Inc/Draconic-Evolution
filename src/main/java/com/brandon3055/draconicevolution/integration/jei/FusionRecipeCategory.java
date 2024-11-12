@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ import java.util.Locale;
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
+public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusionRecipe>> {
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -47,8 +48,8 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
 
     @Nonnull
     @Override
-    public RecipeType<IFusionRecipe> getRecipeType() {
-        return DEJEIPlugin.FUSION_RECIPE_TYPE;
+    public RecipeType<RecipeHolder<IFusionRecipe>> getRecipeType() {
+        return DEJEIPlugin.getFusionRecipeType();
     }
 
     @Nonnull
@@ -70,16 +71,16 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     }
 
     @Override
-    public void draw(IFusionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<IFusionRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         GuiRender render = GuiRender.convert(graphics);
-        TechLevel tier = recipe.getRecipeTier();
+        TechLevel tier = recipe.value().getRecipeTier();
         int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
+        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.value().getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
         render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
-        render.drawCenteredString(Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
+        render.drawCenteredString(Utils.addCommas(recipe.value().getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
 
         render.borderRect((xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);
-        if (recipe.getIngredients().size() > 16) {
+        if (recipe.value().getIngredients().size() > 16) {
             render.borderRect(3, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
             render.borderRect(23, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
             render.borderRect(xSize - 21, 2, 18, 107, 1, 0x40FFFFFF, 0xFFAA00FF);
@@ -91,16 +92,16 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, IFusionRecipe recipe, @NotNull IFocusGroup focuses) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<IFusionRecipe> recipe, @NotNull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, xSize / 2 - 8, ySize / 2 - 8 - 23)
-                .addIngredients(recipe.getCatalyst())
+                .addIngredients(recipe.value().getCatalyst())
                 .setSlotName("catalyst");
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, xSize / 2 - 8, ySize / 2 - 8 + 23)
-                .addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()))
+                .addItemStack(recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()))
                 .setSlotName("output");
 
-        List<Ingredient> ingreds = recipe.getIngredients();
+        List<Ingredient> ingreds = recipe.value().getIngredients();
         int nColumns = ingreds.size() > 16 ? 4 : 2;
         int xc = xSize / 2 - 8;
         int yc = ySize / 2;// - 8;

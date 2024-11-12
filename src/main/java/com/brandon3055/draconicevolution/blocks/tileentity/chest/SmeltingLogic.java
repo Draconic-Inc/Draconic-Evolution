@@ -14,11 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.Locale;
 
@@ -116,10 +117,11 @@ public class SmeltingLogic {
                 continue;
             }
 
-            SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, slot, world).orElse(null);
-            if (recipe == null) {
+            RecipeHolder<SmeltingRecipe> holder = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, slot, world).orElse(null);
+            if (holder == null) {
                 continue;
             }
+            SmeltingRecipe recipe = holder.value();
             validRecipes++;
             slowestRecipe = Math.max(slowestRecipe, recipe.getCookingTime());
 
@@ -127,7 +129,7 @@ public class SmeltingLogic {
                 ItemStack result = recipe.assemble(slot, tile.getLevel().registryAccess());
                 if (InventoryUtils.insertItem(outputInv, result, true).isEmpty() && !inputInv.extractItem(i, 1, false).isEmpty()) {
                     InventoryUtils.insertItem(outputInv, result, false);
-                    recipesUsed.addTo(recipe.getId(), 1);
+                    recipesUsed.addTo(holder.id(), 1);
                     completedSmelts++;
                 }
             }

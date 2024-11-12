@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -32,8 +33,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.*;
 
@@ -59,6 +61,10 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     public TileCrystalWirelessIO(TechLevel techLevel, BlockPos pos, BlockState state) {
         super(DEContent.TILE_WIRELESS_CRYSTAL.get(), techLevel, pos, state);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_WIRELESS_CRYSTAL, CapabilityOP.BLOCK);
     }
 
     //region Energy Update
@@ -294,7 +300,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         return EnergyCrystal.CrystalType.WIRELESS;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
         return new CrystalFXRing((ClientLevel)level, this);

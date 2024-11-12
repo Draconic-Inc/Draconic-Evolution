@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.api.event;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 /**
  * Created by brandon3055 on 06/11/2022

@@ -10,8 +10,8 @@ import com.brandon3055.draconicevolution.client.sound.ReactorSound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 11/02/2017.
@@ -20,17 +20,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ReactorEffectHandler {
 
     private TileReactorCore reactor;
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private ReactorBeamFX[] effects;
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private ReactorSound reactorSound;
 
     public ReactorEffectHandler(TileReactorCore reactor) {
         this.reactor = reactor;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void updateEffects() {
         if (effects == null) {
             effects = new ReactorBeamFX[6];
@@ -41,8 +41,7 @@ public class ReactorEffectHandler {
         if ((reactorSound == null || reactorSound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(reactorSound)) && reactor.reactorState.get().isShieldActive() && reactor.shieldCharge.get() > 0) {
             reactorSound = new ReactorSound(reactor);
             Minecraft.getInstance().getSoundManager().play(reactorSound);
-        }
-        else if (reactorSound != null && (!reactor.reactorState.get().isShieldActive() || reactor.shieldCharge.get() <= 0)) {
+        } else if (reactorSound != null && (!reactor.reactorState.get().isShieldActive() || reactor.shieldCharge.get() <= 0)) {
             reactorSound.donePlaying = true;
         }
 

@@ -91,5 +91,11 @@ public class RenderItemChaosShard implements IItemRenderer {
     @Override public boolean useAmbientOcclusion() { return false; }
     @Override public boolean isGui3d() { return false; }
     @Override public boolean usesBlockLight() { return false; }
+
+    //This is not cursed at all! idk what your talking about!
+    public static class CHAOS_SHARD extends RenderItemChaosShard { public CHAOS_SHARD() {super(DEContent.CHAOS_SHARD.get());}}
+    public static class CHAOS_FRAG_LARGE extends RenderItemChaosShard { public CHAOS_FRAG_LARGE() {super(DEContent.CHAOS_FRAG_LARGE.get());}}
+    public static class CHAOS_FRAG_MEDIUM extends RenderItemChaosShard { public CHAOS_FRAG_MEDIUM() {super(DEContent.CHAOS_FRAG_MEDIUM.get());}}
+    public static class CHAOS_FRAG_SMALL extends RenderItemChaosShard { public CHAOS_FRAG_SMALL() {super(DEContent.CHAOS_FRAG_SMALL.get());}}
     // @formatter:on
 }

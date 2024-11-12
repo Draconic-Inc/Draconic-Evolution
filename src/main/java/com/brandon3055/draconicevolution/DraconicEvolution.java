@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.api.DraconicAPI;
-import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
+
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.command.DECommands;
@@ -11,18 +11,17 @@ import com.brandon3055.draconicevolution.integration.computers.ComputerCraftComp
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.OptionalMod;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.OptionalMod;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-@Mod(DraconicEvolution.MODID)
+@Mod (DraconicEvolution.MODID)
 public class DraconicEvolution {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "draconicevolution";
@@ -30,30 +29,28 @@ public class DraconicEvolution {
 
     public static CommonProxy proxy;
 
-    public DraconicEvolution() {
+    public DraconicEvolution(IEventBus modBus) {
         proxy = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
-        CraftingHelper.register(DraconicAPI.INGREDIENT_STACK_TYPE, IngredientStack.SERIALIZER);
 
         DEConfig.load();
         DETags.init();
-        DEContent.init();
-        DEModules.init();
-        DESounds.init();
-        DEParticles.init();
-        DECreativeTabs.init();
-        DraconicNetwork.init();
-        EquipmentManager.initialize();
+        DEContent.init(modBus);
+        DEModules.init(modBus);
+        DESounds.init(modBus);
+        DEParticles.init(modBus);
+        DECreativeTabs.init(modBus);
+        EquipmentManager.initialize(modBus);
         DECommands.init();
-        ModCapabilities.init();
+        CapabilityData.init(modBus);
         LootEventHandler.init();
         ModuleEventHandler.init();
         ModularArmorEventHandler.init();
+        DraconicNetwork.init(modBus);
+        DEEventHandler.init(modBus);
 
-        OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
-        MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);
-        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
+        OptionalMod.of("computercraft").ifPresent(e -> modBus.register(new ComputerCraftCompatEventHandler()));
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientInit::init);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DEClient.init(modBus));
         DraconicAPI.addModuleProvider(MODID);
     }
 }

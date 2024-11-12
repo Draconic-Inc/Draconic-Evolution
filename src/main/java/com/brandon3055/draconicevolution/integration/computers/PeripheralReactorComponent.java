@@ -6,19 +6,16 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvider {
+public class PeripheralReactorComponent implements IPeripheral {
 	
 	TileReactorComponent tile;
 	TileReactorCore reactor;
-	private LazyOptional<IPeripheral> self;
+//	private LazyOptional<IPeripheral> self;
 	
 	public PeripheralReactorComponent(TileReactorComponent tile) {
         this.tile = tile;
@@ -99,18 +96,18 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 		return false;
 	}
 	
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (CCOCIntegration.isPeripheral(cap)) {
-			if (self == null) self = LazyOptional.of(() -> this);
-			return self.cast();
-		}
-		return LazyOptional.empty();
-	}
-	
-	public void invalidate() {
-		if (self == null) return;
-		self.invalidate();
-		self = null;
-    }
+//	@Override
+//	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+//		if (CCOCIntegration.isPeripheral(cap)) {
+//			if (self == null) self = LazyOptional.of(() -> this);
+//			return self.cast();
+//		}
+//		return LazyOptional.empty();
+//	}
+//
+//	public void invalidate() {
+//		if (self == null) return;
+//		self.invalidate();
+//		self = null;
+//    }
 }

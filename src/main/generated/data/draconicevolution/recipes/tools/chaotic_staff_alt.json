@@ -5,39 +5,69 @@
   },
   "ingredients": [
     {
-      "item": "draconicevolution:medium_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:medium_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
     },
     {
-      "item": "draconicevolution:medium_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:medium_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:chaotic_staff"
   },
-  "tier": "CHAOTIC",
-  "total_energy": 1024000000
+  "techLevel": "chaotic",
+  "totalEnergy": 1024000000
 }

@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
@@ -250,5 +251,10 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     @Override
     public int getViewDistance() {
         return 256;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileReactorCore blockEntity) {
+        return INFINITE_EXTENT_AABB;
     }
 }

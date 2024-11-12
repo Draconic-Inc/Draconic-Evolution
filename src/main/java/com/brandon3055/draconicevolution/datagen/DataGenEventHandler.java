@@ -13,12 +13,12 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -28,31 +28,31 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Created by brandon3055 on 26/2/20.
  */
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber (bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenEventHandler {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
 
-        if (event.includeClient()) {
-            gen.addProvider(true, new LangGenerator(gen.getPackOutput()));
-            gen.addProvider(true, new BlockStateGenerator(gen, event.getExistingFileHelper()));
-            gen.addProvider(true, new ItemModelGenerator(gen, event.getExistingFileHelper()));
-            gen.addProvider(true, new MultiBlockGenerator(gen));
-            gen.addProvider(true, new DynamicTextures(gen, event.getExistingFileHelper()));
-        }
-
-        if (event.includeServer()) {
-            gen.addProvider(true, new RecipeGenerator(gen.getPackOutput()));
-            gen.addProvider(event.includeServer(), new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(), List.of(new LootTableProvider.SubProviderEntry(BlockLootProvider::new, LootContextParamSets.BLOCK))));
+        gen.addProvider(event.includeClient(), new LangGenerator(gen.getPackOutput()));
+        gen.addProvider(event.includeClient(), new BlockStateGenerator(gen, event.getExistingFileHelper()));
+        gen.addProvider(event.includeClient(), new ItemModelGenerator(gen, event.getExistingFileHelper()));
+        gen.addProvider(event.includeClient(), new MultiBlockGenerator(gen));
+        gen.addProvider(event.includeClient(), new DynamicTextures(gen, event.getExistingFileHelper()));
 
 
-            BlockTagGenerator blockGenerator = new BlockTagGenerator(gen.getPackOutput(), event.getLookupProvider() ,DraconicEvolution.MODID, event.getExistingFileHelper());
-            gen.addProvider(true, blockGenerator);
-            gen.addProvider(true, new ItemTagGenerator(gen.getPackOutput(), event.getLookupProvider(), blockGenerator.contentsGetter(), DraconicEvolution.MODID, event.getExistingFileHelper()));
-            gen.addProvider(true, new DamageTypeGenerator(gen.getPackOutput(), event.getLookupProvider() ,DraconicEvolution.MODID, event.getExistingFileHelper()));
-        }
+        gen.addProvider(event.includeServer(), new RecipeGenerator(gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(), List.of(new LootTableProvider.SubProviderEntry(BlockLootProvider::new, LootContextParamSets.BLOCK))));
+
+
+        BlockTagGenerator blockGenerator = new BlockTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID, event.getExistingFileHelper());
+        gen.addProvider(event.includeServer(), blockGenerator);
+        gen.addProvider(event.includeServer(), new ItemTagGenerator(gen.getPackOutput(), event.getLookupProvider(), blockGenerator.contentsGetter(), DraconicEvolution.MODID, event.getExistingFileHelper()));
+        gen.addProvider(event.includeServer(), new DamageTypeGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID, event.getExistingFileHelper()));
+
+        gen.addProvider(event.includeServer(), new CuriosProvider("mod_id", event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
+
     }
 
     private static class ItemTagGenerator extends ItemTagsProvider {
@@ -82,7 +82,7 @@ public class DataGenEventHandler {
             tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ITEM_END_DRACONIUM_ORE.get(), DEContent.ITEM_NETHER_DRACONIUM_ORE.get(), DEContent.ITEM_OVERWORLD_DRACONIUM_ORE.get());
             tag(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
 
-            for (Module<?> module : ModuleRegistry.getRegistry().getValues()) {
+            for (Module<?> module : ModuleRegistry.getRegistry()) {
                 tag(DETags.Items.MODULES).add(module.getItem());
             }
 

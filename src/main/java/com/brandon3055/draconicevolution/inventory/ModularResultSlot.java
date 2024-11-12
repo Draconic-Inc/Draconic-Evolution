@@ -5,9 +5,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class ModularResultSlot extends ModularSlot {
    private final CraftingContainer craftSlots;
@@ -49,11 +51,11 @@ public class ModularResultSlot extends ModularSlot {
    protected void checkTakeAchievements(ItemStack pStack) {
       if (this.removeCount > 0) {
          pStack.onCraftedBy(this.player.level(), this.player, this.removeCount);
-         net.minecraftforge.event.ForgeEventFactory.firePlayerCraftingEvent(this.player, pStack, this.craftSlots);
+         EventHooks.firePlayerCraftingEvent(this.player, pStack, this.craftSlots);
       }
 
       Container container = this.container;
-      if (container instanceof RecipeHolder recipeholder) {
+      if (container instanceof RecipeCraftingHolder recipeholder) {
          recipeholder.awardUsedRecipes(this.player, this.craftSlots.getItems());
       }
 
@@ -63,9 +65,9 @@ public class ModularResultSlot extends ModularSlot {
    @Override
    public void onTake(Player pPlayer, ItemStack pStack) {
       this.checkTakeAchievements(pStack);
-      net.minecraftforge.common.ForgeHooks.setCraftingPlayer(pPlayer);
+      CommonHooks.setCraftingPlayer(pPlayer);
       NonNullList<ItemStack> nonnulllist = pPlayer.level().getRecipeManager().getRemainingItemsFor(RecipeType.CRAFTING, this.craftSlots, pPlayer.level());
-      net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
+      CommonHooks.setCraftingPlayer(null);
       for(int i = 0; i < nonnulllist.size(); ++i) {
          ItemStack itemstack = this.craftSlots.getItem(i);
          ItemStack itemstack1 = nonnulllist.get(i);

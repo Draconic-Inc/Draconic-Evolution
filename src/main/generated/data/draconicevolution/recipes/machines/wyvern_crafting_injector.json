@@ -5,33 +5,57 @@
   },
   "ingredients": [
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "tag": "forge:storage_blocks/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:storage_blocks/draconium"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:wyvern_crafting_injector"
   },
-  "tier": "DRACONIUM",
-  "total_energy": 32000
+  "techLevel": "draconium",
+  "totalEnergy": 32000
 }

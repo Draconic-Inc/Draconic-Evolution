@@ -3,22 +3,17 @@ package com.brandon3055.draconicevolution.api.crafting;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.common.crafting.CraftingHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,15 +22,13 @@ import java.util.stream.Collectors;
  */
 public class FusionRecipe implements IFusionRecipe {
 
-    private final ResourceLocation id;
     private final ItemStack result;
     private final Ingredient catalyst;
     private final long totalEnergy;
     private final TechLevel techLevel;
-    private final Collection<FusionIngredient> ingredients;
+    private final List<FusionIngredient> ingredients;
 
-    public FusionRecipe(ResourceLocation id, ItemStack result, Ingredient catalyst, long totalEnergy, TechLevel techLevel, Collection<FusionIngredient> ingredients) {
-        this.id = id;
+    public FusionRecipe(ItemStack result, Ingredient catalyst, long totalEnergy, TechLevel techLevel, List<FusionIngredient> ingredients) {
         this.result = result;
         this.catalyst = catalyst;
         this.totalEnergy = totalEnergy;
@@ -71,7 +64,7 @@ public class FusionRecipe implements IFusionRecipe {
     @Override
     public ItemStack assemble(IFusionInventory inv, RegistryAccess registryAccess) {
         ItemStack stack = result.copy();
-        if (stack.getItem() instanceof IFusionDataTransfer){
+        if (stack.getItem() instanceof IFusionDataTransfer) {
             ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
         }
         return stack;
@@ -83,16 +76,17 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
         return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
     }
 
     public static class FusionIngredient implements IFusionIngredient {
+        private static final Codec<FusionIngredient> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(e -> e.ingredient),
+                        Codec.BOOL.fieldOf("consume").forGetter(e -> e.consume)
+                ).apply(builder, FusionIngredient::new)
+        );
+
         private final Ingredient ingredient;
         private final boolean consume;
 
@@ -124,32 +118,22 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<FusionRecipe> {
+        private static final Codec<FusionRecipe> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                        ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(e -> e.result),
+                        Ingredient.CODEC_NONEMPTY.fieldOf("catalyst").forGetter(e -> e.catalyst),
+                        Codec.LONG.fieldOf("totalEnergy").forGetter(e -> e.totalEnergy),
+                        TechLevel.CODEC.fieldOf("techLevel").forGetter(e -> e.techLevel),
+                        Codec.list(FusionIngredient.CODEC).fieldOf("ingredients").forGetter(e -> e.ingredients)
+                ).apply(builder, FusionRecipe::new)
+        );
+
         @Override
-        public FusionRecipe fromJson(ResourceLocation id, JsonObject json) {
-            ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
-            Ingredient catalyst = CraftingHelper.getIngredient(GsonHelper.getAsJsonObject(json, "catalyst"), false);
-
-            List<FusionIngredient> fusionIngredients = new ArrayList<>();
-            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
-            for (JsonElement element : ingredients) {
-                Ingredient ingredient;
-                if (element.isJsonObject() && element.getAsJsonObject().has("ingredient")) {
-                    ingredient = CraftingHelper.getIngredient(element.getAsJsonObject().get("ingredient"), false);
-                } else {
-                    ingredient = CraftingHelper.getIngredient(element, false);
-                }
-                boolean isConsumed = !element.isJsonObject() || GsonHelper.getAsBoolean(element.getAsJsonObject(), "consume", true);
-                fusionIngredients.add(new FusionIngredient(ingredient, isConsumed));
-            }
-
-            long totalEnergy = GsonHelper.getAsLong(json, "total_energy");
-            TechLevel techLevel = TechLevel.valueOf(GsonHelper.getAsString(json, "tier", TechLevel.DRACONIUM.name()));
-
-            return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
+        public Codec<FusionRecipe> codec() {
+            return CODEC;
         }
 
         @Override
-        public FusionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+        public FusionRecipe fromNetwork(FriendlyByteBuf buffer) {
             ItemStack result = buffer.readItem();
             Ingredient catalyst = Ingredient.fromNetwork(buffer);
 
@@ -162,12 +146,12 @@ public class FusionRecipe implements IFusionRecipe {
             long totalEnergy = buffer.readLong();
             TechLevel techLevel = TechLevel.VALUES[Mth.clamp(buffer.readByte(), 0, TechLevel.values().length - 1)];
 
-            return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
+            return new FusionRecipe(result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, FusionRecipe recipe) {
-            buffer.writeItemStack(recipe.result, false);
+            buffer.writeItem(recipe.result);
             recipe.catalyst.toNetwork(buffer);
 
             buffer.writeByte(recipe.ingredients.size());

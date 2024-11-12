@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.RegistryManager;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -11,13 +11,13 @@ import net.minecraftforge.registries.RegistryManager;
  */
 public class ModuleRegistry {
 
-    private static ForgeRegistry<Module<?>> MODULE_REGISTRY = null;
+    private static Registry<Module<?>> REGISTRY = null;
 
-    public static ForgeRegistry<Module<?>> getRegistry() {
-        if (MODULE_REGISTRY == null) {
-            MODULE_REGISTRY = RegistryManager.ACTIVE.getRegistry(new ResourceLocation("draconicevolution", "modules"));
+    public static Registry<Module<?>> getRegistry() {
+        if (REGISTRY == null) {
+            REGISTRY = (Registry<Module<?>>) BuiltInRegistries.REGISTRY.get(new ResourceLocation("draconicevolution", "modules"));
         }
-        return MODULE_REGISTRY;
+        return REGISTRY;
     }
 
 }

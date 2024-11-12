@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 public class SimpleModuleHost implements ModuleHost {
     private static final Logger LOGGER = LogManager.getLogger(SimpleModuleHost.class);
 
+    private UUID identity = null;
     private final int gridWidth;
     private final int gridHeight;
     private final boolean deleteInvalidModules;
@@ -157,6 +158,19 @@ public class SimpleModuleHost implements ModuleHost {
     }
 
     @Override
+    public UUID getIdentity() {
+        if (identity == null) {
+            regenIdentity();
+        }
+        return identity;
+    }
+
+    @Override
+    public void regenIdentity() {
+        identity = UUID.randomUUID();
+    }
+
+    @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         ListTag modules = new ListTag();
@@ -167,6 +181,7 @@ public class SimpleModuleHost implements ModuleHost {
             modules.add(entityNBT);
         }
         nbt.put("modules", modules);
+        nbt.putUUID("identity", getIdentity());
         return nbt;
     }
 
@@ -177,7 +192,7 @@ public class SimpleModuleHost implements ModuleHost {
         ListTag modules = nbt.getList("modules", 10);
         modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
             ResourceLocation id = new ResourceLocation(compound.getString("id"));
-            com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().getValue(id);
+            com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
             if (module == null) {
                 LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
             } else {
@@ -191,5 +206,8 @@ public class SimpleModuleHost implements ModuleHost {
                 }
             }
         });
+        if (nbt.hasUUID("identity")) {
+            identity = nbt.getUUID("identity");
+        }
     }
 }

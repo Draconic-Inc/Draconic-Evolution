@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedResource;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,10 +22,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -75,7 +75,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     public Block getOriginalBlock() {
         ResourceLocation name = blockName.get();
         if (name != null) {
-            return ForgeRegistries.BLOCKS.getValue(name);
+            return BuiltInRegistries.BLOCK.get(name);
         }
         return Blocks.AIR;
     }

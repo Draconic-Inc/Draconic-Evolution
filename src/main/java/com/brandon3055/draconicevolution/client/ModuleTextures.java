@@ -1,18 +1,14 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.gui.modular.sprite.Material;
-import codechicken.lib.gui.modular.sprite.ModAtlasHolder;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.client.atlas.MultiModAtlasHolder;
-import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.init.DEModules;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 

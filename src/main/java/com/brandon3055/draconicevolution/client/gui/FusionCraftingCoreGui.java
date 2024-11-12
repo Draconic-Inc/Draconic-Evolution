@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.inventory.FusionCraftingCoreMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
     public static final int GUI_WIDTH = 218;
     public static final int GUI_HEIGHT = 220;
 
-    private IFusionRecipe currentRecipe = null;
+    private RecipeHolder<IFusionRecipe> currentRecipe = null;
     public GuiItemStack stackIcon;
     public Supplier<Boolean> hideRecipes;
 
@@ -109,7 +110,7 @@ public class FusionCraftingCoreGui extends ContainerGuiProvider<FusionCraftingCo
             if (currentRecipe == null) {
                 stackIcon.setStack(ItemStack.EMPTY);
             } else {
-                stackIcon.setStack(currentRecipe.getResultItem(tile.getLevel().registryAccess()));
+                stackIcon.setStack(currentRecipe.value().getResultItem(tile.getLevel().registryAccess()));
             }
         });
     }

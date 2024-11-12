@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[${lang_version},)"
+loaderVersion="[2,)"
 license="CoFH \"Don't Be a Jerk\" License"
 
 [[mods]]
@@ -11,32 +11,32 @@ license="CoFH \"Don't Be a Jerk\" License"
 	updateJSONURL="https://version-check.covers1624.net/check/?mod=Draconic-Evolution&mc=${mc_version}"
 
 [[dependencies.draconicevolution]]
-	modId="forge"
-	mandatory=true
-	versionRange="[${neo_version},)"
+	modId="neoforge"
+	type="required"
+	versionRange="[${forge_version},)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16,)"
-    ordering="NONE"
-    side="BOTH"
+	modId="minecraft"
+	type="required"
+	versionRange="[1.20.4]"
+	ordering="NONE"
+	side="BOTH"
 [[dependencies.draconicevolution]]
     modId="computercraft"
-    mandatory=false
+	type="required"
     versionRange="[${cct_version},)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.draconicevolution]]
 	modId="codechickenlib"
-	mandatory=true
+	type="required"
 	versionRange="${ccl_version}"
-	ordering="AFTER"
+	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]
 	modId="brandonscore"
-	mandatory=true
+	type="required"
 	versionRange="[${bcore_version},)"
 	ordering="AFTER"
 	side="BOTH"

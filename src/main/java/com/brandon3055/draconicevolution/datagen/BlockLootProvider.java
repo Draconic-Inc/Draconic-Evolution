@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -10,7 +11,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.Set;
@@ -102,6 +102,6 @@ public class BlockLootProvider extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return ForgeRegistries.BLOCKS.getEntries().stream().filter(e -> e.getKey().location().getNamespace().equals(DraconicEvolution.MODID)).map(Map.Entry::getValue).collect(Collectors.toList());
+        return BuiltInRegistries.BLOCK.entrySet().stream().filter(e -> e.getKey().location().getNamespace().equals(DraconicEvolution.MODID)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 }

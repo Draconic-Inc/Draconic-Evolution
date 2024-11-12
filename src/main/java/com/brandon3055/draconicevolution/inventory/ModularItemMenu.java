@@ -5,6 +5,7 @@ import codechicken.lib.inventory.container.modular.ModularGuiContainerMenu;
 import codechicken.lib.inventory.container.modular.ModularSlot;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.IdentityProvider;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
@@ -27,25 +28,24 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.util.thread.EffectiveSide;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHostContainer {
-
+public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHostContainer, ModularMenuCommon {
+    private UUID hostIdentity;
     private PlayerSlot slot;
     public ItemStack hostStack;
     private ModuleGrid moduleGrid;
-    private ModuleHost moduleHost;
+    private ModuleHost hostCache;
     private Player player;
 
     public final SlotGroup main = createSlotGroup(0);
@@ -62,7 +62,6 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         super(DEContent.MENU_MODULAR_ITEM.get(), windowId, inv);
         this.player = inv.player;
         this.slot = itemSlot;
-        this.onContainerOpen();
         this.moduleGrid = new ModuleGrid(this, inv);
 
         hotBar.addPlayerBar(inv);
@@ -70,6 +69,24 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         armor.addPlayerArmor(inv);
         offhand.addPlayerOffhand(inv);
         EquipmentManager.getEquipmentInventory(inv.player).ifPresent(handler -> curios.addSlots(handler.getSlots(), 0, i -> new ModularSlot(handler, i)));
+
+        IdentityProvider.resolveDuplicateIdentities(getInventoryStacks());
+
+        hostStack = slot.getStackInSlot(inv.player);
+        if (hostStack.isEmpty()) {
+            return;
+        }
+
+        hostCache = hostStack.getCapability(DECapabilities.Host.ITEM);
+        if (hostCache == null) {
+            return;
+        }
+        hostIdentity = hostCache.getIdentity();
+    }
+
+    @Override
+    public List<Slot> getSlots() {
+        return slots;
     }
 
     private static Stream<ItemStack> getPlayerInventory(Inventory player) {
@@ -78,14 +95,14 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     public static void tryOpenGui(ServerPlayer sender) {
         ItemStack stack = sender.getMainHandItem();
-        if (!stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (!stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
-            NetworkHooks.openScreen(sender, new ModularItemMenu.Provider(stack, slot), slot::toBuff);
+            sender.openMenu(new ModularItemMenu.Provider(stack, slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.Host.ITEM) != null);
             if (slot != null) {
-                NetworkHooks.openScreen(sender, new ModularItemMenu.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
+                sender.openMenu(new ModularItemMenu.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;
             }
         }
@@ -95,13 +112,8 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     @Override
     public ModuleHost getModuleHost() {
-        if (moduleHost == null || EffectiveSide.get().isClient()) {
-            LazyOptional<ModuleHost> optional = hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-            if (optional.isPresent()) {
-                moduleHost = optional.orElseThrow(RuntimeException::new);
-            }
-        }
-        return moduleHost;
+        ModuleHost host = slot.getStackInSlot(player).getCapability(DECapabilities.Host.ITEM);
+        return host == null || !host.getIdentity().equals(hostIdentity) ? hostCache : (hostCache = host);
     }
 
     @Override
@@ -126,17 +138,14 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         }
     }
 
-    private void onContainerOpen() {
-        hostStack = slot.getStackInSlot(player);
-        getModuleHost();
-    }
-
     @Override
     public boolean stillValid(Player playerIn) {
-        if (hostStack.isEmpty() || moduleHost == null || hostStack != slot.getStackInSlot(player)) {
+        if (hostIdentity == null || hostStack.isEmpty() || hostStack != slot.getStackInSlot(player)) {
             return false;
         }
-        return moduleHost == hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null);
+
+        ModuleHost host = slot.getStackInSlot(player).getCapability(DECapabilities.Host.ITEM);
+        return host != null && host.getIdentity().equals(hostIdentity);
     }
 
     @Override
@@ -152,11 +161,10 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         return moduleGrid;
     }
 
-    //    @Override
     @OnlyIn (Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -165,7 +173,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
     public void initializeContents(int stateId, List<ItemStack> stacks, ItemStack carried) {
         super.initializeContents(stateId, stacks, carried);
         ItemStack stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -174,7 +182,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
     public void setItem(int slotID, int stateId, ItemStack stack) {
         super.setItem(slotID, stateId, stack);
         stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -187,16 +195,16 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
                 if (slot.getItem() == hostStack) {
                     return;
                 } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
-                    if (slot.getItem().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+                    if (slot.getItem().getCapability(DECapabilities.Host.ITEM) != null) {
                         if (player instanceof ServerPlayer) {
                             PlayerSlot playerSlot;
                             if (slotId >= 41) playerSlot = new PlayerSlot(slotId - 41, PlayerSlot.EnumInvCategory.EQUIPMENT);
                             else if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
                             else if (slotId >= 36) playerSlot = new PlayerSlot(3 - (slotId - 36), PlayerSlot.EnumInvCategory.ARMOR);
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
-                            NetworkHooks.openScreen((ServerPlayer) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
+                            player.openMenu(new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
                         } else {
-                            player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 0.25F, 1F);
+                            player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.25F, 1F);
                         }
                         return;
                     }

@@ -14,10 +14,10 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.CelestialManipulatorMenu;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import static codechicken.lib.gui.modular.lib.geometry.Constraint.*;
 import static codechicken.lib.gui.modular.lib.geometry.GeoParam.*;
@@ -176,7 +176,7 @@ public class CelestialManipulatorGui extends ContainerGuiProvider<CelestialManip
 
         String[] rsButtonNames = {"clear", "rain", "storm", "sunrise", "noon", "sunset", "moonrise", "midnight", "moonset"};
         GuiRectangle rsBackground = new GuiRectangle(root).setSize(18, 18);
-        GuiItemStack rsItem = new GuiItemStack(rsBackground, ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:redstone")).getDefaultInstance())
+        GuiItemStack rsItem = new GuiItemStack(rsBackground, BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:redstone")).getDefaultInstance())
                 .enableStackToolTip(false);
         GuiButton rsButton = new GuiButton(rsBackground)
                 .onPress(() -> isRSActive = !isRSActive)

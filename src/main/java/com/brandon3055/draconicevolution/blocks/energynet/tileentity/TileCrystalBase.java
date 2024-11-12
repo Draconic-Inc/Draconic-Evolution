@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -85,7 +85,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         this.techLevel = techLevel;
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
 
-        capManager.setInternalManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setInternalManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
     }
 
     //region Energy Balance
@@ -421,13 +421,8 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     //region Render
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public abstract CrystalFXBase createStaticFX();
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
-    }
 
     public void addDisplayData(List<Component> displayList) {
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);

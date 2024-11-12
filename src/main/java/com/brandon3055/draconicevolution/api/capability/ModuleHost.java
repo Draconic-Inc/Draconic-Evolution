@@ -12,7 +12,7 @@ import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
  * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
  */
-public interface ModuleHost extends INBTSerializable<CompoundTag> {
+public interface ModuleHost extends INBTSerializable<CompoundTag>, IdentityProvider {
 
     /**
      * @return a list of installed modules.
@@ -69,9 +69,13 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
 
     Collection<ModuleCategory> getModuleCategories();
 
-    default Collection<ModuleType<?>> getAdditionalTypes() {return Collections.emptyList();}
+    default Collection<ModuleType<?>> getAdditionalTypes() {
+        return Collections.emptyList();
+    }
 
-    default Collection<ModuleType<?>> getTypeBlackList() {return Collections.emptyList();}
+    default Collection<ModuleType<?>> getTypeBlackList() {
+        return Collections.emptyList();
+    }
 
     /**
      * Only modules with this tech level or lower will be accepted by this host.

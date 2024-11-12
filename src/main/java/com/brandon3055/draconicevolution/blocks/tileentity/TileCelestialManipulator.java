@@ -21,7 +21,6 @@ import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.CelestialManipulatorMenu;
-import com.brandon3055.draconicevolution.inventory.DETileMenu;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
@@ -39,11 +38,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
@@ -70,8 +68,12 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     public TileCelestialManipulator(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CELESTIAL_MANIPULATOR.get(), pos, state);
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
         weatherMode.setCCSCS();
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_CELESTIAL_MANIPULATOR, CapabilityOP.BLOCK);
     }
 
     @Override
@@ -282,7 +284,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     //endregion
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private CelestialModifierSound sound;
 
     //region Weather Effect
@@ -618,12 +620,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
-    }
-
     //endregion
 
     private String[] ACTIONS = new String[]{"STOP_RAIN", "START_RAIN", "START_STORM", "SUN_RISE", "MID_DAY", "SUN_SET", "MOON_RISE", "MIDNIGHT", "MOON_SET", "SKIP_24"};
@@ -658,7 +654,8 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+
+            player.openMenu(this, worldPosition);
         }
         return true;
     }

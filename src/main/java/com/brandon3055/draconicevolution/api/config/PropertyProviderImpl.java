@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 public class PropertyProviderImpl implements PropertyProvider {
 
-    private UUID providerID = null;
+    private UUID identity = null;
     private String providerName;
     private Map<String, ConfigProperty> propertyMap = new HashMap<>();
 
@@ -26,11 +26,11 @@ public class PropertyProviderImpl implements PropertyProvider {
     }
 
     @Override
-    public UUID getProviderID() {
-        if (providerID == null) {
-            regenProviderID();
+    public UUID getIdentity() {
+        if (identity == null) {
+            regenIdentity();
         }
-        return providerID;
+        return identity;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class PropertyProviderImpl implements PropertyProvider {
     }
 
     @Override
-    public void regenProviderID() {
-        providerID = UUID.randomUUID();
+    public void regenIdentity() {
+        identity = UUID.randomUUID();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PropertyProviderImpl implements PropertyProvider {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putUUID("provider_id", getProviderID());
+        nbt.putUUID("identity", getIdentity());
         CompoundTag properties = new CompoundTag();
         propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         nbt.put("properties", properties);
@@ -66,8 +66,8 @@ public class PropertyProviderImpl implements PropertyProvider {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.hasUUID("provider_id")){
-            providerID = nbt.getUUID("provider_id");
+        if (nbt.hasUUID("identity")){
+            identity = nbt.getUUID("identity");
         }
         CompoundTag properties = nbt.getCompound("properties");
         propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));

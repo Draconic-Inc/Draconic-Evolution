@@ -5,39 +5,32 @@ import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePortal;
-import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
-import com.brandon3055.draconicevolution.init.ClientInit;
+import com.brandon3055.draconicevolution.init.DEClient;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.server.level.ThreadedLevelLightEngine;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
 
     @Override
-    public void handlePacket(PacketCustom packet, Minecraft mc, ClientPacketListener handler) {
+    public void handlePacket(PacketCustom packet, Minecraft mc) {
         switch (packet.getType()) {
 //            case 1: //Portal Arrival
 //                TileEntity tile = mc.world.getTileEntity(packet.readPos());
@@ -133,7 +126,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (entity != null) {
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
-                ClientInit.SHIELD_HUD.get().popTotem();
+                DEClient.SHIELD_HUD.get().popTotem();
             }
         }
     }

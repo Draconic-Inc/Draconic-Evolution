@@ -17,8 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -146,7 +146,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
         if (isCharged() && !soundInitialized) {

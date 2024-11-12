@@ -2,15 +2,12 @@ package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
-import net.covers1624.quack.collection.FastStream;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;

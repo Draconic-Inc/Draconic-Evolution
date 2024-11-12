@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -19,9 +20,8 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -980,7 +980,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', Tags.Items.INGOTS_IRON)
                 .key('A', Items.CLOCK)
                 .key('B', DEContent.MODULE_CORE)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SWIFTNESS)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SWIFTNESS)));
 
         shapedRecipe(DEModules.WYVERN_SPEED.get().getItem(), "modules")
                 .patternLine("###")
@@ -1013,7 +1013,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("ABA")
                 .patternLine("GPI")
                 .key('I', Tags.Items.INGOTS_IRON)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRENGTH)))
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRENGTH)))
                 .key('G', Tags.Items.INGOTS_GOLD)
                 .key('A', Tags.Items.DUSTS_GLOWSTONE)
                 .key('B', DEContent.MODULE_CORE);
@@ -1023,7 +1023,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("ABA")
                 .patternLine("IPI")
                 .key('I', DETags.Items.INGOTS_DRACONIUM)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_STRENGTH)))
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_STRENGTH)))
                 .key('A', DEModules.DRACONIUM_DAMAGE.get().getItem())
                 .key('B', DEContent.CORE_DRACONIUM);
 
@@ -1292,14 +1292,14 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .key('A', DEContent.CORE_WYVERN)
                 .key('B', DEModules.WYVERN_FLIGHT.get().getItem())
-                .key('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SLOW_FALLING)))
+                .key('C', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.SLOW_FALLING)))
                 .key('D', Items.FIREWORK_ROCKET);
 
         shapedRecipe(DEModules.CHAOTIC_FLIGHT.get().getItem(), "modules")
                 .patternLine("#C#")
                 .patternLine("ABA")
                 .patternLine("#C#")
-                .key('#', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_SWIFTNESS)))
+                .key('#', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_SWIFTNESS)))
                 .key('A', DEContent.CORE_AWAKENED)
                 .key('B', DEModules.DRACONIC_FLIGHT.get().getItem())
                 .key('C', DEContent.CHAOS_FRAG_LARGE);
@@ -1322,7 +1322,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .key('A', DEContent.CORE_WYVERN)
                 .key('B', DEModules.WYVERN_UNDYING.get().getItem())
-                .key('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_HEALING)))
+                .key('C', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_HEALING)))
                 .key('D', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem());
 
         shapedRecipe(DEModules.CHAOTIC_UNDYING.get().getItem(), "modules")
@@ -1372,7 +1372,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM)
                 .key('A', DEContent.CORE_DRACONIUM)
                 .key('B', DEContent.MODULE_CORE)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.NIGHT_VISION)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.NIGHT_VISION)));
 
         //Jump Boost
         shapedRecipe(DEModules.DRACONIUM_JUMP.get().getItem(), "modules")
@@ -1383,7 +1383,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEContent.MODULE_CORE)
                 .key('C', Tags.Items.INGOTS_IRON)
                 .key('D', Tags.Items.INGOTS_GOLD)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.LEAPING)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.LEAPING)));
 
         shapedRecipe(DEModules.WYVERN_JUMP.get().getItem(), "modules")
                 .patternLine("#P#")
@@ -1392,7 +1392,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM)
                 .key('B', DEContent.CORE_DRACONIUM)
                 .key('A', DEModules.DRACONIUM_JUMP.get().getItem())
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_LEAPING)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.STRONG_LEAPING)));
 
         shapedRecipe(DEModules.DRACONIC_JUMP.get().getItem(), "modules")
                 .patternLine("###")
@@ -1442,7 +1442,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_SWIFTNESS)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_SWIFTNESS)));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_VELOCITY.get().getItem(), "modules")
                 .patternLine("###")
@@ -1526,7 +1526,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_STRENGTH)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.STRONG_STRENGTH)));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_DAMAGE.get().getItem(), "modules")
                 .patternLine("###")
@@ -1554,7 +1554,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.LONG_SLOW_FALLING)));
+                .key('P', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.LONG_SLOW_FALLING)));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_GRAV_COMP.get().getItem(), "modules")
                 .patternLine("###")
@@ -1762,11 +1762,6 @@ public class RecipeGenerator extends RecipeProvider {
 //        super.run(cache);
 //    }
 //
-    public static class NBTIngredient extends StrictNBTIngredient {
-        public NBTIngredient(ItemStack stack) {
-            super(stack);
-        }
-    }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, ResourceLocation id) {
         return builder(FusionRecipeBuilder.builder(result.get(), 1, id));
@@ -1785,17 +1780,17 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(FusionRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(FusionRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected FusionRecipeBuilder fusionRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(FusionRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
@@ -1804,7 +1799,7 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected FusionRecipeBuilder fusionRecipe(ItemStack result) {
-        return builder(FusionRecipeBuilder.builder(result, ForgeRegistries.ITEMS.getKey(result.getItem())));
+        return builder(FusionRecipeBuilder.builder(result, BuiltInRegistries.ITEM.getKey(result.getItem())));
     }
 
     protected FusionRecipeBuilder fusionRecipe(ItemStack result, ResourceLocation id) {
@@ -1812,47 +1807,47 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected FurnaceRecipeBuilder smelting(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(FurnaceRecipeBuilder.smelting(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapedRecipeBuilder.builder(result.get(), 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(ItemLike result, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.asItem());
         return builder(ShapedRecipeBuilder.builder(result, 1, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapedRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapedRecipeBuilder shapedRecipe(Supplier<? extends ItemLike> result, int count, String folder, Function<String, String> customPath) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapedRecipeBuilder.builder(result.get(), count, new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, String folder, Function<String, String> customPath) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), 1), new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(Supplier<? extends ItemLike> result, int count, String folder) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.get().asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.get().asItem());
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result.get(), count), new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath())));
     }
 
@@ -1861,7 +1856,7 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     protected ShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count, String folder, Function<String, String> customPath) {
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(result.asItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.asItem());
         return builder(ShapelessRecipeBuilder.builder(new ItemStack(result, count), new ResourceLocation(id.getNamespace(), folder + "/" + customPath.apply(id.getPath()))));
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
 import java.util.Map;
@@ -74,5 +75,10 @@ public class RenderEnergyCoreStabilizer implements BlockEntityRenderer<TileEnerg
         ccrs.bind(coreActive ? MODEL_TYPE_ACTIVE : MODEL_TYPE, getter, poseStack);
         model.render(ccrs);
         poseStack.popPose();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEnergyCoreStabilizer blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(1);
     }
 }

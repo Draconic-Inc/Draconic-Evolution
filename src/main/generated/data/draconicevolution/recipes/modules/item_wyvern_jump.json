@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "tag": "forge:ingots/draconium"
@@ -11,10 +12,10 @@
       "item": "draconicevolution:draconium_core"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:strong_leaping\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strong_leaping\"}"
     }
   },
   "pattern": [

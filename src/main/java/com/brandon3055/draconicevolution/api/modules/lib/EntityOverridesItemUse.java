@@ -3,11 +3,11 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 /**
  * Created by brandon3055 on 27/01/2023
@@ -20,7 +20,9 @@ public interface EntityOverridesItemUse {
      * <p>
      * Note: be sure to check if the event has already been canceled and react accordingly.
      */
-    default void onPlayerInteractEvent(PlayerInteractEvent event) {}
+    default void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {}
+
+    default void onPlayerInteractEvent(PlayerInteractEvent.RightClickBlock event) {}
 
     /**
      * Can be used to receive item use start, tick, stop and finish events from the host.

@@ -25,6 +25,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +33,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +53,7 @@ public class DEJEIPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
     public static IJeiRuntime jeiRuntime = null;
-    public static RecipeType<IFusionRecipe> FUSION_RECIPE_TYPE = RecipeType.create(DraconicEvolution.MODID, "fusion_crafting", IFusionRecipe.class);
+    private static RecipeType<RecipeHolder<IFusionRecipe>> FUSION_RECIPE_TYPE;
 //
     @Nullable
     private FusionRecipeCategory fusionRecipeCategory;
@@ -106,7 +108,7 @@ public class DEJEIPlugin implements IModPlugin {
         ClientLevel world = Minecraft.getInstance().level;
         if (world == null) return;
 
-        registration.addRecipes(FUSION_RECIPE_TYPE, world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get()));
+        registration.addRecipes(FUSION_RECIPE_TYPE, FastStream.of(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE.get())).toList());
     }
 
     @Override
@@ -117,14 +119,14 @@ public class DEJEIPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), FUSION_RECIPE_TYPE);
 
         //Draconium chest recipe movers
-        registration.addRecipeTransferHandler(new IRecipeTransferInfo<DraconiumChestMenu, CraftingRecipe>() {
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<DraconiumChestMenu, RecipeHolder<CraftingRecipe>>() {
             @Override
             public Class<DraconiumChestMenu> getContainerClass() {
                 return DraconiumChestMenu.class;
             }
 
             @Override
-            public RecipeType<CraftingRecipe> getRecipeType() {
+            public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
                 return RecipeTypes.CRAFTING;
             }
 
@@ -134,30 +136,30 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
-            public boolean canHandle(DraconiumChestMenu container, CraftingRecipe recipe) {
+            public boolean canHandle(DraconiumChestMenu container, RecipeHolder<CraftingRecipe> recipe) {
                 return true;
             }
 
             @Override
-            public List<Slot> getRecipeSlots(DraconiumChestMenu container, CraftingRecipe recipe) {
+            public List<Slot> getRecipeSlots(DraconiumChestMenu container, RecipeHolder<CraftingRecipe> recipe) {
                 return container.craftIn.slots().stream().map(e -> (Slot) e).toList();
             }
 
             @Override
-            public List<Slot> getInventorySlots(DraconiumChestMenu container, CraftingRecipe recipe) {
+            public List<Slot> getInventorySlots(DraconiumChestMenu container, RecipeHolder<CraftingRecipe> recipe) {
                 return Stream.of(container.chestInv.slots(), container.main.slots(), container.hotBar.slots()).flatMap(Collection::stream).collect(Collectors.toList());
             }
         });
 
         //TODO Look into adding a custom transfer helper that utilizes all of the furnace slots.
-        registration.addRecipeTransferHandler(new IRecipeTransferInfo<DraconiumChestMenu, SmeltingRecipe>() {
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<DraconiumChestMenu, RecipeHolder<SmeltingRecipe>>() {
             @Override
             public Class<DraconiumChestMenu> getContainerClass() {
                 return DraconiumChestMenu.class;
             }
 
             @Override
-            public RecipeType<SmeltingRecipe> getRecipeType() {
+            public RecipeType<RecipeHolder<SmeltingRecipe>> getRecipeType() {
                 return RecipeTypes.SMELTING;
             }
 
@@ -167,17 +169,17 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
-            public boolean canHandle(DraconiumChestMenu container, SmeltingRecipe recipe) {
+            public boolean canHandle(DraconiumChestMenu container, RecipeHolder<SmeltingRecipe> recipe) {
                 return true;
             }
 
             @Override
-            public List<Slot> getRecipeSlots(DraconiumChestMenu container, SmeltingRecipe recipe) {
+            public List<Slot> getRecipeSlots(DraconiumChestMenu container, RecipeHolder<SmeltingRecipe> recipe) {
                 return container.furnaceInputs.slots().stream().map(e -> (Slot) e).toList();
             }
 
             @Override
-            public List<Slot> getInventorySlots(DraconiumChestMenu container, SmeltingRecipe recipe) {
+            public List<Slot> getInventorySlots(DraconiumChestMenu container, RecipeHolder<SmeltingRecipe> recipe) {
                 return Stream.of(container.chestInv.slots(), container.main.slots(), container.hotBar.slots()).flatMap(Collection::stream).collect(Collectors.toList());
             }
         });
@@ -197,5 +199,10 @@ public class DEJEIPlugin implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
         return new ResourceLocation(DraconicEvolution.MODID, "jei_plugin");
+    }
+
+    public static RecipeType<RecipeHolder<IFusionRecipe>> getFusionRecipeType() {
+        if (FUSION_RECIPE_TYPE == null) FUSION_RECIPE_TYPE = RecipeType.createFromVanilla(DraconicAPI.FUSION_RECIPE_TYPE.get());
+        return FUSION_RECIPE_TYPE;
     }
 }

@@ -54,7 +54,7 @@ public class ItemCore extends Item {
                 ItemStack spawner = new ItemStack(DEContent.STABILIZED_SPAWNER.get());
                 CompoundTag managedData = new CompoundTag();
                 spawner.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
-                managedData.put("mob_soul", soul.serializeNBT());
+                managedData.put("mob_soul", soul.save(new CompoundTag()));
                 CompoundTag tierData = new CompoundTag();
                 tierData.putByte("value", (byte) tier.ordinal());
                 managedData.put("spawner_tier", tierData);

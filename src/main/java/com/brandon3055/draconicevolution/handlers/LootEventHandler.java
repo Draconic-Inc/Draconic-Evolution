@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.EnderCollectionEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.JunkFilterEntity;
@@ -13,6 +14,7 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,16 +23,14 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,8 +47,8 @@ public class LootEventHandler {
 
     public static void init() {
         LOCK.lock();
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, LootEventHandler::addDrops);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, LootEventHandler::processDrops);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, LootEventHandler::addDrops);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, LootEventHandler::processDrops);
     }
 
     public static void addDrops(LivingDropsEvent event) {
@@ -167,7 +167,7 @@ public class LootEventHandler {
             return false;
         }
         //noinspection DataFlowIssue
-        String regName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString();
+        String regName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
         if (DEConfig.spawnerList.contains(regName) && DEConfig.spawnerListWhiteList) {
             return true;
         } else if (DEConfig.spawnerList.contains(regName) && !DEConfig.spawnerListWhiteList) {
@@ -180,7 +180,9 @@ public class LootEventHandler {
         ItemStack hostStack = player.getMainHandItem();
         if (hostStack.isEmpty() || event.getDrops().isEmpty()) return;
 
-        hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
+        ModuleHost host = hostStack.getCapability(DECapabilities.Host.ITEM);
+
+        if (host != null) {
             Predicate<ItemStack> junkTest = null;
             for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
                 junkTest = junkTest == null ? ((JunkFilterEntity) entity).createFilterTest() : junkTest.or(((JunkFilterEntity) entity).createFilterTest());
@@ -209,6 +211,6 @@ public class LootEventHandler {
                 }
                 event.getDrops().removeAll(remove);
             }
-        });
+        }
     }
 }

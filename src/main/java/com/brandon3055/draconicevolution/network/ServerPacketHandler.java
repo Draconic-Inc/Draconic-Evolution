@@ -24,17 +24,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.CommandEvent;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.List;
 public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHandler {
 
     @Override
-    public void handlePacket(PacketCustom packet, ServerPlayer sender, ServerGamePacketListenerImpl handler) {
+    public void handlePacket(PacketCustom packet, ServerPlayer sender) {
         switch (packet.getType()) {
             case DraconicNetwork.S_TOGGLE_DISLOCATORS:
                 toggleDislocators(sender);
@@ -218,9 +219,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     private void jeiFusionTransfer(ServerPlayer sender, PacketCustom packet) {
         ResourceLocation id = packet.readResourceLocation();
         boolean maxTransfer = packet.readBoolean();
-        Recipe<?> recipe = sender.level().getRecipeManager().byKey(id).orElse(null);
-        if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof FusionCraftingCoreMenu) {
-            FusionRecipeTransferHelper.doServerSideTransfer(sender, (FusionCraftingCoreMenu) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
+        RecipeHolder<?> recipe = sender.level().getRecipeManager().byKey(id).orElse(null);
+        if (recipe != null && recipe.value() instanceof IFusionRecipe fusionRecipe && sender.containerMenu instanceof FusionCraftingCoreMenu) {
+            FusionRecipeTransferHelper.doServerSideTransfer(sender, (FusionCraftingCoreMenu) sender.containerMenu, fusionRecipe, maxTransfer);
         }
     }
 
@@ -252,7 +253,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 player.getInventory().removeItem(stack);
 
             } else if (level.isEmptyBlock(posOnSide)) {
-                if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, posHit), blockTrace.getDirection())) {
+                if (!EventHooks.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, posHit), blockTrace.getDirection())) {
                     level.setBlockAndUpdate(posOnSide, DEContent.PLACED_ITEM.get().defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
                     BlockEntity tile = level.getBlockEntity(posOnSide);
 

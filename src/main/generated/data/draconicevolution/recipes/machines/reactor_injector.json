@@ -5,39 +5,69 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "item": "draconicevolution:reactor_prt_in_rotor"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:reactor_prt_in_rotor"
+      }
     },
     {
-      "item": "draconicevolution:reactor_prt_in_rotor"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:reactor_prt_in_rotor"
+      }
     },
     {
-      "item": "draconicevolution:reactor_prt_in_rotor"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:reactor_prt_in_rotor"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/iron"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
     },
     {
-      "item": "draconicevolution:reactor_prt_in_rotor"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:reactor_prt_in_rotor"
+      }
     },
     {
-      "tag": "forge:ingots/iron"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:reactor_injector"
   },
-  "tier": "CHAOTIC",
-  "total_energy": 16000000
+  "techLevel": "chaotic",
+  "totalEnergy": 16000000
 }

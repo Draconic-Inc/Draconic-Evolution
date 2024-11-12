@@ -2,17 +2,16 @@ package com.brandon3055.draconicevolution.integration;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.OptionalMod;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.OptionalMod;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class ModHelper {
             return false;
         }
         else if (cleaver == null) {
-            cleaver = ForgeRegistries.ITEMS.getValue(new ResourceLocation("tconstruct", "cleaver"));
+            cleaver = BuiltInRegistries.ITEM.get(new ResourceLocation("tconstruct", "cleaver"));
         }
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
@@ -54,7 +53,7 @@ public class ModHelper {
             return false;
         }
         else if (avaritiaSword == null) {
-            avaritiaSword = ForgeRegistries.ITEMS.getValue(new ResourceLocation("avaritia", "infinity_sword"));
+            avaritiaSword = BuiltInRegistries.ITEM.get(new ResourceLocation("avaritia", "infinity_sword"));
         }
 
         return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
@@ -65,7 +64,7 @@ public class ModHelper {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword =  ForgeRegistries.ITEMS.getValue(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
+            bedrockSword =  BuiltInRegistries.ITEM.get(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
         return bedrockSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(bedrockSword);
@@ -75,7 +74,7 @@ public class ModHelper {
         if (stack.isEmpty()) {
             return false;
         }
-        ResourceLocation registry = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        ResourceLocation registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (registry == null || registry.getNamespace().equals("tconstruct")) {
             return false;
         }
@@ -122,7 +121,7 @@ public class ModHelper {
 //    }
 
     public static boolean isWrench(ItemStack stack) {
-        String name = String.valueOf(ForgeRegistries.ITEMS.getKey(stack.getItem())).toLowerCase(Locale.ENGLISH);
+        String name = String.valueOf(BuiltInRegistries.ITEM.getKey(stack.getItem())).toLowerCase(Locale.ENGLISH);
         return name.contains("wrench") || name.contains("binder") || name.contains("hammer");
     }
 

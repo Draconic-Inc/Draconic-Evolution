@@ -14,9 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -104,9 +103,8 @@ public class MultiBlockBuilder implements IProcess {
             return part.getFirstValidBlock();
         }
 
-        LazyOptional<IItemHandler> opHandler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        if (opHandler.isPresent()) {
-            IItemHandler handler = opHandler.orElseThrow(WTFException::new);
+        IItemHandler handler = player.getCapability(Capabilities.ItemHandler.ENTITY);
+        if (handler != null) {
             for (int i = 0; i < handler.getSlots(); i++) {
                 ItemStack inSlot = handler.getStackInSlot(i);
                 if (!inSlot.isEmpty() && inSlot.getItem() instanceof BlockItem) {

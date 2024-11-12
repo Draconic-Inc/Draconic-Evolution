@@ -5,33 +5,57 @@
   },
   "ingredients": [
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:awakened_core"
   },
-  "tier": "WYVERN",
-  "total_energy": 1000000
+  "techLevel": "wyvern",
+  "totalEnergy": 1000000
 }

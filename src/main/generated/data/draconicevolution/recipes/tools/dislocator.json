@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "A": {
       "item": "minecraft:blaze_powder"
@@ -17,7 +18,6 @@
     "ABA"
   ],
   "result": {
-    "item": "draconicevolution:dislocator",
-    "nbt": "{Damage:0}"
+    "item": "draconicevolution:dislocator"
   }
 }

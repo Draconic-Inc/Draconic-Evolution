@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import codechicken.lib.datagen.DynamicTextureProvider;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.*;
-import codechicken.lib.datagen.DynamicTextureProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
  * Created by brandon3055 on 07/02/2024

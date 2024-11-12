@@ -18,10 +18,8 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -29,12 +27,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -50,8 +47,12 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
 
     public TileDislocatorPedestal(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISLOCATOR_PEDESTAL.get(), pos, state);
-        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
+        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setSlotValidator(0, stack -> stack.getItem() instanceof Dislocator);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_DISLOCATOR_PEDESTAL, Capabilities.ItemHandler.BLOCK);
     }
 
     @Override

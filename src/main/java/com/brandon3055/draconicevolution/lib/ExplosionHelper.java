@@ -141,8 +141,8 @@ public class ExplosionHelper {
 
         @Override
         public void updateProcess() {
-            server.nextTickTime = Util.getMillis();
-            while (Util.getMillis() - server.nextTickTime < 50 && helper.toRemove.size() > 0) {
+            server.nextTickTimeNanos = Util.getNanos();
+            while (Util.getNanos() - server.nextTickTimeNanos < 50000000 && helper.toRemove.size() > 0) {
                 LogHelper.dev("Processing chunks at rad: " + index);
                 HashSet<Long> set = helper.toRemove.removeFirst();
                 for (long pos : set) {

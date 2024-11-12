@@ -30,7 +30,7 @@ public class RenderTileStabilizedSpawner implements BlockEntityRenderer<TileStab
 
         mStack.pushPose();
         mStack.translate(0.5D, 0.0D, 0.5D);
-        Entity entity = spawnerLogic.getOrCreateDisplayEntity(tile.getLevel(), tile.getLevel().getRandom(), tile.getBlockPos());
+        Entity entity = spawnerLogic.getOrCreateDisplayEntity(tile.getLevel(), tile.getBlockPos());
         if (entity != null) {
             float f = 0.53125F;
             float f1 = Math.max(entity.getBbWidth(), entity.getBbHeight());

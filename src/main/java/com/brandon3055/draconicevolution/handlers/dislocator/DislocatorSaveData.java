@@ -72,7 +72,7 @@ public class DislocatorSaveData extends SavedData {
         if (world instanceof ServerLevel && world.getServer() != null) {
             ServerLevel level = world.getServer().getLevel(Level.OVERWORLD);
             if (level != null) {
-                return level.getDataStorage().computeIfAbsent(DislocatorSaveData::load, DislocatorSaveData::new, FILE_NAME);
+                return level.getDataStorage().computeIfAbsent(new Factory<>(DislocatorSaveData::new, DislocatorSaveData::load), FILE_NAME);
             }
         }
         return null;

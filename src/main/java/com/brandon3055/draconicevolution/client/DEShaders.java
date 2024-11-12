@@ -10,9 +10,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -96,17 +95,16 @@ public class DEShaders {
     public static CCUniform explosionType;
 
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         LOCK.lock();
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        TOOL_BASE_SHADER.register(bus);
-        TOOL_GEM_SHADER.register(bus);
-        TOOL_TRACE_SHADER.register(bus);
-        TOOL_BLADE_SHADER.register(bus);
-        BOW_STRING_SHADER.register(bus);
-        CHESTPIECE_GEM_SHADER.register(bus);
-        CHESTPIECE_SHIELD_SHADER.register(bus);
-        bus.addListener(DEShaders::onRegisterShaders);
+        TOOL_BASE_SHADER.register(modBus);
+        TOOL_GEM_SHADER.register(modBus);
+        TOOL_TRACE_SHADER.register(modBus);
+        TOOL_BLADE_SHADER.register(modBus);
+        BOW_STRING_SHADER.register(modBus);
+        CHESTPIECE_GEM_SHADER.register(modBus);
+        CHESTPIECE_SHIELD_SHADER.register(modBus);
+        modBus.addListener(DEShaders::onRegisterShaders);
     }
 
     private static void onRegisterShaders(RegisterShadersEvent event) {

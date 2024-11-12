@@ -48,8 +48,9 @@ import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -491,7 +492,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     BlockState blockstate = this.level().getBlockState(blockpos);
                     Block block = blockstate.getBlock();
                     if (!blockstate.isAir() && !blockstate.is(BlockTags.FIRE)) {
-                        if (net.minecraftforge.common.ForgeHooks.canEntityDestroy(this.level(), blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
+                        if (CommonHooks.canEntityDestroy(this.level(), blockpos, this) && !blockstate.is(BlockTags.DRAGON_IMMUNE) && block != Blocks.NETHER_BRICKS && block != Blocks.NETHER_BRICK_SLAB) {
                             flag1 = this.level().removeBlock(blockpos, false) || flag1;
                         } else {
                             flag = true;
@@ -838,7 +839,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         return 5.0F;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public float getHeadPartYOffset(int p_184667_1_, double[] spineEndOffsets, double[] headPartOffsets) {
         IPhase iphase = this.phaseManager.getCurrentPhase();
         PhaseType<? extends IPhase> phasetype = iphase.getType();

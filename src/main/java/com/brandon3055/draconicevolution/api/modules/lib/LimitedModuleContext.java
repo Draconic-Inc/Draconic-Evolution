@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -37,11 +37,7 @@ public class LimitedModuleContext extends ModuleContext {
     @Override
     @Nullable
     public IOPStorage getOpStorage() {
-        LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
-        if (optional.isPresent()) {
-            return optional.orElseThrow(IllegalStateException::new);
-        }
-        return null;
+        return stack.getCapability(CapabilityOP.ITEM);
     }
 
     @Override

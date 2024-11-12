@@ -161,11 +161,6 @@ public class TileChaosCrystal extends TileBCore {
     }
 
     @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(3, 3, 3);
-    }
-
-    @Override
     public boolean saveToItem() {
         return false;
     }

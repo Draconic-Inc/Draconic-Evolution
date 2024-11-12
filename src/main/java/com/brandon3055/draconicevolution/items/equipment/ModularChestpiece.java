@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.client.model.DummyHumanoidModel;
 import com.brandon3055.brandonscore.client.render.EquippedItemModel;
 import com.brandon3055.brandonscore.items.EquippedModelItem;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
@@ -34,10 +34,11 @@ import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment, EquippedModelItem {
+public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment, EquippedModelItem, IModularEnergyItem {
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechProperties props) {
@@ -78,7 +79,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.chestpieceWidth(techLevel), ModuleCfg.chestpieceHeight(techLevel), "chestpiece", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.CHESTPIECE);
         host.addPropertyBuilder(props -> {
@@ -111,15 +112,9 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         return host;
     }
 
-    @Nullable
     @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseChestpieceEnergy(techLevel), EquipCfg.getBaseChestpieceTransfer(techLevel));
-    }
-
-    @Override
-    public void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
-        EquipmentManager.addCaps(stack, provider);
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseChestpieceEnergy(techLevel), EquipCfg.getBaseChestpieceTransfer(techLevel));
     }
 
     @Override
@@ -150,7 +145,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             model_on_armor = new ModularChestpieceModel<>(techLevel, true);
         }
         ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
-        ForgeHooksClient.copyModelProperties(parentModel, activeModel);
+        ClientHooks.copyModelProperties(parentModel, activeModel);
         return activeModel;
     }
 

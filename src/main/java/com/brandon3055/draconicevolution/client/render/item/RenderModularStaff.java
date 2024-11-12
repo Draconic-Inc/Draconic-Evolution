@@ -223,4 +223,9 @@ public class RenderModularStaff extends ToolRenderBase {
     public static float torad(double degrees) {
         return (float) (degrees * MathHelper.torad);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class STAFF_DRACONIC extends RenderModularStaff { public STAFF_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class STAFF_CHAOTIC extends RenderModularStaff { public STAFF_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

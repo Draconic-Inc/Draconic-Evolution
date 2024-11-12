@@ -39,7 +39,7 @@ public class GroundTarget extends DislocatorTarget {
         ServerLevel targetWorld = getTargetWorld(server);
         Entity entity = targetWorld.getEntity(entityUUID);
         if (!(entity instanceof ItemEntity)) {
-            AABB bb = new AABB(entityPos.pos().offset(-1, -1, -1), entityPos.pos().offset(1, 1, 1));
+            AABB bb = new AABB(entityPos.pos());
             bb.inflate(5);
             List<ItemEntity> items = targetWorld.getEntitiesOfClass(ItemEntity.class, bb);
             for (ItemEntity item : items) {

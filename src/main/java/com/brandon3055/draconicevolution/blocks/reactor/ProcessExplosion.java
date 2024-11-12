@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -25,9 +24,8 @@ import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.IFluidBlock;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -96,17 +94,17 @@ public class ProcessExplosion implements IProcess {
         maxRadius = radius;
         lavaState = Blocks.LAVA.defaultBlockState();
         //TODO pyrotheum
-        if (ForgeRegistries.FLUIDS.containsKey(new ResourceLocation("cofhworld", "pyrotheum"))) {
-            Fluid pyro = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("cofhworld", "pyrotheum"));
+//        if (ForgeRegistries.FLUIDS.containsKey(new ResourceLocation("cofhworld", "pyrotheum"))) {
+//            Fluid pyro = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("cofhworld", "pyrotheum"));
 //            if (pyro.canBePlacedInWorld()) {
 //                lavaState = pyro.getAttributes().getBlock(world , pyro.getDefaultState())getBlock().getDefaultState();
 //            }
-        }
+//        }
     }
 
     @Override
     public void updateProcess() {
-        server.nextTickTime = Util.getMillis();
+        server.nextTickTimeNanos = Util.getNanos();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
         }
@@ -382,7 +380,7 @@ public class ProcessExplosion implements IProcess {
             new DelayedExecutor(i + 30) {
                 @Override
                 public void execute(Object[] args) {
-                    List<Entity> list = level.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
+                    List<Entity> list = level.getEntitiesOfClass(Entity.class, new AABB(Vec3.atLowerCornerOf(pos), Vec3.atLowerCornerOf(pos.offset(1, 1, 1))).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
                     for (Entity e : list) {
                         double dist = Vec3D.getCenter(pos).distance(e);
                         float dmg = (1000) * (1F - (float) (dist / (calcRadius * 1.2D)));

@@ -10,12 +10,12 @@ import codechicken.lib.gui.modular.lib.container.ContainerScreenAccess;
 import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.lib.geometry.Direction;
 import codechicken.lib.gui.modular.lib.geometry.Position;
-import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -36,7 +36,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -144,7 +143,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         setupSimpleUI(playInv.container());
         setupAdvancedUI();
 
-        selectedItem = menu.getSelectedId();
+        selectedItem = menu.getSelectedIdentity();
         menu.setSelectionListener(this::onItemSelected);
         menu.setOnInventoryChange(this::onInventoryUpdate);
         loadSelectedItemProperties();
@@ -164,7 +163,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         GuiSlots slots = new GuiSlots(scroll.getContentElement(), screenAccess, menu.curios, 1)
                 .setSlotOverlay(this::renderSlotOverlay)
                 .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
-                .setEmptyIconI(i -> Material.fromRawTexture(EquipmentManager.getIcons(menu.inventory.player).get(i)))
+                .setEmptyIconI(i -> RenderUtils.fromRawTexture(EquipmentManager.getIcons(menu.inventory.player).get(i)))
                 .constrain(LEFT, match(scroll.getContentElement().get(LEFT)))
                 .constrain(TOP, match(scroll.getContentElement().get(TOP)));
 
@@ -255,11 +254,11 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
 
     private void onItemSelected(boolean initialLoad) {
-        if (selectedItem != menu.getSelectedId() && !advancedUI) {
-            selectedItem = menu.getSelectedId();
+        if (selectedItem != menu.getSelectedIdentity() && !advancedUI) {
+            selectedItem = menu.getSelectedIdentity();
             loadSelectedItemProperties();
         } else if (advancedUI && !initialLoad) {
-            PropertyProvider provider = menu.findProvider(menu.getSelectedId());
+            PropertyProvider provider = menu.findProvider(menu.getSelectedIdentity());
             if (provider == null || provider.getProperties().isEmpty()) {
                 return;
             }
@@ -308,8 +307,10 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
                     .findAny()
                     .orElse(null);
             if (hovered != null) {
-                LazyOptional<PropertyProvider> optionalCap = hovered.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
-                optionalCap.ifPresent(e -> hoveredProvider = e);
+                PropertyProvider provider = hovered.getItem().getCapability(DECapabilities.Properties.ITEM);
+                if (provider != null) {
+                    hoveredProvider = provider;
+                }
             }
         }
 
@@ -352,13 +353,12 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
     private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
         ItemStack stack = slot.getItem();
-        LazyOptional<PropertyProvider> opt = stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
-        if (!stack.isEmpty() && opt.isPresent()) {
-            PropertyProvider provider = opt.orElseThrow(IllegalStateException::new);
+        PropertyProvider provider = stack.getCapability(DECapabilities.Properties.ITEM);
+        if (!stack.isEmpty() && provider != null) {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
             render.shadedRect(pos.x() - 1, pos.y() - 1, 18, 18, 1, dark, light, 0);
-            if (!advancedUI && provider.getProviderID().equals(menu.getSelectedId())) {
+            if (!advancedUI && provider.getIdentity().equals(menu.getSelectedIdentity())) {
                 render.rect(pos.x(), pos.y(), 16, 16, 0x80FF0000);
             } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                 ConfigProperty prop = hoveredData.getPropIfApplicable(provider);

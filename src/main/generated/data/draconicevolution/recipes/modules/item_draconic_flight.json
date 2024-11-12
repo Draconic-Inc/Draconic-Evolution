@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "tag": "forge:ingots/draconium_awakened"
@@ -11,10 +12,10 @@
       "item": "draconicevolution:item_wyvern_flight"
     },
     "C": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:slow_falling\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:slow_falling\"}"
     },
     "D": {
       "item": "minecraft:firework_rocket"

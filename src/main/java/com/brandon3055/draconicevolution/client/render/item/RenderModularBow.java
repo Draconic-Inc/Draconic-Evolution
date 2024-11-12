@@ -102,7 +102,7 @@ public class RenderModularBow extends ToolRenderBase {
         materialPart.render(context, buffers, mat);
         materialPart.render(context, buffers, bottomMat);
 
-        boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= EnergyUtils.getEnergyStored(stack));
+        boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.Host.ITEM) != null && ModularBow.calculateShotEnergy(stack) <= EnergyUtils.getEnergyStored(stack));
         drawStrings(ccrs, context, mat, bottomMat, buffers, drawAngle, hasPower);
     }
 
@@ -230,4 +230,10 @@ public class RenderModularBow extends ToolRenderBase {
     public static float torad(double degrees) {
         return (float) (degrees * MathHelper.torad);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class BOW_WYVERN extends RenderModularBow { public BOW_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class BOW_DRACONIC extends RenderModularBow { public BOW_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class BOW_CHAOTIC extends RenderModularBow { public BOW_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

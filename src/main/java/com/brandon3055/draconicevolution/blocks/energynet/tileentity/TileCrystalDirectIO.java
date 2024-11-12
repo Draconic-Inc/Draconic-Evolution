@@ -23,8 +23,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
@@ -43,6 +44,10 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     public TileCrystalDirectIO(TechLevel techLevel, BlockPos pos, BlockState state) {
         super(DEContent.TILE_IO_CRYSTAL.get(), techLevel, pos, state);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_IO_CRYSTAL, CapabilityOP.BLOCK);
     }
 
     //region Update Energy IO
@@ -115,9 +120,9 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     public void updateRotation(Direction newDirection) {
         facing.set(newDirection);
-        capManager.remove(CapabilityOP.OP);
+        capManager.remove(CapabilityOP.BLOCK);
         opStorage.setIOMode(!outputMode.get()); //TODO, not sure why I had this commented out... Was there a reason?
-        capManager.setSide(CapabilityOP.OP, opStorage, newDirection);
+        capManager.setSide(CapabilityOP.BLOCK, opStorage, newDirection);
     }
 
     @Override

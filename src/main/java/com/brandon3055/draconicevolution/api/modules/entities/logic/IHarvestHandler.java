@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 
 /**
  * Created by brandon3055 on 31/01/2023
@@ -51,7 +51,7 @@ public interface IHarvestHandler {
         FluidState fluidState = level.getFluidState(pos);
         Block block = state.getBlock();
 
-        int xp = ForgeHooks.onBlockBreakEvent(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
+        int xp = CommonHooks.onBlockBreakEvent(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
         if (xp == -1) {
             ServerPlayer mpPlayer = (ServerPlayer) player;
             mpPlayer.connection.send(new ClientboundBlockUpdatePacket(level, pos));

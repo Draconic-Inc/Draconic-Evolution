@@ -5,33 +5,57 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:chaotic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:chaotic_energy_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:chaotic_hoe"
   },
-  "tier": "CHAOTIC",
-  "total_energy": 128000000
+  "techLevel": "chaotic",
+  "totalEnergy": 128000000
 }

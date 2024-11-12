@@ -44,4 +44,10 @@ public class RenderModularAxe extends ToolRenderBase {
         gemPart.render(context, buffers, mat);
         bladePart.render(context, buffers, mat);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class AXE_WYVERN extends RenderModularAxe { public AXE_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class AXE_DRACONIC extends RenderModularAxe { public AXE_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class AXE_CHAOTIC extends RenderModularAxe { public AXE_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

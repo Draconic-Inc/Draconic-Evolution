@@ -116,7 +116,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         }
 
         Constraints.bind(new GuiRectangle(this)
-                .border(() -> data.isGlobal ? 0x80ffff00 : gui.hoveredProvider.getProviderID().equals(data.providerID) ? 0x8000ff00 : 0)
+                .border(() -> data.isGlobal ? 0x80ffff00 : gui.hoveredProvider.getIdentity().equals(data.providerID) ? 0x8000ff00 : 0)
                 .setEnabled(() -> advanced && gui.hoveredProvider != null && gui.hoveredProvider.getProviderName().equals(data.providerName)), this);
 
         Constraints.bind(new GuiRectangle(this)

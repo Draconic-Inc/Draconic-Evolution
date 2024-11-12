@@ -39,8 +39,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -73,16 +73,16 @@ public class DraconicProjectileEntity extends AbstractArrow {
     private boolean useDefaultStaffModifier = false;
     private boolean pseudoInstantTravel = false;
 
-    public DraconicProjectileEntity(EntityType<? extends DraconicProjectileEntity> type, Level worldIn) {
-        super(type, worldIn);
+    public DraconicProjectileEntity(EntityType<? extends DraconicProjectileEntity> type, Level worldIn, ItemStack stack) {
+        super(type, worldIn, stack);
     }
 
-    public DraconicProjectileEntity(Level worldIn, double x, double y, double z) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), x, y, z, worldIn);
+    public DraconicProjectileEntity(Level worldIn, double x, double y, double z, ItemStack stack) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), x, y, z, worldIn, stack);
     }
 
-    public DraconicProjectileEntity(Level worldIn, LivingEntity shooter) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, worldIn);
+    public DraconicProjectileEntity(Level worldIn, LivingEntity shooter, ItemStack stack) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, worldIn, stack);
     }
 
     @Override

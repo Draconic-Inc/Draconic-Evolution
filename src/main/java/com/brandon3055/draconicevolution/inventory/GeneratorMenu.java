@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
 
 /**
  * Created by brandon3055 on 07/02/2024
@@ -30,7 +29,7 @@ public class GeneratorMenu extends DETileMenu<TileGenerator> {
         main.addPlayerMain(inventory);
         hotBar.addPlayerBar(inventory);
         fuel.addSlots(3, 0, index -> new ModularSlot(tile.itemHandler, index)
-                .setValidator(stack -> ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0)
+                .setValidator(stack -> stack.getBurnTime(RecipeType.SMELTING) > 0)
         );
         capacitor.addSlot(new ModularSlot(tile.itemHandler, 3)
                 .setValidator(EnergyUtils::canReceiveEnergy)

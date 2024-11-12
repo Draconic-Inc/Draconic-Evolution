@@ -32,7 +32,7 @@ public class CrystalUpdateBatcher {
             for (ServerPlayer playerMP : batchQue.keySet()) {
                 List<BatchedCrystalUpdate> playerData = batchQue.get(playerMP);
                 if (!playerData.isEmpty()) {
-                    PacketCustom packet = new PacketCustom(DraconicNetwork.CHANNEL, DraconicNetwork.C_CRYSTAL_UPDATE);
+                    PacketCustom packet = new PacketCustom(DraconicNetwork.CHANNEL_NAME, DraconicNetwork.C_CRYSTAL_UPDATE);
                     packet.writeVarInt(playerData.size());
                     playerData.forEach(update -> update.writeData(packet));
                     packet.sendToPlayer(playerMP);

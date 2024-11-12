@@ -45,4 +45,10 @@ public class RenderModularSword extends ToolRenderBase {
         gemPart.render(context, buffers, mat);
         bladePart.render(context, buffers, mat);
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class SWORD_WYVERN extends RenderModularSword { public SWORD_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class SWORD_DRACONIC extends RenderModularSword { public SWORD_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class SWORD_CHAOTIC extends RenderModularSword { public SWORD_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

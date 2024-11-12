@@ -9,19 +9,21 @@ import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -208,7 +210,13 @@ public class BlockStateGenerator extends BlockStateProvider {
         ModelFile modelGrinder = models().getExistingFile(modLoc("block/grinder/grinder"));
         ModelFile modelGrinderActive = models().getExistingFile(modLoc("block/grinder/grinder_eyes"));
         MultiPartBlockStateBuilder grinderBuilder = getMultipartBuilder(DEContent.GRINDER);
-        for (Direction dir : Direction.BY_2D_DATA) {
+
+         Direction[] BY_2D_DATA = Arrays.stream(Direction.values())
+                .filter(p_235685_ -> p_235685_.getAxis().isHorizontal())
+                .sorted(Comparator.comparingInt(Direction::get2DDataValue))
+                .toArray(Direction[]::new);
+
+        for (Direction dir : BY_2D_DATA) {
             int angle = (int) dir.getOpposite().toYRot();
             grinderBuilder.part().modelFile(modelGrinder).rotationY(angle).addModel().condition(Grinder.FACING, dir).end()
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
@@ -250,7 +258,7 @@ public class BlockStateGenerator extends BlockStateProvider {
     public void multiLayerBlock(Supplier<? extends Block> block, ResourceLocation solid, ResourceLocation overlay) {
 
         simpleBlock(block,
-                models().getBuilder(ForgeRegistries.BLOCKS.getKey(block.get()).getPath())
+                models().getBuilder(BuiltInRegistries.BLOCK.getKey(block.get()).getPath())
                         .parent(models().getExistingFile(mcLoc("block/block"))).texture("particle", solid)
                         .customLoader(CompositeModelBuilder::begin)
                         .child("base", models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).renderType("solid").texture("all", solid))

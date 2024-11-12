@@ -6,33 +6,32 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
-import com.brandon3055.draconicevolution.lib.WTFException;
-import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 16/11/2022
  */
 public class ModularOPStorage extends OPStorage {
 
-    private ModuleHost host;
+    private Supplier<ModuleHost> hostSupplier;
     private TileBCore tile;
-    private LazyOptional<ModuleHost> optionalHost;
 
-    public ModularOPStorage(ModuleHost host, long baseCapacity) {
+    public ModularOPStorage(Supplier<ModuleHost> hostSupplier, long baseCapacity) {
         super(baseCapacity);
-        this.host = host;
+        this.hostSupplier = hostSupplier;
         setReceiveOnly();
     }
 
-    public ModularOPStorage(ModuleHost host, long baseCapacity, long baseTransfer) {
+    public ModularOPStorage(Supplier<ModuleHost> hostSupplier, long baseCapacity, long baseTransfer) {
         super(baseCapacity, baseTransfer);
-        this.host = host;
+        this.hostSupplier = hostSupplier;
         setReceiveOnly();
     }
 
-    public ModularOPStorage(ModuleHost host, long baseCapacity, long baseReceive, long baseExtract) {
+    public ModularOPStorage(Supplier<ModuleHost> hostSupplier, long baseCapacity, long baseReceive, long baseExtract) {
         super(baseCapacity, baseReceive, baseExtract);
-        this.host = host;
+        this.hostSupplier = hostSupplier;
         setReceiveOnly();
     }
 
@@ -52,14 +51,12 @@ public class ModularOPStorage extends OPStorage {
     }
 
     private ModuleHost getHost() {
-        if (host != null) {
-            return host;
-        } else if (optionalHost == null) {
-            optionalHost = tile.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-//            optionalHost.addListener(moduleHostLazyOptional -> optionalHost = null);
+        if (tile != null) {
+            return DECapabilities.Host.fromBlockEntity(tile);
+        } else if (hostSupplier != null) {
+            return hostSupplier.get();
         }
-
-        return optionalHost.isPresent() ? optionalHost.orElseThrow(WTFException::new) : null;
+        return null;
     }
 
     @Override

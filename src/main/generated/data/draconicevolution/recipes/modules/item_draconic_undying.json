@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "tag": "forge:ingots/draconium_awakened"
@@ -11,10 +12,10 @@
       "item": "draconicevolution:item_wyvern_undying"
     },
     "C": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:strong_healing\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strong_healing\"}"
     },
     "D": {
       "item": "draconicevolution:item_draconic_shield_capacity"

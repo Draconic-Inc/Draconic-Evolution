@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.lib.IEquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.ImmutableList;
@@ -9,16 +8,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -33,13 +33,11 @@ public abstract class EquipmentManager implements IEquipmentManager {
     private static boolean curiosLoaded;
     private static EquipmentManager instance = null;
 
-    public static void initialize() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+    public static void initialize(IEventBus modBus) {
         curiosLoaded = ModList.get().isLoaded("curios");
 
         if (curiosLoaded) {
-            modBus.addListener(CuriosIntegration::sendIMC);
+//            modBus.addListener(CuriosIntegration::sendIMC);
             instance = new CuriosIntegration();
         }
 
@@ -55,20 +53,20 @@ public abstract class EquipmentManager implements IEquipmentManager {
         return "";
     }
 
-    public static void addCaps(ItemStack stack, MultiCapabilityProvider provider) {
+    public static void registerCapability(RegisterCapabilitiesEvent event, Item item) {
         if (instance != null) {
-            if (!(stack.getItem() instanceof IDEEquipment)) {
+            if (!(item instanceof IDEEquipment)) {
                 throw new IllegalStateException("\"Equipment items\" must implement IDEEquipment");
             }
-            instance.addEquipCaps(stack, provider);
+            instance.registerCap(event, item);
         }
     }
 
-    public static LazyOptional<IItemHandlerModifiable> getEquipmentInventory(LivingEntity entity) {
+    public static Optional<IItemHandlerModifiable> getEquipmentInventory(LivingEntity entity) {
         if (instance != null) {
             return instance.getInventory(entity);
         }
-        return LazyOptional.empty();
+        return Optional.empty();
     }
 
     public static ItemStack findItem(Item item, LivingEntity entity) {
@@ -91,7 +89,7 @@ public abstract class EquipmentManager implements IEquipmentManager {
 
     public static List<ItemStack> findItems(Predicate<ItemStack> predicate, LivingEntity entity) {
         if (instance != null) {
-            LazyOptional<IItemHandlerModifiable> optionalHandler = instance.getInventory(entity);
+            Optional<IItemHandlerModifiable> optionalHandler = instance.getInventory(entity);
             if (optionalHandler.isPresent()) {
                 IItemHandlerModifiable handler = optionalHandler.orElseThrow(() -> new WTFException("This should not happen"));
                 List<ItemStack> list = new ArrayList<>();

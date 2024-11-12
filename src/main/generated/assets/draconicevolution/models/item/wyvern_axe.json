@@ -1,5 +1,7 @@
 {
   "parent": "minecraft:item/generated",
+  "class": "com.brandon3055.draconicevolution.client.render.item.RenderModularAxe$AXE_WYVERN",
+  "loader": "codechickenlib:class",
   "textures": {
     "layer0": "draconicevolution:item/tools/wyvern_axe"
   }

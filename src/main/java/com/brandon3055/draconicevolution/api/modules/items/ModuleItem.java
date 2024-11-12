@@ -8,19 +8,13 @@ import com.brandon3055.draconicevolution.api.modules.lib.LimitedModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
@@ -44,25 +38,11 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     }
 
     public static Module<?> getModule(ItemStack stack) {
-        LazyOptional<ModuleProvider<?>> cap = stack.getCapability(DECapabilities.MODULE_CAPABILITY);
-        if (!stack.isEmpty() && cap.isPresent()) {
-            return cap.orElseThrow(RuntimeException::new).getModule();
+        ModuleProvider<?> cap = stack.getCapability(DECapabilities.Module.ITEM);
+        if (!stack.isEmpty() && cap != null) {
+            return cap.getModule();
         }
         return null;
-    }
-
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new ICapabilityProvider() {
-            @Override
-            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if (cap == DECapabilities.MODULE_CAPABILITY){
-                    return LazyOptional.of(() -> ModuleItem.this).cast();
-                }
-                return LazyOptional.empty();
-            }
-        };
     }
 
     @Override

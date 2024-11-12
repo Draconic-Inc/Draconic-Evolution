@@ -4,8 +4,8 @@ import codechicken.lib.gui.modular.sprite.Material;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;

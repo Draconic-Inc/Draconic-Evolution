@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
 
 public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityDetector> {
 
@@ -47,5 +48,10 @@ public class RenderTileEntityDetector implements BlockEntityRenderer<TileEntityD
             }
             return eye;
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntityDetector blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).expandTowards(0, 1, 0);
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.Tags;
 
 /**
  * Created by brandon3055 on 21/12/20

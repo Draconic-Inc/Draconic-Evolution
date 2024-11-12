@@ -17,6 +17,7 @@ import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.InfoPanel;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
@@ -122,7 +123,7 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
         GuiSlots slots = new GuiSlots(scroll.getContentElement(), screenAccess, menu.curios, 1)
                 .setSlotOverlay(this::renderSlotOverlay)
                 .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"))
-                .setEmptyIconI(i -> Material.fromRawTexture(EquipmentManager.getIcons(menu.inventory.player).get(i)))
+                .setEmptyIconI(i -> RenderUtils.fromRawTexture(EquipmentManager.getIcons(menu.inventory.player).get(i)))
                 .constrain(LEFT, match(scroll.getContentElement().get(LEFT)))
                 .constrain(TOP, match(scroll.getContentElement().get(TOP)));
 
@@ -164,7 +165,7 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
     }
 
     private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
-        if (slot.hasItem() && slot.getItem().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (slot.hasItem() && slot.getItem().getCapability(DECapabilities.Host.ITEM) != null) {
             int y = slot.y;
             int x = slot.x;
             int light = 0xFFfbe555;

@@ -1,41 +1,58 @@
 {
   "type": "draconicevolution:fusion_crafting",
   "catalyst": {
-    "type": "draconicevolution:ingredient_stack",
-    "count": 4,
-    "items": [
-      {
-        "tag": "forge:storage_blocks/draconium"
-      }
-    ]
+    "type": "draconicevolution:stack",
+    "item": "minecraft:barrier",
+    "strict": 4
   },
   "ingredients": [
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "draconicevolution:dragon_heart"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:dragon_heart"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     }
   ],
   "result": {
     "count": 4,
     "item": "draconicevolution:awakened_draconium_block"
   },
-  "tier": "WYVERN",
-  "total_energy": 50000000
+  "techLevel": "wyvern",
+  "totalEnergy": 50000000
 }

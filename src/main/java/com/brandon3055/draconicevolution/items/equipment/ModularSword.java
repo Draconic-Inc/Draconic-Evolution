@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -15,16 +16,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularSword extends SwordItem implements IReaperItem, IModularMelee {
+public class ModularSword extends SwordItem implements IReaperItem, IModularMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -55,15 +58,14 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "sword", ModuleCfg.removeInvalidModules);
         return host;
     }
 
-    @Nullable
     @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
     }
 
     @Override

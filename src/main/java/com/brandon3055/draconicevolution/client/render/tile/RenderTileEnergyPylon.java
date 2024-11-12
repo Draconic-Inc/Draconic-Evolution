@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
@@ -89,5 +90,10 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
         ccrs.bind(shellType, getter);
         mat.scale(1 + f);
         model.render(ccrs, mat);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEnergyPylon blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(1);
     }
 }

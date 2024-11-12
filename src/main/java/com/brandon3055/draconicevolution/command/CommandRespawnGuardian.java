@@ -6,8 +6,8 @@ import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ public class CommandRespawnGuardian {
                 .orElse(null);
 
         if (tile == null) {
-            throw new CommandRuntimeException(Component.literal("Chaos crystal not detected! Please run this command within 60 blocks of an islands chaos crystal."));
+            throw new SimpleCommandExceptionType(Component.literal("Chaos crystal not detected! Please run this command within 60 blocks of an islands chaos crystal.")).create();
         }
 
         if (tile.parentPos.notNull()) {
@@ -50,7 +50,7 @@ public class CommandRespawnGuardian {
             if (parent instanceof TileChaosCrystal) {
                 tile = (TileChaosCrystal) parent;
             } else {
-                throw new CommandRuntimeException(Component.literal("Found invalid chaos crystal at this location"));
+                throw new SimpleCommandExceptionType(Component.literal("Found invalid chaos crystal at this location")).create();
             }
         }
 
@@ -64,7 +64,7 @@ public class CommandRespawnGuardian {
                 .orElse(null);
 
         if (existingFight != null) {
-            throw new CommandRuntimeException(Component.literal("There should already be a guardian in this area"));
+            throw new SimpleCommandExceptionType(Component.literal("There should already be a guardian in this area")).create();
         }
 
         tile.guardianDefeated.set(false);

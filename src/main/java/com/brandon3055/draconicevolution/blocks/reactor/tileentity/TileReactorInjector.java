@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Created by brandon3055 on 18/01/2017.
@@ -14,8 +15,12 @@ public class TileReactorInjector extends TileReactorComponent {
     public TileReactorInjector(BlockPos pos, BlockState state) {
         super(DEContent.TILE_REACTOR_INJECTOR.get(), pos, state);
         OPInjector opInjector = new OPInjector(this);
-        capManager.set(CapabilityOP.OP, opInjector);
+        capManager.set(CapabilityOP.BLOCK, opInjector);
         capManager.setCapSideValidator(opInjector, face -> face == this.facing.get().getOpposite());
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_REACTOR_INJECTOR, CapabilityOP.BLOCK);
     }
 
     private static class OPInjector implements IOPStorage {

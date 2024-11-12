@@ -32,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Arrays;
 import java.util.List;
@@ -207,6 +208,11 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
                 EffectLib.drawParticle(cameraRotation, builder, SPARK_PARTICLE[(rand.nextInt(SPARK_PARTICLE.length) + TimeKeeper.getClientTick()) % SPARK_PARTICLE.length], 0.7F + ((((float) anim / 10F) % 1F) * 0.3F), 0F, 0F, pos.x, pos.y, pos.z, scale, 240);
             }
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileFusionCraftingCore blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(16);
     }
 
     /*

@@ -18,7 +18,6 @@ import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
-import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
@@ -28,12 +27,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -122,15 +117,13 @@ public class ShieldHudElement extends AbstractHudElement {
 
         //Get and validate the armor chestpiece
         ItemStack chestStack = IModularArmor.getArmor(mc.player);
-        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        LazyOptional<IOPStorage> optionalStorage = chestStack.getCapability(DECapabilities.OP_STORAGE);
-        if (chestStack.isEmpty() || !optionalHost.isPresent() || !optionalStorage.isPresent()) {
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        IOPStorage opStorage = chestStack.getCapability(CapabilityOP.ITEM);
+        if (chestStack.isEmpty() || host == null || opStorage == null) {
             renderHud = false; //The storage check is just a safety check. If the item has a ModuleHost it should always have storage unless something is broken (even without storage modules the capacity is just zero)
             if (configuring) setupExample();
             return;
         }
-        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-        IOPStorage opStorage = optionalStorage.orElseThrow(IllegalStateException::new);
 
         //Update Shield
         ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
@@ -167,9 +160,8 @@ public class ShieldHudElement extends AbstractHudElement {
             long capEnergy = 0;
 
             for (ItemStack stack : capacitors) {
-                LazyOptional<IOPStorage> optCap = stack.getCapability(CapabilityOP.OP);
-                if (optCap.isPresent()) {
-                    IOPStorage storage = optCap.orElseThrow(WTFException::new);
+                IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
+                if (storage != null) {
                     capMax = Utils.safeAdd(storage.getMaxOPStored(), capMax);
                     capEnergy = Utils.safeAdd(storage.getOPStored(), capEnergy);
                 }

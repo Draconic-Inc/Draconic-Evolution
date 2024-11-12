@@ -20,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -38,7 +37,7 @@ public class ReactorCore extends EntityBlockBCore {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof TileReactorCore core && player instanceof ServerPlayer serverPlayer && player.getAbilities().instabuild) {
-            NetworkHooks.openScreen(serverPlayer, core, pos);
+            serverPlayer.openMenu(core, pos);
         }
 
         return super.use(state, world, pos, player, hand, hit);

@@ -40,13 +40,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -76,17 +76,21 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
 
     private List<IFusionInjector> injectorCache = null;
     private List<BlockPos> injectorPositions = new ArrayList<>();
-    private IFusionRecipe recipeCache = null;
+    private RecipeHolder<IFusionRecipe> recipeCache = null;
     private TechLevel minTierCache = null;
 
     public TileFusionCraftingCore(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CRAFTING_CORE.get(), pos, state);
-        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
+        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
         itemHandler.setContentsChangeListener(i -> localInventoryChange());
         itemHandler.setStackValidator((slot, stack) -> slot == 0);
         fxHandler = DraconicEvolution.proxy.createFusionFXHandler(this);
         activeRecipe.addValueListener(e -> recipeCache = null);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_CRAFTING_CORE, Capabilities.ItemHandler.BLOCK);
     }
 
     public void startCraft() {
@@ -96,8 +100,9 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         }
 
         updateInjectors();
-        IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
-        setActiveRecipe(recipe);
+        RecipeHolder<IFusionRecipe> holder = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+        IFusionRecipe recipe = holder == null ? null : holder.value();
+        setActiveRecipe(holder);
         if (recipe == null || !recipe.canStartCraft(this, level, null)) {
             return;
         }
@@ -143,9 +148,9 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         }
 
         if (crafting.get() && !level.isClientSide) {
-            IFusionRecipe recipe = getActiveRecipe();
+            RecipeHolder<IFusionRecipe> recipe = getActiveRecipe();
             if (recipe != null) {
-                recipe.tickFusionState(this, this, level);
+                recipe.value().tickFusionState(this, this, level);
             } else {
                 cancelCraft();
             }
@@ -220,14 +225,14 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             return;
         }
         if (isCrafting()) {
-            IFusionRecipe recipe = getActiveRecipe();
-            if (recipe == null || !recipe.matches(this, level)) {
+            RecipeHolder<IFusionRecipe> recipe = getActiveRecipe();
+            if (recipe == null || !recipe.value().matches(this, level)) {
                 cancelCraft();
             }
         } else if (!level.isClientSide) {
-            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+            RecipeHolder<IFusionRecipe> recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
             if (recipe != null) {
-                recipe.canStartCraft(this, level, e -> setFusionStatus(-1, e));
+                recipe.value().canStartCraft(this, level, e -> setFusionStatus(-1, e));
             } else {
                 setFusionStatus(-1, Component.translatable("fusion_status.draconicevolution.no_recipe"));
             }
@@ -244,7 +249,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             updateInjectors(); //TODO just have the injectors poke the core when placed so i dont need this
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
     }
@@ -363,21 +368,21 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Nullable
-    public IFusionRecipe getActiveRecipe() {
+    public RecipeHolder<IFusionRecipe> getActiveRecipe() {
         if (recipeCache == null) {
             if (activeRecipe.get() != null) {
-                Recipe<?> recipe = level.getRecipeManager().byKey(activeRecipe.get()).orElse(null);
-                if (recipe instanceof IFusionRecipe) {
-                    recipeCache = (IFusionRecipe) recipe;
+                RecipeHolder<?> recipe = level.getRecipeManager().byKey(activeRecipe.get()).orElse(null);
+                if (recipe != null && recipe.value() instanceof IFusionRecipe fusionRecipe) {
+                    recipeCache = (RecipeHolder<IFusionRecipe>) recipe;
                 }
             }
         }
         return recipeCache;
     }
 
-    public void setActiveRecipe(@Nullable IFusionRecipe recipe) {
+    public void setActiveRecipe(@Nullable RecipeHolder<IFusionRecipe> recipe) {
         recipeCache = recipe;
-        activeRecipe.set(recipe == null ? null : recipe.getId());
+        activeRecipe.set(recipe == null ? null : recipe.id());
     }
 
     public int getComparatorOutput() {
@@ -386,8 +391,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (crafting.get()) {
             return 1 + getFusionState().ordinal();
         } else {
-            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
-            if (recipe != null && recipe.canStartCraft(this, level, null)) {
+            RecipeHolder<IFusionRecipe> recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE.get(), this, level).orElse(null);
+            if (recipe != null && recipe.value().canStartCraft(this, level, null)) {
                 return 1;
             }
             return 0;
@@ -405,12 +410,6 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         super.readExtraNBT(compound);
         injectorPositions = Arrays.stream(compound.getLongArray("injector_positions")).mapToObj(BlockPos::of).collect(Collectors.toList());
         injectorCache = null;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition.offset(-16, -16, -16), worldPosition.offset(17, 17, 17));
     }
 }
 

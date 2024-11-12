@@ -6,8 +6,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.network.bundle.PacketAndPayloadAcceptor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,19 +43,20 @@ public abstract class ServerEntityMixin {
     }
 
     @Redirect(
-            method = "sendPairingData(Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V",
+            method = "Lnet/minecraft/server/level/ServerEntity;sendPairingData(Lnet/minecraft/server/level/ServerPlayer;Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V",
+                    target = "Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;accept(Lnet/minecraft/network/protocol/Packet;)Lnet/neoforged/neoforge/network/bundle/PacketAndPayloadAcceptor;",
                     ordinal = 3
             )
     )
-    public void onPairingData(Consumer<Object> instance, Object t) {
+    public PacketAndPayloadAcceptor<?> onPairingData(PacketAndPayloadAcceptor<ClientGamePacketListener> instance, Packet t) {
         if (!(entity instanceof DraconicArrowEntity)) {
             instance.accept(t);
-            return;
+            return null;
         }
-        instance.accept(BCoreNetwork.sendEntityVelocity(entity, false));
+        instance.accept((Packet<? super ClientGamePacketListener>) BCoreNetwork.sendEntityVelocity(entity, false));
+        return null;
     }
 
     @Redirect(

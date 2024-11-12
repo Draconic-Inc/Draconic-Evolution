@@ -11,7 +11,7 @@ import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTil
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
+import net.neoforged.fml.util.thread.EffectiveSide;
 
 @Deprecated
 public class ClientProxy extends CommonProxy {

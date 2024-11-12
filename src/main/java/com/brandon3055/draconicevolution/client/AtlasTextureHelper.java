@@ -7,25 +7,20 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 02/02/2024
@@ -64,7 +59,7 @@ public class AtlasTextureHelper {
         modBus.addListener(AtlasTextureHelper::textureStitch);
     }
 
-    private static void textureStitch(TextureStitchEvent.Post event) {
+    private static void textureStitch(TextureAtlasStitchedEvent event) {
         TextureAtlas atlas = event.getAtlas();
         if (atlas.location().equals(TextureAtlas.LOCATION_PARTICLES)) {
             ATLAS_CACHE.clear();

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
@@ -11,8 +12,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Created by brandon3055 on 19/11/2016.
@@ -25,6 +27,10 @@ public class TileCrystalRelay extends TileCrystalBase {
 
     public TileCrystalRelay(TechLevel techLevel, BlockPos pos, BlockState state) {
         super(DEContent.TILE_RELAY_CRYSTAL.get(), techLevel, pos, state);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_RELAY_CRYSTAL, CapabilityOP.BLOCK);
     }
 
     //region Rendering

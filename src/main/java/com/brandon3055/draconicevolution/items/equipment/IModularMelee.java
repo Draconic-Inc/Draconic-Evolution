@@ -28,7 +28,7 @@ public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
 
     @Override
     default boolean onLeftClickEntity(ItemStack stack, Player player, Entity target) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         float damage = (float) getAttackDamage(host, stack);
         long energyPerHit = (long) (EquipCfg.energyAttack * damage);
         extractEnergy(player, stack, energyPerHit);

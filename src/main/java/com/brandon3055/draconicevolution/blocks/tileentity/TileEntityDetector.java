@@ -19,7 +19,6 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.DETileMenu;
 import com.brandon3055.draconicevolution.inventory.EntityDetectorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,9 +39,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
 
     public TileEntityDetector(BlockPos pos, BlockState state) {
         super(DEContent.TILE_ENTITY_DETECTOR.get(), pos, state);
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
         if (isAdvanced()) {
             entityFilter = new EntityFilter(false, FilterType.values());
         } else {
@@ -88,6 +87,10 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
         setServerSidePacketHandler(9, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);
         setItemSavedDataObject("entity_filter", entityFilter);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_ENTITY_DETECTOR, CapabilityOP.BLOCK);
     }
 
     @Override
@@ -128,11 +131,11 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private void updateAnimation() {
         //region Targeting
 
-        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition).inflate(range.get(), range.get(), range.get())));
         Entity closest = null;
         double closestDist = -1;
 
@@ -216,7 +219,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     }
 
     public void doScanPulse() {
-        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition).inflate(range.get(), range.get(), range.get())));
 
         double min = rsMinDetection.get() - 1;
         double max = rsMaxDetection.get();
@@ -341,7 +344,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     @Override
     public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
             MinecraftServer server = player.getServer();
             if (server != null) {
                 ListTag list = new ListTag();
@@ -386,11 +389,5 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
 
     public boolean isAdvanced() {
         return getBlockState().is(DEContent.ENTITY_DETECTOR_ADVANCED.get());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 }

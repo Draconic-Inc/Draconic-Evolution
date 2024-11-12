@@ -24,10 +24,13 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.client.ModuleTextures;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -39,10 +42,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITagManager;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,11 +144,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             for (Slot slot : slots) {
                 ItemStack stack = filterStacks.getOrDefault(slot.index, ItemStack.EMPTY);
                 if (filterTags.containsKey(slot.index)) {
-                    ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
-                    if (tags != null) {
-                        List<Item> matchingItems = tags.getTag(filterTags.get(slot.index)).stream().toList();
-                        stack = new ItemStack(matchingItems.get((TimeKeeper.getClientTick() / 10) % matchingItems.size()));
-                    }
+                    List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(filterTags.get(slot.index))).map(Holder::value).toList();
+                    stack = new ItemStack(matchingItems.get((TimeKeeper.getClientTick() / 10) % matchingItems.size()));
                 }
 
                 double itemX = slot.x + (slot.size / 16);
@@ -403,15 +401,12 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             }
 
             key = ItemTags.create(location);
-            ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
-            if (tags == null) return;
-
 
             content.getChildren().forEach(content::removeChild);
             scrolling.scrollState(Axis.Y).setPos(0);
             matchingLabel.setText(Component.translatable("module." + MODID + ".filtered_module.matching"));
 
-            List<Item> matchingItems = tags.getTag(key).stream().toList();
+            List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(key)).map(Holder::value).toList();
             if (matchingItems.isEmpty()) {
                 filterTags.remove(index);
                 sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));

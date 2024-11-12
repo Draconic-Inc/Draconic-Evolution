@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.IDraconicMelee;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -17,16 +18,18 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularShovel extends ShovelItem implements IModularMiningTool, IDraconicMelee {
+public class ModularShovel extends ShovelItem implements IModularMiningTool, IDraconicMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -57,16 +60,15 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool, IDr
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "shovel", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.TOOL_SHOVEL);
         return host;
     }
 
-    @Nullable
     @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
     }
 
     @Override

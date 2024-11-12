@@ -5,27 +5,45 @@
   },
   "ingredients": [
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "item": "draconicevolution:basic_relay_crystal"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:basic_relay_crystal"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
     },
     {
-      "item": "draconicevolution:basic_relay_crystal"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:basic_relay_crystal"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:wyvern_sword"
   },
-  "tier": "WYVERN",
-  "total_energy": 8000000
+  "techLevel": "wyvern",
+  "totalEnergy": 8000000
 }

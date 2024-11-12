@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
@@ -30,12 +30,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -59,11 +59,10 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     private void useTick(LivingEntityUseItemEvent.Tick event) {
         if (activeHandler == null || !(event.getEntity() instanceof ServerPlayer player)) return;
         ItemStack stack = event.getItem();
-        LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
-        if (!optional.isPresent()) {
+        IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
+        if (storage == null) {
             return;
         }
-        IOPStorage storage = optional.orElseThrow(IllegalStateException::new);
 
         activeHandler.tick(player.level(), player, stack, storage, itemBuffer);
 
@@ -90,7 +89,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
     @Override
     public void onEntityUseItem(LivingEntityUseItemEvent useEvent) {
-        if (useEvent.isCanceled()) return;
+        if (useEvent instanceof ICancellableEvent cancellable && cancellable.isCanceled()) return;
         if (useEvent instanceof LivingEntityUseItemEvent.Start event) {
             event.setDuration(72000);
         } else if (useEvent instanceof LivingEntityUseItemEvent.Tick event) {
@@ -101,30 +100,38 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    public void onPlayerInteractEvent(PlayerInteractEvent playerEvent) {
-        if (playerEvent.isCanceled()) return;
+    public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
+        if (event.isCanceled()) return;
         TreeHarvestData data = getModule().getData();
-        if (playerEvent instanceof PlayerInteractEvent.RightClickItem event && activeHandler == null) {
+        if (activeHandler == null) {
             if (data.range() <= 0) return;
             if (event.getEntity() instanceof ServerPlayer player) {
                 activeHandler = new ForestHarvestHandler(data.speed(), harvestRange.getValue(), harvestLeaves.getValue());
-                activeHandler.start(event.getPos(), event.getLevel(), player);
-            }
-        } else if (playerEvent instanceof PlayerInteractEvent.RightClickBlock event) {
-            if (event.getEntity() instanceof ServerPlayer player) {
-                activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
                 activeHandler.start(event.getPos(), event.getLevel(), player);
             }
         } else {
             return;
         }
 
-        playerEvent.setCanceled(true);
-        playerEvent.getEntity().startUsingItem(playerEvent.getHand());
+        event.setCanceled(true);
+        event.getEntity().startUsingItem(event.getHand());
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    public void onPlayerInteractEvent(PlayerInteractEvent.RightClickBlock event) {
+        if (event.isCanceled()) return;
+        TreeHarvestData data = getModule().getData();
+        if (event.getEntity() instanceof ServerPlayer player) {
+            activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
+            activeHandler.start(event.getPos(), event.getLevel(), player);
+        }
+
+        event.setCanceled(true);
+        event.getEntity().startUsingItem(event.getHand());
+    }
+
+    @Override
+    @OnlyIn (Dist.CLIENT)
     public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
@@ -135,7 +142,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void modifyFirstPersonUsingPose(RenderHandEvent event, boolean leftHand) {
         PoseStack poseStack = event.getPoseStack();
         Player player = Minecraft.getInstance().player;
@@ -165,7 +172,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void modifyPlayerModelPose(Player player, PlayerModel<?> model, boolean leftHand) {
         if (!leftHand) {
             model.rightArm.yRot = -0.1F + model.head.yRot;

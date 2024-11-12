@@ -15,30 +15,25 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
-
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -64,15 +59,14 @@ public class ClientEventHandler {
                     .createCompositeState(false)
     );
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         mc = Minecraft.getInstance();
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(EventPriority.LOW, ClientEventHandler::registerOverlays);
-        MinecraftForge.EVENT_BUS.addListener(ClientEventHandler::tickEnd);
+        NeoForge.EVENT_BUS.addListener(ClientEventHandler::tickEnd);
     }
 
     private static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll("explosion_overlay", (gui, graphics, partialTick, screenWidth, screenHeight) -> {
+        event.registerBelowAll(new ResourceLocation(DraconicEvolution.MODID, "explosion_overlay"), (gui, graphics, partialTick, screenWidth, screenHeight) -> {
             if (explosionPos != null) {
                 updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), mc.getFrameTime());
             }
@@ -94,10 +88,6 @@ public class ClientEventHandler {
         if (player != null) {
             playerHoldingWrench = (!player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() instanceof ICrystalBinder) || (!player.getOffhandItem().isEmpty() && player.getOffhandItem().getItem() instanceof ICrystalBinder);
         }
-    }
-
-    @SubscribeEvent
-    public void renderPlayerEvent(RenderPlayerEvent.Post event) {
     }
 
     public static final Matrix4 MODELVIEW = new Matrix4();

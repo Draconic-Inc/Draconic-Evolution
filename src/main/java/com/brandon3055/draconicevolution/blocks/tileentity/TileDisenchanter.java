@@ -1,9 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-
-import javax.annotation.Nullable;
-
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -11,11 +8,10 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
-import com.brandon3055.draconicevolution.inventory.DETileMenu;
-
 import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -33,11 +29,11 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -50,7 +46,11 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
 
     public TileDisenchanter(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISENCHANTER.get(), pos, state);
-        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
+        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_DISENCHANTER, Capabilities.ItemHandler.BLOCK);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Nullable
     public Enchantment getEnchantmentFromTag(CompoundTag c) {
     	if (c != null && c.getString("id") != null) {
-    		return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(c.getString("id")));
+    		return BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(c.getString("id")));
     	}
     	return null;
     }
@@ -142,7 +142,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
     }

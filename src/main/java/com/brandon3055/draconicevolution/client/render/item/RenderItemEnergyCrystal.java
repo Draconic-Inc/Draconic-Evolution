@@ -16,10 +16,12 @@ import codechicken.lib.vec.Rotation;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -110,4 +112,16 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     private static float[] r = {0.0F, 0.47F, 1.0F};
     private static float[] g = {0.2F, 0.0F, 0.4F};
     private static float[] b = {0.3F, 0.58F, 0.1F};
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class ITEM_BASIC_IO_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_BASIC_IO_CRYSTAL() { super(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIUM);}}
+    public static class ITEM_WYVERN_IO_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_WYVERN_IO_CRYSTAL() { super(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.WYVERN);}}
+    public static class ITEM_DRACONIC_IO_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_DRACONIC_IO_CRYSTAL() { super(EnergyCrystal.CrystalType.CRYSTAL_IO, TechLevel.DRACONIC);}}
+    public static class ITEM_BASIC_RELAY_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_BASIC_RELAY_CRYSTAL() { super(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIUM);}}
+    public static class ITEM_WYVERN_RELAY_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_WYVERN_RELAY_CRYSTAL() { super(EnergyCrystal.CrystalType.RELAY, TechLevel.WYVERN);}}
+    public static class ITEM_DRACONIC_RELAY_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_DRACONIC_RELAY_CRYSTAL() { super(EnergyCrystal.CrystalType.RELAY, TechLevel.DRACONIC);}}
+    public static class ITEM_BASIC_WIRELESS_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_BASIC_WIRELESS_CRYSTAL() { super(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIUM);}}
+    public static class ITEM_WYVERN_WIRELESS_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_WYVERN_WIRELESS_CRYSTAL() { super(EnergyCrystal.CrystalType.WIRELESS, TechLevel.WYVERN);}}
+    public static class ITEM_DRACONIC_WIRELESS_CRYSTAL extends RenderItemEnergyCrystal { public ITEM_DRACONIC_WIRELESS_CRYSTAL() { super(EnergyCrystal.CrystalType.WIRELESS, TechLevel.DRACONIC);}}
+    //@formatter:on
 }

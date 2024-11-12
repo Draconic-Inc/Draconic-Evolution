@@ -21,7 +21,7 @@ public class Serializers {
         }
 
         public Optional<Module<?>> read(FriendlyByteBuf buf) {
-            Module<?> module = DEModules.REGISTRY.getValue(buf.readResourceLocation());
+            Module<?> module = DEModules.REGISTRY.get(buf.readResourceLocation());
             return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
         }
 

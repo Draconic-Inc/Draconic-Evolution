@@ -24,6 +24,7 @@ import com.brandon3055.draconicevolution.inventory.GrinderMenu;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,13 +45,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -91,10 +90,10 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         super(DEContent.TILE_GRINDER.get(), pos, state);
         enablePlayerAccessTracking(true);
 
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
         installIOTracker(opStorage);
 
-        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
+        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
         entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
@@ -111,6 +110,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         aoe.addValueListener(e -> killZone = null);
 
         enableTileDebug();
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_GRINDER, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_GRINDER, Capabilities.ItemHandler.BLOCK);
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
@@ -191,7 +195,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
             pos1 = pos1.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             pos2 = pos2.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
-            killZone = new AABB(pos1, pos2);
+            killZone = AABB.encapsulatingFullBlocks(pos1, pos2);
             debug("Kill zone updated: " + killZone);
         }
     }
@@ -288,7 +292,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             return false;
         }
         if (DEConfig.grinderBlackList.isEmpty()) return true;
-        ResourceLocation reg = ForgeRegistries.ENTITY_TYPES.getKey(livingBase.getType());
+        ResourceLocation reg = BuiltInRegistries.ENTITY_TYPE.getKey(livingBase.getType());
         return !(reg != null && DEConfig.grinderBlackList.contains(reg.toString()));
     }
 
@@ -311,14 +315,14 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             for (Direction dir : Direction.values()) {
                 BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
-                    LazyOptional<IItemHandler> opCap = target.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
-                    opCap.ifPresent(iItemHandler -> {
+                    IItemHandler handler = Capabilities.ItemHandler.BLOCK.getCapability(level, target.getBlockPos(), null, target, dir.getOpposite());
+                    if (handler != null) {
                         Iterator<ItemEntity> i = items.iterator();
                         while (i.hasNext()) {
                             ItemEntity next = i.next();
                             if (next.isAlive()) {
                                 ItemStack stack = next.getItem();
-                                stack = InventoryUtils.insertItem(iItemHandler, stack, false);
+                                stack = InventoryUtils.insertItem(handler, stack, false);
                                 if (stack.isEmpty()) {
                                     next.setItem(ItemStack.EMPTY);
                                     next.discard();
@@ -328,7 +332,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
                                 }
                             }
                         }
-                    });
+                    }
                 }
             }
         }
@@ -420,13 +424,8 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-       return new AABB(getBlockPos().offset(-8, -8, -8), getBlockPos().offset(9, 9, 9));
     }
 }

@@ -9,11 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
 
 /**
  * Created by Brandon on 14/08/2014.
@@ -32,7 +32,7 @@ public class KeyInputHandler {
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onMouseInput(InputEvent.MouseButton event) {
+    public void onMouseInput(InputEvent.MouseButton.Pre event) {
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;

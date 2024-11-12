@@ -7,19 +7,20 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -133,7 +134,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
 
     public boolean canEntitySpawnSpawner(Mob entity, ServerLevel level, float x, float y, float z, BaseSpawner spawner) {
         var event = new MobSpawnEvent.PositionCheck(entity, level, MobSpawnType.SPAWNER, null);
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
         if (event.getResult() == Event.Result.DEFAULT) {
             return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(level, MobSpawnType.SPAWNER)) && entity.checkSpawnObstruction(level);
         }
@@ -152,13 +153,13 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
         this.broadcastEvent(tile.getLevel(), tile.getBlockPos(), 1);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public double getSpin() {
         return mobRotation;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     @Override
     public double getoSpin() {
         return prevMobRotation;
@@ -186,7 +187,7 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
 
     @Nullable
     @Override
-    public Entity getOrCreateDisplayEntity(Level pLevel, RandomSource pRandom, BlockPos pPos) {
+    public Entity getOrCreateDisplayEntity(Level p_254323_, BlockPos p_254313_) {
         return tile.getRenderEntity();
     }
 

@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 
 import java.util.List;
@@ -83,5 +84,10 @@ public class RenderTilePlacedItem implements BlockEntityRenderer<TilePlacedItem>
                 mStack.mulPose(new Quaternionf().rotationXYZ(-90 * (float) MathHelper.torad, 0, -90 * (float) MathHelper.torad));
                 break;
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TilePlacedItem blockEntity) {
+        return new AABB(blockEntity.getBlockPos()).inflate(1);
     }
 }

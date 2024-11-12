@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
@@ -137,5 +138,10 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
 
     private Vector3 getEntityMovingVec(Entity entity, float partialTicks) {
         return new Vector3(entity.getPosition(partialTicks)).add(0, entity.getBbHeight() / 2D, 0);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileGrinder blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(8);
     }
 }

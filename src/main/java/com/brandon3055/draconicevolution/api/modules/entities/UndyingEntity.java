@@ -24,13 +24,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
 import java.util.Iterator;
 
@@ -125,13 +124,13 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             entity.setHealth(entity.getHealth() + data.healthBoost());
             ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
-                LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-                optionalHost.ifPresent(stackHost -> {
+                ModuleHost stackHost = stack.getCapability(DECapabilities.Host.ITEM);
+                if (stackHost != null) {
                     ShieldControlEntity shield = stackHost.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
                     if (shield != null) {
                         shield.boost(data.shieldBoost(), data.shieldBoostTime());
                     }
-                });
+                }
             }
             if (module.getModuleTechLevel().index >= 2) {
                 entity.clearFire();

@@ -5,36 +5,63 @@
   },
   "ingredients": [
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "minecraft:dragon_egg"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:dragon_egg"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:chaotic_crafting_injector"
   },
-  "tier": "DRACONIC",
-  "total_energy": 8000000
+  "techLevel": "draconic",
+  "totalEnergy": 8000000
 }

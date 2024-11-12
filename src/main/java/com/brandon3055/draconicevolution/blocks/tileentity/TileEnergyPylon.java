@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,16 +24,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
@@ -130,8 +130,12 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
     public TileEnergyPylon(BlockPos pos, BlockState state) {
         super(DEContent.TILE_ENERGY_PYLON.get(), pos, state);
-        capManager.set(CapabilityOP.OP, opAdapter);
+        capManager.set(CapabilityOP.BLOCK, opAdapter);
         enableTileDebug();
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_ENERGY_PYLON, CapabilityOP.BLOCK);
     }
 
     @Override
@@ -272,7 +276,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
                     level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                     StructureBlock.buildingLock = false;
                     if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
-                        tile.blockName.set(ForgeRegistries.BLOCKS.getKey(testState.getBlock()));
+                        tile.blockName.set(BuiltInRegistries.BLOCK.getKey(testState.getBlock()));
                         tile.setController(this);
                         direction.set(dir);
                         found = true;
@@ -342,7 +346,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private void spawnParticles() {
         RandomSource rand = level.random;
         if (getCore() == null || particleRate.get() <= 0) return;
@@ -403,12 +407,6 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     @Override
     public boolean renderSelectionBox(RenderHighlightEvent.Block event) {
         return false;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
     }
 
     @Nullable

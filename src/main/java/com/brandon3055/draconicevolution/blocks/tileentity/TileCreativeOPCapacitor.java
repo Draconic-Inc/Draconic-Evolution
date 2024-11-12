@@ -12,11 +12,11 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     public TileCreativeOPCapacitor(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CREATIVE_OP_CAPACITOR.get(), pos, state);
 
-        capManager.set(CapabilityOP.OP, new IOPStorage() {
+        capManager.set(CapabilityOP.BLOCK, new IOPStorage() {
             @Override
             public int receiveEnergy(int maxReceive, boolean simulate) {
                 return (int) Math.min(maxReceive, powerRate.get());
@@ -88,6 +88,10 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
             }
         });
 
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_CREATIVE_OP_CAPACITOR, CapabilityOP.BLOCK);
     }
 
     @Override

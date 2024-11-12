@@ -58,7 +58,7 @@ public class PropertyData {
     public Map<Integer, String> enumDisplayValues;
 
     public PropertyData(PropertyProvider provider, ConfigProperty property, boolean pullValue) {
-        this(provider.getProviderID(), provider.getProviderName(), property.getType());
+        this(provider.getIdentity(), provider.getProviderName(), property.getType());
         this.displayName = property.getDisplayName();
         this.toolTip = property.getToolTip();
         if (property.getUniqueName() != null) {
@@ -248,7 +248,7 @@ public class PropertyData {
 
     public ConfigProperty getPropIfApplicable(PropertyProvider provider) {
         if (provider.getProviderName().equals(providerName)) {
-            if (isGlobal || provider.getProviderID().equals(providerID)) {
+            if (isGlobal || provider.getIdentity().equals(providerID)) {
                 return provider.getProperty(getPropertyName());
             }
         }

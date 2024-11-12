@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -26,13 +27,13 @@ public class ItemConfigDataHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasSingleplayerServer()) {
             ServerLevel world = mc.getSingleplayerServer().getLevel(Level.OVERWORLD);
-            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::load, SinglePlayerWorldData::new, SinglePlayerWorldData.FILE_NAME);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(new SavedData.Factory<>(SinglePlayerWorldData::new, SinglePlayerWorldData::load), SinglePlayerWorldData.FILE_NAME);
             return data.data;
         } else {
             Path file = Paths.get("./config/brandon3055/servers/" + DEConfig.serverID + ".dat");
             if (Files.exists(file)) {
                 try (InputStream is = Files.newInputStream(file)) {
-                    return NbtIo.readCompressed(is);
+                    return NbtIo.readCompressed(is, NbtAccounter.create(0x6400000L));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -45,7 +46,7 @@ public class ItemConfigDataHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasSingleplayerServer()) {
             ServerLevel world = mc.getSingleplayerServer().getLevel(Level.OVERWORLD);
-            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::load, SinglePlayerWorldData::new, SinglePlayerWorldData.FILE_NAME);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(new SavedData.Factory<>(SinglePlayerWorldData::new, SinglePlayerWorldData::load), SinglePlayerWorldData.FILE_NAME);
             data.data = nbt;
             data.setDirty();
         } else {

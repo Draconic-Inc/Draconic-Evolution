@@ -2,11 +2,6 @@ package com.brandon3055.draconicevolution;
 
 
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -17,137 +12,6 @@ import java.util.function.Consumer;
  */
 @Deprecated
 public class DEOldConfig {
-
-//        comments.put("items", "Allows you to disable any item in the mod. Note that disabling an item will automatically\ndisable its recipe and all recipes that use it. (Requires game restart)\nTo disable an item set its value to false");
-//        comments.put("blocks", "Allows you to disable any block in the mod. Note that disabling an block will automatically\ndisable its recipe and all recipes that use it. (Requires game restart)\nTo disable a block set its value to false");
-//        comments.put("World", "This category contains config properties related to world gen.");
-//        comments.put("Tweaks", "Just what the name says. Tweaks. Allows you to tweak stuff.");
-//        comments.put("Client Settings", "These are client side properties that have no effect server side.");
-//        comments.put("Stat Tweaks", "These allow you to tweak the stats of the tools, weapons and armor.");
-//        comments.put("Misc", "Just some misc settings.");
-
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final ForgeConfigSpec SERVER_SPEC;
-    public static final ForgeConfigSpec COMMON_SPEC;
-    public static final Client CLIENT;
-    public static final Server SERVER;
-    public static final Common COMMON;
-
-    static {
-        final Pair<Client, ForgeConfigSpec> cSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
-        CLIENT = cSpecPair.getLeft();
-        CLIENT_SPEC = cSpecPair.getRight();
-
-        final Pair<Server, ForgeConfigSpec> sSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        SERVER = sSpecPair.getLeft();
-        SERVER_SPEC = sSpecPair.getRight();
-
-        final Pair<Common, ForgeConfigSpec> comSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        COMMON = comSpecPair.getLeft();
-        COMMON_SPEC = comSpecPair.getRight();
-    }
-
-
-    /**
-     * These are the underlying config fields that are managed by forge. If you need to modify a config value runtime
-     * these are the values you must modify. If a value needs to be accessed frequently it should be assigned to a
-     * more efficient static field in {@link BCConfig}
-     * <p>
-     * {@link ModConfig.Type#CLIENT}
-     * (Not Synchronized)
-     */
-    public static class Client {
-        private List<Runnable> accessAssigners = new ArrayList<>();
-
-//        public final ForgeConfigSpec.BooleanValue use_shaders;
-//        public final ForgeConfigSpec.BooleanValue dark_mode;
-
-        public Client(ForgeConfigSpec.Builder builder) {
-//            builder.push("General");
-//            use_shaders = builder
-//                    .comment("Set this to false if your system can not handle the awesomeness that is shaders! (Warning: Will make cool things look much less cool!)")
-//                    .translation(BrandonsCore.MODID + ".config.use_shaders")
-//                    .define("use_shaders", true);
-//            assignStatic(use_shaders, e -> BCConfig.useShaders = e);
-//            dark_mode = builder
-//                    .comment("Enable gui dark mode in GUI's. (This can also be toggled in game from any gui that supports dark mode)")
-//                    .translation(BrandonsCore.MODID + ".config.dark_mode")
-//                    .define("dark_mode", false);
-//            assignStatic(dark_mode, e -> BCConfig.darkMode = e);
-
-//            builder.pop();
-        }
-
-        private <T, C extends ForgeConfigSpec.ConfigValue<T>> void assignStatic(C config, Consumer<T> assigner) {
-            accessAssigners.add(() -> assigner.accept(config.get()));
-        }
-    }
-
-    /**
-     * These are the underlying config fields that are managed by forge. If you need to modify a config value runtime
-     * these are the values you must modify. If a value needs to be accessed frequently it should be assigned to a
-     * more efficient static field in {@link BCConfig}
-     * <p>
-     * {@link ModConfig.Type#SERVER}
-     * (Per-Server-Instance Config. Synchronized to players on connections)
-     */
-    public static class Server {
-        private List<Runnable> accessAssigners = new ArrayList<>();
-
-//        public final ForgeConfigSpec.BooleanValue enable_tpx;
-//        public final ForgeConfigSpec.BooleanValue disable_invasive_gui;
-
-        public Server(ForgeConfigSpec.Builder builder) {
-//            builder.push("Misc");
-//            enable_tpx = builder
-//                    .worldRestart()
-//                    .comment("Allows you to disable the tpx command.")
-//                    .translation(BrandonsCore.MODID + ".config.enable_tpx")
-//                    .define("enable_tpx", !ModList.get().isLoaded("mystcraft"));
-//            disable_invasive_gui = builder
-//                    .comment("This disables the gui that is shown to clients if a server side config that cant be hot swapped has changed.\nIt is replaced by a chat message that has an option to open the gui")
-//                    .translation(BrandonsCore.MODID + ".config.invasive_gui")
-//                    .define("disable_invasive_gui", true);
-//            builder.pop();
-        }
-
-        private <T, C extends ForgeConfigSpec.ConfigValue<T>> void assignStatic(C config, Consumer<T> assigner) {
-            accessAssigners.add(() -> assigner.accept(config.get()));
-        }
-    }
-
-
-    /**
-     * These are the underlying config fields that are managed by forge. If you need to modify a config value runtime
-     * these are the values you must modify. If a value needs to be accessed frequently it should be assigned to a
-     * more efficient static field in {@link BCConfig}
-     * <p>
-     * {@link ModConfig.Type#COMMON}
-     * (Not Synchronized)
-     */
-    public static class Common {
-        private List<Runnable> accessAssigners = new ArrayList<>();
-
-//        protected final ForgeConfigSpec.BooleanValue dev_log;
-
-
-        public Common(ForgeConfigSpec.Builder builder) {
-//            builder.push("Misc");
-//            dev_log = builder
-//                    .comment("Enable DEV log output.")
-//                    .translation(BrandonsCore.MODID + ".config.dev_log")
-//                    .define("dev_log", false);
-//            assignStatic(dev_log, e -> BCConfig.devLog = e);
-
-//            builder.pop();
-        }
-
-        private <T, C extends ForgeConfigSpec.ConfigValue<T>> void assignStatic(C config, Consumer<T> assigner) {
-            accessAssigners.add(() -> assigner.accept(config.get()));
-        }
-    }
-
-
     /**
      * This method will be called by Forge when a config changes.
      */
@@ -277,7 +141,7 @@ public class DEOldConfig {
     public static double disenchnaterCostMultiplyer = 1;
 
     //    @ModConfigProperty(category = "Tweaks", name = "forceDroppedItemOwner", comment = "For some reason, Forge decided to not set the owner of an item when dropped from an inventory screen.\nDE overrides this and sets the stack owner when possible.\nIf this causes issues, set this value to false.", autoSync = true)
-    public static boolean forceDroppedItemOwner = true;
+//    public static boolean forceDroppedItemOwner = true;
 
     //    @ModConfigProperty(category = "Tweaks", name = "chaosGuardianHealth", comment = "Allows you to tweak the chaos guardians health (will only affect new guardians).")
     public static int chaosGuardianHealth = 2000;

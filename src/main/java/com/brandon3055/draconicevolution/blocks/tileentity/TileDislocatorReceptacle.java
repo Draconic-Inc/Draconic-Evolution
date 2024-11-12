@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.DelayedTask;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -52,9 +53,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,10 +83,15 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
 
     public TileDislocatorReceptacle(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DISLOCATOR_RECEPTACLE.get(), pos, state);
-        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
+        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> onInventoryChange());
         itemHandler.setSlotValidator(0, (stack) -> stack.getItem() instanceof Dislocator);
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, Capabilities.ItemHandler.BLOCK);
     }
 
     @Override

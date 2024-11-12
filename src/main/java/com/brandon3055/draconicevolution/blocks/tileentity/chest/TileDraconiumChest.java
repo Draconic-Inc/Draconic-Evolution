@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.chest;
 
-import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -18,7 +17,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.DraconiumChestMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,11 +26,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -55,11 +52,11 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
 
     public TileDraconiumChest(BlockPos pos, BlockState state) {
         super(DEContent.TILE_DRACONIUM_CHEST.get(), pos, state);
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
-        capManager.setManaged("main_inv", ForgeCapabilities.ITEM_HANDLER, mainInventory).saveBoth();
-        capManager.setInternalManaged("crafting_inv", ForgeCapabilities.ITEM_HANDLER, craftingItems).saveBoth();
-        capManager.setInternalManaged("furnace_inv", ForgeCapabilities.ITEM_HANDLER, furnaceItems).saveBoth();
-        capManager.setInternalManaged("energy_inv", ForgeCapabilities.ITEM_HANDLER, capacitorInv).saveBoth();
+        capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("main_inv", Capabilities.ItemHandler.BLOCK, mainInventory).saveBoth();
+        capManager.setInternalManaged("crafting_inv", Capabilities.ItemHandler.BLOCK, craftingItems).saveBoth();
+        capManager.setInternalManaged("furnace_inv", Capabilities.ItemHandler.BLOCK, furnaceItems).saveBoth();
+        capManager.setInternalManaged("energy_inv", Capabilities.ItemHandler.BLOCK, capacitorInv).saveBoth();
 
         furnaceItems.setStackValidator(stack -> smeltingLogic.isSmeltable(stack));
         furnaceItems.setContentsChangeListener(e -> smeltingLogic.inputInventoryChanged());
@@ -69,6 +66,11 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
 
         smeltingLogic.setFeedSourceInv(mainInventory);
         installIOTracker(opStorage);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_DRACONIUM_CHEST, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_DRACONIUM_CHEST, Capabilities.ItemHandler.BLOCK);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     @Override
     public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return InteractionResult.SUCCESS;
     }

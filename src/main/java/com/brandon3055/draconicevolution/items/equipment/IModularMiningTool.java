@@ -29,7 +29,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             return false;
         }
 
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         boolean aoeSafe = false;
         if (host instanceof PropertyProvider) {
@@ -84,7 +85,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         aoeBlocks.forEach(block -> breakAOEBlock(stack, player.level(), block, player, refStrength, inventoryDynamic, rand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0));
-        List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key(), aoe.value().offset(1, 1, 1)));
+        List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key()));
         for (ItemEntity item : items) {
             if (!player.level().isClientSide && item.isAlive()) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
@@ -102,7 +103,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             return 0.0F;
         }
 
-        if (!ForgeHooks.isCorrectToolForDrops(state, player)) {
+        if (!CommonHooks.isCorrectToolForDrops(state, player)) {
             return player.getDigSpeed(state, pos) / hardness / 100F;
         } else {
             return player.getDigSpeed(state, pos) / hardness / 30F;
@@ -184,12 +185,12 @@ public interface IModularMiningTool extends IModularTieredItem {
 
         float strength = blockStrength(state, player, world, pos);
 
-        if (!ForgeHooks.isCorrectToolForDrops(state, player) || refStrength / strength > 10f) {
+        if (!CommonHooks.isCorrectToolForDrops(state, player) || refStrength / strength > 10f) {
             return;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            int xp = ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
+            int xp = CommonHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
             if (xp == -1) {
                 ServerPlayer mpPlayer = (ServerPlayer) player;
                 mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));

@@ -29,11 +29,9 @@ public class DEConfig {
         loadClient();
         EquipCfg.loadConfig(config);
         ModuleCfg.loadConfig(config);
-        DEWorldGen.init(config);
         config.runSync(ConfigCallback.Reason.MANUAL);
         config.save();
     }
-
 
     //Server properties
     public static String serverID;
@@ -84,6 +82,8 @@ public class DEConfig {
     public static int chaosIslandYPosition;
     public static int chaosIslandSeparation;
     public static int chaosIslandSize;
+
+    public static boolean forceDroppedItemOwner = true;
 
     public static Long[] coreCapacity = new Long[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, -1L};
 
@@ -360,6 +360,11 @@ public class DEConfig {
                 .setComment("Allow mob grinder to grind players")
                 .setDefaultBoolean(false)
                 .onSync((tag, type) -> allowGrindingPlayers = tag.getBoolean());
+
+        forceDroppedItemOwner = serverTag.getValue("forceDroppedItemOwner")
+                .setComment("For some reason, Forge decided to not set the owner of an item when dropped from an inventory screen.\\nDE overrides this and sets the stack owner when possible.\\nIf this causes issues, set this value to false.")
+                .setDefaultBoolean(true)
+                .getBoolean();
     }
 
     //Client properties
@@ -369,7 +374,7 @@ public class DEConfig {
     public static boolean configUiEnableAddGroupButton;
     public static boolean configUiEnableDeleteZone;
     public static boolean configUiEnableAdvancedXOver;
-    public static boolean fancyToolModels;
+//    public static boolean fancyToolModels;
     @Deprecated
 //    public static boolean toolShaders;
 //    public static boolean crystalShaders;
@@ -382,10 +387,10 @@ public class DEConfig {
         clientTag = config.getCategory("Client");
         clientTag.setComment("These are client side config properties.");
 
-        clientTag.getValue("fancyToolModels")
-                .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> fancyToolModels = tag.getBoolean());
+//        clientTag.getValue("fancyToolModels")
+//                .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> fancyToolModels = tag.getBoolean());
 //        clientTag.getValue("toolShaders")
 //                .setComment("Set this to false to disable tool shaders.")
 //                .setDefaultBoolean(true)

@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Created by brandon3055 on 18/01/2017.
@@ -16,8 +17,12 @@ public class TileReactorStabilizer extends TileReactorComponent {
     public TileReactorStabilizer(BlockPos pos, BlockState state) {
         super(DEContent.TILE_REACTOR_STABILIZER.get(), pos, state);
         OPExtractor opExtractor = new OPExtractor(this);
-        capManager.set(CapabilityOP.OP, opExtractor);
+        capManager.set(CapabilityOP.BLOCK, opExtractor);
         capManager.setCapSideValidator(opExtractor, face -> face == this.facing.get().getOpposite());
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_REACTOR_STABILIZER, CapabilityOP.BLOCK);
     }
 
     @Override

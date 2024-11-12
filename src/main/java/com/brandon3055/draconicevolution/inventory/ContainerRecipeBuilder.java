@@ -5,7 +5,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
@@ -99,7 +98,7 @@ public class ContainerRecipeBuilder extends AbstractContainerMenu {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (ForgeHooks.getBurnTime(stack, null) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
+            else if (stack.getBurnTime(null) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 

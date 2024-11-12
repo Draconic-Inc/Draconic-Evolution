@@ -232,7 +232,7 @@ public class ModuleCfg {
         moduleStats.setComment("All of the values in this file are the defaults as of the time the file was generated.",
                 "If you wish to set custom values you must set the \"override\" field to true then specify your custom values.");
         moduleStats.syncTagToClient();
-        moduleStats.onSync((configTag, syncType) -> DEModules.REGISTRY.getValues().forEach(e -> ((BaseModule<?>) e).reloadData()));
+        moduleStats.onSync((configTag, syncType) -> DEModules.REGISTRY.forEach(e -> ((BaseModule<?>) e).reloadData()));
     }
 
     public static void saveStateConfig(){

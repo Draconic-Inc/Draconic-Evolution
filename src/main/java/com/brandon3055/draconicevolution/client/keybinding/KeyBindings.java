@@ -3,15 +3,13 @@ package com.brandon3055.draconicevolution.client.keybinding;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryManager;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.IKeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Supplier;
@@ -37,7 +35,7 @@ public class KeyBindings {
 //    public static KeyBinding cycleDigAOE;
 //    public static KeyBinding cycleAttackAOE;
 
-    public static void init() {
+    public static void init(IEventBus eventBus) {
         //@formatter:off
         placeItem           = new KeyMapping("key.draconicevolution.place_item",            new CustomContext(KeyConflictContext.IN_GAME, () -> placeItem),                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P,         DraconicEvolution.MODNAME);
         toolConfig          = new KeyMapping("key.draconicevolution.tool_config",           new CustomContext(KeyConflictContext.IN_GAME, () -> toolConfig),               InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C,         DraconicEvolution.MODNAME);
@@ -55,7 +53,6 @@ public class KeyBindings {
 //        hudConfig         = new KeyBinding("key.tool_config",         new CustomContext(IN_GAME, () -> hudConfig),           InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,         DraconicEvolution.MODNAME);
         //@formatter:on
 
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(KeyBindings::registerKeyMappings);
     }
 

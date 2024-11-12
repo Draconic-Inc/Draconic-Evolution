@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -83,7 +83,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
         } else if (stack.getItem() instanceof SpawnEggItem) {
             EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
             ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
-            DEContent.MOB_SOUL.get().setEntity(ForgeRegistries.ENTITY_TYPES.getKey(type), soul);
+            DEContent.MOB_SOUL.get().setEntity(BuiltInRegistries.ENTITY_TYPE.getKey(type), soul);
             mobSoul.set(soul);
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);

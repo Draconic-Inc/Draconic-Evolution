@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.command;
 
 import net.covers1624.quack.util.CrashLock;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 /**
  * Created by brandon3055 on 15/11/2022
@@ -15,8 +15,8 @@ public class DECommands {
     public static void init() {
         LOCK.lock();
 
-        MinecraftForge.EVENT_BUS.addListener(DECommands::registerServerCommands);
-        MinecraftForge.EVENT_BUS.addListener(DECommands::registerClientCommands);
+        NeoForge.EVENT_BUS.addListener(DECommands::registerServerCommands);
+        NeoForge.EVENT_BUS.addListener(DECommands::registerClientCommands);
     }
 
     private static void registerServerCommands(RegisterCommandsEvent event) {

@@ -191,8 +191,8 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
         }
 
         int catCount = 1;
-        if (recipe.getCatalyst() instanceof IngredientStack) {
-            catCount = ((IngredientStack) recipe.getCatalyst()).getCount();
+        if (recipe.getCatalyst() instanceof StackIngredient) {
+            catCount = ((StackIngredient) recipe.getCatalyst()).getCount();
         }
 
         ItemStack catalyst = inv.getCatalystStack();

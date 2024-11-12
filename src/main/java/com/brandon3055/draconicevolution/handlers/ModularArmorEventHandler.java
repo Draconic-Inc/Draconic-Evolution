@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.handlers;
 
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -17,7 +18,6 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
-import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -29,16 +29,14 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -56,19 +54,19 @@ public class ModularArmorEventHandler {
 
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityAttacked);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityDamaged);
-        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onEntityFall);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ModularArmorEventHandler::onEntityDeath);
-        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::livingTick);
-        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::breakSpeed);
-        MinecraftForge.EVENT_BUS.addListener(ModularArmorEventHandler::onPlayerLogin);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityAttacked);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::onEntityDamaged);
+        NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::onEntityFall);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ModularArmorEventHandler::onEntityDeath);
+        NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::livingTick);
+        NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::breakSpeed);
+        NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::onPlayerLogin);
 
         ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
         ATTRIBUTE_HANDLER.register(FLY_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
 //        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight); //TODO 1.20.2+, 1.20.1 requires STEP_HEIGHT_ADDITION for forge support
-        ATTRIBUTE_HANDLER.register(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT_ADDITION, ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT::value, ModularArmorEventHandler::getStepHeight);
     }
 
     @Nullable
@@ -107,10 +105,10 @@ public class ModularArmorEventHandler {
     @Nullable
     private static AttributeModifier getStepHeight(LivingEntity entity, ArmorAbilities abilities) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
-        boolean hasHighStep = hasHost && optional.orElseThrow(WTFException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
-        AttributeInstance instance = entity.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        boolean hasHost = !chestStack.isEmpty() && host != null;
+        boolean hasHighStep = hasHost && host.getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
+        AttributeInstance instance = entity.getAttribute(NeoForgeMod.STEP_HEIGHT.value());
 
         if (hasHighStep && instance != null) {
             double stepHeight = instance.getValue();
@@ -118,7 +116,7 @@ public class ModularArmorEventHandler {
             if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_UUID) == null) {
                 return null;
             }
-            return new AttributeModifier(STEP_HEIGHT_UUID, ForgeMod.STEP_HEIGHT_ADDITION.get().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
+            return new AttributeModifier(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT.value().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
         }
         return null;
     }
@@ -131,9 +129,8 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-
-        if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        if (chestStack.isEmpty() || host == null) {
             return;
         }
 
@@ -143,8 +140,6 @@ public class ModularArmorEventHandler {
             entity.hurt(DEDamage.killDamage(entity.level()), Float.MAX_VALUE / 5);
             return;
         }
-
-        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
         if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
             return;
@@ -165,13 +160,11 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
 
-        if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+        if (chestStack.isEmpty() || host == null) {
             return;
         }
-
-        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
         if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
             return;
@@ -239,16 +232,16 @@ public class ModularArmorEventHandler {
     }
 
     private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlot slot, boolean inEquipModSlot) {
-        LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
-            optional.ifPresent(host -> {
+            if (host != null) {
                 entities.addAll(host.getModuleEntities()
                         .stream()
                         .filter(e -> e instanceof UndyingEntity)
                         .map(e -> (UndyingEntity) e)
-                        .collect(Collectors.toList())
+                        .toList()
                 );
-            });
+            }
         }
     }
 
@@ -256,8 +249,7 @@ public class ModularArmorEventHandler {
         LivingEntity entity = event.getEntity();
 
         ArmorAbilities armorAbilities = new ArmorAbilities();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             NonNullList<ItemStack> stacks = player.getInventory().items;
             for (int i = 0; i < stacks.size(); ++i) {
                 tryTickStack(stacks.get(i), player, player.getInventory().selected == i ? EquipmentSlot.MAINHAND : null, armorAbilities, false);
@@ -285,8 +277,7 @@ public class ModularArmorEventHandler {
 
         //region/*----------------- Flight ------------------*/
 
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             boolean canFly = true;
             boolean noPower = false;
             if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.getAbilities().instabuild && !player.isSpectator()) {
@@ -374,9 +365,8 @@ public class ModularArmorEventHandler {
 
     private static float getJumpBoost(LivingEntity entity, boolean max) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (optional.isPresent()) {
-            ModuleHost host = optional.orElseThrow(IllegalStateException::new);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        if (host != null) {
             JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jumpData != null) {
                 double jump = jumpData.multiplier();
@@ -401,10 +391,10 @@ public class ModularArmorEventHandler {
             ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
 
             if ((slot != null && slot.getType() == EquipmentSlot.Type.ARMOR) || equipMod) {
-                LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-                optional.ifPresent(host -> {
+                ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+                if (host != null){
                     gatherArmorProps(stack, host, entity, abilities);
-                });
+                }
             }
         }
     }
@@ -424,10 +414,8 @@ public class ModularArmorEventHandler {
         float newDigSpeed = event.getOriginalSpeed();
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (!optional.isPresent()) return;
-
-        ModuleHost host = optional.orElseThrow(IllegalStateException::new);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        if (host == null) return;
 
         if (host.getModuleData(ModuleTypes.AQUA_ADAPT) != null) {
             if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
@@ -449,9 +437,8 @@ public class ModularArmorEventHandler {
         if (player.onGround()) return;
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (optional.isPresent()) {
-            ModuleHost host = optional.orElseThrow(IllegalStateException::new);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        if (host != null) {
             FlightData flightData = host.getModuleData(ModuleTypes.FLIGHT);
             if (flightData != null && flightData.creative()) {
                 player.getAbilities().flying = true;
@@ -468,8 +455,7 @@ public class ModularArmorEventHandler {
 
         FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
         if (flight != null) {
-            LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
-            abilities.addFlightData(flight, optional.isPresent() ? optional.orElseThrow(IllegalStateException::new) : null);
+            abilities.addFlightData(flight, stack.getCapability(CapabilityOP.ITEM));
         }
     }
 

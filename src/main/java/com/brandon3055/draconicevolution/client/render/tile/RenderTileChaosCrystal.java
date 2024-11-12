@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
@@ -101,5 +102,10 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
             ccrs.bind(CHAOS_CRYSTAL_SHIELD, getter);
             model.render(ccrs, mat);
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileChaosCrystal blockEntity) {
+        return BlockEntityRenderer.super.getRenderBoundingBox(blockEntity).inflate(3);
     }
 }

@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
@@ -28,10 +29,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.EventHooks;
 
 /**
  * An invisible placeholder block used by multi-block structures.
@@ -83,7 +85,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (tile instanceof TileStructureBlock structureTile) {
             ResourceLocation blockName = structureTile.blockName.get();
             if (blockName != null) {
-                Block block = ForgeRegistries.BLOCKS.getValue(blockName);
+                Block block = BuiltInRegistries.BLOCK.get(blockName);
                 MultiBlockController controller = structureTile.getController();
                 world.removeBlock(pos, false);
                 if (block != Blocks.AIR && !player.getAbilities().instabuild) {
@@ -99,12 +101,12 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileStructureBlock structureTile) {
             ResourceLocation blockName = structureTile.blockName.get();
             if (blockName != null) {
-                Block block = ForgeRegistries.BLOCKS.getValue(blockName);
+                Block block = BuiltInRegistries.BLOCK.get(blockName);
                 return new ItemStack(block);
             }
         }
@@ -153,7 +155,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
             ResourceLocation name = tile.blockName.get();
             if (name != null) {
-                return ForgeRegistries.BLOCKS.getValue(name);
+                return BuiltInRegistries.BLOCK.get(name);
             }
         }
         return Blocks.AIR;
@@ -171,7 +173,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (f == -1.0F) {
             return 0.0F;
         } else {
-            int i = net.minecraftforge.common.ForgeHooks.isCorrectToolForDrops(state, player) ? 30 : 100;
+            int i = CommonHooks.isCorrectToolForDrops(state, player) ? 30 : 100;
             return player.getDigSpeed(state, pos) / f / (float)i;
         }
     }

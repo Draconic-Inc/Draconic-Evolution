@@ -29,13 +29,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.Map;
 import java.util.UUID;
@@ -65,15 +62,11 @@ public class CustomBossInfoHandler {
     }
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.addListener(CustomBossInfoHandler::onClientDisconnect);
-        MinecraftForge.EVENT_BUS.addListener(CustomBossInfoHandler::preDrawBossInfo);
+        NeoForge.EVENT_BUS.addListener(CustomBossInfoHandler::onClientDisconnect);
+        NeoForge.EVENT_BUS.addListener(CustomBossInfoHandler::preDrawBossInfo);
     }
 
     public static void preDrawBossInfo(CustomizeGuiOverlayEvent.BossEventProgress event) {
-//        if (event.getOverlay() != VanillaGuiOverlay.BOSS_EVENT_PROGRESS.type()) return;
-
-        //TODO Boss Info
-
         LerpingBossEvent info = event.getBossEvent();
         if (!events.containsKey(info.getId())) return;
         event.setCanceled(true);

@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
@@ -16,14 +16,10 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
-import com.brandon3055.draconicevolution.api.modules.lib.LimitedModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
-import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleHost;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.inventory.GeneratorMenu;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -40,11 +36,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
@@ -79,17 +74,23 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     public TileGenerator(BlockPos pos, BlockState state) {
         super(DEContent.TILE_GENERATOR.get(), pos, state);
 
-//        capManager.setManaged("module_host", DECapabilities.MODULE_HOST_CAPABILITY, moduleHost).saveBoth().syncContainer();
+//        capManager.setManaged("module_host", DECapabilities.Host.ITEM, moduleHost).saveBoth().syncContainer();
 
         //Power Cap
-        capManager.setManaged("energy", DECapabilities.OP_STORAGE, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", CapabilityOP.BLOCK, opStorage).saveBoth().syncContainer();
 
         //Inventory Cap
-        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth();
-        itemHandler.setStackValidator((slot, stack) -> slot > 2 || ForgeHooks.getBurnTime(stack, null) > 0);
+        capManager.setInternalManaged("inventory", ItemHandler.BLOCK, itemHandler).saveBoth();
+        itemHandler.setStackValidator((slot, stack) -> slot > 2 || stack.getBurnTime(null) > 0);
         setupPowerSlot(itemHandler, 3, opStorage, true);
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
+        capManager.set(ItemHandler.BLOCK, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_GENERATOR, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_GENERATOR, ItemHandler.BLOCK);
+        capability(event, DEContent.TILE_GENERATOR, DECapabilities.Host.BLOCK);
     }
 
     @Override
@@ -150,7 +151,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         for (int i = 0; i < 3; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                int itemBurnTime = ForgeHooks.getBurnTime(stack, null);
+                int itemBurnTime = stack.getBurnTime(null);
 
                 if (itemBurnTime > 0) {
                     if (stack.getCount() == 1) {
@@ -168,12 +169,12 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
-        return (slot == 3 && EnergyUtils.isFullyOrInvalid(stack)) || (slot != 3 && ForgeHooks.getBurnTime(stack, null) <= 0);
+        return (slot == 3 && EnergyUtils.isFullyOrInvalid(stack)) || (slot != 3 && stack.getBurnTime(null) <= 0);
     }
 
     //Render Stuff
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     private void updateSoundAndFX() {
         soundHandler.tick();
         if (!active.get() || worldPosition.distSqr(Minecraft.getInstance().player.blockPosition()) > 16 * 16) {
@@ -256,7 +257,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
     }

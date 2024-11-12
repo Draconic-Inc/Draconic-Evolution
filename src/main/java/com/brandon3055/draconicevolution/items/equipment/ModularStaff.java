@@ -27,16 +27,18 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee {
+public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -67,7 +69,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
 //        host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
@@ -83,10 +85,9 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
         return true;
     }
 
-    @Nullable
     @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseStaffEnergy(techLevel), EquipCfg.getBaseStaffTransfer(techLevel));
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseStaffEnergy(techLevel), EquipCfg.getBaseStaffTransfer(techLevel));
     }
 
     @Override
@@ -260,7 +261,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     @SuppressWarnings("unchecked")
     @Nullable
     public static Module<DamageModData> getDamageModule(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         ModuleEntity entity = host.getEntitiesByType(ModuleTypes.DAMAGE_MOD).findAny().orElse(null);
         return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>) entity.getModule() : null;
     }

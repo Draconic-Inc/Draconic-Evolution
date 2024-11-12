@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -93,11 +94,11 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
         if (!level.isClientSide) {
             ServerPlayer serverplayerentity = (ServerPlayer) player;
             ItemStack itemstack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, level);
+            Optional<RecipeHolder<CraftingRecipe>> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, level);
             if (optional.isPresent()) {
-                CraftingRecipe icraftingrecipe = optional.get();
+                RecipeHolder<CraftingRecipe> icraftingrecipe = optional.get();
                 if (resultInventory.setRecipeUsed(level, serverplayerentity, icraftingrecipe)) {
-                    itemstack = icraftingrecipe.assemble(craftingInventory, level.registryAccess());
+                    itemstack = icraftingrecipe.value().assemble(craftingInventory, level.registryAccess());
                 }
             }
 

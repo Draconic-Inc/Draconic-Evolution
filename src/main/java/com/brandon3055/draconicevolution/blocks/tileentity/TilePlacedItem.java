@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.raytracer.SubHitBlockHitResult;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -25,12 +24,10 @@ import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +60,12 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
             isBlock[i] = register(new ManagedBool("is_block_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
-        capManager.setInternalManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
+        capManager.setInternalManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> updatePlacedItem());
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_PLACED_ITEM, Capabilities.ItemHandler.BLOCK);
     }
 
     private void updatePlacedItem() {
@@ -214,11 +215,5 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     @Override
     public boolean saveToItem() {
         return false;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
     }
 }

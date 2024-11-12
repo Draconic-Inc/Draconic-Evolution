@@ -2,12 +2,13 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
@@ -18,9 +19,8 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.DETier;
+import com.brandon3055.draconicevolution.items.equipment.IModularEnergyItem;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
-import com.brandon3055.draconicevolution.lib.WTFException;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -32,17 +32,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 31/05/2016.
  */
-public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem {
+public class DraconiumCapacitor extends Item implements IInvCharge, IModularEnergyItem {
     private TechLevel techLevel;
 
     public DraconiumCapacitor(TechProperties properties) {
@@ -61,7 +63,16 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public ModuleHost createHostCapForRegistration(ItemStack stack) {
+        ModuleHost host = IModularEnergyItem.super.createHostCapForRegistration(stack);
+        if (this == DEContent.CAPACITOR_CREATIVE.get()) {
+            host.getModuleCategories().remove(ModuleCategory.ENERGY);
+        }
+        return host;
+    }
+
+    @Override
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host;
         if (this == DEContent.CAPACITOR_CREATIVE.get()) {
             host = new ModuleHostImpl(techLevel, 1, 1, "capacitor", ModuleCfg.removeInvalidModules);
@@ -77,24 +88,14 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
                 props.add(new BooleanProperty("charge_" + EquipmentManager.equipModID(), false));
             }
         });
+
         return host;
     }
 
     @Override
-    public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        MultiCapabilityProvider prov = IModularItem.super.initCapabilities(stack, nbt);
-        if (this == DEContent.CAPACITOR_CREATIVE.get() && prov != null) {
-            ModuleHost host = prov.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(WTFException::new);
-            host.getModuleCategories().remove(ModuleCategory.ENERGY);
-        }
-        return prov;
-    }
-
-    @Nullable
-    @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
         if (this == DEContent.CAPACITOR_CREATIVE.get()) {
-            return new ModularOPStorage(host, Long.MAX_VALUE, Long.MAX_VALUE) {
+            return new ModularOPStorage(hostSupplier, Long.MAX_VALUE, Long.MAX_VALUE) {
                 @Override
                 public long getOPStored() {
                     return Long.MAX_VALUE / 2;
@@ -116,22 +117,23 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
                 }
             }.setIOMode(true, true);
         }
-        return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel)).setIOMode(true, true);
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel)).setIOMode(true, true);
     }
 
     @Override
     public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
-        IModularItem.super.handleTick(stack, entity, slot, inEquipModSlot);
+        IModularEnergyItem.super.handleTick(stack, entity, slot, inEquipModSlot);
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
-        stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).ifPresent(props -> {
-            boolean held = props.getBool("charge_held_item").getValue();
-            boolean armor = props.getBool("charge_armor").getValue();
-            boolean hot_bar = props.getBool("charge_hot_bar").getValue();
-            boolean main = props.getBool("charge_main").getValue();
+        PropertyProvider provider = stack.getCapability(DECapabilities.Properties.ITEM);
+        if (provider != null){
+            boolean held = provider.getBool("charge_held_item").getValue();
+            boolean armor = provider.getBool("charge_armor").getValue();
+            boolean hot_bar = provider.getBool("charge_hot_bar").getValue();
+            boolean main = provider.getBool("charge_main").getValue();
 
-            if (EquipmentManager.equipModLoaded() && props.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
+            if (EquipmentManager.equipModLoaded() && provider.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
                 stacks.addAll(EquipmentManager.getAllItems(entity));
             }
 
@@ -159,7 +161,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             if (armor) {
                 entity.getArmorSlots().forEach(stacks::add);
             }
-        });
+        }
 
         stacks.remove(stack);
 
@@ -169,8 +171,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     public void updateEnergy(ItemStack capacitor, LivingEntity player, List<ItemStack> stacks) {
-        capacitor.getCapability(DECapabilities.OP_STORAGE).ifPresent(e -> {
-            IOPStorage storage = (IOPStorage)e;
+        IOPStorage storage = capacitor.getCapability(CapabilityOP.ITEM);
+        if (storage != null) {
             for (ItemStack stack : stacks) {
                 if (EnergyUtils.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
@@ -180,7 +182,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
                     EnergyUtils.insertEnergy(stack, EnergyUtils.extractEnergy(capacitor, EnergyUtils.insertEnergy(stack, storage.getOPStored(), true), false), false);
                 }
             }
-        });
+        }
     }
 
     @Override

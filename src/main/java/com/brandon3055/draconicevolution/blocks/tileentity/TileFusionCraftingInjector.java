@@ -19,7 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 
@@ -38,10 +39,10 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
 
     public TileFusionCraftingInjector(BlockPos pos, BlockState state) {
         super(DEContent.TILE_CRAFTING_INJECTOR.get(), pos, state);
-        capManager.setManaged("inventory", ForgeCapabilities.ITEM_HANDLER, itemHandler).saveBoth().syncTile();
+        capManager.setManaged("inventory", Capabilities.ItemHandler.BLOCK, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
         itemHandler.setContentsChangeListener(i -> inventoryChange());
-        capManager.set(CapabilityOP.OP, new OPStorage(this, 0) {
+        capManager.set(CapabilityOP.BLOCK, new OPStorage(this, 0) {
             @Override
             public long receiveOP(long maxReceive, boolean simulate) {
                 long opStored = getOPStored();
@@ -67,6 +68,11 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
                 return TileFusionCraftingInjector.this.energyRequired.get();
             }
         });
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_CRAFTING_INJECTOR, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_CRAFTING_INJECTOR, Capabilities.ItemHandler.BLOCK);
     }
 
     public boolean setCore(@Nullable TileFusionCraftingCore core) {

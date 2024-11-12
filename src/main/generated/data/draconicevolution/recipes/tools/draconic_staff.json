@@ -5,39 +5,69 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:draconic_pickaxe"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_pickaxe"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:draconic_sword"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_sword"
+      }
     },
     {
-      "item": "draconicevolution:draconic_shovel"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_shovel"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:draconic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:draconic_staff"
   },
-  "tier": "DRACONIC",
-  "total_energy": 256000000
+  "techLevel": "draconic",
+  "totalEnergy": 256000000
 }

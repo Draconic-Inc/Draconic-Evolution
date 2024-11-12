@@ -5,33 +5,57 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:awakened_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:awakened_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:draconic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
     },
     {
-      "item": "draconicevolution:draconic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:draconic_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconic_energy_core"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:draconic_capacitor"
   },
-  "tier": "DRACONIC",
-  "total_energy": 32000000
+  "techLevel": "draconic",
+  "totalEnergy": 32000000
 }

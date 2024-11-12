@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.mixin;
 
-import com.brandon3055.draconicevolution.init.ClientInit;
+import com.brandon3055.draconicevolution.init.DEClient;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.CapeLayer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,8 +29,8 @@ public class CapeLayerMixin {
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    private void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, AbstractClientPlayer pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch, CallbackInfo ci, ItemStack itemstack) {
-        if (ClientInit.deElytraVisible(itemstack, pLivingEntity)) {
+    private void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, AbstractClientPlayer pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch, CallbackInfo ci, PlayerSkin playerskin, ItemStack itemstack) {
+        if (DEClient.deElytraVisible(itemstack, pLivingEntity)) {
             ci.cancel();
         }
     }

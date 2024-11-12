@@ -26,10 +26,10 @@ public interface IModularTieredItem extends IModularItem {
     @Override
     default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
-        if (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack.getCapability(DECapabilities.Host.ITEM) != null) {
             DETier tier = getItemTier();
             if (slot == EquipmentSlot.MAINHAND) {
-                ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
                 double damage = getAttackDamage(host, stack);
                 double speed = 1 + host.getModuleData(ModuleTypes.SPEED, new SpeedData(0)).speedMultiplier();
 

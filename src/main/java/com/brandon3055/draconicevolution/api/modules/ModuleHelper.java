@@ -17,12 +17,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -75,9 +71,8 @@ public class ModuleHelper {
 
     public static FastStream<ModuleHost> getEquippedHosts(LivingEntity entity) {
         return FastStream.of(getEquippedHostItems(entity))
-                .map(e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY))
-                .filter(LazyOptional::isPresent)
-                .map(e -> e.orElseThrow(WTFException::new));
+                .map(e -> e.getCapability(DECapabilities.Host.ITEM))
+                .filter(Objects::nonNull);
     }
 
     public static <T extends ModuleData<T>> T getCombinedEquippedData(LivingEntity entity, ModuleType<T> moduleType, T fallback) {

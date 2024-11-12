@@ -258,7 +258,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         this.aliveCrystals = 0;
 
         for (BlockPos pos : getCrystalPositions()) {
-            List<GuardianCrystalEntity> list = this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4)));
+            List<GuardianCrystalEntity> list = this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos).inflate(3));
             for (GuardianCrystalEntity crystal : list) {
                 if (!crystal.isAlive()) continue;
                 if (crystal.getManagerId() == null || !crystal.getManagerId().equals(getUniqueID())) {
@@ -312,7 +312,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
     public void resetCrystals() {
         for (BlockPos pos : getCrystalPositions()) {
-            for (GuardianCrystalEntity endercrystalentity : this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4)))) {
+            for (GuardianCrystalEntity endercrystalentity : this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos).inflate(3))) {
                 endercrystalentity.setInvulnerable(false);
                 endercrystalentity.setBeamTarget(null);
             }
@@ -322,7 +322,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public List<GuardianCrystalEntity> getCrystals() {
         List<GuardianCrystalEntity> list = new ArrayList<>();
         for (BlockPos pos : getCrystalPositions()) {
-            list.addAll(this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4))));
+            list.addAll(this.level.getEntitiesOfClass(GuardianCrystalEntity.class, new AABB(pos).inflate(3)));
         }
         return list;
     }

@@ -27,10 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,21 +53,26 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
     public TileEnergyTransfuser(BlockPos pos, BlockState state) {
         super(DEContent.TILE_ENERGY_TRANSFUSER.get(), pos, state);
-        capManager.setInternalManaged("item_north", ForgeCapabilities.ITEM_HANDLER, itemNorth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_east", ForgeCapabilities.ITEM_HANDLER, itemEast).syncTile().saveBoth();
-        capManager.setInternalManaged("item_south", ForgeCapabilities.ITEM_HANDLER, itemSouth).syncTile().saveBoth();
-        capManager.setInternalManaged("item_west", ForgeCapabilities.ITEM_HANDLER, itemWest).syncTile().saveBoth();
-        capManager.set(CapabilityOP.OP, opStorage, Direction.UP, Direction.DOWN, null);
+        capManager.setInternalManaged("item_north", Capabilities.ItemHandler.BLOCK, itemNorth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_east", Capabilities.ItemHandler.BLOCK, itemEast).syncTile().saveBoth();
+        capManager.setInternalManaged("item_south", Capabilities.ItemHandler.BLOCK, itemSouth).syncTile().saveBoth();
+        capManager.setInternalManaged("item_west", Capabilities.ItemHandler.BLOCK, itemWest).syncTile().saveBoth();
+        capManager.set(CapabilityOP.BLOCK, opStorage, Direction.UP, Direction.DOWN, null);
 
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(1, itemEast), Direction.EAST);
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(3, itemWest), Direction.WEST);
-        capManager.set(ForgeCapabilities.ITEM_HANDLER, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(0, itemNorth), Direction.NORTH);
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(1, itemEast), Direction.EAST);
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(2, itemSouth), Direction.SOUTH);
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(3, itemWest), Direction.WEST);
+        capManager.set(Capabilities.ItemHandler.BLOCK, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
 
         for (int i = 0; i < 4; i++) {
             ioModes[i] = register(new ManagedEnum<>("item_mode_" + i, ItemIOMode.CHARGE, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
         }
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, CapabilityOP.BLOCK);
+        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, Capabilities.ItemHandler.BLOCK);
     }
 
     @Override
@@ -159,7 +164,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         }
 
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
     }

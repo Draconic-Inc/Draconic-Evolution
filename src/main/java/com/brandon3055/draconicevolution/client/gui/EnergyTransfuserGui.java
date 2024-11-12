@@ -94,7 +94,7 @@ public class EnergyTransfuserGui extends ContainerGuiProvider<TransfuserMenu> {
                     .constrain(RIGHT, relative(column.get(RIGHT), -3))
                     .constrain(BOTTOM, relative(button.get(TOP), -1));
             energyBar.bar()
-                    .setShaderEnabled(() -> tile.itemsCombined.getStackInSlot(fi).getCapability(CapabilityOP.OP).isPresent())
+                    .setShaderEnabled(() -> tile.itemsCombined.getStackInSlot(fi).getCapability(CapabilityOP.ITEM) != null)
                     .setItemSupplier(() -> tile.itemsCombined.getStackInSlot(fi))
                     .setDisabled(() -> !EnergyUtils.isEnergyItem(tile.itemsCombined.getStackInSlot(fi)));
         }

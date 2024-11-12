@@ -1,47 +1,70 @@
 {
   "type": "draconicevolution:fusion_crafting",
   "catalyst": {
-    "type": "draconicevolution:ingredient_stack",
-    "count": 4,
-    "items": [
-      {
-        "item": "draconicevolution:wyvern_relay_crystal"
-      }
-    ]
+    "type": "draconicevolution:stack",
+    "item": "draconicevolution:wyvern_relay_crystal",
+    "strict": 4
   },
   "ingredients": [
     {
-      "item": "draconicevolution:wyvern_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "tag": "forge:gems/diamond"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:gems/diamond"
+      }
     },
     {
-      "item": "draconicevolution:wyvern_energy_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
     }
   ],
   "result": {
     "count": 4,
     "item": "draconicevolution:draconic_relay_crystal"
   },
-  "tier": "DRACONIC",
-  "total_energy": 128000
+  "techLevel": "draconic",
+  "totalEnergy": 128000
 }

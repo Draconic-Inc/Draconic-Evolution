@@ -2,12 +2,13 @@ package com.brandon3055.draconicevolution.init;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -90,13 +91,12 @@ public class OreDoublingRegistry {
             return stackToStackRecipes.get(stack);
         }
 
-        SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)), world.registryAccess());
+        return getSmeltingResult(stack, world);
     }
 
     public static ItemStack getSmeltingResult(ItemStack stack, Level world) {
-        SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)), world.registryAccess());
+        RecipeHolder<SmeltingRecipe> recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
+        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(new RecipeWrapper(new Wrap(stack)), world.registryAccess());
     }
 
     private static void registerDEOverrides() {

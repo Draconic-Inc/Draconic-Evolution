@@ -1,7 +1,7 @@
-// 1.20.1	2024-08-18T18:37:05.160270844	Tags for minecraft:item mod id draconicevolution
+// 1.20.4	2024-11-08T19:15:17.50146501	Tags for minecraft:item mod id draconicevolution
 9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/items/body.json
 474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/items/curio.json
-c31ca3d279b77ce23f4281c3a8f2f79e81b45ebf data/draconicevolution/tags/items/modules.json
+3f5e3521f3d587cb2d27bc5d66d7d2ca9ed0d1af data/draconicevolution/tags/items/modules.json
 cb626dc6c627c42fbd0b589c6d7420e1e7dcb27e data/forge/tags/items/dusts.json
 26a02ca040deced33c1f86c215e347e169ce3499 data/forge/tags/items/dusts/draconium.json
 9864e525e028426969eb33f4b4a445b8ad2a3b89 data/forge/tags/items/dusts/draconium_awakened.json

@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Created by brandon3055 on 26/06/2022

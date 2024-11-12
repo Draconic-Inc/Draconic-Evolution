@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.util.ItemUtils;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -41,21 +40,24 @@ import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconicMelee {
+public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconicMelee, IModularEnergyItem {
     private final TechLevel techLevel;
     private final DETier itemTier;
 
@@ -86,26 +88,29 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public ModuleHost createHostCapForRegistration(ItemStack stack) {
+        ModuleHost host = IModularTieredItem.super.createHostCapForRegistration(stack);
+        if (host instanceof ModuleHostImpl provider) {
+            provider.addPropertyBuilder(props -> {
+                AOEData aoe = host.getModuleData(ModuleTypes.AOE);
+                if (aoe != null) {
+                    props.add(new IntegerProperty("tool_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(ConfigProperty.IntegerFormatter.AOE));
+                }
+            });
+        }
+        return host;
+    }
+
+    @Override
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "hoe", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.TOOL_HOE);
         return host;
     }
 
     @Override
-    public void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
-        host.addPropertyBuilder(props -> {
-            AOEData aoe = host.getModuleData(ModuleTypes.AOE);
-            if (aoe != null) {
-                props.add(new IntegerProperty("tool_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(ConfigProperty.IntegerFormatter.AOE));
-            }
-        });
-    }
-
-    @Nullable
-    @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
     }
 
     @Override
@@ -161,7 +166,8 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
 
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        assert host != null;
         int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         if (host instanceof PropertyProvider) {
             if (((PropertyProvider) host).hasInt("tool_aoe")) {
@@ -194,7 +200,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
 
             //Fill
             if (airOrReplaceable && lowerBlockOk && (player.getAbilities().instabuild || player.getInventory().contains(new ItemStack(Items.DIRT)))) {
-                boolean canceled = ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, aoePos), Direction.UP);
+                boolean canceled = EventHooks.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, aoePos), Direction.UP);
 
                 if (!canceled && (player.getAbilities().instabuild || consumeItem(Items.DIRT, player.getInventory()))) {
                     level.setBlockAndUpdate(aoePos, Blocks.DIRT.defaultBlockState());
@@ -227,7 +233,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     public boolean attemptTillOp(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        BlockState toolModifiedState = level.getBlockState(blockpos).getToolModifiedState(context, net.minecraftforge.common.ToolActions.HOE_TILL, false);
+        BlockState toolModifiedState = level.getBlockState(blockpos).getToolModifiedState(context, ToolActions.HOE_TILL, false);
         Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = toolModifiedState == null ? null : Pair.of(ctx -> true, changeIntoState(toolModifiedState));
         if (pair == null) {
             return false;

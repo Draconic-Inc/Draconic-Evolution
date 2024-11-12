@@ -4,9 +4,8 @@ package com.brandon3055.draconicevolution.achievements;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
 
 import java.util.HashMap;
 

@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +144,7 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
 
     public void tick(TileDisenchanter tile) {
         ItemStack stack = tile.itemHandler.getStackInSlot(0);
-        if (!stack.equals(prevStack, false)) {
+        if (!stack.equals(prevStack)) {
             clearList();
             if (!stack.isEmpty()) {
                 populateList(stack, tile);
@@ -159,7 +159,7 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
         for (Tag tag : stack.getEnchantmentTags()) {
             CompoundTag cTag = (CompoundTag) tag;
             int lvl = cTag.getShort("lvl");
-            Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(cTag.getString("id")));
+            Enchantment enchantment = BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(cTag.getString("id")));
 
             Enchantment enchForLevel = tile.getEnchantmentFromTag(cTag);
             GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), () -> Component.translatable(enchantment.getDescriptionId()))

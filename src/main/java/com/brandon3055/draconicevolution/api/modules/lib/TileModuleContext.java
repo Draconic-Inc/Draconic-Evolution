@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -20,11 +19,7 @@ public class TileModuleContext extends ModuleContext {
     @Override
     @Nullable
     public IOPStorage getOpStorage() {
-        LazyOptional<IOPStorage> optional = tile.getCapability(DECapabilities.OP_STORAGE);
-        if (optional.isPresent()) {
-            return optional.orElseThrow(IllegalStateException::new);
-        }
-        return null;
+        return CapabilityOP.fromBlockEntity(tile);
     }
 
     @Override

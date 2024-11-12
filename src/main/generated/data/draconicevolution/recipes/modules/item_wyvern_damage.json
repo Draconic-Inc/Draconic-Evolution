@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "A": {
       "item": "draconicevolution:item_draconium_damage"
@@ -11,10 +12,10 @@
       "tag": "forge:ingots/draconium"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:strong_strength\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strong_strength\"}"
     }
   },
   "pattern": [

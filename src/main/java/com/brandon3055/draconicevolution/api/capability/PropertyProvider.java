@@ -3,11 +3,10 @@ package com.brandon3055.draconicevolution.api.capability;
 import com.brandon3055.draconicevolution.api.config.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.UUID;
 
 /**
  * Created by brandon3055 on 2/5/20.
@@ -17,14 +16,7 @@ import java.util.UUID;
  * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
  * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
  */
-public interface PropertyProvider extends INBTSerializable<CompoundTag> {
-
-    /**
-     * This must be a completely unique id that can be used to identify this specific property provider.
-     *
-     * @return the unique id for this property provider.
-     */
-    UUID getProviderID();
+public interface PropertyProvider extends INBTSerializable<CompoundTag>, IdentityProvider{
 
     /**
      * This should be unique to this "type" of provider. (type in most cases refers to the item this provider belongs to)<br>
@@ -35,12 +27,6 @@ public interface PropertyProvider extends INBTSerializable<CompoundTag> {
      * @return the name of this property provider.
      */
     String getProviderName();
-
-    /**
-     * In the event there are somehow multiple providers with the same ID (possibly due to creative duplication or some otehr means of stack duplication)
-     * This will be called on all but one of the duplicate providers in order to generate new unique id's.
-     */
-    void regenProviderID();
 
     Collection<ConfigProperty> getProperties();
 

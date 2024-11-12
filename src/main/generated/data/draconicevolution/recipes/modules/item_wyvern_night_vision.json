@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "tag": "forge:ingots/draconium"
@@ -11,10 +12,10 @@
       "item": "draconicevolution:module_core"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:night_vision\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:night_vision\"}"
     }
   },
   "pattern": [

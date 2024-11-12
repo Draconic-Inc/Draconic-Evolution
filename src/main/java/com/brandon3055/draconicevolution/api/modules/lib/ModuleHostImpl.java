@@ -7,9 +7,6 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
-import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.covers1624.quack.util.SneakyUtils;
@@ -35,7 +32,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     private final int gridWidth;
     private final int gridHeight;
-    private UUID providerID = null;
+    private UUID identity = null;
     private final String providerName;
     private final boolean deleteInvalidModules;
     private final TechLevel techLevel;
@@ -200,21 +197,21 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public UUID getProviderID() {
-        if (providerID == null) {
-            regenProviderID();
+    public UUID getIdentity() {
+        if (identity == null) {
+            regenIdentity();
         }
-        return providerID;
+        return identity;
+    }
+
+    @Override
+    public void regenIdentity() {
+        identity = UUID.randomUUID();
     }
 
     @Override
     public String getProviderName() {
         return providerName;
-    }
-
-    @Override
-    public void regenProviderID() {
-        providerID = UUID.randomUUID();
     }
 
 
@@ -295,7 +292,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         nbt.put("modules", modules);
 
         //Serialize Properties
-        nbt.putUUID("provider_id", getProviderID());
+        nbt.putUUID("identity", getIdentity());
         CompoundTag properties = new CompoundTag();
         providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT()));
         nbt.put("properties", properties);
@@ -311,7 +308,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             ListTag modules = nbt.getList("modules", 10);
             modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
                 ResourceLocation id = new ResourceLocation(compound.getString("id"));
-                com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().getValue(id);
+                com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
                 if (module == null) {
                     LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {
@@ -328,8 +325,8 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
             //So that we can gather properties which may depend on installed modules.
             gatherProperties();
-            if (nbt.hasUUID("provider_id")) {
-                providerID = nbt.getUUID("provider_id");
+            if (nbt.hasUUID("identity")) {
+                identity = nbt.getUUID("identity");
             }
             CompoundTag properties = nbt.getCompound("properties");
             providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));

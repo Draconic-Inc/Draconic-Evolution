@@ -24,9 +24,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.AnvilUpdateEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -190,15 +190,6 @@ public class Dislocator extends Item implements IHudItem {
         if (location != null) {
             displayList.add(stack.getHoverName());
             displayList.add(Component.literal("{" + location.getReadableName(false) + ")"));
-        }
-    }
-
-    public static void onAnvilUpdate(AnvilUpdateEvent event) {
-        if (event.getLeft().getItem() == DEContent.DISLOCATOR.get() && event.getRight().getItem() == DEContent.INGOT_DRACONIUM.get() && event.getLeft().getDamageValue() > 0) {
-            event.setOutput(event.getLeft().copy());
-            event.getOutput().setDamageValue(0);
-            event.setCost(1);
-            event.setMaterialCost(1);
         }
     }
 

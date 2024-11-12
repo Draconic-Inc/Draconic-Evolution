@@ -18,10 +18,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isShiftKeyDown() && isEnabled(stack) && entity instanceof Player) {
+        if (!entity.isShiftKeyDown() && isEnabled(stack) && entity instanceof Player player) {
             Level world = entity.getCommandSenderWorld();
             List<ItemEntity> items;
             if (entity.tickCount % 10 == 0) {
@@ -131,11 +131,10 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
 
             List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(4, 4, 4));
 
-            Player player = (Player) entity;
-
             for (ExperienceOrb orb : xp) {
                 if (!world.isClientSide && orb.isAlive()) {
-                    if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
+                    PlayerXpEvent.PickupXp event = NeoForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb));
+                    if (event.isCanceled()) {
                         continue;
                     }
                     if (DEConfig.itemDislocatorSound) {

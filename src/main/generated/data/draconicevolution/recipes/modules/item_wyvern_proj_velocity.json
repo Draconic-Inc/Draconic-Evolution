@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "tag": "forge:ingots/draconium"
@@ -14,10 +15,10 @@
       "tag": "minecraft:arrows"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
+      "type": "neoforge:nbt",
       "item": "minecraft:splash_potion",
-      "nbt": "{Potion:\"minecraft:strong_swiftness\"}"
+      "strict": true,
+      "tag": "{Potion:\"minecraft:strong_swiftness\"}"
     }
   },
   "pattern": [

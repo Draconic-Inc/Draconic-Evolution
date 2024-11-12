@@ -6,6 +6,7 @@ import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -49,4 +50,10 @@ public class RenderModularPickaxe extends ToolRenderBase {
     public boolean usesBlockLight() {
         return false;
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class PICKAXE_WYVERN extends RenderModularPickaxe { public PICKAXE_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class PICKAXE_DRACONIC extends RenderModularPickaxe { public PICKAXE_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class PICKAXE_CHAOTIC extends RenderModularPickaxe { public PICKAXE_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

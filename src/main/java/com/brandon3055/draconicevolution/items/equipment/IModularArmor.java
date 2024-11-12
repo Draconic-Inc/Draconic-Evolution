@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.ElytraEnabledItem;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -20,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,8 +39,9 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
     @Override
     default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
-            ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.Host.ITEM) != null) {
+            ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+            assert host != null;
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.speedMultiplier() > DEConfig.armorSpeedLimit) {
                 tooltip.add(Component.literal("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(ChatFormatting.RED));
@@ -50,16 +51,17 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 
     @Override
     default boolean canElytraFlyBC(ItemStack stack, LivingEntity entity) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        assert host != null;
         FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
         return flight != null && flight.getElytraEnabled();
     }
 
     @Override
     default boolean elytraFlightTickBC(ItemStack stack, LivingEntity entity, int flightTicks) {
-        LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
+        IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
         boolean creative = entity instanceof Player player && player.getAbilities().instabuild;
-        power.ifPresent(storage -> {
+        if (storage != null) {
             int energy = EquipCfg.elytraFlightEnergy;
             if (storage.getOPStored() < energy && !creative) {
                 storage.modifyEnergyStored(-10);
@@ -68,7 +70,8 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 
             } else{
                 if (InputSync.getSprintState(entity.getUUID())) {
-                    ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                    ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+                    assert host != null;
                     FlightEntity module = (FlightEntity)host.getEntitiesByType(ModuleTypes.FLIGHT).findAny().orElse(null);
                     double flightSpeed = module == null ? 0 : module.getElytraBoost();
                     if (flightSpeed > 0) {
@@ -89,7 +92,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
                     storage.modifyEnergyStored(-energy);
                 }
             }
-        });
+        }
 
         return true;
     }

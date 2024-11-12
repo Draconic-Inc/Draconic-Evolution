@@ -13,14 +13,13 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.DETileMenu;
 import com.brandon3055.draconicevolution.inventory.EnergyCoreMenu;
 import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
 import com.brandon3055.draconicevolution.lib.OPStorageOP;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,16 +31,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -97,7 +92,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
     public TileEnergyCore(BlockPos pos, BlockState state) {
         super(DEContent.TILE_STORAGE_CORE.get(), pos, state);
-        capManager.setInternalManaged("energy", CapabilityOP.OP, energy).saveTile().syncContainer();
+        capManager.setInternalManaged("energy", CapabilityOP.BLOCK, energy).saveTile().syncContainer();
         energy.setIOTracker(addTickable(new IOTracker()));
 
         for (int i = 0; i < stabilizerPositions.length; i++) {
@@ -109,6 +104,10 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         });
 
         energyTarget.setCCSCS();
+    }
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        capability(event, DEContent.TILE_STORAGE_CORE, CapabilityOP.BLOCK);
     }
 
     @Override
@@ -137,7 +136,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             validateStructure();
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
             return InteractionResult.SUCCESS;
         }
 
@@ -204,7 +203,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                 level.setBlockAndUpdate(pos, DEContent.STRUCTURE_BLOCK.get().defaultBlockState());
                 BlockEntity tile = level.getBlockEntity(pos);
                 if (tile instanceof TileStructureBlock) {
-                    ((TileStructureBlock) tile).blockName.set(ForgeRegistries.BLOCKS.getKey(originalState.getBlock()));
+                    ((TileStructureBlock) tile).blockName.set(BuiltInRegistries.BLOCK.getKey(originalState.getBlock()));
                     ((TileStructureBlock) tile).setController(this);
                 }
             }
@@ -431,12 +430,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
         float colour = 1F - fillPercent.get();
         return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public AABB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
     }
 
     @Override

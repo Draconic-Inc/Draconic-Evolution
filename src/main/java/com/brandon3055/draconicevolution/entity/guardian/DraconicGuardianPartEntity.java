@@ -7,7 +7,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.entity.PartEntity;
+import net.neoforged.neoforge.entity.PartEntity;
 
 public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntity> {
    public final DraconicGuardianEntity dragon;

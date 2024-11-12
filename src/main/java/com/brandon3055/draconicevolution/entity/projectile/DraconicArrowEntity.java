@@ -34,6 +34,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
@@ -46,10 +47,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,6 +61,7 @@ import java.util.Set;
  */
 public class DraconicArrowEntity extends AbstractArrow {
     private static final EntityDataAccessor<Integer> ID_EFFECT_COLOR = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.INT);
+    private static final ItemStack DEFAULT_ARROW_STACK = new ItemStack(Items.ARROW);
     private Potion potion = Potions.EMPTY;
     private final Set<MobEffectInstance> effects = Sets.newHashSet();
     private boolean fixedColor;
@@ -71,16 +73,20 @@ public class DraconicArrowEntity extends AbstractArrow {
     private static final EntityDataAccessor<Float> INIT_VELOCITY = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
     private static final EntityDataAccessor<Boolean> PROJ_ANTI_IMMUNE = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, Level world) {
-        super(entityType, world);
+    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> p_36858_, Level p_36859_) {
+        super(p_36858_, p_36859_, DEFAULT_ARROW_STACK);
     }
 
-    public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), xPos, yPos, zPos, world);
+    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, Level world, ItemStack arrowStack) {
+        super(entityType, world, arrowStack);
     }
 
-    public DraconicArrowEntity(Level world, LivingEntity shooter) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, world);
+    public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos, ItemStack arrowStack) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), xPos, yPos, zPos, world, arrowStack);
+    }
+
+    public DraconicArrowEntity(Level world, LivingEntity shooter, ItemStack arrowStack) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, world, arrowStack);
     }
 
     // ## Arrow Setup ##
@@ -234,7 +240,7 @@ public class DraconicArrowEntity extends AbstractArrow {
                 }
 
                 if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag) {
-                    if (ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                    if (EventHooks.onProjectileImpact(this, raytraceresult)) {
                         break;
                     }
                     this.onHit(raytraceresult);
@@ -410,7 +416,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     private DamageSource getDamageSource(Entity target) {
         Entity owner = this.getOwner();
         TechLevel techLevel = TechLevel.byIndex(entityData.get(TECH_LEVEL));
-        boolean bypassImmune = getProjectileImmuneOverride() && DEConfig.projectileAntiImmuneEntities.contains(ForgeRegistries.ENTITY_TYPES.getKey(target.getType()).toString());
+        boolean bypassImmune = getProjectileImmuneOverride() && DEConfig.projectileAntiImmuneEntities.contains(BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString());
         return DEDamage.draconicArrow(level(), this, owner, techLevel, bypassImmune);
     }
 

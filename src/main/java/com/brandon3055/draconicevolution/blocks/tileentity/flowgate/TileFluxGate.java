@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.DETileMenu;
 import com.brandon3055.draconicevolution.inventory.FlowGateMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,9 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
  * Created by brandon3055 on 15/11/2016.
@@ -33,15 +30,28 @@ public class TileFluxGate extends TileFlowGate {
         super(DEContent.TILE_FLUX_GATE.get(), pos, state);
     }
 
+    //THis is an annoying hack required due to the fact you cant get the block state in onLoad()
+    private boolean capsLoaded = false;
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(CapabilityOP.BLOCK, DEContent.TILE_FLUX_GATE.get(), (tile, side) -> {
+            if (!tile.capsLoaded) {
+                tile.updateCapabilities();
+                tile.capsLoaded = true;
+            }
+            return tile.getCapManager().getCapability(CapabilityOP.BLOCK, side);
+        });
+    }
+
     @Override
     public String getUnits() {
         return "RF/t";
     }
 
     private void updateCapabilities() {
-        capManager.remove(CapabilityOP.OP);
-        capManager.set(CapabilityOP.OP, inputReg, getDirection().getOpposite());
-        capManager.set(CapabilityOP.OP, outputReg, getDirection());
+        capManager.remove(CapabilityOP.BLOCK);
+        capManager.set(CapabilityOP.BLOCK, inputReg, getDirection().getOpposite());
+        capManager.set(CapabilityOP.BLOCK, outputReg, getDirection());
     }
 
     @Override
@@ -52,18 +62,6 @@ public class TileFluxGate extends TileFlowGate {
 
     //endregion
 
-    //THis is an annoying hack required due to the fact you cant get the block state in onLoad()
-    private boolean capsLoaded = false;
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-        if (!capsLoaded) {
-            updateCapabilities();
-            capsLoaded = true;
-        }
-        return super.getCapability(capability, side);
-    }
-
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new FlowGateMenu(id, player.getInventory(), this);
@@ -72,7 +70,7 @@ public class TileFluxGate extends TileFlowGate {
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
         }
         return true;
     }

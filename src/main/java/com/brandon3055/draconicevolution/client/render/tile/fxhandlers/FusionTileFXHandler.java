@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
 
     @Override
     public void tick() {
-        IFusionRecipe recipe;
+        RecipeHolder<IFusionRecipe> recipe;
         if (!core.isCrafting() || (recipe = core.getActiveRecipe()) == null) {
             rotationTick = -3;
             sound = null;
@@ -100,7 +101,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
                 .stream()
                 .mapToLong(IFusionInjector::getInjectorEnergy)
                 .sum();
-        chargeState = totalCharge / (float)recipe.getEnergyCost();
+        chargeState = totalCharge / (float)recipe.value().getEnergyCost();
         float arcChance = (chargeState * (1F/10F)) + (core.craftAnimProgress.get() * (1/5F)) + (rotationSpeed > 1 ? ((rotationSpeed - 1) * 0.25F) : 0F);
 
         if (coreDischarge != -1) {

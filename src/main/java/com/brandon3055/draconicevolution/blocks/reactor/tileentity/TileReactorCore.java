@@ -44,9 +44,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -561,7 +560,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     public void onComponentClicked(Player player, TileReactorComponent component) {
         if (!level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+            player.openMenu(this, worldPosition);
             sendPacketToClient((ServerPlayer) player, output -> output.writePos(component.getBlockPos()), 1);
         }
     }
@@ -991,11 +990,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     //endregion #############################################
 
     //region Rendering
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
-    }
 
     public double getCoreDiameter() {
         double volume = (reactableFuel.get() + convertedFuel.get()) / 1296D;

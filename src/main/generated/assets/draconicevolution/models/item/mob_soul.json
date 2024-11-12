@@ -1,3 +1,5 @@
 {
-  "parent": "minecraft:builtin/generated"
+  "parent": "minecraft:item/generated",
+  "class": "com.brandon3055.draconicevolution.client.render.item.RenderItemMobSoul",
+  "loader": "codechickenlib:class"
 }

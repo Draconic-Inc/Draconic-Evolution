@@ -5,36 +5,63 @@
   },
   "ingredients": [
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "tag": "forge:ingots/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium"
+      }
     },
     {
-      "tag": "forge:ingots/draconium_awakened"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:ingots/draconium_awakened"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     },
     {
-      "item": "draconicevolution:large_chaos_frag"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:reactor_core"
   },
-  "tier": "CHAOTIC",
-  "total_energy": 64000000
+  "techLevel": "chaotic",
+  "totalEnergy": 64000000
 }

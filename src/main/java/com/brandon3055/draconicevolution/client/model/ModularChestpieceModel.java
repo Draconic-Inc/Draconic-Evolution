@@ -37,7 +37,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.*;
 
@@ -154,9 +153,8 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     public void render(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
-        LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (!stack.isEmpty() && optionalHost.isPresent()) {
-            ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (!stack.isEmpty() && host != null) {
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl != null) {
                 shieldState = shieldControl.getShieldState();

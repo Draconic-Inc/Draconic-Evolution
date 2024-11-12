@@ -39,17 +39,19 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularBow extends BowItem implements IReaperItem, IModularItem {
+public class ModularBow extends BowItem implements IReaperItem, IModularEnergyItem {
     private final TechLevel techLevel;
 
     public ModularBow(TechProperties props) {
@@ -63,16 +65,15 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public ModuleHostImpl createHost(ItemStack stack) {
+    public @NotNull ModuleHostImpl instantiateHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "bow", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
         return host;
     }
 
-    @Nullable
     @Override
-    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
-        return new ModularOPStorage(host, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
+    public @NotNull ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier) {
+        return new ModularOPStorage(hostSupplier, EquipCfg.getBaseToolEnergy(techLevel), EquipCfg.getBaseToolTransfer(techLevel));
     }
 
     @Override
@@ -89,7 +90,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int count) {
         if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
-            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+            AutoFireEntity entity = stack.getCapability(DECapabilities.Host.ITEM).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
                 InteractionHand usingHand = player.getUsedItemHand();
@@ -105,7 +106,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
         ItemStack stack = player.getItemInHand(hand);
         boolean hasAmmo = !player.getProjectile(stack).isEmpty() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
 
-        InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, hasAmmo);
+        InteractionResultHolder<ItemStack> ret = EventHooks.onArrowNock(stack, world, player, hand, hasAmmo);
         if (ret != null) return ret;
 
         if (EnergyUtils.getEnergyStored(stack) < calculateShotEnergy(stack)) {
@@ -128,7 +129,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
             ItemStack ammoStack = player.getProjectile(stack);
 
             int drawTime = this.getUseDuration(stack) - timeLeft;
-            drawTime = ForgeEventFactory.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty() || noAmmoRequired);
+            drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty() || noAmmoRequired);
             if (drawTime < 0) return;
 
             if (!ammoStack.isEmpty() || noAmmoRequired) {
@@ -136,7 +137,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                     ammoStack = new ItemStack(Items.ARROW);
                 }
 
-                ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
                 ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
                 float powerForTime = getPowerForTime(drawTime, stack) * (projData.velocity() + 1);
@@ -145,7 +146,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
                     if (!level.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
-                        AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player));
+                        AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player), ammoStack);
                         if (arrowEntity instanceof Arrow) {
                             ((Arrow) arrowEntity).setEffectsFromItem(ammoStack);
                         } else if (arrowEntity instanceof DraconicArrowEntity) {
@@ -210,16 +211,16 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public AbstractArrow customArrow(AbstractArrow arrow) {
+    public AbstractArrow customArrow(AbstractArrow arrow, ItemStack stack) {
         if (arrow.getType() != EntityType.ARROW && arrow.getType() != EntityType.SPECTRAL_ARROW) {
             return arrow;
         }
 
         Entity owner = arrow.getOwner();
         if (!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
-            return new DraconicArrowEntity(DEContent.ENTITY_DRACONIC_ARROW.get(), arrow.level());
+            return new DraconicArrowEntity(DEContent.ENTITY_DRACONIC_ARROW.get(), arrow.level(), stack);
         }
-        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner());
+        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner(), stack);
         if (arrow instanceof SpectralArrow) {
             newArrow.setSpectral(((SpectralArrow) arrow).duration);
         }
@@ -227,7 +228,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     public static float calculateDamage(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
         float baseDamage = 2;
@@ -257,7 +258,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     public static int getChargeTicks(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float speedModifier = data == null ? 0 : (float) data.speedMultiplier();
         speedModifier++;
@@ -266,8 +267,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (worldIn != null && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+        IModularEnergyItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
+        if (worldIn != null && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             tooltip.add(Component.translatable("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(ChatFormatting.DARK_GREEN));
         }

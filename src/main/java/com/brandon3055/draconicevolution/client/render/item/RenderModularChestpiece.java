@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -61,9 +60,8 @@ public class RenderModularChestpiece extends ToolRenderBase {
         materialPart.render(context, buffers, mat);
 
         int shieldColour = 0xFFFFFFFF;
-        LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (!stack.isEmpty() && optionalHost.isPresent()) {
-            ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (!stack.isEmpty() && host != null) {
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl != null) {
                 shieldColour = shieldControl.getShieldColour();
@@ -111,4 +109,10 @@ public class RenderModularChestpiece extends ToolRenderBase {
             }));
         }
     }
+
+    //@formatter:off //This is not cursed at all! idk what your talking about!
+    public static class CHESTPIECE_WYVERN extends RenderModularChestpiece { public CHESTPIECE_WYVERN() {super(TechLevel.WYVERN);}}
+    public static class CHESTPIECE_DRACONIC extends RenderModularChestpiece { public CHESTPIECE_DRACONIC() {super(TechLevel.DRACONIC);}}
+    public static class CHESTPIECE_CHAOTIC extends RenderModularChestpiece { public CHESTPIECE_CHAOTIC() {super(TechLevel.CHAOTIC);}}
+    //@formatter::on
 }

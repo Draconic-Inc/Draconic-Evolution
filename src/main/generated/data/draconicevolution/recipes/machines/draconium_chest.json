@@ -5,39 +5,69 @@
   },
   "ingredients": [
     {
-      "item": "minecraft:furnace"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "minecraft:furnace"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
     },
     {
-      "item": "draconicevolution:draconium_core"
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
     },
     {
-      "item": "minecraft:furnace"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
     },
     {
-      "item": "minecraft:crafting_table"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:crafting_table"
+      }
     },
     {
-      "item": "minecraft:furnace"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
     },
     {
-      "tag": "forge:storage_blocks/draconium"
+      "consume": true,
+      "ingredient": {
+        "tag": "forge:storage_blocks/draconium"
+      }
     },
     {
-      "item": "minecraft:furnace"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
     },
     {
-      "item": "minecraft:crafting_table"
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:crafting_table"
+      }
     }
   ],
   "result": {
     "item": "draconicevolution:draconium_chest"
   },
-  "tier": "DRACONIUM",
-  "total_energy": 2000000
+  "techLevel": "draconium",
+  "totalEnergy": 2000000
 }
