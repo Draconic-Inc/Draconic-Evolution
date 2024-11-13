@@ -157,29 +157,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.CAPACITOR_DRACONIC, "item/tools");
         simpleItem(DEContent.CAPACITOR_CHAOTIC, "item/tools");
         simpleItem(DEContent.CAPACITOR_CREATIVE, "item/tools");
-        simpleItem(DEContent.SHOVEL_WYVERN, "item/tools");
-        simpleItem(DEContent.SHOVEL_DRACONIC, "item/tools");
-        simpleItem(DEContent.SHOVEL_CHAOTIC, "item/tools");
-        simpleItem(DEContent.PICKAXE_WYVERN, "item/tools");
-        simpleItem(DEContent.PICKAXE_DRACONIC, "item/tools");
-        simpleItem(DEContent.PICKAXE_CHAOTIC, "item/tools");
-        simpleItem(DEContent.HOE_WYVERN, "item/tools");
-        simpleItem(DEContent.HOE_DRACONIC, "item/tools");
-        simpleItem(DEContent.HOE_CHAOTIC, "item/tools");
-        simpleItem(DEContent.AXE_WYVERN, "item/tools");
-        simpleItem(DEContent.AXE_DRACONIC, "item/tools");
-        simpleItem(DEContent.AXE_CHAOTIC, "item/tools");
-        simpleItem(DEContent.BOW_WYVERN, "item/tools");
-        simpleItem(DEContent.BOW_DRACONIC, "item/tools");
-        simpleItem(DEContent.BOW_CHAOTIC, "item/tools");
-        simpleItem(DEContent.SWORD_WYVERN, "item/tools");
-        simpleItem(DEContent.SWORD_DRACONIC, "item/tools");
-        simpleItem(DEContent.SWORD_CHAOTIC, "item/tools");
-        simpleItem(DEContent.STAFF_DRACONIC, "item/tools");
-        simpleItem(DEContent.STAFF_CHAOTIC, "item/tools");
-        simpleItem(DEContent.CHESTPIECE_WYVERN, "item/tools");
-        simpleItem(DEContent.CHESTPIECE_DRACONIC, "item/tools");
-        simpleItem(DEContent.CHESTPIECE_CHAOTIC, "item/tools");
+
         //endregion
 
 
@@ -242,18 +220,18 @@ public class ItemModelGenerator extends ItemModelProvider {
         clazz(DEContent.CHESTPIECE_CHAOTIC, RenderModularChestpiece.CHESTPIECE_CHAOTIC.class);
     }
 
-    private void simpleItem(DeferredHolder<? extends Item, ? extends Item> item) {
+    protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item) {
         simpleItem(item, "item");
     }
 
     @SuppressWarnings ("ConstantConditions")
-    private void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, String textureFolder) {
+    protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, String textureFolder) {
         ResourceLocation reg = item.getId();
         simpleItem(item, new ResourceLocation(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
     }
 
     @SuppressWarnings ("ConstantConditions")
-    private void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture) {
+    protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture) {
         ResourceLocation reg = item.getId();
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
@@ -261,7 +239,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     }
 
     @SuppressWarnings ("ConstantConditions")
-    private void multiLayerItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture, ResourceLocation overlay) {
+    protected void multiLayerItem(DeferredHolder<? extends Item, ? extends Item> item, ResourceLocation texture, ResourceLocation overlay) {
         ResourceLocation reg = item.getId();
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
@@ -269,7 +247,7 @@ public class ItemModelGenerator extends ItemModelProvider {
                 .texture("layer1", overlay);
     }
 
-    private void multiLayerItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
+    protected void multiLayerItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
         ResourceLocation reg = BuiltInRegistries.ITEM.getKey(item);
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
@@ -277,24 +255,24 @@ public class ItemModelGenerator extends ItemModelProvider {
                 .texture("layer1", overlay);
     }
 
-    private void blockItem(DeferredHolder<? extends Block, ? extends Block> block) {
+    protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block) {
         if (block == null) return;
         ResourceLocation reg = block.getId();
         blockItem(block, new ResourceLocation(reg.getNamespace(), "block/" + reg.getPath()));
     }
 
-    private void blockItem(DeferredHolder<? extends Block, ? extends Block> block, ResourceLocation blockModel) {
+    protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block, ResourceLocation blockModel) {
         if (block == null) return;
         ResourceLocation reg = block.getId();
         getBuilder(reg.getPath()).parent(new ModelFile.UncheckedModelFile(blockModel));
     }
 
-    private void dummyBlock(DeferredHolder<? extends Block, ? extends Block> block) {
+    protected void dummyBlock(DeferredHolder<? extends Block, ? extends Block> block) {
         getBuilder(block.getId().getPath())//
                 .parent(new ModelFile.UncheckedModelFile("builtin/generated"));
     }
 
-    private void dummyItem(DeferredHolder<? extends Item, ? extends Item> item) {
+    protected void dummyItem(DeferredHolder<? extends Item, ? extends Item> item) {
         getBuilder(item.getId().getPath())//
                 .parent(new ModelFile.UncheckedModelFile("builtin/generated"));
     }

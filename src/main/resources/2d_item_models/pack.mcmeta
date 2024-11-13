@@ -1,0 +1,8 @@
+{
+   "pack": {
+      "pack_format": 22,
+      "description": "2D tool and armor item models",
+      "forge:resource_pack_format": 12,
+      "forge:data_pack_format": 10
+   }
+}

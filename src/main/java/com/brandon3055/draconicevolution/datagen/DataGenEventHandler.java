@@ -38,6 +38,7 @@ public class DataGenEventHandler {
         gen.addProvider(event.includeClient(), new LangGenerator(gen.getPackOutput()));
         gen.addProvider(event.includeClient(), new BlockStateGenerator(gen, event.getExistingFileHelper()));
         gen.addProvider(event.includeClient(), new ItemModelGenerator(gen, event.getExistingFileHelper()));
+        gen.addProvider(event.includeClient(), new ItemModelGenerator2DModels(gen, event.getExistingFileHelper()));
         gen.addProvider(event.includeClient(), new MultiBlockGenerator(gen));
         gen.addProvider(event.includeClient(), new DynamicTextures(gen, event.getExistingFileHelper()));
 
@@ -51,7 +52,7 @@ public class DataGenEventHandler {
         gen.addProvider(event.includeServer(), new ItemTagGenerator(gen.getPackOutput(), event.getLookupProvider(), blockGenerator.contentsGetter(), DraconicEvolution.MODID, event.getExistingFileHelper()));
         gen.addProvider(event.includeServer(), new DamageTypeGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID, event.getExistingFileHelper()));
 
-        gen.addProvider(event.includeServer(), new CuriosProvider("mod_id", event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
+        gen.addProvider(event.includeServer(), new CuriosProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
 
     }
 

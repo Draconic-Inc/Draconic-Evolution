@@ -1,8 +1,5 @@
 {
   "parent": "minecraft:item/generated",
   "class": "com.brandon3055.draconicevolution.client.render.item.RenderModularStaff$STAFF_DRACONIC",
-  "loader": "codechickenlib:class",
-  "textures": {
-    "layer0": "draconicevolution:item/tools/draconic_staff"
-  }
+  "loader": "codechickenlib:class"
 }

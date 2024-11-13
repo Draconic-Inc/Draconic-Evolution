@@ -7,7 +7,6 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -19,21 +18,29 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.BuiltInPackSource;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.LogicalSide;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
+
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -51,7 +58,7 @@ public class ClientEventHandler {
     public static int explosionTime = 0;
     public static boolean explosionRetreating = false;
 
-    public static final RenderType explosionFlashType = RenderType.create(DraconicEvolution.MODID+":explosion_flash", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,
+    public static final RenderType explosionFlashType = RenderType.create(MODID + ":explosion_flash", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,
             RenderType.CompositeState.builder()
                     .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.explosionFlashShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -62,11 +69,20 @@ public class ClientEventHandler {
     public static void init(IEventBus modBus) {
         mc = Minecraft.getInstance();
         modBus.addListener(EventPriority.LOW, ClientEventHandler::registerOverlays);
+        modBus.addListener(ClientEventHandler::addPackFinders);
         NeoForge.EVENT_BUS.addListener(ClientEventHandler::tickEnd);
     }
 
+    public static void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource("2d_item_models");
+            var pack = Pack.readMetaAndCreate("builtin/2d_item_models", Component.literal("Draconic Evolution 2D"), false, BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath, true)), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+            event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
+        }
+    }
+
     private static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll(new ResourceLocation(DraconicEvolution.MODID, "explosion_overlay"), (gui, graphics, partialTick, screenWidth, screenHeight) -> {
+        event.registerBelowAll(new ResourceLocation(MODID, "explosion_overlay"), (gui, graphics, partialTick, screenWidth, screenHeight) -> {
             if (explosionPos != null) {
                 updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), mc.getFrameTime());
             }
@@ -263,7 +279,7 @@ public class ClientEventHandler {
         explosionAnimation = 0;
         explosionTime = 0;
 
-        if (reload){
+        if (reload) {
             ProcessHandlerClient.addProcess(new DelayedExecutor(13) {
                 @Override
                 public void execute(Object[] args) {
