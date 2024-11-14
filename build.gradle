@@ -68,8 +68,7 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
-//    implementation "com.brandon3055.brandonscore:BrandonsCore:${mc_version}-${bcore_version}:universal"
-    implementation "com.brandon3055.brandonscore:BrandonsCore:1.20.1-${bcore_version}:universal"
+    implementation "com.brandon3055.brandonscore:BrandonsCore:${mc_version}-${bcore_version}:universal"
     implementation "io.codechicken:CodeChickenLib:${mc_version}-${ccl_version}"
     implementation "io.codechicken:EnderStorage:${mc_version}-${ender_storage_version}"
 //    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
@@ -161,9 +160,8 @@ def publishingMetadataTask = tasks.register("publishingMetadata") {
 }
 
 jar {
-    finalizedBy 'reobfJar'
     finalizedBy 'signJar'
-    archiveClassifier = 'universal'
+    archiveClassifier = ''
     manifest {
         attributes 'Specification-Title': base.archivesName.get()
         attributes 'Specification-Vendor': 'brandon3055'

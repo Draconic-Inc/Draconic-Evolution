@@ -13,7 +13,7 @@ license="CoFH \"Don't Be a Jerk\" License"
 [[dependencies.draconicevolution]]
 	modId="neoforge"
 	type="required"
-	versionRange="[${forge_version},)"
+	versionRange="[${neo_version},)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]
@@ -24,7 +24,7 @@ license="CoFH \"Don't Be a Jerk\" License"
 	side="BOTH"
 [[dependencies.draconicevolution]]
     modId="computercraft"
-	type="required"
+	type="optional"
     versionRange="[${cct_version},)"
     ordering="AFTER"
     side="BOTH"
