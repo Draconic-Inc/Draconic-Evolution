@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,6 +22,13 @@ public interface IFusionDataTransfer {
                     result.enchant(enchant, level);
                 }
             });
+        }
+
+        if (cat.hasTag()) {
+            CompoundTag tag = cat.getTagElement("affix_data");
+            if (tag != null) {
+                result.addTagElement("affix_data", tag);
+            }
         }
 
         LazyOptional<ModuleHost> optCatHost = cat.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
