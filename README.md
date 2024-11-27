@@ -10,4 +10,4 @@ Draconic Evolution adds powerful new tools, Items, weapons and Armor. The premis
 
 ## License / Use in Modpacks
 This mod is licensed under the [**Don't Be a Jerk License**](https://github.com/Draconic-Inc/Draconic-Evolution/blob/HEAD/LICENSE.md) created by CoFH.
-I herby grant permission to use this mod in any mod pack without the need to request permission from myself the owner (brandon3055).
+I hereby grant permission to use this mod in any mod pack without the need to request permission from myself the owner (brandon3055).
