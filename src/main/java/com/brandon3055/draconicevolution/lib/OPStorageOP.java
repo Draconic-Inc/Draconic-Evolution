@@ -62,7 +62,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             if (!simulate) {
                 valueStorage -= maxExtract;
                 if (valueStorage <= 0) {
-                    valueStorage = Long.MAX_VALUE;
+                    valueStorage -= Long.MIN_VALUE;
                     overflowCount = overflowCount.subtract(BigInteger.ONE);
                 }
                 if (ioTracker != null) {
