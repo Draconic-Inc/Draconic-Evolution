@@ -79,7 +79,7 @@ public class DataGenEventHandler {
             tag(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.ITEM_AWAKENED_DRACONIUM_BLOCK.get());
             tag(Tags.Items.STORAGE_BLOCKS).addTags(DETags.Items.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
 
-            tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ITEM_END_DRACONIUM_ORE.get(), DEContent.ITEM_NETHER_DRACONIUM_ORE.get(), DEContent.ITEM_OVERWORLD_DRACONIUM_ORE.get());
+            tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ITEM_END_DRACONIUM_ORE.get(), DEContent.ITEM_NETHER_DRACONIUM_ORE.get(), DEContent.ITEM_OVERWORLD_DRACONIUM_ORE.get(), DEContent.ITEM_DEEPSLATE_DRACONIUM_ORE.get());
             tag(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
 
             for (Module<?> module : ModuleRegistry.getRegistry().getValues()) {
