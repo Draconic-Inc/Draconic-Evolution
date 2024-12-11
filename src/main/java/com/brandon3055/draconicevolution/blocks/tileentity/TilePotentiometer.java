@@ -72,7 +72,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
             ChatHelper.sendIndexed(player, Component.literal(String.valueOf(power.get())), MSG_ID);
         }
         else {
-            level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));
+            level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.8F + (power.get() / 15F));
         }
 
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());

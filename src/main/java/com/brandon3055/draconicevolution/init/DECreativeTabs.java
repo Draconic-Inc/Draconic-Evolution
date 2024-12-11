@@ -34,7 +34,9 @@ public class DECreativeTabs {
             List<ItemStack> modulesIcons = new ArrayList<>();
             helper.register(new ResourceLocation(MODID, "blocks"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.blocks"))
                             .displayItems((params, output) -> {
-                                for (ResourceLocation key : BuiltInRegistries.BLOCK.keySet()) {
+                                List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.BLOCK.keySet());
+                                sorted.sort(ResourceLocation::compareNamespaced);
+                                for (ResourceLocation key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
                                         Block block = BuiltInRegistries.BLOCK.get(key);
                                         if (block instanceof CustomTabHandling) continue;
@@ -49,7 +51,9 @@ public class DECreativeTabs {
 
             helper.register(new ResourceLocation(MODID, "items"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.items"))
                             .displayItems((params, output) -> {
-                                for (ResourceLocation key : BuiltInRegistries.ITEM.keySet()) {
+                                List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
+                                sorted.sort(ResourceLocation::compareNamespaced);
+                                for (ResourceLocation key : sorted) {
                                     if (key.getNamespace().equals(MODID)) {
                                         Item item = BuiltInRegistries.ITEM.get(key);
                                         if (item instanceof CustomTabHandling || item instanceof BlockItem || item instanceof ModuleItem) continue;
@@ -64,7 +68,9 @@ public class DECreativeTabs {
 
             helper.register(new ResourceLocation(MODID, "modules"), CreativeModeTab.builder().title(Component.translatable("itemGroup.draconicevolution.modules"))
                     .displayItems((params, output) -> {
-                        for (ResourceLocation key : BuiltInRegistries.ITEM.keySet()) {
+                        List<ResourceLocation> sorted = new ArrayList<>(BuiltInRegistries.ITEM.keySet());
+                        sorted.sort(ResourceLocation::compareNamespaced);
+                        for (ResourceLocation key : sorted) {
                             if (key.getNamespace().equals(MODID)) {
                                 Item item = BuiltInRegistries.ITEM.get(key);
                                 if (!(item instanceof ModuleItem)) continue;
