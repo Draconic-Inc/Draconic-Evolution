@@ -41,7 +41,8 @@ import java.util.UUID;
  * Created by brandon3055 on 24/7/21
  */
 public class CustomBossInfoHandler {
-    private static final ResourceLocation GUI_BARS_LOCATION = new ResourceLocation("textures/gui/bars.png");
+    //TODO Update this to sprites.
+    private static final ResourceLocation GUI_BARS_LOCATION = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/bars.png");
     private static final Map<UUID, BossShieldInfo> events = Maps.newLinkedHashMap();
 
     private static final ResourceLocation ENDER_CRYSTAL_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
@@ -160,14 +161,14 @@ public class CustomBossInfoHandler {
     private static void drawBar(GuiGraphics graphics, int x, int y, BossEvent info) {
         drawRect(graphics, x, y, 0, info.getColor().ordinal() * 5 * 2, 182, 5);
         if (info.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
-            drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2, 182, 5);
+//            drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2, 182, 5);
         }
 
         int i = (int) (info.getProgress() * 183.0F);
         if (i > 0) {
-            drawRect(graphics, x, y, 0, info.getColor().ordinal() * 5 * 2 + 5, i, 5);
+//            drawRect(graphics, x, y, 0, info.getColor().ordinal() * 5 * 2 + 5, i, 5);
             if (info.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
-                drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2 + 5, i, 5);
+//                drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2 + 5, i, 5);
             }
         }
     }

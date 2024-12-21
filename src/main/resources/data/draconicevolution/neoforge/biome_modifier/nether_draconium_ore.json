@@ -1,5 +1,5 @@
 {
-  "type" : "forge:add_features",
+  "type" : "neoforge:add_features",
   "features": "draconicevolution:nether_draconium_ore",
   "biomes": "#minecraft:is_nether",
   "step": "underground_ores"
