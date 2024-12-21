@@ -71,12 +71,12 @@
     "draconicevolution:item_draconic_jump",
     "draconicevolution:item_chaotic_jump",
     "draconicevolution:item_wyvern_aqua_adapt",
-    "draconicadditions:item_chaotic_auto_feed",
-    "draconicadditions:item_draconic_tick_accel",
-    "draconicadditions:item_chaotic_tick_accel",
-    "draconicadditions:item_semi_stable_chaos",
-    "draconicadditions:item_stable_chaos",
-    "draconicadditions:item_unstable_chaos",
-    "draconicadditions:item_chaos_injector"
+    {"id": "draconicadditions:item_chaotic_auto_feed", "required": false},
+    {"id": "draconicadditions:item_draconic_tick_accel", "required": false},
+    {"id": "draconicadditions:item_chaotic_tick_accel", "required": false},
+    {"id": "draconicadditions:item_semi_stable_chaos", "required": false},
+    {"id": "draconicadditions:item_stable_chaos", "required": false},
+    {"id": "draconicadditions:item_unstable_chaos", "required": false},
+    {"id": "draconicadditions:item_chaos_injector", "required": false}
   ]
 }
