@@ -66,12 +66,14 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
 
         GuiText highLabel = new GuiText(root, TOOLKIT.translate("redstone_high"))
                 .setTextColour(0xFF0000)
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .setShadow(false);
         Constraints.size(highLabel, playInv.container().xSize(), 8);
         Constraints.placeInside(highLabel, root, Constraints.LayoutPos.TOP_CENTER, 0, 18);
 
         var highField = TOOLKIT.createTextField(root);
         highField.container()
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .constrain(LEFT, match(highLabel.get(LEFT)))
                 .constrain(TOP, relative(highLabel.get(BOTTOM), 2));
         highField.field()
@@ -79,6 +81,7 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
         Constraints.size(highField.container(), highLabel.xSize() - 60, 14);
 
         GuiButton applyHigh = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("apply"))
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .onPress(() -> tile.setMax(highField.field().getValue()));
         Constraints.size(applyHigh, 59, 14);
         Constraints.placeOutside(applyHigh, highField.container(), Constraints.LayoutPos.MIDDLE_RIGHT, 1, 0);
@@ -86,6 +89,7 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
 
         GuiText lowLabel = new GuiText(root, TOOLKIT.translate("redstone_low"))
                 .setTextColour(0x990000)
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .setShadow(false)
                 .constrain(LEFT, match(highLabel.get(LEFT)))
                 .constrain(TOP, relative(highField.field().get(BOTTOM), 3));
@@ -93,6 +97,7 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
 
         var lowField = TOOLKIT.createTextField(root);
         lowField.container()
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .constrain(LEFT, match(lowLabel.get(LEFT)))
                 .constrain(TOP, relative(lowLabel.get(BOTTOM), 2));
         lowField.field()
@@ -100,6 +105,7 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
         Constraints.size(lowField.container(), lowLabel.xSize() - 60, 14);
 
         GuiButton applyLow = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("apply"))
+                .setEnabled(() -> !tile.flowOverridden.get())
                 .onPress(() -> tile.setMin(lowField.field().getValue()));
         Constraints.size(applyLow, 59, 14);
         Constraints.placeOutside(applyLow, lowField.container(), Constraints.LayoutPos.MIDDLE_RIGHT, 1, 0);
@@ -114,17 +120,6 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
                 .constrain(BOTTOM, relative(playInv.container().get(TOP), -3))
                 .constrain(LEFT, match(playInv.container().get(LEFT)))
                 .constrain(HEIGHT, literal(8));
-//
-//        template.background.addChild(new GuiLabel())
-//                .setHoverText(toolkit.i18n("flow.info"))
-//                .setTrim(false)
-//                .setShadow(false)
-//                .setTextColGetter(GuiToolkit.Palette.Slot::text)
-//                .setSize(xSize(), 8)
-//                .setYPos(lowField.maxYPos() + 5)
-//                .setMaxXPos(template.playerSlots.maxXPos(), false)
-//                .setDisplaySupplier(() -> toolkit.i18n("flow") + ": " + (tile.getFlow() > 999999 ? Utils.formatNumber(tile.getFlow()) : Utils.addCommas(tile.getFlow())) + tile.getUnits())
-//                .setAlignment(GuiAlign.RIGHT);
 
         gui.onTick(() -> {
             if (tile.minFlow.get() != ltMin) {
@@ -135,119 +130,14 @@ public class FlowGateGui extends ContainerGuiProvider<FlowGateMenu> {
                 ltMax = tile.maxFlow.get();
                 highField.field().setValue(String.valueOf(ltMax));
             }
-            if (!highField.field().isFocused() && highField.field().getValue().equals("")) {
+            if (!highField.field().isFocused() && highField.field().getValue().isEmpty()) {
                 highField.field().setValue("0");
             }
-            if (!lowField.field().isFocused() && lowField.field().getValue().equals("")) {
+            if (!lowField.field().isFocused() && lowField.field().getValue().isEmpty()) {
                 lowField.field().setValue("0");
             }
         });
-
-//        manager.onTick(() -> {
-//            if (tile.minFlow.get() != ltMin) {
-//                ltMin = tile.minFlow.get();
-//                lowField.setValue(String.valueOf(ltMin));
-//            }
-//            if (tile.maxFlow.get() != ltMax) {
-//                ltMax = tile.maxFlow.get();
-//                highField.setValue(String.valueOf(ltMax));
-//            }
-//            if (!highField.isFocused() && highField.getValue().equals("")) {
-//                highField.setValue("0");
-//            }
-//            if (!lowField.isFocused() && lowField.getValue().equals("")) {
-//                lowField.setValue("0");
-//            }
-//        });
-
     }
-
-//    private GuiToolkit<GuiFlowGate> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.DEFAULT).setTranslationPrefix("gui.draconicevolution.flow_gate");
-//    private TileFlowGate tile;
-//    private long ltMin = -1;
-//    private long ltMax = -1;
-//
-//    public GuiFlowGate(ContainerBCTile<TileFlowGate> container, Inventory inv, Component title) {
-//        super(container, inv, title);
-//        this.tile = container.tile;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//        TBasicMachine template = toolkit.loadTemplate(new TModularMachine(this, tile));
-//
-//        template.background.addChild(new GuiLabel(toolkit.i18n("overridden")))
-//                .setHoverText(toolkit.i18n("overridden.info"))
-//                .setSize(60, 8)
-//                .setTextColour(0xff0000)
-//                .setShadow(false)
-//                .setEnabledCallback(() -> tile.flowOverridden.get())
-//                .setPos(guiLeft() + 4, guiTop() + 4);
-//
-//        GuiLabel highLabel = template.background.addChild(new GuiLabel(toolkit.i18n("redstone_high")))
-//                .setSize(xSize(), 8)
-//                .setTextColour(0xff0000)
-//                .setShadow(false)
-//                .setPos(template.playerSlots.xPos(), template.title.maxYPos() + 4);
-//
-//        GuiTextField highField = toolkit.createTextField(template.background)
-//                .setHoverText(toolkit.i18n("redstone_high.info"))
-//                .setFilter(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
-//                .setSize(template.playerSlots.xSize() - 60, 14)
-//                .setPos(highLabel.xPos(), highLabel.maxYPos() + 2);
-//
-//        toolkit.createButton_old(toolkit.i18n("apply"), template.background)
-//                .setPos(highField.maxXPos() + 1, highField.yPos())
-//                .setYSize(highField.ySize())
-//                .setMaxXPos(template.playerSlots.maxXPos(), true)
-//                .onPressed(() -> tile.setMax(highField.getValue()));
-//
-//        GuiLabel lowLabel = template.background.addChild(new GuiLabel(toolkit.i18n("redstone_low")))
-//                .setSize(xSize(), 8)
-//                .setTextColour(0x990000)
-//                .setShadow(false)
-//                .setPos(highField.xPos(), highField.maxYPos() + 3);
-//
-//        GuiTextField lowField = toolkit.createTextField(template.background)
-//                .setHoverText(toolkit.i18n("redstone_low.info"))
-//                .setFilter(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
-//                .setSize(template.playerSlots.xSize() - 60, 14)
-//                .setPos(lowLabel.xPos(), lowLabel.maxYPos() + 2);
-//
-//        toolkit.createButton_old(toolkit.i18n("apply"), template.background)
-//                .setPos(lowField.maxXPos() + 1, lowField.yPos())
-//                .setYSize(lowField.ySize())
-//                .setMaxXPos(template.playerSlots.maxXPos(), true)
-//                .onPressed(() -> tile.setMin(lowField.getValue()));
-//
-//        template.background.addChild(new GuiLabel())
-//                .setHoverText(toolkit.i18n("flow.info"))
-//                .setTrim(false)
-//                .setShadow(false)
-//                .setTextColGetter(GuiToolkit.Palette.Slot::text)
-//                .setSize(xSize(), 8)
-//                .setYPos(lowField.maxYPos() + 5)
-//                .setMaxXPos(template.playerSlots.maxXPos(), false)
-//                .setDisplaySupplier(() -> toolkit.i18n("flow") + ": " + (tile.getFlow() > 999999 ? Utils.formatNumber(tile.getFlow()) : Utils.addCommas(tile.getFlow())) + tile.getUnits())
-//                .setAlignment(GuiAlign.RIGHT);
-//
-//        manager.onTick(() -> {
-//            if (tile.minFlow.get() != ltMin) {
-//                ltMin = tile.minFlow.get();
-//                lowField.setValue(String.valueOf(ltMin));
-//            }
-//            if (tile.maxFlow.get() != ltMax) {
-//                ltMax = tile.maxFlow.get();
-//                highField.setValue(String.valueOf(ltMax));
-//            }
-//            if (!highField.isFocused() && highField.getValue().equals("")) {
-//                highField.setValue("0");
-//            }
-//            if (!lowField.isFocused() && lowField.getValue().equals("")) {
-//                lowField.setValue("0");
-//            }
-//        });
-//    }
 
     public static class Screen extends ModularGuiContainer<FlowGateMenu> {
         public Screen(FlowGateMenu menu, Inventory inv, Component title) {
