@@ -40,7 +40,7 @@ public class DraconicEvolution {
         DECommands.init();
         CapabilityData.init(modBus);
         LootEventHandler.init();
-        ModuleEventHandler.init();
+        ModuleEventHandler.init(modBus);
         ModularArmorEventHandler.init();
         DraconicNetwork.init(modBus);
         DEEventHandler.init(modBus);
