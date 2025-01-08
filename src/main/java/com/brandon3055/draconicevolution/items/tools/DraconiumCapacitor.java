@@ -221,7 +221,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (entity.getAge() >= 0) {
+        if (entity.getAge() >= 0 && entity.pickupDelay != 32767) {
             entity.setExtendedLifetime();
         }
         return super.onEntityItemUpdate(stack, entity);

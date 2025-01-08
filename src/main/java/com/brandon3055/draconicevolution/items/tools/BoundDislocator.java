@@ -67,7 +67,7 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (entity.getAge() >= 0) {
+        if (entity.getAge() >= 0 && entity.pickupDelay != 32767) {
             entity.setExtendedLifetime();
         }
         if (entity.level() instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
