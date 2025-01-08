@@ -118,6 +118,11 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     }
 
     public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, MultiBufferSource getter) {
+        //The model should be generated during startup, unless Embeddium is installed... STOP BREAKING MY SHIT!!!!
+        if (model == null) {
+            Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            model = CCModel.combine(map.values());
+        }
         DEShaders.reactorTime.glUniform1f(animation);
         DEShaders.reactorIntensity.glUniform1f(intensity);
         ccrs.bind(REACTOR_CORE_TYPE, getter);
