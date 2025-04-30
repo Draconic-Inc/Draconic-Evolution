@@ -8,7 +8,6 @@ import codechicken.lib.gui.modular.elements.GuiElement;
 import codechicken.lib.gui.modular.lib.GuiRender;
 import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.inventory.InventoryUtils;
-import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
@@ -28,7 +27,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.*;
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -50,7 +48,6 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         double slotYSize = height / 3D;
         for (int i = 0; i < slotsCount; i++) {
             double xPos = x + ((i % 3) * slotXSize);
-            //noinspection IntegerDivisionInFloatingPointContext
             double yPos = y + ((i / 3) * slotYSize);
             slots.add(new Slot(i, xPos, yPos, slotXSize));
         }
@@ -75,19 +72,26 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         return super.writeExtraData(nbt);
     }
 
+    /**
+     * Insère une collection de stacks dans l'Ender Chest si le module est activé.
+     * @return les stacks non insérés
+     */
     public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorage opStorage) {
-        if (opStorage == null) return new ArrayList<>(stacks);
-        Container container;
-        if (ModHelper.ENDERSTORAGE.isPresent()) {
-            container = getEnderStorage(player);
-        } else {
-            container = player.getEnderChestInventory();
+        // NE RIEN FAIRE SI MODULE DÉSACTIVÉ
+        if (!getPropertyValue("ender_collection_mod")) {
+            return new ArrayList<>(stacks);
+        }
+        if (opStorage == null) {
+            return new ArrayList<>(stacks);
         }
 
-        Predicate<ItemStack> filter = null;
-        if (!filterTags.isEmpty() || !filterStacks.isEmpty()) {
-            filter = createFilterTest();
-        }
+        Container container = ModHelper.ENDERSTORAGE.isPresent()
+            ? getEnderStorage(player)
+            : player.getEnderChestInventory();
+
+        Predicate<ItemStack> filter = (!filterTags.isEmpty() || !filterStacks.isEmpty())
+            ? createFilterTest()
+            : null;
 
         List<ItemStack> notInserted = new ArrayList<>();
         for (ItemStack stack : stacks) {
@@ -107,20 +111,20 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     /**
-     * @return the remaining items that could not be inserted
+     * Insère un seul stack et renvoie le reste.
      */
     public int insertStack(Player player, ItemStack stack, IOPStorage opStorage) {
-        Container container;
-        if (ModHelper.ENDERSTORAGE.isPresent()) {
-            container = getEnderStorage(player);
-        } else {
-            container = player.getEnderChestInventory();
+        if (!getPropertyValue("ender_collection_mod")) {
+            return stack.getCount();
         }
 
-        Predicate<ItemStack> filter = null;
-        if (!filterTags.isEmpty() || !filterStacks.isEmpty()) {
-            filter = createFilterTest();
-        }
+        Container container = ModHelper.ENDERSTORAGE.isPresent()
+            ? getEnderStorage(player)
+            : player.getEnderChestInventory();
+
+        Predicate<ItemStack> filter = (!filterTags.isEmpty() || !filterStacks.isEmpty())
+            ? createFilterTest()
+            : null;
 
         long cost = (long) EquipCfg.enderModulePerItemEnergy * stack.getCount();
         if (opStorage.getOPStored() < cost || (filter != null && !filter.test(stack))) {
@@ -145,9 +149,17 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+    public void renderModule(GuiElement<?> parent,
+                             GuiRender render,
+                             int x, int y, int width, int height,
+                             double mouseX, double mouseY,
+                             boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
-        if (frequencyTag.isEmpty() || !ModHelper.ENDERSTORAGE.isPresent()) {
+
+        // PAS DE RENDU SI DÉSACTIVÉ OU pas d'EnderStorage
+        if (!getPropertyValue("ender_collection_mod")
+                || frequencyTag.isEmpty()
+                || !ModHelper.ENDERSTORAGE.isPresent()) {
             return;
         }
 
@@ -170,9 +182,14 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         for (int i = 0; i < 3; i++) {
             float px = mid - (w / 2F) - (p * 3) + (i * (p * 3));
             float u = (hp * 3) + ((hp*8) * (colours[i].getWoolMeta() % 4));
-            //noinspection IntegerDivisionInFloatingPointContext
-            float v = (hp * 2) +  ((hp*8) * (colours[i].getWoolMeta() / 4));
-            render.partialSprite(mat.renderType(GuiRender::texColType), px, py, px + w, py + h, mat.sprite(), u, v, u + (hp * 2), v + (hp * 4), 1, 1, 1, alpha);
+            float v = (hp * 2) + ((hp*8) * (colours[i].getWoolMeta() / 4));
+            render.partialSprite(
+                mat.renderType(GuiRender::texColType),
+                px, py, px + w, py + h,
+                mat.sprite(),
+                u, v, u + (hp * 2), v + (hp * 4),
+                1, 1, 1, alpha
+            );
         }
         if (alpha != 1) {
             render.pose().translate(0, 0, -201);
