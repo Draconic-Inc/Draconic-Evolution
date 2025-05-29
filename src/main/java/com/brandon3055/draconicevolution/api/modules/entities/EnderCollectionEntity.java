@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -64,21 +65,21 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt) {
-        super.readExtraData(nbt);
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        super.readExtraData(nbt, provider);
         frequencyTag = nbt.getCompound("frequency");
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
         nbt.put("frequency", frequencyTag);
-        return super.writeExtraData(nbt);
+        return super.writeExtraData(nbt, provider);
     }
 
     public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorage opStorage) {
         if (opStorage == null) return new ArrayList<>(stacks);
         Container container;
-        if (ModHelper.ENDERSTORAGE.isPresent()) {
+        if (ModHelper.ENDERSTORAGE) {
             container = getEnderStorage(player);
         } else {
             container = player.getEnderChestInventory();
@@ -111,7 +112,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
      */
     public int insertStack(Player player, ItemStack stack, IOPStorage opStorage) {
         Container container;
-        if (ModHelper.ENDERSTORAGE.isPresent()) {
+        if (ModHelper.ENDERSTORAGE) {
             container = getEnderStorage(player);
         } else {
             container = player.getEnderChestInventory();
@@ -140,14 +141,14 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
 
     private EnumColour[] getColours() {
         Frequency frequency = new Frequency(frequencyTag);
-        return new EnumColour[]{frequency.getLeft(), frequency.getMiddle(), frequency.getRight()};
+        return new EnumColour[]{frequency.left(), frequency.middle(), frequency.right()};
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
         super.renderModule(parent, render, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
-        if (frequencyTag.isEmpty() || !ModHelper.ENDERSTORAGE.isPresent()) {
+        if (frequencyTag.isEmpty() || !ModHelper.ENDERSTORAGE) {
             return;
         }
 

@@ -30,19 +30,20 @@ public class GuardianProjectileEntity extends AbstractHurtingProjectile {
     }
 
     public GuardianProjectileEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, Vec3 target, double splashRange, double power) {
-        super(DEContent.ENTITY_GUARDIAN_PROJECTILE.get(), shooter, accelX, accelY, accelZ, worldIn);
+        super(DEContent.ENTITY_GUARDIAN_PROJECTILE.get(), shooter, new Vec3(accelX, accelY, accelZ), worldIn);
         this.target = target;
         this.splashRange = splashRange;
         this.power = power;
         if (target != null) {
             closestApproach = distanceToSqr(target);
         }
-        double accelDotProduct = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
-        if (accelDotProduct != 0.0D) {
-            this.xPower = accelX / accelDotProduct * 0.3D;
-            this.yPower = accelY / accelDotProduct * 0.3D;
-            this.zPower = accelZ / accelDotProduct * 0.3D;
-        }
+        //TODO check that this still works
+//        double accelDotProduct = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
+//        if (accelDotProduct != 0.0D) {
+//            this.xPower = accelX / accelDotProduct * 0.3D;
+//            this.yPower = accelY / accelDotProduct * 0.3D;
+//            this.zPower = accelZ / accelDotProduct * 0.3D;
+//        }
     }
 
     @Override

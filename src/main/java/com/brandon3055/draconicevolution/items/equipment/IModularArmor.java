@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -37,8 +38,8 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 //    }
 
     @Override
-    default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    default void addModularItemInformation(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        IModularItem.super.addModularItemInformation(stack, context, tooltip, flagIn);
         if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
             assert host != null;

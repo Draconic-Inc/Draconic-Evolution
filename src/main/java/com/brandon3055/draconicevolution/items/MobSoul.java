@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.items;
 
-import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -20,12 +20,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -33,12 +36,10 @@ import java.util.*;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class MobSoul extends ItemBCore {
+public class MobSoul extends Item {
 
-    private static Map<String, Entity> renderEntityMap = new HashMap<>();
-    private static Map<String, String> entityNameCache = new HashMap<>();
-    public static List<String> randomDisplayList = null;
-    private static Map<String, ResourceLocation> rlCache = new WeakHashMap<>();
+    private static final Map<ResourceLocation, Entity> renderEntityMap = new HashMap<>();
+    public static List<ResourceLocation> randomDisplayList = null;
 
     public MobSoul(Properties properties) {
         super(properties);
@@ -46,7 +47,7 @@ public class MobSoul extends ItemBCore {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         Direction facing = context.getClickedFace();
         BlockPos pos = context.getClickedPos();
         Player player = context.getPlayer();
@@ -54,7 +55,7 @@ public class MobSoul extends ItemBCore {
         ItemStack stack = player.getItemInHand(context.getHand());
         if (player.isShiftKeyDown()) {
 
-            Entity entity = createEntity(world, stack);
+            Entity entity = createEntity(level, stack);
             double sX = pos.getX() + facing.getStepX() + 0.5;
             double sY = pos.getY() + facing.getStepY() + 0.5;
             double sZ = pos.getZ() + facing.getStepZ() + 0.5;
@@ -64,12 +65,11 @@ public class MobSoul extends ItemBCore {
             }
             entity.moveTo(sX, sY, sZ, player.getYRot(), 0F);
 
-            if (!world.isClientSide) {
-                CompoundTag compound = ItemNBTHelper.getCompound(stack);
-                if (!compound.contains("EntityData") && entity instanceof Mob) {
-                    ((Mob) entity).finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null, null);
+            if (!level.isClientSide) {
+                if (!stack.has(ItemData.SOUL_DATA) && entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
+                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null);
                 }
-                world.addFreshEntity(entity);
+                level.addFreshEntity(entity);
                 if (!player.getAbilities().instabuild) {
                     InventoryUtils.consumeHeldItem(player, stack, context.getHand());
                 }
@@ -80,63 +80,60 @@ public class MobSoul extends ItemBCore {
 
     @Override
     public Component getName(ItemStack stack) {
-        String eName = getEntityString(stack);
-        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getCachedRegName(eName));
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getEntity(stack));
         return Component.translatable(type.getDescriptionId()).append(" ").append(super.getName(stack));
     }
 
-    public String getEntityString(ItemStack stack) {
-        return ItemNBTHelper.getString(stack, "EntityName", "pig");
+    public ResourceLocation getEntity(ItemStack stack) {
+        return stack.getOrDefault(ItemData.SOUL_ID, ResourceLocation.withDefaultNamespace("pig"));
     }
 
     public void setEntity(ResourceLocation entityName, ItemStack stack) {
-        ItemNBTHelper.setString(stack, "EntityName", String.valueOf(entityName));
+        stack.set(ItemData.SOUL_ID, entityName);
     }
 
     @Nullable
     public CompoundTag getEntityData(ItemStack stack) {
-        CompoundTag compound = ItemNBTHelper.getCompound(stack);
-        if (compound.contains("EntityData")) {
-            return compound.getCompound("EntityData");
+        CustomData data = stack.get(ItemData.SOUL_DATA);
+        if (data == null || data.isEmpty()) {
+            return null;
         }
-        return null;
+        return data.copyTag();
     }
 
     public void setEntityData(CompoundTag compound, ItemStack stack) {
         compound.remove("UUID");
         compound.remove("Motion");
-        ItemNBTHelper.getCompound(stack).put("EntityData", compound);
+        stack.set(ItemData.SOUL_DATA, CustomData.of(compound));
     }
 
-    public Entity createEntity(Level world, ItemStack stack) {
+    public Entity createEntity(Level level, ItemStack stack) {
         try {
-            String eName = getEntityString(stack);
             CompoundTag entityData = getEntityData(stack);
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getCachedRegName(eName));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getEntity(stack));
             Entity entity;
 
-            entity = type.create(world);
+            entity = type.create(level);
             if (entity == null) {
-                return EntityType.PIG.create(world);
+                return EntityType.PIG.create(level);
             }
             if (entityData != null) {
                 entity.load(entityData);
             } else {
-                if (entity instanceof Mob) {
-                    ((Mob) entity).finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null, null);
+                if (entity instanceof Mob mob && level instanceof ServerLevel serverLevel) {
+                    EventHooks.finalizeMobSpawn(mob, serverLevel, serverLevel.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null);
                 }
             }
             return entity;
         } catch (Throwable e) {
-            return EntityType.PIG.create(world);
+            return EntityType.PIG.create(level);
         }
     }
 
     public ItemStack getSoulFromEntity(Entity entity, boolean saveEntityData) {
         ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
 
-        String registryName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-        ItemNBTHelper.setString(soul, "EntityName", registryName);
+        setEntity(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()), soul);
 
         if (saveEntityData) {
             CompoundTag compound = new CompoundTag();
@@ -148,19 +145,19 @@ public class MobSoul extends ItemBCore {
     }
 
     public Entity getRenderEntity(ItemStack stack) {
-        return getRenderEntity(getEntityString(stack));
+        return getRenderEntity(getEntity(stack));
     }
 
     @OnlyIn (Dist.CLIENT)
-    public Entity getRenderEntity(String name) {
-        if (name.equals("[Random-Display]")) {
+    public Entity getRenderEntity(ResourceLocation name) {
+        if (name == null || name.equals(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "random_display_entity"))) {
             if (randomDisplayList == null) {
                 randomDisplayList = new ArrayList<>();
-                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(BuiltInRegistries.ENTITY_TYPE.getKey(type).toString()));
+                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(BuiltInRegistries.ENTITY_TYPE.getKey(type)));
             }
 
-            if (randomDisplayList.size() > 0) {
-                name = randomDisplayList.get((ClientEventHandler.elapsedTicks / 20) % randomDisplayList.size());
+            if (!randomDisplayList.isEmpty()) {
+                name = randomDisplayList.get((TimeKeeper.getClientTick() / 20) % randomDisplayList.size());
             }
         }
 
@@ -168,7 +165,7 @@ public class MobSoul extends ItemBCore {
             Level level = Minecraft.getInstance().level;
             Entity entity;
             try {
-                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(getCachedRegName(name));
+                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(name);
                 entity = type.create(level);
                 if (entity == null) {
                     entity = EntityType.PIG.create(level);
@@ -180,9 +177,5 @@ public class MobSoul extends ItemBCore {
         }
 
         return renderEntityMap.get(name);
-    }
-
-    public static ResourceLocation getCachedRegName(String name) {
-        return rlCache.computeIfAbsent(name, ResourceLocation::new);
     }
 }

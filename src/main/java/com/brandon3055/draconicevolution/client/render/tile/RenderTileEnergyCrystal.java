@@ -38,9 +38,9 @@ public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalB
 
     public static float[][] COLOURS = {{0.0F, 0.2F, 0.3F}, {0.47F, 0.0F, 0.58F}, {1.0F, 0.4F, 0.1F}};
 
-    private static final RenderType fallBackType = RenderType.entityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"));
-    private static final RenderType fallBackOverlayType = RenderType.entityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
-    private static final RenderType crystalBaseType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType fallBackType = RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"));
+    private static final RenderType fallBackOverlayType = RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType crystalBaseType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     public static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.energyCrystalShader))
@@ -52,9 +52,9 @@ public class RenderTileEnergyCrystal implements BlockEntityRenderer<TileCrystalB
     private final CCModel crystalBase;
 
     public RenderTileEnergyCrystal(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/crystal.obj")).quads().ignoreMtl().parse();
         crystalFull = CCModel.combine(map.values());
-        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal_half.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/crystal_half.obj")).quads().ignoreMtl().parse();
         crystalHalf = map.get("Crystal");
         crystalBase = map.get("Base");
     }

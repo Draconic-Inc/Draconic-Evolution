@@ -4,13 +4,12 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'signing'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'net.neoforged.gradle.userdev' version '7.0.97'
+    id 'net.neoforged.gradle.userdev' version '7.0.165'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
 }
@@ -42,7 +41,9 @@ runs {
     }
     data {
         workingDirectory file('run')
-        programArguments.addAll '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated"), '--existing', file("src/main/resources")
+//        programArguments.addAll '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated"), '--existing', file("src/main/resources")
+        arguments.addAll '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated").absolutePath, '--existing', file("src/main/resources").absolutePath
+
 //         mods { draconicevolution { source sourceSets.main } }
     }
 }
@@ -109,7 +110,7 @@ processResources {
     inputs.property 'ccl_version', ccl_version
     inputs.property 'bcore_version', bcore_version
 
-    filesMatching('META-INF/mods.toml') {
+    filesMatching('META-INF/neoforge.mods.toml') {
         expand 'file': ['jarVersion': mod_version],
                 'mc_version': mc_version,
                 'neo_version': neo_version,

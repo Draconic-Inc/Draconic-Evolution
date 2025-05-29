@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -139,16 +140,16 @@ public class TileChaosCrystal extends TileBCore {
     }
 
     @Override
-    public void writeExtraNBT(CompoundTag compound) {
-        super.writeExtraNBT(compound);
+    public void writeExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.writeExtraNBT(provider, compound);
         if (validatePlacement) {
             compound.putBoolean("validate_placement", true);
         }
     }
 
     @Override
-    public void readExtraNBT(CompoundTag compound) {
-        super.readExtraNBT(compound);
+    public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.readExtraNBT(provider, compound);
         validatePlacement = compound.contains("validate_placement") && compound.getBoolean("validate_placement");
     }
 

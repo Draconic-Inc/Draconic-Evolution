@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 /**
@@ -51,10 +52,10 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
         float viewY = (float) (this.y - viewVec.y());
         float viewZ = (float) (this.z - viewVec.z());
         Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, 0.2F);
-        buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(1F, 1F, 1F, 1F).uv(0.5F, 0.5F).uv2(240, 240).endVertex();
-        buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(1F, 1F, 1F, 1F).uv(0.5F, 0.0F).uv2(240, 240).endVertex();
-        buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(1F, 1F, 1F, 1F).uv(0.0F, 0.0F).uv2(240, 240).endVertex();
-        buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(1F, 1F, 1F, 1F).uv(0.0F, 0.5F).uv2(240, 240).endVertex();
+        buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(1F, 1F, 1F, 1F).setUv(0.5F, 0.5F).setUv2(240, 240);
+        buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(1F, 1F, 1F, 1F).setUv(0.5F, 0.0F).setUv2(240, 240);
+        buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(1F, 1F, 1F, 1F).setUv(0.0F, 0.0F).setUv2(240, 240);
+        buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(1F, 1F, 1F, 1F).setUv(0.0F, 0.5F).setUv2(240, 240);
     }
 
     @Override
@@ -62,31 +63,26 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
 
     public static class FXHandler implements ParticleRenderType {
 
-        private ResourceLocation texture;
+        private final ResourceLocation texture;
 
         public FXHandler(ResourceLocation texture) {
             this.texture = texture;
         }
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.setShaderTexture(0, texture);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
     }
 }

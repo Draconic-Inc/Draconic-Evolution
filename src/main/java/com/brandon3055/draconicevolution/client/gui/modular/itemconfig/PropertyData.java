@@ -15,6 +15,8 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.gson.JsonParseException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
@@ -242,8 +244,8 @@ public class PropertyData {
         return enumDisplayValues != null && enumDisplayValues.containsKey(enumIndex) ? enumDisplayValues.get(enumIndex) : ChatFormatting.RED + "[Error]";
     }
 
-    public void sendToServer() {
-        DraconicNetwork.sendPropertyData(this);
+    public void sendToServer(RegistryAccess access) {
+        DraconicNetwork.sendPropertyData(access, this);
     }
 
     public ConfigProperty getPropIfApplicable(PropertyProvider provider) {
@@ -298,7 +300,7 @@ public class PropertyData {
         return copy;
     }
 
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putByte("type", (byte) type.ordinal());
         nbt.putUUID("prov_id", providerID);
@@ -309,8 +311,8 @@ public class PropertyData {
             nbt.putString("prop_name", propName);
         }
 
-        nbt.putString("tooltip", Component.Serializer.toJson(toolTip));
-        nbt.putString("display_name", Component.Serializer.toJson(displayName));
+        nbt.putString("tooltip", Component.Serializer.toJson(toolTip, provider));
+        nbt.putString("display_name", Component.Serializer.toJson(displayName, provider));
         nbt.putString("display_value", displayValue);
         nbt.putBoolean("global", isGlobal);
         switch (type) {
@@ -346,7 +348,7 @@ public class PropertyData {
     }
 
     @Nullable
-    public static PropertyData deserialize(CompoundTag nbt) {
+    public static PropertyData deserialize(CompoundTag nbt, HolderLookup.Provider provider) {
         if (!nbt.hasUUID("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUUID("prop_name")) || !nbt.contains("type")) {
             return null;
         }
@@ -363,12 +365,12 @@ public class PropertyData {
         }
 
         try {
-            data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"));
+            data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"), provider);
         }catch (JsonParseException ignored) {
             data.toolTip = Component.literal(nbt.getString("tooltip"));
         }
         try {
-            data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"));
+            data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"), provider);
         }catch (JsonParseException ignored) {
             data.displayName = Component.literal(nbt.getString("display_name"));
         }

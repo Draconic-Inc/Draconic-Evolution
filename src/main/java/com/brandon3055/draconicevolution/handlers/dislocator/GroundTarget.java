@@ -46,14 +46,14 @@ public class GroundTarget extends DislocatorTarget {
                 ItemStack stack = item.getItem();
                 UUID id = BoundDislocator.getLinkId(stack);
                 if (id != null && id.equals(linkID)) {
-                    return new TargetPos(item);
+                    return TargetPos.of(item);
                 }
             }
         } else {
             ItemStack stack = ((ItemEntity) entity).getItem();
             UUID id = BoundDislocator.getLinkId(stack);
             if (id != null && id.equals(linkID)) {
-                return new TargetPos(entity);
+                return TargetPos.of(entity);
             }
         }
         return null;

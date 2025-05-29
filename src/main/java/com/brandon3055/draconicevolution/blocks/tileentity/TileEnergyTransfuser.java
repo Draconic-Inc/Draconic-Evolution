@@ -19,6 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,9 +33,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 12/12/2020.
@@ -133,20 +134,19 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult trace) {
+    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide) {
-            return true;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        HitResult hit = RayTracer.retrace(player);
+//        HitResult hit = RayTracer.retrace(player);
         int slot = hit instanceof SubHitBlockHitResult ? ((SubHitBlockHitResult) hit).subHit : -1;
-        if (slot > -1 && slot < 4) {
+        if (slot > -1 && slot < 4 && hand != null) {
             ItemStack stack = itemsCombined.getStackInSlot(slot);
-            ItemStack heldStack = player.getItemInHand(handIn);
             if (!stack.isEmpty() && heldStack.isEmpty()) {
-                player.setItemInHand(handIn, stack);
+                player.setItemInHand(hand, stack);
                 itemsCombined.setStackInSlot(slot, ItemStack.EMPTY);
-                return true;
+                return ItemInteractionResult.SUCCESS;
             } else if (stack.isEmpty() && !heldStack.isEmpty()) {
                 if (itemsCombined.isItemValid(slot, heldStack)) {
                     if (heldStack.getCount() > 1) {
@@ -156,9 +156,9 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
                         heldStack.shrink(1);
                     } else {
                         itemsCombined.setStackInSlot(slot, heldStack);
-                        player.setItemInHand(handIn, ItemStack.EMPTY);
+                        player.setItemInHand(hand, ItemStack.EMPTY);
                     }
-                    return true;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
@@ -166,7 +166,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
         }
-        return true;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Nullable
@@ -332,15 +332,15 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
             return handler.getSlots();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
             return handler.getStackInSlot(slot);
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             ItemIOMode mode = getMode(slot);
             if (mode == ItemIOMode.DISABLED) {
                 return stack;
@@ -348,7 +348,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
             return handler.insertItem(slot, stack, simulate);
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             ItemIOMode mode = getMode(slot);
@@ -365,7 +365,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return handler.isItemValid(slot, stack);
         }
 

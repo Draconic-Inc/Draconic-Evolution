@@ -155,7 +155,7 @@ public class ExplosionHelper {
             if (helper.toRemove.isEmpty()) {
                 isDead = true;
                 updateBlocks();
-                DraconicNetwork.sendExplosionEffect(helper.serverWorld.dimension(), helper.start, 0, true);
+                DraconicNetwork.sendExplosionEffect(helper.serverWorld.registryAccess(), helper.serverWorld.dimension(), helper.start, 0, true);
             }
         }
 
@@ -197,10 +197,10 @@ public class ExplosionHelper {
                     BlockState state = helper.serverWorld.getBlockState(mPos.set(pos));
                     if (state.getBlock() instanceof FallingBlock) {
 //                        i++;
-                        state.getBlock().tick(state, helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.random);
+                        state.tick(helper.serverWorld, helper.mPos.set(pos), helper.serverWorld.random);
                     }
 //                    list.add(Vector3.fromBlockPos(mPos.set(pos)));
-                    state.neighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, mPos.set(pos).above(), false);
+                    state.handleNeighborChanged(helper.serverWorld, mPos.set(pos), Blocks.AIR, mPos.set(pos).above(), false);
                 }
 //                BCClientEventHandler.debugBlockList = list;
                 LogHelper.dev("Total Falling Blocks " + i);

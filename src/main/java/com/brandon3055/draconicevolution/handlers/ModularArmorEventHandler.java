@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.handlers;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -18,8 +19,9 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularMiningTool;
 import net.minecraft.core.NonNullList;
-import net.minecraft.tags.FluidTags;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,12 +30,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -44,9 +46,10 @@ import java.util.*;
 public class ModularArmorEventHandler {
     private static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
-    public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
-    public static final UUID STEP_HEIGHT_UUID = UUID.fromString("f4ccc2d7-477a-4610-bac0-b4de1a20e12f");
-    public static final UUID FLY_SPEED_UUID = UUID.fromString("364320fe-5cba-48db-a28f-7f4f57422bf5");
+    public static final ResourceLocation WALK_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "walk_speed");
+    public static final ResourceLocation STEP_HEIGHT_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "step_height");
+    public static final ResourceLocation FLY_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "fly_speed");
+    public static final ResourceLocation SUBMERGED_MINE_SPEED_ID = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "aqua_speed");
 
     public static final EntityAttributeHandler<ArmorAbilities> ATTRIBUTE_HANDLER = new EntityAttributeHandler<>();
 
@@ -62,11 +65,12 @@ public class ModularArmorEventHandler {
         NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::onLivingJumpEvent);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ModularArmorEventHandler::breakSpeed);
         NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::onPlayerLogin);
+        NeoForge.EVENT_BUS.addListener(ModularArmorEventHandler::blockBreakEvent);
 
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
-        ATTRIBUTE_HANDLER.register(FLY_SPEED_UUID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
-//        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight); //TODO 1.20.2+, 1.20.1 requires STEP_HEIGHT_ADDITION for forge support
-        ATTRIBUTE_HANDLER.register(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT::value, ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_ID, () -> Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(FLY_SPEED_ID, () -> Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
+        ATTRIBUTE_HANDLER.register(STEP_HEIGHT_ID, () -> Attributes.STEP_HEIGHT, ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(SUBMERGED_MINE_SPEED_ID, () -> Attributes.SUBMERGED_MINING_SPEED, ModularArmorEventHandler::getSubmergedMiningSpeed);
     }
 
     @Nullable
@@ -80,7 +84,7 @@ public class ModularArmorEventHandler {
             speedModifier = Math.min(speedModifier, abilities.speedSetting);
         }
         if (speedModifier > 0) {
-            return new AttributeModifier(WALK_SPEED_UUID, Attributes.MOVEMENT_SPEED.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE);
+            return new AttributeModifier(WALK_SPEED_ID, speedModifier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         }
         return null;
     }
@@ -97,7 +101,7 @@ public class ModularArmorEventHandler {
         }
         if (speedModifier > 0) {
             //TODO test this modifier
-            return new AttributeModifier(FLY_SPEED_UUID, Attributes.FLYING_SPEED.getDescriptionId(), speedModifier / 2, AttributeModifier.Operation.MULTIPLY_BASE);
+            return new AttributeModifier(FLY_SPEED_ID, speedModifier / 2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         }
         return null;
     }
@@ -108,21 +112,59 @@ public class ModularArmorEventHandler {
         ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
         boolean hasHost = !chestStack.isEmpty() && host != null;
         boolean hasHighStep = hasHost && host.getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
-        AttributeInstance instance = entity.getAttribute(NeoForgeMod.STEP_HEIGHT.value());
+        AttributeInstance instance = entity.getAttribute(Attributes.STEP_HEIGHT);
 
         if (hasHighStep && instance != null) {
             double stepHeight = instance.getValue();
             //If someone else is already boosting step height then lets not make things dumb.
-            if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_UUID) == null) {
+            if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_ID) == null) {
                 return null;
             }
-            return new AttributeModifier(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT.value().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
+            return new AttributeModifier(STEP_HEIGHT_ID, 1.0625D - stepHeight, AttributeModifier.Operation.ADD_VALUE);
         }
         return null;
     }
 
+    @Nullable
+    private static AttributeModifier getSubmergedMiningSpeed(LivingEntity entity, ArmorAbilities abilities) {
+        ItemStack chestStack = IModularArmor.getArmor(entity);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        boolean hasHost = !chestStack.isEmpty() && host != null;
+        boolean hasAquaAdapt = hasHost && host.getModuleData(ModuleTypes.AQUA_ADEPT) != null && !entity.isShiftKeyDown();
 
-    private static void onEntityAttacked(LivingAttackEvent event) {
+        AttributeInstance instance = entity.getAttribute(Attributes.SUBMERGED_MINING_SPEED);
+
+        if (hasAquaAdapt && instance != null) {
+            double value = instance.getValue();
+            if (value >= 1) {
+                return null;
+            }
+            return new AttributeModifier(SUBMERGED_MINE_SPEED_ID, 1 - value, AttributeModifier.Operation.ADD_VALUE);
+        }
+        return null;
+    }
+
+    private static void breakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        if (player == null) return;
+
+        float newDigSpeed = event.getOriginalSpeed();
+
+        ItemStack chestStack = IModularArmor.getArmor(player);
+        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        if (host == null) return;
+
+        if (!player.onGround() && host.getModuleData(ModuleTypes.MINING_STABILITY) != null) {
+            newDigSpeed *= 5f;
+        }
+
+        if (newDigSpeed != event.getOriginalSpeed()) {
+            event.setNewSpeed(newDigSpeed);
+        }
+    }
+
+
+    private static void onEntityAttacked(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
         if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
@@ -153,9 +195,9 @@ public class ModularArmorEventHandler {
         shieldControl.tryBlockDamage(event);
     }
 
-    private static void onEntityDamaged(LivingDamageEvent event) {
+    private static void onEntityDamaged(LivingDamageEvent.Pre event) {
         LivingEntity entity = event.getEntity();
-        if (event.isCanceled() || event.getAmount() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
+        if (event.getNewDamage() <= 0 || entity.level().isClientSide || event.getSource().is(DEDamage.KILL)) {
             return;
         }
 
@@ -245,8 +287,10 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void livingTick(LivingEvent.LivingTickEvent event) {
-        LivingEntity entity = event.getEntity();
+    private static void livingTick(EntityTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof LivingEntity entity)) {
+            return;
+        }
 
         ArmorAbilities armorAbilities = new ArmorAbilities();
         if (entity instanceof Player player) {
@@ -390,7 +434,7 @@ public class ModularArmorEventHandler {
         if (stack.getItem() instanceof IModularItem) {
             ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
 
-            if ((slot != null && slot.getType() == EquipmentSlot.Type.ARMOR) || equipMod) {
+            if ((slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) || equipMod) {
                 ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
                 if (host != null){
                     gatherArmorProps(stack, host, entity, abilities);
@@ -407,31 +451,6 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void breakSpeed(PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
-        if (player == null) return;
-
-        float newDigSpeed = event.getOriginalSpeed();
-
-        ItemStack chestStack = IModularArmor.getArmor(player);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
-        if (host == null) return;
-
-        if (host.getModuleData(ModuleTypes.AQUA_ADAPT) != null) {
-            if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
-                newDigSpeed *= 5f;
-            }
-        }
-
-        if (!player.onGround() && host.getModuleData(ModuleTypes.MINING_STABILITY) != null) {
-            newDigSpeed *= 5f;
-        }
-
-        if (newDigSpeed != event.getOriginalSpeed()) {
-            event.setNewSpeed(newDigSpeed);
-        }
-    }
-
     private static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (player.onGround()) return;
@@ -444,6 +463,16 @@ public class ModularArmorEventHandler {
                 player.getAbilities().flying = true;
                 player.onUpdateAbilities();
             }
+        }
+    }
+
+    private static void blockBreakEvent(BlockEvent.BreakEvent event) {
+        ItemStack stack = event.getPlayer().getMainHandItem();
+        if (event.isCanceled() || !(stack.getItem() instanceof IModularMiningTool miningTool)) {
+            return;
+        }
+        if (miningTool.onBlockStartBreak(stack, event.getPos(), event.getPlayer())) {
+            event.setCanceled(true);
         }
     }
 

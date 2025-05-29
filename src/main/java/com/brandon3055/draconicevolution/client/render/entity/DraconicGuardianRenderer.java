@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -33,11 +34,11 @@ import java.util.Random;
 
 @OnlyIn (Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity> {
-    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
-    private static final ResourceLocation DRAGON_EXPLODING_TEXTURES = new ResourceLocation("textures/entity/enderdragon/dragon_exploding.png");
-    private static final ResourceLocation DRAGON_TEXTURE = new ResourceLocation("textures/entity/enderdragon/dragon.png");
-    private static final ResourceLocation GUARDIAN_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/chaos_guardian.png");
-    private static final ResourceLocation EYES_TEXTURE = new ResourceLocation("textures/entity/enderdragon/dragon_eyes.png");
+    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
+    private static final ResourceLocation DRAGON_EXPLODING_TEXTURES = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon_exploding.png");
+    private static final ResourceLocation DRAGON_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon.png");
+    private static final ResourceLocation GUARDIAN_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/chaos_guardian.png");
+    private static final ResourceLocation EYES_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/enderdragon/dragon_eyes.png");
     private static final RenderType dragonCutoutType = RenderType.entityCutoutNoCull(GUARDIAN_TEXTURE);
     private static final RenderType dragonDeathType = RenderType.entityDecal(GUARDIAN_TEXTURE);
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
@@ -81,14 +82,15 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         this.model.prepareMobModel(guardian, 0.0F, 0.0F, partialTicks);
 
         if (guardian.deathTicks > 0) {
-            float progress = (float) guardian.deathTicks / 200.0F;
+            float progress = (float)guardian.deathTicks / 200.0F;
+            int fadeColour = FastColor.ARGB32.color(Mth.floor(progress * 255.0F), -1);
             VertexConsumer builder = getter.getBuffer(RenderType.dragonExplosionAlpha(DRAGON_EXPLODING_TEXTURES));
-            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, progress);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY, fadeColour);
             builder = getter.getBuffer(dragonDeathType);
-            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag));
         } else {
             VertexConsumer builder = getter.getBuffer(dragonCutoutType);
-            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag));
         }
         VertexConsumer builder;
 
@@ -104,11 +106,11 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             DEShaders.shieldActivation.glUniform1f(1F);
 
             builder = getter.getBuffer(SHIELD_TYPE);
-            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag));
         }
 
         builder = getter.getBuffer(eyesType);
-        this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY);
         if (guardian.deathTicks > 0) {
             float f5 = ((float) guardian.deathTicks + partialTicks) / 200.0F;
             float f7 = Math.min(f5 > 0.8F ? (f5 - 0.8F) / 0.2F : 0.0F, 1.0F);
@@ -172,20 +174,20 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     }
 
     private static void deathAnimA(VertexConsumer builder, Matrix4f mat, int alpha) {
-        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 0, 0, alpha).endVertex();
-        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 0, 0, alpha).endVertex();
+        builder.addVertex(mat, 0.0F, 0.0F, 0.0F).setColor(255, 0, 0, alpha);
+        builder.addVertex(mat, 0.0F, 0.0F, 0.0F).setColor(255, 0, 0, alpha);
     }
 
     private static void deathAnimB(VertexConsumer builder, Matrix4f mat, float p_229060_2_, float p_229060_3_) {
-        builder.vertex(mat, -sqrt3div2 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).color(255, 0, 0, 0).endVertex();
+        builder.addVertex(mat, -sqrt3div2 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).setColor(255, 0, 0, 0);
     }
 
     private static void deathAnimC(VertexConsumer builder, Matrix4f mat, float p_229062_2_, float p_229062_3_) {
-        builder.vertex(mat, sqrt3div2 * p_229062_3_, p_229062_2_, -0.5F * p_229062_3_).color(255, 0, 255, 0).endVertex();
+        builder.addVertex(mat, sqrt3div2 * p_229062_3_, p_229062_2_, -0.5F * p_229062_3_).setColor(255, 0, 255, 0);
     }
 
     private static void deathAnimD(VertexConsumer builder, Matrix4f mat, float p_229063_2_, float p_229063_3_) {
-        builder.vertex(mat, 0.0F, p_229063_2_, 1.0F * p_229063_3_).color(255, 0, 0, 0).endVertex();
+        builder.addVertex(mat, 0.0F, p_229063_2_, 1.0F * p_229063_3_).setColor(255, 0, 0, 0);
     }
 
     public static void renderBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, PoseStack mStack, MultiBufferSource getter, int packedLight) {
@@ -203,16 +205,15 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float f6 = 0.0F;
         PoseStack.Pose stackLast = mStack.last();
         Matrix4f lastMatrix = stackLast.pose();
-        Matrix3f lastNormal = stackLast.normal();
 
         for (int j = 1; j <= 8; ++j) {
             float rSin = Mth.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float rCos = Mth.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float indexDecimal = (float) j / 8.0F;
-            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.addVertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).setColor(0, 0, 0, 255).setUv(f6, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, f4, f5, distance).setColor(255, 255, 255, 255).setUv(f6, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin, rCos, distance).setColor(255, 255, 255, 255).setUv(indexDecimal, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).setColor(0, 0, 0, 255).setUv(indexDecimal, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
             f4 = rSin;
             f5 = rCos;
             f6 = indexDecimal;
@@ -236,16 +237,15 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float f6 = 0.0F;
         PoseStack.Pose stackLast = mStack.last();
         Matrix4f lastMatrix = stackLast.pose();
-        Matrix3f lastNormal = stackLast.normal();
 
         for (int j = 1; j <= 8; ++j) {
             float rSin = Mth.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float rCos = Mth.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float indexDecimal = (float) j / 8.0F;
-            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(1F, 1F, 1F, alpha).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, f4, f5, distance).color(1F, 1F, 1F, alpha).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin, rCos, distance).color(1F, 1F, 1F, alpha).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(1F, 1F, 1F, alpha).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.addVertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).setColor(1F, 1F, 1F, alpha).setUv(f6, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, f4, f5, distance).setColor(1F, 1F, 1F, alpha).setUv(f6, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin, rCos, distance).setColor(1F, 1F, 1F, alpha).setUv(indexDecimal, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).setColor(1F, 1F, 1F, alpha).setUv(indexDecimal, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
             f4 = rSin;
             f5 = rCos;
             f6 = indexDecimal;
@@ -269,7 +269,6 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float texU = 0.0F;
         PoseStack.Pose stackLast = mStack.last();
         Matrix4f lastMatrix = stackLast.pose();
-        Matrix3f lastNormal = stackLast.normal();
 
         float taperOffset = 10F;//0.2F;
 
@@ -278,10 +277,10 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             float rSin = Mth.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.1F;
             float rCos = Mth.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.1F;
             float indexDecimal = (float) j / 8.0F;
-            builder.vertex(lastMatrix, f4 * taperOffset, f5 * taperOffset, 0.0F).color(1F, 1F, 1F, alpha).uv(texU, vMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, f4, f5, distance).color(1F, 1F, 1F, alpha).uv(texU, vMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin, rCos, distance).color(1F, 1F, 1F, alpha).uv(indexDecimal, vMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin * taperOffset, rCos * taperOffset, 0.0F).color(1F, 1F, 1F, alpha).uv(indexDecimal, vMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.addVertex(lastMatrix, f4 * taperOffset, f5 * taperOffset, 0.0F).setColor(1F, 1F, 1F, alpha).setUv(texU, vMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, f4, f5, distance).setColor(1F, 1F, 1F, alpha).setUv(texU, vMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin, rCos, distance).setColor(1F, 1F, 1F, alpha).setUv(indexDecimal, vMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin * taperOffset, rCos * taperOffset, 0.0F).setColor(1F, 1F, 1F, alpha).setUv(indexDecimal, vMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
             f4 = rSin;
             f5 = rCos;
             texU = indexDecimal;
@@ -306,16 +305,15 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float f6 = 0.0F;
         PoseStack.Pose stackLast = mStack.last();
         Matrix4f lastMatrix = stackLast.pose();
-        Matrix3f lastNormal = stackLast.normal();
 
         for (int j = 1; j <= 8; ++j) {
             float rSin = Mth.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float rCos = Mth.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float indexDecimal = (float) j / 8.0F;
-            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.addVertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).setColor(0, 0, 0, 255).setUv(f6, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, f4, f5, distance).setColor(255, 255, 255, 255).setUv(f6, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin, rCos, distance).setColor(255, 255, 255, 255).setUv(indexDecimal, f3).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
+            builder.addVertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).setColor(0, 0, 0, 255).setUv(indexDecimal, f2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(stackLast, 0.0F, -1.0F, 0.0F);
             f4 = rSin;
             f5 = rCos;
             f6 = indexDecimal;
@@ -389,7 +387,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         }
 
         @Override
-        public void renderToBuffer(PoseStack p_114281_, VertexConsumer p_114282_, int p_114283_, int p_114284_, float p_114285_, float p_114286_, float p_114287_, float p_114288_) {
+        public void renderToBuffer(PoseStack p_114281_, VertexConsumer p_114282_, int p_114283_, int p_114284_, int colour) {
             p_114281_.pushPose();
             float f = Mth.lerp(this.a, this.entity.oFlapTime, this.entity.flapTime);
             this.jaw.xRot = (float) (Math.sin(f * ((float) Math.PI * 2F)) + 1.0D) * 0.2F;
@@ -418,7 +416,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
                 f3 += Mth.sin(this.neck.xRot) * 10.0F;
                 f4 -= Mth.cos(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
                 f2 -= Mth.sin(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
-                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, colour);
             }
 
             this.head.y = f3;
@@ -428,13 +426,13 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             this.head.yRot = Mth.wrapDegrees((float) (adouble2[0] - adouble[0])) * ((float) Math.PI / 180F);
             this.head.xRot = Mth.wrapDegrees(this.entity.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
             this.head.zRot = -Mth.wrapDegrees((float) (adouble2[0] - (double) f7)) * ((float) Math.PI / 180F);
-            this.head.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            this.head.render(p_114281_, p_114282_, p_114283_, p_114284_, colour);
             p_114281_.pushPose();
             p_114281_.translate(0.0D, 1.0D, 0.0D);
             p_114281_.mulPose(Axis.ZP.rotationDegrees(-f6 * 1.5F));
             p_114281_.translate(0.0D, -1.0D, 0.0D);
             this.body.zRot = 0.0F;
-            this.body.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            this.body.render(p_114281_, p_114282_, p_114283_, p_114284_, colour);
             float f10 = f * ((float) Math.PI * 2F);
             this.leftWing.xRot = 0.125F - (float) Math.cos(f10) * 0.2F;
             this.leftWing.yRot = -0.25F;
@@ -444,8 +442,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             this.rightWing.yRot = -this.leftWing.yRot;
             this.rightWing.zRot = -this.leftWing.zRot;
             this.rightWingTip.zRot = -this.leftWingTip.zRot;
-            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.leftWing, this.leftFrontLeg, this.leftFrontLegTip, this.leftFrontFoot, this.leftRearLeg, this.leftRearLegTip, this.leftRearFoot, p_114288_);
-            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.rightWing, this.rightFrontLeg, this.rightFrontLegTip, this.rightFrontFoot, this.rightRearLeg, this.rightRearLegTip, this.rightRearFoot, p_114288_);
+            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.leftWing, this.leftFrontLeg, this.leftFrontLegTip, this.leftFrontFoot, this.leftRearLeg, this.leftRearLegTip, this.leftRearFoot, colour);
+            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.rightWing, this.rightFrontLeg, this.rightFrontLegTip, this.rightFrontFoot, this.rightRearLeg, this.rightRearLegTip, this.rightRearFoot, colour);
             p_114281_.popPose();
             float f11 = -Mth.sin(f * ((float) Math.PI * 2F)) * 0.0F;
             f8 = f * ((float) Math.PI * 2F);
@@ -466,22 +464,22 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
                 f3 += Mth.sin(this.neck.xRot) * 10.0F;
                 f4 -= Mth.cos(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
                 f2 -= Mth.sin(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
-                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, colour);
             }
 
             p_114281_.popPose();
         }
 
-        private void renderSide(PoseStack p_173978_, VertexConsumer p_173979_, int p_173980_, int p_173981_, float p_173982_, ModelPart p_173983_, ModelPart p_173984_, ModelPart p_173985_, ModelPart p_173986_, ModelPart p_173987_, ModelPart p_173988_, ModelPart p_173989_, float p_173990_) {
+        private void renderSide(PoseStack p_173978_, VertexConsumer p_173979_, int p_173980_, int p_173981_, float p_173982_, ModelPart p_173983_, ModelPart p_173984_, ModelPart p_173985_, ModelPart p_173986_, ModelPart p_173987_, ModelPart p_173988_, ModelPart p_173989_, int colour) {
             p_173987_.xRot = 1.0F + p_173982_ * 0.1F;
             p_173988_.xRot = 0.5F + p_173982_ * 0.1F;
             p_173989_.xRot = 0.75F + p_173982_ * 0.1F;
             p_173984_.xRot = 1.3F + p_173982_ * 0.1F;
             p_173985_.xRot = -0.5F - p_173982_ * 0.1F;
             p_173986_.xRot = 0.75F + p_173982_ * 0.1F;
-            p_173983_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
-            p_173984_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
-            p_173987_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
+            p_173983_.render(p_173978_, p_173979_, p_173980_, p_173981_, colour);
+            p_173984_.render(p_173978_, p_173979_, p_173980_, p_173981_, colour);
+            p_173987_.render(p_173978_, p_173979_, p_173980_, p_173981_, colour);
         }
     }
 }

@@ -15,9 +15,9 @@ import org.jetbrains.annotations.Nullable;
 public class DECapabilities {
 
     public static class Module {
-        public static final BlockCapability<ModuleProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "module"), ModuleProvider.class);
-        public static final EntityCapability<ModuleProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "module"), ModuleProvider.class);
-        public static final ItemCapability<ModuleProvider, Void> ITEM = ItemCapability.createVoid(new ResourceLocation(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final BlockCapability<ModuleProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final EntityCapability<ModuleProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
+        public static final ItemCapability<ModuleProvider, Void> ITEM = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module"), ModuleProvider.class);
 
         public Module() {}
 
@@ -33,9 +33,9 @@ public class DECapabilities {
     }
 
     public static class Host {
-        public static final BlockCapability<ModuleHost, @Nullable Direction> BLOCK = BlockCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
-        public static final EntityCapability<ModuleHost, @Nullable Direction> ENTITY = EntityCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
-        public static final ItemCapability<ModuleHost, Void> ITEM = ItemCapability.createVoid(new ResourceLocation(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final BlockCapability<ModuleHost, @Nullable Direction> BLOCK = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final EntityCapability<ModuleHost, @Nullable Direction> ENTITY = EntityCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
+        public static final ItemCapability<ModuleHost, Void> ITEM = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "module_host"), ModuleHost.class);
 
         public Host() {}
 
@@ -51,9 +51,9 @@ public class DECapabilities {
     }
 
     public static class Properties {
-        public static final BlockCapability<PropertyProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
-        public static final EntityCapability<PropertyProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(new ResourceLocation(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
-        public static final ItemCapability<PropertyProvider, Void> ITEM = ItemCapability.createVoid(new ResourceLocation(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
+        public static final BlockCapability<PropertyProvider, @Nullable Direction> BLOCK = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
+        public static final EntityCapability<PropertyProvider, @Nullable Direction> ENTITY = EntityCapability.createSided(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
+        public static final ItemCapability<PropertyProvider, Void> ITEM = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "properties"), PropertyProvider.class);
 
         public Properties() {}
 

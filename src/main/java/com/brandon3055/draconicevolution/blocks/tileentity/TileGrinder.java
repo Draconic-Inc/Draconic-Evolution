@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -237,7 +238,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             if (!weapon.isEmpty()) {
                 ItemStack justInCase = weapon.copy();
                 justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
-                weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
+                weapon.hurtAndBreak(1, (ServerLevel) level, getFakePlayer(), item -> itemHandler.setStackInSlot(1, justInCase));
             }
 
             debug("Dealt " + damage + " damage to entity: " + nextTarget);
@@ -270,7 +271,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
                     nextTarget = randEntity;
                     //Throw the sword!
                     sendPacketToChunk(output -> output.writeInt(nextTarget.getId()), 1);
-                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW, SoundSource.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
+                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW.value(), SoundSource.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
                     coolDown = killRate;
                     return;
                 }
@@ -422,10 +423,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
+            return InteractionResult.CONSUME;
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }

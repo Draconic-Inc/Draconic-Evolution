@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.api.DislocatorEndPoint;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -49,9 +51,9 @@ public class TileTarget extends DislocatorTarget {
             if (pos != null) {
                 Vec2 vec = target.getArrivalFacing(linkID);
                 if (vec != null) {
-                    return new TargetPos(new Vector3(pos), worldKey, vec.x, vec.y);
+                    return TargetPos.of(new Vector3(pos), worldKey, vec);
                 }else {
-                    return new TargetPos(new Vector3(pos), worldKey).setIncludeHeading(false);
+                    return TargetPos.of(new Vector3(pos), worldKey);
                 }
             }
         }

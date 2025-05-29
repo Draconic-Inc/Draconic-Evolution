@@ -6,7 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
@@ -342,7 +342,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
             MinecraftServer server = player.getServer();

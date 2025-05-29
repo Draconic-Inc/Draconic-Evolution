@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class RecipeCategoryUids {
 
-    public static final ResourceLocation FUSION_CRAFTING = new ResourceLocation(DraconicEvolution.MODID, "fusion");
-    public static final ResourceLocation SAPWNER_CRAFTING =new ResourceLocation(DraconicEvolution.MODID, "eio_spawner");
+    public static final ResourceLocation FUSION_CRAFTING = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "fusion");
+    public static final ResourceLocation SAPWNER_CRAFTING =ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "eio_spawner");
 
 }

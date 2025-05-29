@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -199,8 +200,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
-            writeToItemStack(stack, context);
-            List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+            writeToItemStack(stack, context, mc.level.registryAccess());
+            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.componentTooltip(list, (int) mouseX, (int) mouseY);
             return true;
         }
@@ -254,7 +255,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         if (button == 1 && Screen.hasShiftDown()) {
             filterStacks.remove(index);
             filterTags.remove(index);
-            sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+            sendMessageToServer(player.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
             return true;
         } else if (button == 1) {
             displayTagDialog(parent, index);
@@ -270,12 +271,13 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         newFilter.setCount(1);
         filterStacks.put(index, newFilter);
         filterTags.remove(index);
-        sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+        sendMessageToServer(player.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
         return true;
     }
 
     @OnlyIn (Dist.CLIENT)
     private void displayTagDialog(GuiElement<?> parent, int index) {
+        Minecraft mc = parent.mc();
         GuiDialogBase dialog = new GuiDialogBase(parent);
         dialog.setCloseOnOutsideClick(true);
         dialog.addMoveHandle(20);
@@ -394,7 +396,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
             if (location == null && filterTags.containsKey(index)) {
                 filterTags.remove(index); //Remove old key from server
-                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+                sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
                 return;
             } else if (location == null || (key != null && location.equals(key.location()) && !content.getChildren().isEmpty())) {
                 return;
@@ -409,7 +411,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(key)).map(Holder::value).toList();
             if (matchingItems.isEmpty()) {
                 filterTags.remove(index);
-                sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+                sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
                 return;
             }
 
@@ -421,7 +423,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             }
 
             filterTags.put(index, key);
-            sendMessageToServer(e -> e.writeCompoundNBT(writeExtraData(new CompoundTag())));
+            sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
         }));
 
         textField.setEnterPressed(dialog::close);
@@ -433,7 +435,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
     @Override
     public void handleClientMessage(MCDataInput input) {
-        readExtraData(input.readCompoundNBT());
+        readExtraData(input.readCompoundNBT(), Minecraft.getInstance().level.registryAccess());
     }
 
     //Filtering
@@ -493,15 +495,15 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     //Data
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
-        super.writeExtraData(nbt);
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        super.writeExtraData(nbt, provider);
         if (slotsCount == 0) return nbt;
 
         ListTag itemList = new ListTag();
         filterStacks.forEach((slot, stack) -> {
             CompoundTag compoundtag = new CompoundTag();
             compoundtag.putByte("slot", (byte) slot.intValue());
-            filterStacks.get(slot).save(compoundtag);
+            filterStacks.get(slot).save(provider, compoundtag);
             itemList.add(compoundtag);
         });
         nbt.put("items", itemList);
@@ -518,8 +520,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt) {
-        super.readExtraData(nbt);
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        super.readExtraData(nbt, provider);
         if (slotsCount == 0) return;
 
         filterStacks.clear();
@@ -529,7 +531,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             CompoundTag compoundtag = itemList.getCompound(i);
             int slot = compoundtag.getByte("slot");
             if (slot >= 0 && slot < slotsCount) {
-                filterStacks.put(slot, ItemStack.of(compoundtag));
+                filterStacks.put(slot, ItemStack.parseOptional(provider, compoundtag));
             }
         }
 
@@ -537,7 +539,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         for (int i = 0; i < tagList.size(); ++i) {
             CompoundTag tag = tagList.getCompound(i);
             int slot = tag.getByte("slot");
-            TagKey<Item> key = ItemTags.create(new ResourceLocation(tag.getString("key")));
+            TagKey<Item> key = ItemTags.create(ResourceLocation.parse(tag.getString("key")));
             if (slot >= 0 && slot < slotsCount) {
                 filterTags.put(slot, key);
             }

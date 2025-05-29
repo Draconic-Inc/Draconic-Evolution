@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 public class EnergyEntity extends ModuleEntity<EnergyData> {
@@ -35,15 +37,15 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     }
 
     @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
+    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+        super.writeToItemStack(stack, tag, context, provider);
         IOPStorage storage = context.getOpStorage();
         if (storage != null) {
             long moduleCap = ModuleTypes.ENERGY_STORAGE.getData(module).capacity();
             long newCapacity = storage.getMaxOPStored() - moduleCap;
             if (newCapacity < storage.getOPStored()) {
                 energy = Math.min(storage.getOPStored() - newCapacity, moduleCap);
-                stack.getOrCreateTag().putLong("stored_energy", energy);
+                tag.putLong("stored_energy", energy);
             } else {
                 energy = 0;
             }
@@ -51,10 +53,8 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     }
 
     @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            energy = stack.getOrCreateTag().getLong("stored_energy");
-        }
+    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+        super.readFromItemStack(stack, tag, context, provider);
+        energy = tag.getLong("stored_energy");
     }
 }

@@ -15,9 +15,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -69,15 +72,14 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     //endregion
 
-
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.isShiftKeyDown() && !level.isClientSide) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer && player.isShiftKeyDown()) {
             outputMode.invert();
             updateRotation(facing.get());
-            return true;
+            return InteractionResult.SUCCESS;
         }
-        return super.onBlockActivated(state, player, handIn, hit);
+        return InteractionResult.PASS;
     }
 
     //region Rendering
@@ -126,14 +128,14 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     }
 
     @Override
-    public void readExtraNBT(CompoundTag compound) {
-        super.readExtraNBT(compound);
+    public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.readExtraNBT(provider, compound);
         updateRotation(facing.get());
     }
 
     @Override
-    public void readFromItemStack(CompoundTag compound) {
-        super.readFromItemStack(compound);
+    public void readFromItemStack(HolderLookup.Provider provider, CompoundTag compound) {
+        super.readFromItemStack(provider, compound);
         updateRotation(facing.get());
     }
 }

@@ -4,14 +4,18 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +66,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack assemble(IFusionInventory inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(IFusionInventory inv, HolderLookup.Provider provider) {
         ItemStack stack = result.copy();
         if (stack.getItem() instanceof IFusionDataTransfer) {
             ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
@@ -71,7 +75,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return result;
     }
 
@@ -85,6 +89,12 @@ public class FusionRecipe implements IFusionRecipe {
                         Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(e -> e.ingredient),
                         Codec.BOOL.fieldOf("consume").forGetter(e -> e.consume)
                 ).apply(builder, FusionIngredient::new)
+        );
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, FusionIngredient> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.CONTENTS_STREAM_CODEC, e -> e.ingredient,
+                ByteBufCodecs.BOOL, e -> e.consume,
+                FusionIngredient::new
         );
 
         private final Ingredient ingredient;
@@ -105,21 +115,21 @@ public class FusionRecipe implements IFusionRecipe {
             return consume;
         }
 
-        protected void write(FriendlyByteBuf buffer) {
-            buffer.writeBoolean(consume);
-            ingredient.toNetwork(buffer);
-        }
-
-        protected static FusionIngredient read(FriendlyByteBuf buffer) {
-            boolean consume = buffer.readBoolean();
-            Ingredient ingredient = Ingredient.fromNetwork(buffer);
-            return new FusionIngredient(ingredient, consume);
-        }
+//        protected void write(FriendlyByteBuf buffer) {
+//            buffer.writeBoolean(consume);
+//            ingredient.toNetwork(buffer);
+//        }
+//
+//        protected static FusionIngredient read(FriendlyByteBuf buffer) {
+//            boolean consume = buffer.readBoolean();
+//            Ingredient ingredient = Ingredient.fromNetwork(buffer);
+//            return new FusionIngredient(ingredient, consume);
+//        }
     }
 
     public static class Serializer implements RecipeSerializer<FusionRecipe> {
-        private static final Codec<FusionRecipe> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                        ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(e -> e.result),
+        private static final MapCodec<FusionRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+                        ItemStack.CODEC.fieldOf("result").forGetter(e -> e.result),
                         Ingredient.CODEC_NONEMPTY.fieldOf("catalyst").forGetter(e -> e.catalyst),
                         Codec.LONG.fieldOf("totalEnergy").forGetter(e -> e.totalEnergy),
                         TechLevel.CODEC.fieldOf("techLevel").forGetter(e -> e.techLevel),
@@ -127,20 +137,28 @@ public class FusionRecipe implements IFusionRecipe {
                 ).apply(builder, FusionRecipe::new)
         );
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, FusionRecipe> STREAM_CODEC = StreamCodec.of(
+                FusionRecipe.Serializer::toNetwork, FusionRecipe.Serializer::fromNetwork
+        );
+
         @Override
-        public Codec<FusionRecipe> codec() {
+        public MapCodec<FusionRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public FusionRecipe fromNetwork(FriendlyByteBuf buffer) {
-            ItemStack result = buffer.readItem();
-            Ingredient catalyst = Ingredient.fromNetwork(buffer);
+        public StreamCodec<RegistryFriendlyByteBuf, FusionRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+
+        private static FusionRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            ItemStack result =  ItemStack.STREAM_CODEC.decode(buffer);
+            Ingredient catalyst = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
 
             int count = buffer.readByte();
             List<FusionIngredient> fusionIngredients = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                fusionIngredients.add(FusionIngredient.read(buffer));
+                fusionIngredients.add(FusionIngredient.STREAM_CODEC.decode(buffer));
             }
 
             long totalEnergy = buffer.readLong();
@@ -149,18 +167,18 @@ public class FusionRecipe implements IFusionRecipe {
             return new FusionRecipe(result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, FusionRecipe recipe) {
-            buffer.writeItem(recipe.result);
-            recipe.catalyst.toNetwork(buffer);
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, FusionRecipe recipe) {
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.catalyst);
 
             buffer.writeByte(recipe.ingredients.size());
             for (FusionIngredient ingredient : recipe.ingredients) {
-                ingredient.write(buffer);
+                FusionIngredient.STREAM_CODEC.encode(buffer, ingredient);
             }
 
             buffer.writeLong(recipe.totalEnergy);
             buffer.writeByte(recipe.techLevel.index);
         }
+
     }
 }

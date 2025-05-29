@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -14,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -29,7 +29,7 @@ import java.util.List;
  * Created by brandon3055 on 9/3/2016.
  */
 //@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Magnet extends ItemBCore /*implements IBauble*/ {
+public class Magnet extends Item /*implements IBauble*/ {
 
     private final int range;
 
@@ -45,7 +45,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level worldIn, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
         updateMagnet(stack, entity);
     }
 
@@ -160,18 +160,18 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void appendHoverText(ItemStack stack, Level p_77624_2_, List list, TooltipFlag p_77624_4_) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List list, TooltipFlag tooltipFlag) {
 //        list.add(StatCollector.translateToLocal("info.de.shiftRightClickToActivate.txt"));
 //        int range = stack.getItemDamage() == 0 ? 8 : 32;
 //        list.add(InfoHelper.HITC() + range + InfoHelper.ITC() + " " + StatCollector.translateToLocal("info.de.blockRange.txt"));
     }
 
     public static boolean isEnabled(ItemStack stack) {
-        return ItemNBTHelper.getBoolean(stack, "IsActive", false);
+        return stack.getOrDefault(ItemData.MAGNET_ACTIVE, false);
     }
 
     public static void toggleEnabled(ItemStack stack, Player player) {
-        ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
+        stack.set(ItemData.MAGNET_ACTIVE, !isEnabled(stack));
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
     }
 

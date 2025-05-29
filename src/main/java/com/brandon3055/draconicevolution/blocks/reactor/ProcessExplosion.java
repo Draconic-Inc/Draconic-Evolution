@@ -14,7 +14,6 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -22,10 +21,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -294,7 +291,7 @@ public class ProcessExplosion implements IProcess {
                 r = 10;
             }
             else {
-                if (block instanceof IFluidBlock || block instanceof FallingBlock) {
+                if (!state.getFluidState().isEmpty() || block instanceof FallingBlock) {
                     blocksToUpdate.add(lPos);
                 }
                 scannedCache.add(lPos);
@@ -372,7 +369,7 @@ public class ProcessExplosion implements IProcess {
 
         final BlockPos pos = origin.pos();
         if (enableEffect) {
-            DraconicNetwork.sendExplosionEffect(level.dimension(), pos, radius * 4, true);
+            DraconicNetwork.sendExplosionEffect(level.registryAccess(), level.dimension(), pos, radius * 4, true);
         }
 
         for (int i = 0; i <= radius; i+=10) {

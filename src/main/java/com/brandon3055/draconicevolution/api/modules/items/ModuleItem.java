@@ -54,16 +54,18 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        getModule().addInformation(tooltip, new LimitedModuleContext(stack, null, worldIn, null));
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
+        getModule().addInformation(tooltip, new LimitedModuleContext(stack, null, context.level(), null));
         ModuleEntity<?> entity = getModule().createEntity();
-        entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
-        entity.addToolTip(tooltip);
+        if (context.level() != null) {
+            entity.readFromItemStack(stack, new StackModuleContext(stack, null, null), context.level().registryAccess());
+            entity.addToolTip(tooltip);
+        }
     }
 
-    @Override
-    public Rarity getRarity(ItemStack stack) {
-        return getModule().getProperties().getTechLevel().getRarity();
-    }
+//    @Override
+//    public Rarity getRarity(ItemStack stack) {
+//        return getModule().getProperties().getTechLevel().getRarity();
+//    }
 }

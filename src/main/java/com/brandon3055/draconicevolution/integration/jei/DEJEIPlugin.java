@@ -198,7 +198,7 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new ResourceLocation(DraconicEvolution.MODID, "jei_plugin");
+        return ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "jei_plugin");
     }
 
     public static RecipeType<RecipeHolder<IFusionRecipe>> getFusionRecipeType() {

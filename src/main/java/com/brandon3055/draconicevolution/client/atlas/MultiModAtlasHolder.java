@@ -32,15 +32,15 @@ public class MultiModAtlasHolder implements PreparableReloadListener, AutoClosea
      * Must be registered as a resource reload listener via RegisterClientReloadListenersEvent
      * This is all that is needed to create a custom texture atlas.
      *
-     * @param modid             The mod id of the mod registering this atlas.
+     * @param hostModId         The mod id of the mod registering this atlas.
      * @param atlasLocation     The texture atlas location. e.g. "textures/atlas/gui.png" (Will have the modid: prefix added automatically)
      * @param atlasInfoLocation The path to the atlas json file relative to modid:atlases/
      *                          e.g. "gui" will point to modid:atlases/gui.json
      */
     public MultiModAtlasHolder(String hostModId, String atlasLocation, String atlasInfoLocation, Set<String> modIds) {
         this.modIds = modIds;
-        this.atlasInfoLocation = new ResourceLocation(hostModId, atlasInfoLocation);
-        this.atlasLocation = new ResourceLocation(hostModId, atlasLocation);
+        this.atlasInfoLocation = ResourceLocation.fromNamespaceAndPath(hostModId, atlasInfoLocation);
+        this.atlasLocation = ResourceLocation.fromNamespaceAndPath(hostModId, atlasLocation);
         this.textureAtlas = new TextureAtlas(this.atlasLocation);
         Minecraft.getInstance().getTextureManager().register(this.textureAtlas.location(), this.textureAtlas);
     }

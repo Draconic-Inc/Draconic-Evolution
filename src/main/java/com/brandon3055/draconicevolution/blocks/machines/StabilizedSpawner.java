@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -42,10 +43,12 @@ public class StabilizedSpawner extends EntityBlockBCore {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        if (!stack.hasTag()) return;
-        CompoundTag tag = stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
+        if (!stack.has(BlockBCore.BC_TILE_DATA_TAG) || context.level() == null) {
+            return;
+        }
+        CompoundTag tag = stack.get(BlockBCore.BC_TILE_DATA_TAG).copyTag();
 
         CompoundTag tier = tag.getCompound("spawner_tier");
         if (tier.contains("value")) {
@@ -56,7 +59,7 @@ public class StabilizedSpawner extends EntityBlockBCore {
             }
         }
         if (tag.contains("mob_soul")) {
-            ItemStack soul = ItemStack.of(tag.getCompound("mob_soul"));
+            ItemStack soul = ItemStack.parseOptional(context.level().registryAccess(), tag.getCompound("mob_soul"));
             if (!soul.isEmpty()) {
                 tooltip.add(soul.getDisplayName().copy().withStyle(ChatFormatting.YELLOW));
             }

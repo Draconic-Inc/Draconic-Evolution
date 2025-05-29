@@ -19,7 +19,7 @@ license="CoFH \"Don't Be a Jerk\" License"
 [[dependencies.draconicevolution]]
 	modId="minecraft"
 	type="required"
-	versionRange="[1.20.4]"
+	versionRange="[1.21.1]"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]

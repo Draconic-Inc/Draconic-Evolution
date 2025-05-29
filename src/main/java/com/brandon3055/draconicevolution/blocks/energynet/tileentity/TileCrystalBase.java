@@ -27,6 +27,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -404,13 +405,13 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         }
     }
 
-    @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
-//        if (!world.isRemote) {
-//            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, world, pos.getX(), pos.getY(), pos.getZ());
-//        }
-        return true;
-    }
+//    @Override
+//    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+////        if (!world.isRemote) {
+////            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, world, pos.getX(), pos.getY(), pos.getZ());
+////        }
+//        return true;
+//    }
 
     public String getUnlocalizedName() {
         return "tile.draconicevolution:energy_crystal." + getCrystalType().getSerializedName() + "." + (getTier() == 0 ? "basic" : getTier() == 1 ? "wyvern" : "draconic") + ".name";
@@ -446,7 +447,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     //region Sync/Save
 
     @Override
-    public void writeExtraNBT(CompoundTag compound) {
+    public void writeExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
         compound.putByte("tech_level", (byte) techLevel.ordinal());
         ListTag list = new ListTag();
         for (Vec3B vec : linkedCrystals) {
@@ -460,11 +461,11 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
             array[i] = flowRates.get(i);
         }
         compound.putByteArray("flow_rates", array);
-        super.writeExtraNBT(compound);
+        super.writeExtraNBT(provider, compound);
     }
 
     @Override
-    public void readExtraNBT(CompoundTag compound) {
+    public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
         techLevel = TechLevel.values()[compound.getInt("tech_level")];
         ListTag list = compound.getList("linked_crystals", 7);
         linkedCrystals.clear();
@@ -486,17 +487,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         }
         int cap = getCapacityForTier(getTier());
         opStorage.setCapacity(cap).setMaxTransfer(cap);
-        super.readExtraNBT(compound);
-    }
-
-    @Override
-    public void writeToItemStack(CompoundTag compound, boolean willHarvest) {
-        super.writeToItemStack(compound, willHarvest);
-    }
-
-    @Override
-    public void readFromItemStack(CompoundTag compound) {
-        super.readFromItemStack(compound);
+        super.readExtraNBT(provider, compound);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCom
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.Item;
@@ -47,15 +48,15 @@ public class RenderItemReactorComponent implements IItemRenderer {
         ccrs.reset();
         ccrs.brightness = packedLight;
         ccrs.overlay = packedOverlay;
-        Minecraft mc = Minecraft.getInstance();
         Item item = stack.getItem();
 
+        DeltaTracker delta = Minecraft.getInstance().getTimer();
         if (item == DEContent.REACTOR_CORE.get().asItem()) {
             mat.translate(0.5, 0.5, 0.5);
             mat.scale(1.5);
-            RenderTileReactorCore.renderCore(mat, ccrs, (TimeKeeper.getClientTick() + mc.getFrameTime()) / 100F, 0F, 0.F, 0.5F, 0, getter);
+            RenderTileReactorCore.renderCore(mat, ccrs, (TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) / 100F, 0F, 0.F, 0.5F, 0, getter);
         } else if (item == DEContent.REACTOR_STABILIZER.get().asItem()) {
-            float coreRotation = (TimeKeeper.getClientTick() + mc.getFrameTime()) * 5F;
+            float coreRotation = (TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) * 5F;
             mat.translate(0.5, 0, 0.5);
             RenderTileReactorComponent.renderStabilizer(ccrs, mat, getter, coreRotation, 1F, packedLight, packedOverlay);
         } else if (item == DEContent.REACTOR_INJECTOR.get().asItem()) {

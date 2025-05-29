@@ -28,6 +28,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,8 +36,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -159,15 +163,15 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
     ModularOPStorage instantiateOPStorage(ItemStack stack, Supplier<ModuleHost> hostSupplier);
 
     @OnlyIn (Dist.CLIENT)
-    default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    default void addModularItemInformation(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 
         ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
         if (host != null) {
-            host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, worldIn, tooltip, flagIn));
-            host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, worldIn, tooltip, flagIn));
+            host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, context, tooltip, flagIn));
+            host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, context.level(), tooltip, flagIn));
         }
 
         EnergyUtils.addEnergyInfo(stack, tooltip);
@@ -177,16 +181,6 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
                 tooltip.add(Component.translatable("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
             }
         }
-    }
-
-    @Override
-    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-//        if (stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) { //Because vanilla calls this before capabilities are registered.
-//            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-//            host.getAttributeModifiers(slot, stack, map);
-//        }
-        return map;
     }
 
     default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
@@ -204,7 +198,7 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
      * @return true if this stack is in a valid slot.
      */
     default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlot slot, boolean inEquipSlot) {
-        if (this instanceof IModularArmor) return (slot != null && slot.getType() == EquipmentSlot.Type.ARMOR) || inEquipSlot;
+        if (this instanceof IModularArmor) return (slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) || inEquipSlot;
         return true;
     }
 
@@ -242,9 +236,9 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
         }
     }
 
-    @Override
-    default boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IItemExtension.super.isCorrectToolForDrops(stack, state);
+    static boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        Tool tool = stack.get(DataComponents.TOOL);
+        return tool != null && tool.isCorrectForDrops(state);
     }
 
     default float getBaseEfficiency() {

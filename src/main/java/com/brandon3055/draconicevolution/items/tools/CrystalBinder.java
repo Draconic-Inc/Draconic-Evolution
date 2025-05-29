@@ -18,10 +18,6 @@ public class CrystalBinder extends Item implements ICrystalBinder {
         super(properties);
     }
 
-    //    public CrystalBinder() {
-//        this.setMaxStackSize(1);
-//    }
-
     @Override
     public boolean isEnchantable(ItemStack stack) {
         return true;

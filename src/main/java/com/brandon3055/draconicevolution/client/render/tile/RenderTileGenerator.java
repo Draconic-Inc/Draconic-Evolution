@@ -31,11 +31,11 @@ import java.util.Map;
 public class RenderTileGenerator implements BlockEntityRenderer<TileGenerator> {
 
     private static final RenderType MODEL_TYPE = RenderType.SOLID;
-    private static final ResourceLocation GEN_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "block/generator/generator_2");
+    private static final ResourceLocation GEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "block/generator/generator_2");
     private final CCModel fanModel;
 
     public RenderTileGenerator(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_fan.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_fan.obj")).quads().ignoreMtl().parse();
         fanModel = CCModel.combine(map.values()).backfacedCopy();
     }
 

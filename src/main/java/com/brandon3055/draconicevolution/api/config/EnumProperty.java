@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.config;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -109,14 +110,14 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         nbt.putByte("value", (byte) value.ordinal());
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         try {
             if (nbt.contains("value")) {
                 T newValue = value.getDeclaringClass().getEnumConstants()[nbt.getByte("value")];
@@ -128,7 +129,7 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
         catch (Throwable e) {
             e.printStackTrace();
         }
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 
     @Override

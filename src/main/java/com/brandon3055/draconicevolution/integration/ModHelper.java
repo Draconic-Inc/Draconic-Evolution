@@ -9,8 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.OptionalMod;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforgespi.language.IModInfo;
 
 import java.util.Collections;
@@ -26,12 +25,12 @@ public class ModHelper {
 
     private static Map<String, String> loadedMods = null;
 
-    public static final OptionalMod<?> TINKERS_CONSTRUCT = OptionalMod.of("tconstruct");
-    public static final OptionalMod<?> AVARITIA = OptionalMod.of("avaritia");
-    public static final OptionalMod<?> ROTARYCRAFT = OptionalMod.of("rotarycraft");
-    public static final OptionalMod<?> JEI = OptionalMod.of("jei");
-    public static final OptionalMod<?> BAUBLES = OptionalMod.of("baubles");
-    public static final OptionalMod<?> ENDERSTORAGE = OptionalMod.of("enderstorage");
+    public static final boolean TINKERS_CONSTRUCT = ModList.get().isLoaded("tconstruct");
+    public static final boolean AVARITIA = ModList.get().isLoaded("avaritia");
+    public static final boolean ROTARYCRAFT = ModList.get().isLoaded("rotarycraft");
+    public static final boolean JEI = ModList.get().isLoaded("jei");
+    public static final boolean BAUBLES = ModList.get().isLoaded("baubles");
+    public static final boolean ENDERSTORAGE = ModList.get().isLoaded("enderstorage");
     private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
@@ -39,32 +38,32 @@ public class ModHelper {
 
 
     public static boolean isHoldingCleaver(Player player) {
-        if (!TINKERS_CONSTRUCT.isPresent()) {
+        if (!TINKERS_CONSTRUCT) {
             return false;
         }
         else if (cleaver == null) {
-            cleaver = BuiltInRegistries.ITEM.get(new ResourceLocation("tconstruct", "cleaver"));
+            cleaver = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tconstruct", "cleaver"));
         }
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
 
     public static boolean isHoldingAvaritiaSword(Player player) {
-        if (!AVARITIA.isPresent()) {
+        if (!AVARITIA) {
             return false;
         }
         else if (avaritiaSword == null) {
-            avaritiaSword = BuiltInRegistries.ITEM.get(new ResourceLocation("avaritia", "infinity_sword"));
+            avaritiaSword = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("avaritia", "infinity_sword"));
         }
 
         return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
     }
 
     public static boolean isHoldingBedrockSword(Player player) {
-        if (!ROTARYCRAFT.isPresent()) {
+        if (!ROTARYCRAFT) {
             return false;
         }
         else if (bedrockSword == null) {
-            bedrockSword =  BuiltInRegistries.ITEM.get(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
+            bedrockSword =  BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
         return bedrockSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(bedrockSword);
@@ -82,7 +81,7 @@ public class ModHelper {
         return true;
     }
 
-    public static float applyModDamageAdjustments(LivingAttackEvent event, ModuleHost host) {
+    public static float applyModDamageAdjustments(LivingIncomingDamageEvent event, ModuleHost host) {
         Player attacker = event.getSource().getEntity() instanceof Player ? (Player) event.getSource().getEntity() : null;
         if (attacker == null) {
             return event.getAmount();

@@ -135,10 +135,10 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
     public boolean canEntitySpawnSpawner(Mob entity, ServerLevel level, float x, float y, float z, BaseSpawner spawner) {
         var event = new MobSpawnEvent.PositionCheck(entity, level, MobSpawnType.SPAWNER, null);
         NeoForge.EVENT_BUS.post(event);
-        if (event.getResult() == Event.Result.DEFAULT) {
+        if (event.getResult() == MobSpawnEvent.PositionCheck.Result.DEFAULT) {
             return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(level, MobSpawnType.SPAWNER)) && entity.checkSpawnObstruction(level);
         }
-        return event.getResult() == Event.Result.ALLOW;
+        return event.getResult() == MobSpawnEvent.PositionCheck.Result.SUCCEED;
     }
 
     private void resetTimer() {
@@ -172,12 +172,6 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
 
     @Override
     public void load(@Nullable Level level, BlockPos pos, CompoundTag tag) {
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity getSpawnerBlockEntity() {
-        return tile;
     }
 
     @Override

@@ -187,8 +187,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

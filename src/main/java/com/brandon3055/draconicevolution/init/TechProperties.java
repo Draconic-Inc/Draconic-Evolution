@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 
 /**
@@ -8,24 +9,22 @@ import net.minecraft.world.item.Item;
  */
 public class TechProperties extends Item.Properties {
 
-    private TechLevel techLevel;
+    @Deprecated
+    private final TechLevel techLevel;
 
     public TechProperties(TechLevel techLevel) {
         this.techLevel = techLevel;
-    }
-
-    public TechLevel getTechLevel() {
-        return techLevel;
+//        this.component(ItemData.TECH_LEVEL, techLevel);
     }
 
     public TechProperties copy() {
         TechProperties copy = new TechProperties(techLevel);
-        copy.maxStackSize = this.maxStackSize;
-        copy.maxDamage = this.maxDamage;
-        copy.craftingRemainingItem = this.craftingRemainingItem;
-        copy.rarity = this.rarity;
-        copy.foodProperties = this.foodProperties;
-        copy.isFireResistant = this.isFireResistant;
+        copy.components.addAll(components.build());
         return copy;
+    }
+
+    @Deprecated
+    public TechLevel getTechLevel() {
+        return techLevel;
     }
 }

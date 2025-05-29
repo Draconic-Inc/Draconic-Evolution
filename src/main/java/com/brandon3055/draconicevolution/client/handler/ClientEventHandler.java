@@ -20,6 +20,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.BuiltInPackSource;
@@ -31,13 +33,14 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -76,24 +79,21 @@ public class ClientEventHandler {
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
             var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource("2d_item_models");
-            var pack = Pack.readMetaAndCreate("builtin/2d_item_models", Component.literal("Draconic Evolution 2D"), false, BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath, true)), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+            var pack = Pack.readMetaAndCreate(new PackLocationInfo("builtin/2d_item_models", Component.literal("Draconic Evolution 2D"), PackSource.BUILT_IN, Optional.empty()), BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath)), PackType.CLIENT_RESOURCES, new PackSelectionConfig(false, Pack.Position.TOP, false));
+
             event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
         }
     }
 
-    private static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll(new ResourceLocation(MODID, "explosion_overlay"), (gui, graphics, partialTick, screenWidth, screenHeight) -> {
+    private static void registerOverlays(RegisterGuiLayersEvent event) {
+        event.registerBelowAll(ResourceLocation.fromNamespaceAndPath(MODID, "explosion_overlay"), (graphics, deltaTracker) -> {
             if (explosionPos != null) {
-                updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), mc.getFrameTime());
+                updateExplosionAnimation(mc, GuiRender.convert(graphics), mc.getWindow(), deltaTracker.getGameTimeDeltaPartialTick(false));
             }
         });
     }
 
-    public static void tickEnd(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT || event.side != LogicalSide.CLIENT) {
-            return;
-        }
-
+    public static void tickEnd(ClientTickEvent.Post event) {
         elapsedTicks++;
 
         if (explosionPos != null) {
@@ -313,8 +313,6 @@ public class ClientEventHandler {
     }
 
     private static void updateExplosionAnimation(Minecraft mc, GuiRender render, Window window, float partialTick) {
-        MultiBufferSource.BufferSource buffers = RenderUtils.getGuiBuffers();
-
         if (/*true || */explosionRetreating) {
             float alpha;
             if (explosionAnimation <= 0) {
@@ -326,7 +324,7 @@ public class ClientEventHandler {
             }
             if (alpha > 1) alpha = 1;
             render.rect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
-            RenderUtils.endBatch(buffers);
+            RenderUtils.endBatch(render.buffers());
 
         } else {
             Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
@@ -342,7 +340,7 @@ public class ClientEventHandler {
             DEShaders.explosionFlashIntensity.glUniform1f((float) explosionAnimation);
             DEShaders.explosionFlashScreenSize.glUniform2f(window.getScreenWidth(), window.getScreenHeight());
             render.rect(explosionFlashType, 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0xFFFFFFFF);
-            RenderUtils.endBatch(buffers);
+            RenderUtils.endBatch(render.buffers());
         }
     }
 

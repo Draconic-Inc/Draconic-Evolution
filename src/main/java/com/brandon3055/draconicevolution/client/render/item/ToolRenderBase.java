@@ -120,14 +120,14 @@ public abstract class ToolRenderBase implements IItemRenderer {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
         RenderType baseType = RenderType.create(MODID + ":base", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(true));
 
         RenderType guiType = RenderType.create(MODID + ":base_gui", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BASE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -142,7 +142,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
         RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -154,7 +154,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
         RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -168,7 +168,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
         RenderType gemType = RenderType.create(MODID + ":tool_trace", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_TRACE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -181,7 +181,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
         RenderType gemType = RenderType.create(MODID + ":tool_blade", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.TOOL_BLADE_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -229,9 +229,9 @@ public abstract class ToolRenderBase implements IItemRenderer {
         @Override
         public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
             if (transformType == ItemDisplayContext.GUI) {
-                buffers.getBuffer(guiVboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
+                guiVboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)).draw(buffers);
             } else {
-                buffers.getBuffer(vboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
+                vboType.get().withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)).draw(buffers);
             }
         }
     }
@@ -252,10 +252,10 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
         @Override
         public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            buffers.getBuffer(vboType.get().withCallback(() -> {
+            vboType.get().withCallback(() -> {
                 glUniformBaseColor(shader, techLevel, pulse);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }));
+            }).draw(buffers);
         }
 
     }
@@ -271,12 +271,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
         @Override
         public void render(ItemDisplayContext transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
-            buffers.getBuffer(vboType.get().withCallback(() -> {
+            vboType.get().withCallback(() -> {
                 shader.getDisableLightUniform().glUniform1b(true);
                 shader.getDisableOverlayUniform().glUniform1b(true);
                 shader.getAlphaUniform().glUniform1f(0.7F);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }));
+            }).draw(buffers);
         }
     }
 }

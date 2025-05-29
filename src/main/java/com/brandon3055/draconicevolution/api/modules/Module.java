@@ -9,11 +9,24 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.client.ModuleTextures;
+import com.brandon3055.draconicevolution.init.DEModules;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
+import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.animal.FrogVariant;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.PotDecorations;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -22,6 +35,9 @@ import java.util.stream.Stream;
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
 public interface Module<T extends ModuleData<T>> {
+
+    StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> STREAM_CODEC = ByteBufCodecs.holderRegistry(DEModules.MODULES.getRegistryKey());
+    //TODO figure our deferred registry codecs
 
     ModuleType<T> getType();
 

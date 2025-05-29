@@ -10,11 +10,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.tags.EnchantmentTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -28,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Created by brandon3055 on 26/2/20.
  */
-@Mod.EventBusSubscriber (bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber (bus = EventBusSubscriber.Bus.MOD)
 public class DataGenEventHandler {
 
     @SubscribeEvent
@@ -43,8 +46,8 @@ public class DataGenEventHandler {
         gen.addProvider(event.includeClient(), new DynamicTextures(gen, event.getExistingFileHelper()));
 
 
-        gen.addProvider(event.includeServer(), new RecipeGenerator(gen.getPackOutput()));
-        gen.addProvider(event.includeServer(), new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(), List.of(new LootTableProvider.SubProviderEntry(BlockLootProvider::new, LootContextParamSets.BLOCK))));
+        gen.addProvider(event.includeServer(), new RecipeGenerator(event.getLookupProvider(), gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(), List.of(new LootTableProvider.SubProviderEntry(BlockLootProvider::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
 
 
         BlockTagGenerator blockGenerator = new BlockTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID, event.getExistingFileHelper());
@@ -54,6 +57,7 @@ public class DataGenEventHandler {
 
         gen.addProvider(event.includeServer(), new CuriosProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper(), event.getLookupProvider()));
 
+        gen.addProvider(true, new EnchantmentTagGenerator(gen.getPackOutput(), event.getLookupProvider(), DraconicEvolution.MODID, event.getExistingFileHelper()));
     }
 
     private static class ItemTagGenerator extends ItemTagsProvider {
@@ -90,6 +94,19 @@ public class DataGenEventHandler {
             if (ModList.get().isLoaded("curios")) {
                 CuriosIntegration.generateTags(this::tag);
             }
+        }
+
+    }
+
+    private static class EnchantmentTagGenerator extends EnchantmentTagsProvider {
+
+        public EnchantmentTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, lookupProvider, modId, existingFileHelper);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.Provider pProvider) {
+            tag(EnchantmentTags.NON_TREASURE).add(DEContent.REAPER);
         }
 
     }

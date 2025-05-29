@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.DraconiumChestMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -100,9 +101,10 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;
     }
@@ -113,13 +115,13 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     }
 
     @Override
-    public void writeExtraTileAndStack(CompoundTag compound) {
+    public void writeExtraTileAndStack(HolderLookup.Provider provider, CompoundTag compound) {
         smeltingLogic.saveAdditionalNBT(compound);
         compound.putBoolean("inv_migrated", true);
     }
 
     @Override
-    public void readExtraTileAndStack(CompoundTag compound) {
+    public void readExtraTileAndStack(HolderLookup.Provider provider, CompoundTag compound) {
         smeltingLogic.loadAdditionalNBT(compound);
     }
 }

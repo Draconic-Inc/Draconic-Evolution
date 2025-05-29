@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.api.IDraconicMelee;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
-import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
@@ -29,6 +28,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,12 +42,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -62,7 +62,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     private final DETier itemTier;
 
     public ModularHoe(DETier tier, TechProperties props) {
-        super(tier, 0, 0, props);
+        super(tier, props);
         this.techLevel = props.getTechLevel();
         this.itemTier = (DETier) getTier();
     }
@@ -125,8 +125,8 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 
@@ -233,7 +233,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     public boolean attemptTillOp(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        BlockState toolModifiedState = level.getBlockState(blockpos).getToolModifiedState(context, ToolActions.HOE_TILL, false);
+        BlockState toolModifiedState = level.getBlockState(blockpos).getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
         Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = toolModifiedState == null ? null : Pair.of(ctx -> true, changeIntoState(toolModifiedState));
         if (pair == null) {
             return false;
@@ -247,9 +247,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
             if (!level.isClientSide) {
                 consumer.accept(context);
                 if (player != null) {
-                    context.getItemInHand().hurtAndBreak(1, player, (p_150845_) -> {
-                        p_150845_.broadcastBreakEvent(context.getHand());
-                    });
+                    context.getItemInHand().hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
                 }
             }
 

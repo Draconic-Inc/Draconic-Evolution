@@ -27,7 +27,7 @@ public class RenderModularPickaxe extends ToolRenderBase {
 
     public RenderModularPickaxe(TechLevel techLevel) {
         super(techLevel, "pickaxe");
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/pickaxe.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/pickaxe.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("handle").backfacedCopy());
         materialPart = materialPart(model.get("head").backfacedCopy());
         gemPart = gemPart(model.get("gem").backfacedCopy());

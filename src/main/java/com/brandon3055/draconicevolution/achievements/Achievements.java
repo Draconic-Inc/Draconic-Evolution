@@ -5,7 +5,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
 
 import java.util.HashMap;
 
@@ -107,14 +106,14 @@ public class Achievements {
 //        AchievementPage.registerAchievementPage(achievementsPage);
     }
 
-    @SubscribeEvent
-    public void entityPickupEvent(EntityItemPickupEvent event) {
-//        ItemStack stack = event.getItem().getEntityItem().copy();
-//        stack.setCount(1);
-//        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("pickup")) {
-//            triggerAchievement(event.getEntityPlayer(), achievementItems.get(stack.getUnlocalizedName()).getName());
-//        }
-    }
+//    @SubscribeEvent
+//    public void entityPickupEvent(EntityItemPickupEvent event) {
+////        ItemStack stack = event.getItem().getEntityItem().copy();
+////        stack.setCount(1);
+////        if (achievementItems.containsKey(stack.getUnlocalizedName()) && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("pickup")) {
+////            triggerAchievement(event.getEntityPlayer(), achievementItems.get(stack.getUnlocalizedName()).getName());
+////        }
+//    }
 
 //    @SubscribeEvent
 //    public void craftEvent(PlayerEvent.ItemCraftedEvent event) {

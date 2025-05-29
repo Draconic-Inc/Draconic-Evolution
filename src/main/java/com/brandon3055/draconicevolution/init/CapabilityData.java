@@ -41,39 +41,35 @@ public class CapabilityData {
 
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, DraconicEvolution.MODID);
 
-    public static final Supplier<AttachmentType<ModuleHost>> MODULAR_ITEM_HOST = ATTACHMENT_TYPES.register("module_item_host", () -> AttachmentType.serializable(CapabilityData::createHostFor).build());
-    public static final Supplier<AttachmentType<ModularOPStorage>> MODULAR_ITEM_ENERGY = ATTACHMENT_TYPES.register("module_item_energy", () -> AttachmentType.serializable(CapabilityData::createEnergyFor).build());
+//    public static final Supplier<AttachmentType<ModuleHost>> MODULAR_ITEM_HOST = ATTACHMENT_TYPES.register("module_item_host", () -> AttachmentType.serializable(CapabilityData::createHostFor).build());
+//    public static final Supplier<AttachmentType<ModularOPStorage>> MODULAR_ITEM_ENERGY = ATTACHMENT_TYPES.register("module_item_energy", () -> AttachmentType.serializable(CapabilityData::createEnergyFor).build());
 
-    private static ModuleHost createHostFor(IAttachmentHolder holder) {
-        if (!(holder instanceof ItemStack stack)) throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularItem!");
+    private static ModuleHost createHostFor(ItemStack stack) {
         if (!(stack.getItem() instanceof IModularItem item)) throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularItem!");
         return item.createHostCapForRegistration(stack);
     }
 
-    private static ModularOPStorage createEnergyFor(IAttachmentHolder holder) {
-        if (!(holder instanceof ItemStack stack)) throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularItem!");
+    private static ModularOPStorage createEnergyFor(ItemStack stack) {
         if (!(stack.getItem() instanceof IModularEnergyItem item)) throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularEnergyItem!");
         return item.createOPCapForRegistration(stack);
     }
 
     public static void init(IEventBus modBus) {
         LOCK.lock();
-        ATTACHMENT_TYPES.register(modBus);
+//        ATTACHMENT_TYPES.register(modBus);
         modBus.addListener(CapabilityData::register);
     }
-
-    private static int i = 0;
 
     public static void register(RegisterCapabilitiesEvent event) {
 
         DEContent.ITEMS.getEntries().forEach(holder -> {
             Item item = holder.get();
             if (item instanceof IModularItem modularItem) {
-                event.registerItem(DECapabilities.Host.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_HOST), item);
-                event.registerItem(DECapabilities.Properties.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_HOST) instanceof PropertyProvider provider ? provider : null, item);
+//                event.registerItem(DECapabilities.Host.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_HOST), item);
+//                event.registerItem(DECapabilities.Properties.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_HOST) instanceof PropertyProvider provider ? provider : null, item);
 
                 if (item instanceof IModularEnergyItem modularEnergyItem) {
-                    event.registerItem(CapabilityOP.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_ENERGY), item);
+//                    event.registerItem(CapabilityOP.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_ENERGY), item);
                 }
             }
             if (item instanceof IDEEquipment) {

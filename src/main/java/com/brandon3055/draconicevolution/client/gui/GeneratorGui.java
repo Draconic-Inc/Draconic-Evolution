@@ -42,13 +42,13 @@ public class GeneratorGui extends ContainerGuiProvider<GeneratorMenu> {
     public static final int GUI_WIDTH = 176;
     public static final int GUI_HEIGHT = 166;
 
-    private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
+    private static final RenderType modelType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
 //    private ModuleGridPanel gridPanel;
 
     static {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
         storageModel = CCModel.combine(map.values());
         storageModel.computeNormals();
     }

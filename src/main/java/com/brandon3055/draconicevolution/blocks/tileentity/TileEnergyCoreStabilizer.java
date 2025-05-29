@@ -4,7 +4,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
@@ -23,10 +23,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -59,7 +60,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     // ### Interaction
 
     @Override
-    public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
@@ -70,7 +71,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         }
 
         if (core != null) {
-            core.handleRemoteClick(player, hand, hit);
+            core.handleRemoteClick(player, hit);
         } else {
             player.sendSystemMessage(Component.translatable("msg.draconicevolution.energy_core.core_not_found").withStyle(ChatFormatting.DARK_RED));
         }
@@ -78,8 +79,8 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        return handleRemoteClick(player, hand, hit);
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
+        return handleRemoteClick(player, hit);
     }
 
     // ### Form Multi-block
@@ -273,7 +274,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         BlockState stabState = level.getBlockState(worldPosition);
         if (stabState.is(DEContent.ENERGY_CORE_STABILIZER.get())) {
             BlockPos offset = worldPosition.subtract(pos);
-            return stabState.getBlock().getShape(stabState, level, worldPosition, context).move(offset.getX(), offset.getY(), offset.getZ());
+            return stabState.getShape(level, worldPosition, context).move(offset.getX(), offset.getY(), offset.getZ());
         }
         return Shapes.block();
     }
@@ -311,7 +312,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
                 spawn.add((level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition).subtract(coreOffset.get());
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_CORE.get(), 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+            level.addParticle(new IntParticleData(DEParticles.ENERGY_CORE.get(), 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
         } else {
             if (coreDirection.get().getAxis() == Direction.Axis.Z) {
                 spawn.add(offsetX * 1.2, offsetY * 1.2, level.random.nextBoolean() ? -0.38 : 0.38);
@@ -321,7 +322,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
                 spawn.add(level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
             }
             Vector3 target = Vector3.fromBlockPosCenter(worldPosition);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_CORE.get(), 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+            level.addParticle(new IntParticleData(DEParticles.ENERGY_CORE.get(), 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
         }
     }
 ////

@@ -6,6 +6,8 @@ import com.brandon3055.brandonscore.multiblock.StructurePart;
 import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularMiningTool;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -173,7 +175,7 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart, C
         if (f == -1.0F) {
             return 0.0F;
         } else {
-            int i = CommonHooks.isCorrectToolForDrops(state, player) ? 30 : 100;
+            int i = IModularItem.isCorrectToolForDrops(player.getMainHandItem(), state) ? 30 : 100;
             return player.getDigSpeed(state, pos) / f / (float)i;
         }
     }

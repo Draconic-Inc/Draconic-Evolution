@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.google.common.collect.Sets;
 import net.covers1624.quack.collection.FastStream;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
@@ -25,8 +26,8 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.util.thread.EffectiveSide;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -191,11 +192,11 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     /**
      * Will check if this shield is able to completely absorb this damage event.
      * If so the event will be canceled and shield points will be consumed.
-     * Note: partial damage blocking is handled by {@link #tryBlockDamage(LivingDamageEvent)}
+     * Note: partial damage blocking is handled by {@link #tryBlockDamage(LivingIncomingDamageEvent)}
      *
      * @param event The damage event.
      */
-    public void tryBlockDamage(LivingAttackEvent event) {
+    public void tryBlockDamage(LivingIncomingDamageEvent event) {
         DamageSource source = event.getSource();
         if (!shieldEnabled.getValue() || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || FastStream.of(UNBLOCKABLE).anyMatch(source::is)) return;
 
@@ -212,7 +213,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         }
     }
 
-    private boolean blockEnvironmentalDamage(LivingAttackEvent event, DamageSource source) {
+    private boolean blockEnvironmentalDamage(LivingIncomingDamageEvent event, DamageSource source) {
         LivingEntity entity = event.getEntity();
         if (source.is(DamageTypeTags.IS_FIRE) && getShieldPoints() > 10) {
             entity.clearFire();
@@ -247,19 +248,19 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
      *
      * @param event The damage event.
      */
-    public void tryBlockDamage(LivingDamageEvent event) {
+    public void tryBlockDamage(LivingDamageEvent.Pre event) {
         DamageSource source = event.getSource();
         if (!shieldEnabled.getValue() || UNBLOCKABLE.contains(source)) return;
-        float damage = applyDamageModifiers(source, event.getAmount());
+        float damage = applyDamageModifiers(source, event.getNewDamage());
 
         LivingEntity entity = event.getEntity();
         if (damage <= getShieldPoints()) {
-            event.setCanceled(true);
+            event.setNewDamage(0);
             subtractShieldPoints(damage);
             onShieldHit(entity, true);
         } else if (getShieldPoints() > 0) {
             damage -= getShieldPoints();
-            event.setAmount(damage);
+            event.setNewDamage(damage);
             onShieldHit(entity, false);
             shieldPoints = 0;
             shieldBoost = 0;
@@ -347,8 +348,8 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.writeToNBT(compound, provider);
         compound.putDouble("boost", shieldBoost);
         compound.putDouble("max_boost", maxBoost);
         compound.putInt("boost_time", boostTime);
@@ -359,8 +360,8 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.readFromNBT(compound, provider);
         shieldBoost = compound.getDouble("boost");
         maxBoost = compound.getDouble("max_boost");
         boostTime = compound.getInt("boost_time");
@@ -371,14 +372,14 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt) {
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
         shieldCapacity = nbt.getInt("cap");
         shieldPoints = nbt.getDouble("points");
         shieldCoolDown = nbt.getInt("cooldwn");
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
         nbt.putInt("cap", shieldCapacity);
         nbt.putDouble("points", shieldPoints);
         nbt.putInt("cooldwn", shieldCoolDown);

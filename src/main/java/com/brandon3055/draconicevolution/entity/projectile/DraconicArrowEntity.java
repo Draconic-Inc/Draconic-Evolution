@@ -11,22 +11,26 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -34,12 +38,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -49,9 +52,9 @@ import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -62,7 +65,7 @@ import java.util.Set;
 public class DraconicArrowEntity extends AbstractArrow {
     private static final EntityDataAccessor<Integer> ID_EFFECT_COLOR = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.INT);
     private static final ItemStack DEFAULT_ARROW_STACK = new ItemStack(Items.ARROW);
-    private Potion potion = Potions.EMPTY;
+//    private Potion potion = Potions.EMPTY;
     private final Set<MobEffectInstance> effects = Sets.newHashSet();
     private boolean fixedColor;
 
@@ -73,20 +76,36 @@ public class DraconicArrowEntity extends AbstractArrow {
     private static final EntityDataAccessor<Float> INIT_VELOCITY = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
     private static final EntityDataAccessor<Boolean> PROJ_ANTI_IMMUNE = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> p_36858_, Level p_36859_) {
-        super(p_36858_, p_36859_, DEFAULT_ARROW_STACK);
+    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, Level world, ItemStack arrowStack) {
-        super(entityType, world, arrowStack);
+    public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos, ItemStack arrowStack, @Nullable ItemStack weapon) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), xPos, yPos, zPos, world, arrowStack, weapon);
     }
 
-    public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos, ItemStack arrowStack) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), xPos, yPos, zPos, world, arrowStack);
+    public DraconicArrowEntity(Level world, LivingEntity shooter, ItemStack arrowStack, @Nullable ItemStack weapon) {
+        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, world, arrowStack, weapon);
     }
 
-    public DraconicArrowEntity(Level world, LivingEntity shooter, ItemStack arrowStack) {
-        super(DEContent.ENTITY_DRACONIC_ARROW.get(), shooter, world, arrowStack);
+    private PotionContents getPotionContents() {
+        return this.getPickupItemStackOrigin().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+    }
+
+    private void setPotionContents(PotionContents p_331534_) {
+        this.getPickupItemStackOrigin().set(DataComponents.POTION_CONTENTS, p_331534_);
+        this.updateColor();
+    }
+
+    @Override
+    protected void setPickupItemStack(ItemStack p_331667_) {
+        super.setPickupItemStack(p_331667_);
+        this.updateColor();
+    }
+
+    @Override
+    protected ItemStack getDefaultPickupItem() {
+        return new ItemStack(Items.ARROW);
     }
 
     // ## Arrow Setup ##
@@ -144,7 +163,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     public void tick() {
         superTick();
 
-        if (level().isClientSide) {
+        if (this.level().isClientSide) {
             if (this.inGround) {
                 if (this.inGroundTime % 5 == 0) {
                     this.makeParticle(1);
@@ -152,13 +171,10 @@ public class DraconicArrowEntity extends AbstractArrow {
             } else {
                 this.makeParticle(2);
             }
-        } else if (this.inGround && this.inGroundTime != 0 && !this.effects.isEmpty() && this.inGroundTime >= 600) {
-            level().broadcastEntityEvent(this, (byte) 0);
-            this.potion = Potions.EMPTY;
-            this.effects.clear();
-            this.entityData.set(ID_EFFECT_COLOR, -1);
+        } else if (this.inGround && this.inGroundTime != 0 && !this.getPotionContents().equals(PotionContents.EMPTY) && this.inGroundTime >= 600) {
+            this.level().broadcastEntityEvent(this, (byte)0);
+            this.setPickupItemStack(new ItemStack(Items.ARROW));
         }
-
     }
 
     private void superTick() {
@@ -308,8 +324,15 @@ public class DraconicArrowEntity extends AbstractArrow {
     @Override
     protected void onHitEntity(EntityHitResult p_213868_1_) {
         Entity entity = p_213868_1_.getEntity();
-        float f = (float) this.getDeltaMovement().length();
-        int i = Mth.ceil(Mth.clamp((double) f * this.getBaseDamage(), 0.0D, 2.147483647E9D));
+        float velLength = (float) this.getDeltaMovement().length();
+        double baseDamage = this.getBaseDamage();
+        Entity owner = this.getOwner();
+        DamageSource damagesource = getDamageSource(entity);
+        if (this.getWeaponItem() != null && this.level() instanceof ServerLevel serverlevel) {
+            baseDamage = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), entity, damagesource, (float)baseDamage);
+        }
+        int damage = Mth.ceil(Mth.clamp((double)velLength * baseDamage, 0.0D, 2.147483647E9D));
+
         int penetration = entityData.get(PENETRATION);
         if (this.getPierceLevel() > 0 || penetration > 0) {
             if (this.piercingIgnoreEntityIds == null) {
@@ -329,17 +352,14 @@ public class DraconicArrowEntity extends AbstractArrow {
         }
 
         if (this.isCritArrow()) {
-            long j = (long) this.random.nextInt(i / 2 + 2);
-            i = (int) Math.min(j + (long) i, 2147483647L);
+            long j = (long) this.random.nextInt(damage / 2 + 2);
+            damage = (int) Math.min(j + (long) damage, 2147483647L);
         }
-
-        Entity owner = this.getOwner();
-        DamageSource damagesource = getDamageSource(entity);
 
         boolean isEnderman = entity.getType() == EntityType.ENDERMAN;
         int k = entity.getRemainingFireTicks();
         if (this.isOnFire() && !isEnderman) {
-            entity.setSecondsOnFire(5);
+            entity.setRemainingFireTicks(5);
         }
 
         //Break shields with penetration
@@ -352,31 +372,23 @@ public class DraconicArrowEntity extends AbstractArrow {
             }
         }
 
-        if (entity.hurt(damagesource, (float) i)) {
+        if (entity.hurt(damagesource, (float) damage)) {
             if (isEnderman) {
                 return;
             }
 
-            if (entity instanceof LivingEntity) {
-                LivingEntity livingentity = (LivingEntity) entity;
+            if (entity instanceof LivingEntity livingentity) {
                 if (!level().isClientSide && this.getPierceLevel() <= 0 && penetration <= 0) {
                     livingentity.setArrowCount(livingentity.getArrowCount() + 1);
                 }
 
-                if (this.knockback > 0) {
-                    Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.knockback * 0.6D);
-                    if (vector3d.lengthSqr() > 0.0D) {
-                        livingentity.push(vector3d.x, 0.1D, vector3d.z);
-                    }
-                }
-
-                if (!level().isClientSide && owner instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, owner);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity) owner, livingentity);
+                this.doKnockback(livingentity, damagesource);
+                if (this.level() instanceof ServerLevel serverlevel1) {
+                    EnchantmentHelper.doPostAttackEffectsWithItemSource(serverlevel1, livingentity, damagesource, this.getWeaponItem());
                 }
 
                 this.doPostHurtEffects(livingentity);
-                if (owner != null && livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer && !this.isSilent()) {
+                if (livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer && !this.isSilent()) {
                     ((ServerPlayer) owner).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
@@ -384,12 +396,11 @@ public class DraconicArrowEntity extends AbstractArrow {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!level().isClientSide && owner instanceof ServerPlayer) {
-                    ServerPlayer serverplayerentity = (ServerPlayer) owner;
+                if (!level().isClientSide && owner instanceof ServerPlayer serverPlayer) {
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, this.piercedAndKilledEntities);
+                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverPlayer, this.piercedAndKilledEntities);
                     } else if (!entity.isAlive() && this.shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, Arrays.asList(entity));
+                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverPlayer, Arrays.asList(entity));
                     }
                 }
             }
@@ -483,89 +494,53 @@ public class DraconicArrowEntity extends AbstractArrow {
         this.setCritArrow(false);
         this.setPierceLevel((byte) 0);
         this.setSoundEvent(SoundEvents.ARROW_HIT);
-        this.setShotFromCrossbow(false);
         this.resetPiercedEntities();
     }
 
     // # # # # # # # # # # # #
 
-    public void setEffectsFromItem(ItemStack p_184555_1_) {
-        if (p_184555_1_.getItem() == Items.TIPPED_ARROW) {
-            this.potion = PotionUtils.getPotion(p_184555_1_);
-            Collection<MobEffectInstance> collection = PotionUtils.getCustomEffects(p_184555_1_);
-            if (!collection.isEmpty()) {
-                for (MobEffectInstance effectinstance : collection) {
-                    this.effects.add(new MobEffectInstance(effectinstance));
-                }
-            }
-
-            int i = getCustomColor(p_184555_1_);
-            if (i == -1) {
-                this.updateColor();
-            } else {
-                this.setFixedColor(i);
-            }
-        } else if (p_184555_1_.getItem() == Items.ARROW) {
-            this.potion = Potions.EMPTY;
-            this.effects.clear();
-            this.entityData.set(ID_EFFECT_COLOR, -1);
-        }
-
-    }
-
-    public static int getCustomColor(ItemStack p_191508_0_) {
-        CompoundTag compoundnbt = p_191508_0_.getTag();
-        return compoundnbt != null && compoundnbt.contains("CustomPotionColor", 99) ? compoundnbt.getInt("CustomPotionColor") : -1;
-    }
-
     private void updateColor() {
-        this.fixedColor = false;
-        if (this.potion == Potions.EMPTY && this.effects.isEmpty()) {
-            this.entityData.set(ID_EFFECT_COLOR, -1);
-        } else {
-            this.entityData.set(ID_EFFECT_COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.effects)));
-        }
-
+        PotionContents potioncontents = this.getPotionContents();
+        this.entityData.set(ID_EFFECT_COLOR, potioncontents.equals(PotionContents.EMPTY) ? -1 : potioncontents.getColor());
     }
 
-    public void addEffect(MobEffectInstance p_184558_1_) {
-        this.effects.add(p_184558_1_);
-        this.getEntityData().set(ID_EFFECT_COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.effects)));
+    public void addEffect(MobEffectInstance p_36871_) {
+        this.setPotionContents(this.getPotionContents().withEffectAdded(p_36871_));
     }
+    
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ID_EFFECT_COLOR, -1);
-        this.entityData.define(SPECTRAL_TIME, 0);
-        this.entityData.define(TECH_LEVEL, (byte) TechLevel.DRACONIUM.index);
-        this.entityData.define(PENETRATION, (byte) 0);
-        this.entityData.define(GRAV_COMPENSATION, 0F);
-        this.entityData.define(INIT_VELOCITY, 0F);
-        this.entityData.define(PROJ_ANTI_IMMUNE, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ID_EFFECT_COLOR, -1);
+        builder.define(SPECTRAL_TIME, 0);
+        builder.define(TECH_LEVEL, (byte) TechLevel.DRACONIUM.index);
+        builder.define(PENETRATION, (byte) 0);
+        builder.define(GRAV_COMPENSATION, 0F);
+        builder.define(INIT_VELOCITY, 0F);
+        builder.define(PROJ_ANTI_IMMUNE, false);
     }
 
-    private void makeParticle(int p_184556_1_) {
+    private void makeParticle(int p_36877_) {
         int i = this.getColor();
-        if (i != -1 && p_184556_1_ > 0) {
-            double d0 = (double) (i >> 16 & 255) / 255.0D;
-            double d1 = (double) (i >> 8 & 255) / 255.0D;
-            double d2 = (double) (i >> 0 & 255) / 255.0D;
-
-            for (int j = 0; j < p_184556_1_; ++j) {
-                level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+        if (i != -1 && p_36877_ > 0) {
+            for (int j = 0; j < p_36877_; j++) {
+                this.level()
+                        .addParticle(
+                                ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, i),
+                                this.getRandomX(0.5),
+                                this.getRandomY(),
+                                this.getRandomZ(0.5),
+                                0.0,
+                                0.0,
+                                0.0
+                        );
             }
-
         }
     }
 
     public int getColor() {
         return this.entityData.get(ID_EFFECT_COLOR);
-    }
-
-    private void setFixedColor(int p_191507_1_) {
-        this.fixedColor = true;
-        this.entityData.set(ID_EFFECT_COLOR, p_191507_1_);
     }
 
 //    private static final DataParameter<Integer> SPECTRAL_TIME = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.INT);
@@ -577,22 +552,9 @@ public class DraconicArrowEntity extends AbstractArrow {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        if (this.potion != Potions.EMPTY && this.potion != null) {
-            compound.putString("Potion", BuiltInRegistries.POTION.getKey(this.potion).toString());
-        }
 
         if (this.fixedColor) {
             compound.putInt("Color", this.getColor());
-        }
-
-        if (!this.effects.isEmpty()) {
-            ListTag listnbt = new ListTag();
-
-            for (MobEffectInstance effectinstance : this.effects) {
-                listnbt.add(effectinstance.save(new CompoundTag()));
-            }
-
-            compound.put("CustomPotionEffects", listnbt);
         }
 
         if (getSpectralTime() > 0) {
@@ -608,20 +570,7 @@ public class DraconicArrowEntity extends AbstractArrow {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("Potion", 8)) {
-            this.potion = PotionUtils.getPotion(compound);
-        }
-
-        for (MobEffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
-            this.addEffect(effectinstance);
-        }
-
-        if (compound.contains("Color", 99)) {
-            this.setFixedColor(compound.getInt("Color"));
-        } else {
-            this.updateColor();
-        }
-
+        
         if (compound.contains("spectral_time")) {
             setSpectral(compound.getInt("spectral_time"));
         }
@@ -644,64 +593,61 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     @Override
-    protected void doPostHurtEffects(LivingEntity p_184548_1_) {
-        super.doPostHurtEffects(p_184548_1_);
-
-        for (MobEffectInstance effectinstance : this.potion.getEffects()) {
-            p_184548_1_.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
-        }
-
-        if (!this.effects.isEmpty()) {
-            for (MobEffectInstance effectinstance1 : this.effects) {
-                p_184548_1_.addEffect(effectinstance1);
+    protected void doPostHurtEffects(LivingEntity hit) {
+        super.doPostHurtEffects(hit);
+        Entity entity = this.getEffectSource();
+        PotionContents potioncontents = this.getPotionContents();
+        if (potioncontents.potion().isPresent()) {
+            for (MobEffectInstance mobeffectinstance : potioncontents.potion().get().value().getEffects()) {
+                hit.addEffect(
+                        new MobEffectInstance(
+                                mobeffectinstance.getEffect(),
+                                Math.max(mobeffectinstance.mapDuration(p_268168_ -> p_268168_ / 8), 1),
+                                mobeffectinstance.getAmplifier(),
+                                mobeffectinstance.isAmbient(),
+                                mobeffectinstance.isVisible()
+                        ),
+                        entity
+                );
             }
         }
 
-        int spectralTime = entityData.get(SPECTRAL_TIME);
-        if (spectralTime > 0) {
-            MobEffectInstance effectinstance = new MobEffectInstance(MobEffects.GLOWING, spectralTime, 0);
-            p_184548_1_.addEffect(effectinstance);
+        for (MobEffectInstance mobeffectinstance1 : potioncontents.customEffects()) {
+            hit.addEffect(mobeffectinstance1, entity);
         }
     }
 
     @Override
-    protected ItemStack getPickupItem() {
-        if (this.effects.isEmpty() && this.potion == Potions.EMPTY) {
-            return new ItemStack(Items.ARROW);
-        } else {
-            ItemStack itemstack = new ItemStack(Items.TIPPED_ARROW);
-            PotionUtils.setPotion(itemstack, this.potion);
-            PotionUtils.setCustomEffects(itemstack, this.effects);
-            if (this.fixedColor) {
-                itemstack.getOrCreateTag().putInt("CustomPotionColor", this.getColor());
-            }
-
-            return itemstack;
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void handleEntityEvent(byte p_70103_1_) {
-        if (p_70103_1_ == 0) {
+    public void handleEntityEvent(byte p_36869_) {
+        if (p_36869_ == 0) {
             int i = this.getColor();
             if (i != -1) {
-                double d0 = (double) (i >> 16 & 255) / 255.0D;
-                double d1 = (double) (i >> 8 & 255) / 255.0D;
-                double d2 = (double) (i >> 0 & 255) / 255.0D;
+                float f = (float)(i >> 16 & 0xFF) / 255.0F;
+                float f1 = (float)(i >> 8 & 0xFF) / 255.0F;
+                float f2 = (float)(i >> 0 & 0xFF) / 255.0F;
 
-                for (int j = 0; j < 20; ++j) {
-                    level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                for (int j = 0; j < 20; j++) {
+                    this.level()
+                            .addParticle(
+                                    ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, f, f1, f2),
+                                    this.getRandomX(0.5),
+                                    this.getRandomY(),
+                                    this.getRandomZ(0.5),
+                                    0.0,
+                                    0.0,
+                                    0.0
+                            );
                 }
             }
         } else {
-            super.handleEntityEvent(p_70103_1_);
+            super.handleEntityEvent(p_36869_);
         }
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this));
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity p_352459_) {
+        Entity entity = this.getOwner();
+        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this, entity == null ? 0 : entity.getId()));
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -95,8 +96,8 @@ public class OreDoublingRegistry {
     }
 
     public static ItemStack getSmeltingResult(ItemStack stack, Level world) {
-        RecipeHolder<SmeltingRecipe> recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(new RecipeWrapper(new Wrap(stack)), world.registryAccess());
+        RecipeHolder<SmeltingRecipe> recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), world).orElse(null);
+        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(new SingleRecipeInput(stack), world.registryAccess());
     }
 
     private static void registerDEOverrides() {
@@ -108,51 +109,4 @@ public class OreDoublingRegistry {
         registerResult(new ItemStack(Items.CLAY_BALL), new ItemStack(Items.BRICK, 2));
         registerResult(new ItemStack(Blocks.CACTUS), new ItemStack(Items.GREEN_DYE, 2));
     }
-
-    private static class Wrap implements IItemHandlerModifiable {
-        private ItemStack stack;
-
-        public Wrap(ItemStack stack) {
-            this.stack = stack;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return stack;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return 64;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-
-        }
-    }
-//
 }

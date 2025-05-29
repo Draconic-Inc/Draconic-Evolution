@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -86,12 +87,12 @@ public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (world.isClientSide) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
 
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = level.getBlockEntity(pos);
 
         if (!(tile instanceof TileFusionCraftingInjector)) {
             return InteractionResult.FAIL;
@@ -111,7 +112,7 @@ public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
                 player.setItemInHand(InteractionHand.MAIN_HAND, craftingPedestal.itemHandler.getStackInSlot(0));
                 craftingPedestal.setInjectorStack(ItemStack.EMPTY);
             } else {
-                world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
+                level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
                 craftingPedestal.setInjectorStack(ItemStack.EMPTY);
             }
         } else {

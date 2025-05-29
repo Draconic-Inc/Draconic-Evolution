@@ -58,10 +58,10 @@ public class KeyInputHandler {
 
 //        }
         if (KeyBindings.toolModules.isDown()) {
-            DraconicNetwork.sendOpenItemConfig(true);
+            DraconicNetwork.sendOpenItemConfig(player.registryAccess(), true);
         }
         else if (KeyBindings.toolConfig.isDown()) {
-            DraconicNetwork.sendOpenItemConfig(false);
+            DraconicNetwork.sendOpenItemConfig(player.registryAccess(), false);
         }
 //        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
 ////            PacketDispatcher.dispatchToolProfileChange(false);
@@ -81,22 +81,22 @@ public class KeyInputHandler {
                 }
             }
         } else if (KeyBindings.toggleMagnet.isDown()) {
-            DraconicNetwork.sendToggleMagnets();
+            DraconicNetwork.sendToggleMagnets(player.registryAccess());
         } else if (KeyBindings.dislocatorTeleport.isDown()) {
-            DraconicNetwork.sendDislocatorMessage(11, output -> {});
+            DraconicNetwork.sendDislocatorMessage(player.registryAccess(), 11, output -> {});
         } else if (KeyBindings.dislocatorBlink.isDown()) {
-            DraconicNetwork.sendDislocatorMessage(12, output -> {});
+            DraconicNetwork.sendDislocatorMessage(player.registryAccess(), 12, output -> {});
         } else if (KeyBindings.dislocatorUp.isDown()) {
-            DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(false));
+            DraconicNetwork.sendDislocatorMessage(player.registryAccess(), 13, output -> output.writeBoolean(false));
         } else if (KeyBindings.dislocatorDown.isDown()) {
-            DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(true));
+            DraconicNetwork.sendDislocatorMessage(player.registryAccess(), 13, output -> output.writeBoolean(true));
         } else if (KeyBindings.dislocatorGui.isDown()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
                 Minecraft.getInstance().setScreen(new DislocatorGui.Screen(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.isDown()) {
-            DraconicNetwork.sendPlaceItem();
+            DraconicNetwork.sendPlaceItem(player.registryAccess());
         }
 
         Options options = Minecraft.getInstance().options;
@@ -104,7 +104,7 @@ public class KeyInputHandler {
         boolean newState = options.keyUp.isDown() && options.keySprint.isDown();
         if (oldState != newState) {
             InputSync.setSprintState(player.getUUID(), newState);
-            DraconicNetwork.sendSprintState(newState);
+            DraconicNetwork.sendSprintState(player.registryAccess(), newState);
         }
 
 //        else if (KeyBindings.armorProfileChange.isPressed()) {

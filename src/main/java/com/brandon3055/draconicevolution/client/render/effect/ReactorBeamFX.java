@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -166,10 +167,10 @@ public class ReactorBeamFX extends Particle {
             float cos = (float) MathHelper.cos(angle);
             float texX = i / sides;
             Vec3D point = pos.copy().radialOffset(facing.getAxis(), sin, cos, widthStart);
-            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? 0F : fxState).uv(texX, (fadeReverse ? 0.1F : 1F)).endVertex();
+            buffer.addVertex((float) point.x, (float) point.y, (float) point.z).setColor(1F, 1F, 1F, fadeReverse ? 0F : fxState).setUv(texX, (fadeReverse ? 0.1F : 1F));
             point.offset(facing, length);
             point.radialOffset(facing.getAxis(), sin, cos, widthEnd - widthStart);
-            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? fxState : 0F).uv(texX, 0).endVertex();
+            buffer.addVertex((float) point.x, (float) point.y, (float) point.z).setColor(1F, 1F, 1F, fadeReverse ? fxState : 0F).setUv(texX, 0);
         }
     }
 
@@ -178,16 +179,5 @@ public class ReactorBeamFX extends Particle {
         return FX_HANDLER;
     }
 
-    private static final ParticleRenderType FX_HANDLER = new FXHandler();
-
-    public static class FXHandler implements ParticleRenderType {
-
-        public FXHandler() {}
-
-        @Override
-        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {}
-
-        @Override
-        public void end(Tesselator tessellator) {}
-    }
+    private static final ParticleRenderType FX_HANDLER = ParticleRenderType.NO_RENDER;
 }

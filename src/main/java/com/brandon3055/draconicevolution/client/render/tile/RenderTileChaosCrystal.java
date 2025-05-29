@@ -35,7 +35,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
 
     private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.BLOCK, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.chaosBlockShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
             .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -43,7 +43,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
 
     private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.BLOCK, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeCutoutShader)) //TODO Figure out shader
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/chaos_crystal.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/chaos_crystal.png"), false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .createCompositeState(false));
@@ -58,7 +58,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
     private final CCModel model;
 
     public RenderTileChaosCrystal(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(MODID, "models/block/chaos_crystal.obj"))
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(MODID, "models/block/chaos_crystal.obj"))
                 .ignoreMtl()
                 .parse();
         model = CCModel.combine(map.values())

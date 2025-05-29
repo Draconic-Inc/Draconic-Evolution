@@ -4,6 +4,8 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 
 import java.util.Optional;
@@ -15,38 +17,54 @@ import java.util.Optional;
 public class Serializers {
 
     public static final EntityDataSerializer<Optional<Module<?>>> OPT_MODULE_SERIALIZER = new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buf, Optional<Module<?>> value) {
-            buf.writeBoolean(value.isPresent());
-            value.ifPresent(module -> buf.writeResourceLocation(DEModules.REGISTRY.getKey(module)));
+
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, Optional<Module<?>>> codec() {
+            return null;
         }
 
-        public Optional<Module<?>> read(FriendlyByteBuf buf) {
-            Module<?> module = DEModules.REGISTRY.get(buf.readResourceLocation());
-            return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
-        }
-
+        @Override
         public Optional<Module<?>> copy(Optional<Module<?>> value) {
             return value;
         }
+//        public void write(FriendlyByteBuf buf, Optional<Module<?>> value) {
+//            buf.writeBoolean(value.isPresent());
+//            value.ifPresent(module -> buf.writeResourceLocation(DEModules.REGISTRY.getKey(module)));
+//        }
+//
+//        public Optional<Module<?>> read(FriendlyByteBuf buf) {
+//            Module<?> module = DEModules.REGISTRY.get(buf.readResourceLocation());
+//            return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
+//        }
+//
+//        @Override
+//        public StreamCodec<? super RegistryFriendlyByteBuf, Optional<Module<?>>> codec() {
+//            return null;
+//        }
+//
+//        public Optional<Module<?>> copy(Optional<Module<?>> value) {
+//            return value;
+//        }
     };
 
-    public static final EntityDataSerializer<TechLevel> TECH_LEVEL_SERIALIZER = new EntityDataSerializer<TechLevel>() {
-        public void write(FriendlyByteBuf packetBuffer, TechLevel techLevel) {
-            packetBuffer.writeEnum(techLevel);
-        }
+//    public static final EntityDataSerializer<TechLevel> TECH_LEVEL_SERIALIZER = new EntityDataSerializer<TechLevel>() {
+//        public void write(FriendlyByteBuf packetBuffer, TechLevel techLevel) {
+//            packetBuffer.writeEnum(techLevel);
+//        }
+//
+//        public TechLevel read(FriendlyByteBuf packetBuffer) {
+//            return packetBuffer.readEnum(TechLevel.class);
+//        }
+//
+//        public TechLevel copy(TechLevel techLevel) {
+//            return techLevel;
+//        }
+//    };
 
-        public TechLevel read(FriendlyByteBuf packetBuffer) {
-            return packetBuffer.readEnum(TechLevel.class);
-        }
-
-        public TechLevel copy(TechLevel techLevel) {
-            return techLevel;
-        }
-    };
-
-    static {
+//    static {
 //        DataSerializers.registerSerializer(OPT_MODULE_SERIALIZER);
 //        DataSerializers.registerSerializer(TECH_LEVEL_SERIALIZER);
-    }
+//    }
 
 }

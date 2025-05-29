@@ -4,6 +4,7 @@ import codechicken.lib.gui.modular.sprite.GuiTextures;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.client.hud.HudManager;
+import com.brandon3055.brandonscore.client.model.DummyHumanoidModel;
 import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
 import com.brandon3055.draconicevolution.client.*;
 import com.brandon3055.draconicevolution.client.gui.*;
@@ -35,6 +36,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -58,6 +61,8 @@ public class DEClient {
         modBus.addListener(DEClient::registerRenderers);
         modBus.addListener(DEClient::onAddRenderLayers);
         modBus.addListener(DEClient::onResourceReload);
+        modBus.addListener(DEClient::registerClientExtensions);
+        modBus.addListener(DEClient::registerMenuScreens);
 
 //        modBus.addListener((RegisterColorHandlersEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
 
@@ -75,7 +80,6 @@ public class DEClient {
     private static final CrashLock LOCK2 = new CrashLock("Already Initialized.");
     private static void clientSetupEvent(FMLClientSetupEvent event) {
         LOCK2.lock();
-        registerGuiFactories();
         registerItemRenderers();
         setupRenderLayers();
         CustomBossInfoHandler.init();
@@ -121,23 +125,29 @@ public class DEClient {
         event.registerEntityRenderer(DEContent.ENTITY_GUARDIAN_WITHER.get(), GuardianWitherRenderer::new);
     }
 
-    private static void registerGuiFactories() {
-        MenuScreens.register(DEContent.MENU_GENERATOR.get(), GeneratorGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_GRINDER.get(), GrinderGui.Screen::new);
+    private static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(DEContent.MENU_GENERATOR.get(), GeneratorGui.Screen::new);
+        event.register(DEContent.MENU_GRINDER.get(), GrinderGui.Screen::new);
 
-        MenuScreens.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), ConfigurableItemGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_MODULAR_ITEM.get(), ModularItemGui.Screen::new);
+        event.register(DEContent.MENU_CONFIGURABLE_ITEM.get(), ConfigurableItemGui.Screen::new);
+        event.register(DEContent.MENU_MODULAR_ITEM.get(), ModularItemGui.Screen::new);
 
-        MenuScreens.register(DEContent.MENU_DRACONIUM_CHEST.get(), DraconiumChestGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_ENERGY_CORE.get(), EnergyCoreGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_REACTOR.get(), ReactorGui.Screen::new);
+        event.register(DEContent.MENU_DRACONIUM_CHEST.get(), DraconiumChestGui.Screen::new);
+        event.register(DEContent.MENU_ENERGY_CORE.get(), EnergyCoreGui.Screen::new);
+        event.register(DEContent.MENU_REACTOR.get(), ReactorGui.Screen::new);
 
-        MenuScreens.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), CelestialManipulatorGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_DISENCHANTER.get(), DisenchanterGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), FusionCraftingCoreGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_FLOW_GATE.get(), FlowGateGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_ENTITY_DETECTOR.get(), EntityDetectorGui.Screen::new);
-        MenuScreens.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), EnergyTransfuserGui.Screen::new);
+        event.register(DEContent.MENU_CELESTIAL_MANIPULATOR.get(), CelestialManipulatorGui.Screen::new);
+        event.register(DEContent.MENU_DISENCHANTER.get(), DisenchanterGui.Screen::new);
+        event.register(DEContent.MENU_FUSION_CRAFTING_CORE.get(), FusionCraftingCoreGui.Screen::new);
+        event.register(DEContent.MENU_FLOW_GATE.get(), FlowGateGui.Screen::new);
+        event.register(DEContent.MENU_ENTITY_DETECTOR.get(), EntityDetectorGui.Screen::new);
+        event.register(DEContent.MENU_ENERGY_TRANSFUSER.get(), EnergyTransfuserGui.Screen::new);
+    }
+
+    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS, DEContent.CHESTPIECE_WYVERN);
+        event.registerItem(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS, DEContent.CHESTPIECE_DRACONIC);
+        event.registerItem(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS, DEContent.CHESTPIECE_CHAOTIC);
     }
 
     @SuppressWarnings ("ConstantConditions")

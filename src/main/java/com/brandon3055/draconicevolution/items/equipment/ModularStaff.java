@@ -23,9 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -43,7 +40,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     private final DETier itemTier;
 
     public ModularStaff(DETier tier, TechProperties props) {
-        super(0, 0, tier, BlockTags.MINEABLE_WITH_PICKAXE, props);
+        super(tier, BlockTags.MINEABLE_WITH_PICKAXE, props);
         this.techLevel = props.getTechLevel();
         this.itemTier = (DETier) getTier();
     }
@@ -102,8 +99,8 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -111,15 +108,15 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
         return techLevel.index + 1;
     }
 
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentCategory.DIGGER ||
-                enchantment.category == EnchantmentCategory.WEAPON ||
-                enchantment.category.name().equals("PICKAXE_OR_SHOVEL") ||
-                enchantment.category.name().equals("SWORD_OR_AXE") ||
-                enchantment.category.name().equals("SWORD_OR_AXE_OR_CROSSBOW") ||
-                super.canApplyAtEnchantingTable(stack, enchantment);
-    }
+//    @Override
+//    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+//        return enchantment.category == EnchantmentCategory.DIGGER ||
+//                enchantment.category == EnchantmentCategory.WEAPON ||
+//                enchantment.category.name().equals("PICKAXE_OR_SHOVEL") ||
+//                enchantment.category.name().equals("SWORD_OR_AXE") ||
+//                enchantment.category.name().equals("SWORD_OR_AXE_OR_CROSSBOW") ||
+//                super.canApplyAtEnchantingTable(stack, enchantment);
+//    }
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
@@ -137,7 +134,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

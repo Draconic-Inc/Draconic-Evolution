@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -105,7 +106,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (!level.isClientSide) {
             if (player.isShiftKeyDown()) {
                 powerRate.divide(10);
@@ -123,6 +124,6 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
             BrandonsCore.proxy.sendIndexedMessage(player, Component.literal("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), MSG_UUID);
 //            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }

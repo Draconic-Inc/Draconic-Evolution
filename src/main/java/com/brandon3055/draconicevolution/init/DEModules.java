@@ -35,7 +35,7 @@ import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
 public class DEModules {
-    public static final ResourceKey<Registry<Module<?>>> MODULE_KEY = ResourceKey.createRegistryKey(new ResourceLocation(MODID, "modules"));
+    public static final ResourceKey<Registry<Module<?>>> MODULE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "modules"));
     public static Registry<Module<?>> REGISTRY;
 
     public static final DeferredRegister<Module<?>> MODULES = DeferredRegister.create(MODULE_KEY, MODID);
@@ -248,8 +248,8 @@ public class DEModules {
     public static final DeferredHolder<Item, ModuleItem<?>> ITEM_DRACONIC_JUMP                          = ITEMS.register("item_draconic_jump",                      () -> new ModuleItem<>(DRACONIC_JUMP));
     public static final DeferredHolder<Item, ModuleItem<?>> ITEM_CHAOTIC_JUMP                           = ITEMS.register("item_chaotic_jump",                       () -> new ModuleItem<>(CHAOTIC_JUMP));
 
-    public static final DeferredHolder<Module<?>, Module<?>> WYVERN_AQUA_ADAPT                          = MODULES.register("wyvern_aqua_adapt",                     () -> new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData())); //TODO
-    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_WYVERN_AQUA_ADAPT                      = ITEMS.register("item_wyvern_aqua_adapt",                  () -> new ModuleItem<>(WYVERN_AQUA_ADAPT));
+    public static final DeferredHolder<Module<?>, Module<?>> WYVERN_AQUA_ADEPT                          = MODULES.register("wyvern_aqua_adapt",                     () -> new ModuleImpl<>(AQUA_ADEPT,           WYVERN,         noData())); //TODO
+    public static final DeferredHolder<Item, ModuleItem<?>> ITEM_WYVERN_AQUA_ADAPT                      = ITEMS.register("item_wyvern_aqua_adapt",                  () -> new ModuleItem<>(WYVERN_AQUA_ADEPT));
     //@formatter:on
 
 

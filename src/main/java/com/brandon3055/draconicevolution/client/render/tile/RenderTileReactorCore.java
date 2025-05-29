@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
@@ -52,7 +53,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
                     .createCompositeState(false)
     );
 
-    public static RenderType REACTOR_BEAM_TYPE = RenderType.create(MODID + "beam_typess", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, true, RenderType.CompositeState.builder()
+    public static RenderType REACTOR_BEAM_TYPE = RenderType.create(MODID + "beam_typess", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, true, RenderType.CompositeState.builder()
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorBeamShader))
             .setCullState(RenderStateShard.NO_CULL)
@@ -62,7 +63,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
 
     public RenderTileReactorCore(BlockEntityRendererProvider.Context context) {
         if (model == null) {
-            Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
             model = CCModel.combine(map.values());
         }
     }
@@ -121,7 +122,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
     public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, MultiBufferSource getter) {
         //The model should be generated during startup, unless Embeddium is installed... STOP BREAKING MY SHIT!!!!
         if (model == null) {
-            Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
             model = CCModel.combine(map.values());
         }
         DEShaders.reactorTime.glUniform1f(animation);
@@ -146,14 +147,14 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
         Minecraft mc = Minecraft.getInstance();
-        MultiBufferSource.BufferSource getter = RenderUtils.getBuffers();
         Matrix4 mat = new Matrix4(render.pose());
         mat.scale(diameter);
-        mat.rotate((TimeKeeper.getClientTick() + mc.getFrameTime()) / 400F, Vector3.Y_POS);
+        float partialTicks = mc.getTimer().getGameTimeDeltaPartialTick(false);
+        mat.rotate((TimeKeeper.getClientTick() + partialTicks) / 400F, Vector3.Y_POS);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
         RenderSystem.depthMask(false);
-        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getFrameTime(), getter);
+        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, partialTicks, render.buffers());
         RenderSystem.depthMask(true);
     }
 
@@ -229,8 +230,8 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
 
     public void renderShaderBeam(CCRenderState ccrs, Direction facing, float fxState, MultiBufferSource buffers, PoseStack poseStack, Vec3D pos, double widthStart, double widthEnd, float length, boolean fadeReverse, boolean highRes) {
         VertexConsumer buffer = new TransformingVertexConsumer(buffers.getBuffer(REACTOR_BEAM_TYPE), poseStack);
-        ccrs.bind(buffer, DefaultVertexFormat.POSITION_COLOR_TEX);
-        ccrs.startDrawing(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR_TEX);
+        ccrs.bind(buffer, DefaultVertexFormat.POSITION_TEX_COLOR);
+//        ccrs.startDrawing(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_TEX_COLOR);
         
         float sides = highRes ? 599 : 99;
         for (int i = 0; i < sides + 1; i++) {
@@ -239,12 +240,12 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
             float cos = (float) MathHelper.cos(angle);
             float texX = i / sides;
             Vec3D point = pos.copy().radialOffset(facing.getAxis(), sin, cos, widthStart);
-            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? 0F : fxState).uv(texX, (fadeReverse ? 0.1F : 1F)).endVertex();
+            buffer.addVertex((float) point.x, (float) point.y, (float) point.z).setColor(1F, 1F, 1F, fadeReverse ? 0F : fxState).setUv(texX, (fadeReverse ? 0.1F : 1F));
             point.offset(facing, length);
             point.radialOffset(facing.getAxis(), sin, cos, widthEnd - widthStart);
-            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? fxState : 0F).uv(texX, 0).endVertex();
+            buffer.addVertex((float) point.x, (float) point.y, (float) point.z).setColor(1F, 1F, 1F, fadeReverse ? fxState : 0F).setUv(texX, 0);
         }
-        ccrs.draw();
+//        ccrs.draw();
         RenderUtils.endBatch(buffers);
     }
 
@@ -260,6 +261,7 @@ public class RenderTileReactorCore implements BlockEntityRendererTransparent<Til
 
     @Override
     public AABB getRenderBoundingBox(TileReactorCore blockEntity) {
-        return INFINITE_EXTENT_AABB;
+        BlockPos pos = blockEntity.getBlockPos();
+        return new AABB(pos.getX() - 14, pos.getY() - 14, pos.getZ() - 14, pos.getX() + 15, pos.getY() + 15, pos.getZ() + 15);
     }
 }

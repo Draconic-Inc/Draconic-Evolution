@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -277,7 +278,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     //endregion
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         //Serialize Modules
         ListTag modules = new ListTag();
@@ -285,7 +286,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             for (ModuleEntity<?> entity : moduleEntities) {
                 CompoundTag entityNBT = new CompoundTag();
                 entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
-                entity.writeToNBT(entityNBT);
+                entity.writeToNBT(entityNBT, provider);
                 modules.add(entityNBT);
             }
         }
@@ -294,28 +295,28 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         //Serialize Properties
         nbt.putUUID("identity", getIdentity());
         CompoundTag properties = new CompoundTag();
-        providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT()));
+        providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT(provider)));
         nbt.put("properties", properties);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         synchronized (moduleEntities) {
             clearCaches();
             //Deserialize modules first
             moduleEntities.clear();
             ListTag modules = nbt.getList("modules", 10);
             modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
-                ResourceLocation id = new ResourceLocation(compound.getString("id"));
+                ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
                 com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
                 if (module == null) {
                     LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {
                     ModuleEntity<?> entity = module.createEntity();
-                    entity.readFromNBT(compound);
+                    entity.readFromNBT(compound, provider);
                     if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-                        LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
+                        LOGGER.warn("Deleting module from invalid grid position: " + entity);
                     } else {
                         moduleEntities.add(entity);
                         entity.setHost(this);
@@ -329,7 +330,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
                 identity = nbt.getUUID("identity");
             }
             CompoundTag properties = nbt.getCompound("properties");
-            providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));
+            providedProperties.forEach(e -> e.deserializeNBT(provider, properties.getCompound(e.getName())));
         }
     }
 }

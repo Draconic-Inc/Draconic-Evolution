@@ -78,7 +78,7 @@ public class ExplosionFX extends Particle {
     );
 
     static {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
         model = CCModel.combine(map.values());
         model_inv = model.backfacedCopy();
     }
@@ -94,10 +94,10 @@ public class ExplosionFX extends Particle {
         coreEffect = new CoreEffect(0);
     }
 
-    @Override
-    public boolean shouldCull() {
-        return false;
-    }
+//    @Override
+//    public boolean shouldCull() {
+//        return false;
+//    }
 
     @Override
     public void tick() {
@@ -180,15 +180,7 @@ public class ExplosionFX extends Particle {
         return FX_HANDLER;
     }
 
-    private static final ParticleRenderType FX_HANDLER = new FXHandler();
-
-    public static class FXHandler implements ParticleRenderType {
-        @Override
-        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {}
-
-        @Override
-        public void end(Tesselator tessellator) {}
-    }
+    private static final ParticleRenderType FX_HANDLER = ParticleRenderType.NO_RENDER;
 
     private static abstract class EffectPart {
         private boolean isDead = false;

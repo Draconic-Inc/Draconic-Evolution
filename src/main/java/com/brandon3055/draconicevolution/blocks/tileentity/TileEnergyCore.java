@@ -29,6 +29,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -133,7 +134,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     // ### Interaction
 
     @Override
-    public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             validateStructure();
             player.openMenu(this, worldPosition);
@@ -153,8 +154,8 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        return handleRemoteClick(player, hand, hit);
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
+        return handleRemoteClick(player, hit);
     }
 
     @Nullable
@@ -405,7 +406,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public MultiBlockDefinition getMultiBlockDef() {
         if (definitionCache == null || defCacheLastTier != tier.get()) {
             defCacheLastTier = tier.get();
-            definitionCache = MultiBlockManager.getDefinition(new ResourceLocation(DraconicEvolution.MODID, "energy_core_" + tier.get()));
+            definitionCache = MultiBlockManager.getDefinition(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "energy_core_" + tier.get()));
         }
         return definitionCache;
     }

@@ -32,7 +32,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     private final DETier itemTier;
 
     public ModularSword(DETier tier, TechProperties props) {
-        super(tier, 0, 0, props);
+        super(tier, props);
         this.techLevel = props.getTechLevel();
         this.itemTier = (DETier) getTier();
     }
@@ -70,8 +70,8 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

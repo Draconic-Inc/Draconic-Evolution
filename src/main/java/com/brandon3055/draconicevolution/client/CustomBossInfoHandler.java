@@ -42,10 +42,10 @@ import java.util.UUID;
  */
 public class CustomBossInfoHandler {
     //TODO Update this to sprites.
-    private static final ResourceLocation GUI_BARS_LOCATION = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/bars.png");
+    private static final ResourceLocation GUI_BARS_LOCATION = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/bars.png");
     private static final Map<UUID, BossShieldInfo> events = Maps.newLinkedHashMap();
 
-    private static final ResourceLocation ENDER_CRYSTAL_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
+    private static final ResourceLocation ENDER_CRYSTAL_TEXTURES = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ENDER_CRYSTAL_TEXTURES);
     private static final float SIN_45 = (float) Math.sin((Math.PI / 4D));
 
@@ -75,6 +75,7 @@ public class CustomBossInfoHandler {
         Minecraft mc = Minecraft.getInstance();
         GuiRender render = GuiRender.convert(event.getGuiGraphics());
         PoseStack poseStack = render.pose();
+        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
         int width = event.getWindow().getGuiScaledWidth();
         int x = event.getX();
@@ -105,7 +106,7 @@ public class CustomBossInfoHandler {
             Component countText = Component.literal("x" + shieldInfo.crystals);
             int countWidth = mc.font.width(countText);
 
-            float anim = (TimeKeeper.getClientTick() + event.getPartialTick()) * 3.0F;
+            float anim = (TimeKeeper.getClientTick() + partialTick) * 3.0F;
             VertexConsumer ivertexbuilder = getter.getBuffer(RENDER_TYPE);
             poseStack.pushPose();
             poseStack.translate(x + 182 - countWidth - 8, y - 6, 0.0D);
@@ -209,10 +210,10 @@ public class CustomBossInfoHandler {
     }
 
     private static void drawQuad(VertexConsumer builder, int x, int xMax, int y, int yMax, int z, float u, float uMax, float v, float vMax) {
-        builder.vertex((float) x, (float) yMax, (float) z).uv(u, vMax).endVertex();
-        builder.vertex((float) xMax, (float) yMax, (float) z).uv(uMax, vMax).endVertex();
-        builder.vertex((float) xMax, (float) y, (float) z).uv(uMax, v).endVertex();
-        builder.vertex((float) x, (float) y, (float) z).uv(u, v).endVertex();
+        builder.addVertex((float) x, (float) yMax, (float) z).setUv(u, vMax);
+        builder.addVertex((float) xMax, (float) yMax, (float) z).setUv(uMax, vMax);
+        builder.addVertex((float) xMax, (float) y, (float) z).setUv(uMax, v);
+        builder.addVertex((float) x, (float) y, (float) z).setUv(u, v);
     }
 
     public static class BossShieldInfo {

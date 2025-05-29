@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -43,8 +44,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -78,8 +79,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
     @Override
     public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int count) {
-        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
+        if (getUseDuration(stack, player) - count >= getChargeTicks(stack)) {
             AutoFireEntity entity = stack.getCapability(DECapabilities.Host.ITEM).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
@@ -102,125 +103,121 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        boolean hasAmmo = !player.getProjectile(stack).isEmpty() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack bowStack = player.getItemInHand(hand);
+        boolean hasAmmo = !player.getProjectile(bowStack).isEmpty();
 
-        InteractionResultHolder<ItemStack> ret = EventHooks.onArrowNock(stack, world, player, hand, hasAmmo);
+        //TODO think i still need something here to enable infinity without an arrow in inventory. May want to just re-work a lot of the bow handling, a lot has changed
+
+        InteractionResultHolder<ItemStack> ret = net.neoforged.neoforge.event.EventHooks.onArrowNock(bowStack, level, player, hand, hasAmmo);
         if (ret != null) return ret;
 
-        if (EnergyUtils.getEnergyStored(stack) < calculateShotEnergy(stack)) {
+        if (EnergyUtils.getEnergyStored(bowStack) < calculateShotEnergy(bowStack)) {
             hasAmmo = false;
         }
 
-        if (!player.getAbilities().instabuild && !hasAmmo) {
-            return InteractionResultHolder.fail(stack);
+        if (!player.hasInfiniteMaterials() && !hasAmmo) {
+            return InteractionResultHolder.fail(bowStack);
         } else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(stack);
+            return InteractionResultHolder.consume(bowStack);
         }
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            boolean noAmmoRequired = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
-            ItemStack ammoStack = player.getProjectile(stack);
+        if (!(entity instanceof Player player)) {
+            return;
+        }
 
-            int drawTime = this.getUseDuration(stack) - timeLeft;
-            drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty() || noAmmoRequired);
-            if (drawTime < 0) return;
+        ItemStack itemstack = player.getProjectile(stack);
+        if (itemstack.isEmpty()) {
+            return;
+        }
 
-            if (!ammoStack.isEmpty() || noAmmoRequired) {
-                if (ammoStack.isEmpty()) {
-                    ammoStack = new ItemStack(Items.ARROW);
-                }
+//        boolean noAmmoRequired = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
+        ItemStack ammoStack = player.getProjectile(stack);
 
-                ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-                ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
+        int drawTime = this.getUseDuration(stack, entity) - timeLeft;
+        drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty());// || noAmmoRequired);
+        if (drawTime < 0) {
+            return;
+        }
 
-                float powerForTime = getPowerForTime(drawTime, stack) * (projData.velocity() + 1);
-                if (powerForTime >= 0.1D) {
-                    boolean infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
+        if (ammoStack.isEmpty()/* && !noAmmoRequired*/) {
+            return;
+        }
 
-                    if (!level.isClientSide) {
-                        ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
-                        AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player), ammoStack);
-                        if (arrowEntity instanceof Arrow) {
-                            ((Arrow) arrowEntity).setEffectsFromItem(ammoStack);
-                        } else if (arrowEntity instanceof DraconicArrowEntity) {
-                            ((DraconicArrowEntity) arrowEntity).setEffectsFromItem(ammoStack);
-                        }
-                        arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());
-                        if (arrowEntity instanceof DraconicArrowEntity) {
-                            DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
-                            deArrow.setTechLevel(techLevel);
-                            deArrow.setPenetration(projData.penetration());
-                            deArrow.setGravComp(projData.antiGrav());
+        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
-                            if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
-                                deArrow.setProjectileImmuneOverride(true);
-                            }
-                        }
+        float powerForTime = getPowerForTime(drawTime, stack) * (projData.velocity() + 1);
+        if (!(powerForTime >= 0.1D)) {
+            return;
+        }
 
-                        if (powerForTime == 1.0F) {
-                            arrowEntity.setCritArrow(true);
-                        }
+        boolean infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
 
-                        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
+        if (!level.isClientSide) {
+            ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
+            AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player, stack), ammoStack, stack);
+            arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());
+            if (arrowEntity instanceof DraconicArrowEntity) {
+                DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
+                deArrow.setTechLevel(techLevel);
+                deArrow.setPenetration(projData.penetration());
+                deArrow.setGravComp(projData.antiGrav());
 
-                        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-                        if (j > 0) {
-                            arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() + (double) j * 0.5D + 0.5D);
-                        }
-
-                        long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
-                        if (extractEnergy(player, stack, energyRequired) < energyRequired) {
-                            return;
-                        }
-
-                        int k = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
-                        if (k > 0) {
-                            arrowEntity.setKnockback(k);
-                        }
-
-                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
-                            arrowEntity.setSecondsOnFire(100);
-                        }
-
-                        if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
-                            arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                        }
-
-                        level.addFreshEntity(arrowEntity);
-                    }
-
-                    level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
-                    if (!infiniteAmmo && !player.getAbilities().instabuild) {
-                        ammoStack.shrink(1);
-                        if (ammoStack.isEmpty()) {
-                            player.getInventory().removeItem(ammoStack);
-                        }
-                    }
-
-                    player.awardStat(Stats.ITEM_USED.get(this));
+                if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
+                    deArrow.setProjectileImmuneOverride(true);
                 }
             }
+
+            if (powerForTime == 1.0F) {
+                arrowEntity.setCritArrow(true);
+            }
+
+            arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
+
+            long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
+            if (extractEnergy(player, stack, energyRequired) < energyRequired) {
+                return;
+            }
+
+            if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
+                arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+            }
+
+            level.addFreshEntity(arrowEntity);
         }
+
+        level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
+        if (!infiniteAmmo && !player.getAbilities().instabuild) {
+            ammoStack.shrink(1);
+            if (ammoStack.isEmpty()) {
+                player.getInventory().removeItem(ammoStack);
+            }
+        }
+
+        player.awardStat(Stats.ITEM_USED.get(this));
     }
 
     @Override
-    public AbstractArrow customArrow(AbstractArrow arrow, ItemStack stack) {
+    protected void shoot(ServerLevel level, LivingEntity entity, InteractionHand hand, ItemStack bow, List<ItemStack> ammoStacks, float power3, float f, boolean fullPower, @Nullable LivingEntity someEntity) {
+        super.shoot(level, entity, hand, bow, ammoStacks, power3, f, fullPower, someEntity);
+    }
+
+    @Override
+    public AbstractArrow customArrow(AbstractArrow arrow, ItemStack stack, ItemStack weaponStack) {
         if (arrow.getType() != EntityType.ARROW && arrow.getType() != EntityType.SPECTRAL_ARROW) {
             return arrow;
         }
 
         Entity owner = arrow.getOwner();
         if (!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
-            return new DraconicArrowEntity(DEContent.ENTITY_DRACONIC_ARROW.get(), arrow.level(), stack);
+            return new DraconicArrowEntity(arrow.level(), arrow.getX(), arrow.getY(), arrow.getZ(), stack, weaponStack);
         }
-        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner(), stack);
+        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner(), stack, weaponStack);
         if (arrow instanceof SpectralArrow) {
             newArrow.setSpectral(((SpectralArrow) arrow).duration);
         }
@@ -234,10 +231,6 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         float baseDamage = 2;
         baseDamage *= (1 + projData.damage());
         baseDamage *= (3 * (1 + projData.velocity()));
-        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-        if (j > 0) {
-            baseDamage += (double) j * 0.5D + 0.5D;
-        }
         return baseDamage;
     }
 
@@ -266,9 +259,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     @Override
-    public void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        IModularEnergyItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (worldIn != null && stack.getCapability(DECapabilities.Host.ITEM) != null) {
+    public void addModularItemInformation(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        IModularEnergyItem.super.addModularItemInformation(stack, context, tooltip, flagIn);
+        if (context.level() != null && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             tooltip.add(Component.translatable("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(ChatFormatting.DARK_GREEN));
         }
@@ -290,7 +283,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

@@ -113,10 +113,10 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             float maxV = sprite.getV1();
 
             Vector3f[] renderVector = getRenderVectors(camera, drawX, drawY, drawZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(r, g, b, a).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(r, g, b, a).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(r, g, b, a).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(r, g, b, a).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(r, g, b, a).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(r, g, b, a).setUv(minU, maxV).setUv2(240, 240);
 
             //region Inner
             scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30) + ((float) mipLevel * 0.05F);
@@ -139,10 +139,10 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             minV = AtlasTextureHelper.ORB_PARTICLE.getV0();
             maxV = AtlasTextureHelper.ORB_PARTICLE.getV1();
             renderVector = getRenderVectors(camera, drawX, drawY, drawZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(r, g, b, a).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(r, g, b, a).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(r, g, b, a).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(r, g, b, a).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(r, g, b, a).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(r, g, b, a).setUv(minU, maxV).setUv2(240, 240);
         }
 //        endregion
     }
@@ -154,19 +154,19 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     public static final ParticleRenderType RENDER_TYPE = new ParticleRenderType() {
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.getBuilder().setQuadSorting(VertexSorting.byDistance(0, 0, 0));//TODO is this valid?
-            tessellator.end();
-        }
+//        @Override
+//        public void end(Tesselator tessellator) {
+//            tessellator.getBuilder().setQuadSorting(VertexSorting.byDistance(0, 0, 0));//TODO is this valid?
+//            tessellator.end();
+//        }
     };
 }

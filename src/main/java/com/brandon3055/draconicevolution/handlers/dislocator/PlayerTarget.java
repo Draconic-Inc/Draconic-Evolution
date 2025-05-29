@@ -35,7 +35,7 @@ public class PlayerTarget extends DislocatorTarget {
         if (player != null) {
             for (ItemStack stack : player.getInventory().items) {
                 if (BoundDislocator.isValid(stack) && !sourceDislocatorID.equals(BoundDislocator.getDislocatorId(stack))) {
-                    return new TargetPos(player);
+                    return TargetPos.of(player);
                 }
             }
         }

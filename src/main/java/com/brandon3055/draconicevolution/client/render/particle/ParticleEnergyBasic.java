@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+
+import java.util.List;
 
 public class ParticleEnergyBasic extends TextureSheetParticle {
 
@@ -25,7 +27,7 @@ public class ParticleEnergyBasic extends TextureSheetParticle {
         super.tick();
     }
 
-    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+    public static class Factory implements ParticleProvider<IntParticleData> {
         private final SpriteSet spriteSet;
 
         public Factory(SpriteSet p_i50823_1_) {
@@ -33,18 +35,19 @@ public class ParticleEnergyBasic extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyBasic particleEnergy = new ParticleEnergyBasic(world, x, y, z, spriteSet);
             particleEnergy.xd = xSpeed;
             particleEnergy.yd = ySpeed;
             particleEnergy.zd = zSpeed;
 
-            if (data.get().length >= 3) {
-                particleEnergy.setColor(data.get()[0] / 255F, data.get()[1] / 255F, data.get()[2] / 255F);
+            List<Integer> list = data.get();
+            if (list.size() >= 3) {
+                particleEnergy.setColor(list.get(0) / 255F, list.get(1) / 255F, list.get(2) / 255F);
             }
 
-            if (data.get().length >= 4) {
-                particleEnergy.scale(data.get()[3] / 100F);
+            if (list.size() >= 4) {
+                particleEnergy.scale(list.get(3) / 100F);
             }
 
             return particleEnergy;

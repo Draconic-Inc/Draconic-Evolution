@@ -25,7 +25,7 @@ public class RenderModularHoe extends ToolRenderBase {
 
     public RenderModularHoe(TechLevel techLevel) {
         super(techLevel, "hoe");
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/hoe.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/hoe.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("handle").backfacedCopy());
         materialPart = materialPart(model.get("head").backfacedCopy());
         gemPart = gemPart(model.get("gem").backfacedCopy());

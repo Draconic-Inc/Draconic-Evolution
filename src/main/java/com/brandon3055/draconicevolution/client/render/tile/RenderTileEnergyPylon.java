@@ -30,10 +30,10 @@ import java.util.Map;
  */
 public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylon> {
 
-    private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
+    private static RenderType modelType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
 
-    private static RenderType shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
+    private static RenderType shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
@@ -42,7 +42,7 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
     private final CCModel model;
 
     public RenderTileEnergyPylon(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
         model = CCModel.combine(map.values());
         model.apply(new Scale(-0.35, -0.35, -0.35));
         model.computeNormals();
@@ -63,8 +63,8 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
             ccrs.baseColour = te.colour.get().rgba();
         }
 
-        shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
+        shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
                 .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
                 .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
                 .setWriteMaskState(RenderStateShard.COLOR_WRITE)

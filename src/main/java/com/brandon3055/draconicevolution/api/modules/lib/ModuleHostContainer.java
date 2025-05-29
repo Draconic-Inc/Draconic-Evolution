@@ -26,7 +26,7 @@ public interface ModuleHostContainer {
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity<?> entity = module.createEntity();
-                entity.readFromItemStack(stack, getModuleContext());
+                entity.readFromItemStack(stack, getModuleContext(), player.registryAccess());
                 if (getGrid().attemptInstall(entity)) {
                     stack.shrink(1);
                     return true;

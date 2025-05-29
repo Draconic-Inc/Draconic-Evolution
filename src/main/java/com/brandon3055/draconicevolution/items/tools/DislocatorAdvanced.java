@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.TeleportUtils;
@@ -12,24 +14,31 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.DislocatorGui;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.RelativeMovement;
@@ -42,10 +51,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.Tags;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,11 +77,6 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
-        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
-    }
-
-    @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (entity.getAge() >= 0 && entity.pickupDelay != 32767) {
             entity.setExtendedLifetime();
@@ -80,7 +86,7 @@ public class DislocatorAdvanced extends Dislocator {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (player.level().isClientSide) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
             return true;
         }
         TargetPos location = getTargetPos(stack, player.level());
@@ -102,7 +108,8 @@ public class DislocatorAdvanced extends Dislocator {
             return true;
         }
 
-        if (!entity.canChangeDimensions() || !(entity instanceof LivingEntity)) {
+        ServerLevel targetLevel = serverLevel.getServer().getLevel(location.getDimension());
+        if ((serverLevel != targetLevel && !entity.canChangeDimensions(serverLevel, targetLevel)) || !(entity instanceof LivingEntity)) {
             return true;
         }
 
@@ -115,16 +122,16 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         TargetPos location = getTargetPos(stack, player.level());
 
         boolean blink = getBlinkMode(stack);
         if (player.isShiftKeyDown() || (location == null && !blink)) {
-            if (world.isClientSide) {
+            if (level.isClientSide) {
                 openGui(stack, player);
             }
-        } else if (!world.isClientSide) {
+        } else if (!level.isClientSide) {
             if (blink) {
                 handleBlink((ServerPlayer) player, stack, false);
             } else {
@@ -156,7 +163,7 @@ public class DislocatorAdvanced extends Dislocator {
             if (player.getCooldowns().isOnCooldown(stack.getItem())) {
                 return;
             }
-            int blinkFuel = stack.getOrCreateTag().getByte("blink_fuel");
+            int blinkFuel = getFuel(stack);
             if (blinkFuel <= 0) {
                 if (!useFuel(stack, player)) {
                     messageUser(player, Component.translatable("dislocate.draconicevolution.no_fuel").withStyle(ChatFormatting.RED));
@@ -167,7 +174,7 @@ public class DislocatorAdvanced extends Dislocator {
             }
 
             blinkFuel--;
-            stack.getOrCreateTag().putByte("blink_fuel", (byte) blinkFuel);
+            setFuel(stack, blinkFuel);
             if (showFuel) {
                 player.displayClientMessage(Component.translatable("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(ChatFormatting.WHITE), true);
             }
@@ -199,7 +206,7 @@ public class DislocatorAdvanced extends Dislocator {
                 case UP:
                     break;
                 default:
-                    if (player.level().getBlockState(pos.below()).isPathfindable(player.level(), pos.below(), PathComputationType.AIR)) {
+                    if (player.level().getBlockState(pos.below()).isPathfindable(PathComputationType.AIR)) {
                         vec.y -= 1;
                     }
             }
@@ -211,14 +218,19 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     @Override
-    public DislocatorTarget getTargetPos(ItemStack stack, @Nullable Level world) {
+    public TargetPos getTargetPos(ItemStack stack, @Nullable Level world) {
+        DislocatorTarget target = getSelected(stack);
+        return target == null ? null : target.pos;
+    }
+
+    public DislocatorTarget getSelected(ItemStack stack) {
         return DataUtils.safeGet(getTargetList(stack), getSelectedIndex(stack));
     }
 
     @OnlyIn (Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flagIn) {
-        DislocatorTarget selected = getTargetPos(stack, world);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        DislocatorTarget selected = getSelected(stack);
         int fuel = getFuel(stack);
         if (selected != null) {
             tooltip.add(Component.literal(selected.getName()).withStyle(ChatFormatting.GOLD));
@@ -230,7 +242,7 @@ public class DislocatorAdvanced extends Dislocator {
 
     @Override
     public void generateHudText(ItemStack stack, Player player, List<Component> displayList) {
-        DislocatorTarget location = getTargetPos(stack, player.level());
+        DislocatorTarget location = getSelected(stack);
         if (location != null) {
             displayList.add(Component.literal(location.getName()));
         }
@@ -243,11 +255,11 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     public int getFuel(ItemStack stack) {
-        return stack.getOrCreateTag().getInt("fuel");
+        return stack.getOrDefault(ItemData.DISLOCATOR_FUEL, 0);
     }
 
     public void setFuel(ItemStack stack, int value) {
-        stack.getOrCreateTag().putInt("fuel", value);
+        stack.set(ItemData.DISLOCATOR_FUEL, value);
     }
 
     public boolean useFuel(ItemStack stack, Player player) {
@@ -262,33 +274,28 @@ public class DislocatorAdvanced extends Dislocator {
         return false;
     }
 
-    public List<DislocatorTarget> getTargetList(ItemStack stack) {
-        ListTag targets = stack.getOrCreateTag().getList("locations", 10);
-        ArrayList<DislocatorTarget> list = new ArrayList<>();
-        targets.forEach(inbt -> list.add(new DislocatorTarget((CompoundTag) inbt)));
-        return list;
+    public ImmutableList<DislocatorTarget> getTargetList(ItemStack stack) {
+        return ImmutableList.copyOf(stack.getOrDefault(ItemData.DISLOCATOR_TARGETS, new ArrayList<>()));
     }
 
     public void setTargetList(ItemStack stack, List<DislocatorTarget> targets) {
-        ListTag list = new ListTag();
-        targets.forEach(e -> list.add(e.writeToNBT()));
-        stack.getOrCreateTag().put("locations", list);
+        stack.set(ItemData.DISLOCATOR_TARGETS, targets);
     }
 
     public int getSelectedIndex(ItemStack stack) {
-        return stack.getOrCreateTag().getInt("selected");
+        return stack.getOrDefault(ItemData.DISLOCATOR_SELECTED, 0);
     }
 
     public void setSelectedIndex(ItemStack stack, int index) {
-        stack.getOrCreateTag().putInt("selected", index);
+        stack.set(ItemData.DISLOCATOR_SELECTED, index);
     }
 
     public boolean getBlinkMode(ItemStack stack) {
-        return stack.getOrCreateTag().getBoolean("blink");
+        return stack.getOrDefault(ItemData.DISLOCATOR_BLINK, false);
     }
 
     public void setBlinkMode(ItemStack stack, boolean blink) {
-        stack.getOrCreateTag().putBoolean("blink", blink);
+        stack.set(ItemData.DISLOCATOR_BLINK, blink);
     }
 
     //Interaction Handling
@@ -336,7 +343,7 @@ public class DislocatorAdvanced extends Dislocator {
                 DataUtils.ifPresent(list, input.readVarInt(), e -> e.update(player));
                 break;
             case 8: //Teleport
-                DataUtils.ifPresent(list, input.readVarInt(), e -> handleTeleport(player, stack, e, true));
+                DataUtils.ifPresent(list, input.readVarInt(), e -> handleTeleport(player, stack, e == null ? null : e.pos, true));
                 break;
             case 9: //Scroll
                 break;
@@ -355,7 +362,7 @@ public class DislocatorAdvanced extends Dislocator {
                 break;
             case 11: //Teleport to selected
                 if (list.size() == 0) return;
-                handleTeleport(player, stack, selected, true);
+                handleTeleport(player, stack, selected == null ? null : selected.pos, true);
                 break;
             case 12: //Blink
                 handleBlink(player, stack, true);
@@ -424,7 +431,22 @@ public class DislocatorAdvanced extends Dislocator {
         return ItemStack.EMPTY;
     }
 
-    public static class DislocatorTarget extends TargetPos {
+    public static class DislocatorTarget {
+        public static final Codec<DislocatorTarget> CODEC = RecordCodecBuilder.create(b -> b.group(
+                        TargetPos.CODEC.fieldOf("pos").forGetter(DislocatorTarget::getPos),
+                        Codec.STRING.fieldOf("name").forGetter(DislocatorTarget::getName),
+                        Codec.BOOL.fieldOf("locked").forGetter(DislocatorTarget::isLocked)
+                ).apply(b, DislocatorTarget::new)
+        );
+
+        public static final StreamCodec<ByteBuf, DislocatorTarget> STREAM_CODEC = StreamCodec.composite(
+                TargetPos.STREAM_CODEC, DislocatorTarget::getPos,
+                ByteBufCodecs.STRING_UTF8, DislocatorTarget::getName,
+                ByteBufCodecs.BOOL, DislocatorTarget::isLocked,
+                DislocatorTarget::new
+        );
+
+        private TargetPos pos;
         private String name;
         private boolean locked;
 
@@ -432,24 +454,42 @@ public class DislocatorAdvanced extends Dislocator {
         }
 
         public DislocatorTarget(Entity entity) {
-            super(entity);
+            pos = TargetPos.of(entity);
         }
 
         public DislocatorTarget(CompoundTag nbt) {
-            super(nbt);
+            readFromNBT(nbt);
         }
 
         public DislocatorTarget(double x, double y, double z, ResourceKey<Level> dimension) {
-            super(x, y, z, dimension);
+            pos = TargetPos.of(x, y, z, dimension);
         }
 
-        public DislocatorTarget(double x, double y, double z, ResourceKey<Level> dimension, float pitch, float yaw) {
-            super(x, y, z, dimension, pitch, yaw);
+        public DislocatorTarget(double x, double y, double z, ResourceKey<Level> dimension, float xRot, float yRot) {
+            pos = TargetPos.of(x, y, z, dimension, new Vec2(xRot, yRot));
+        }
+
+        public DislocatorTarget(TargetPos pos, String name, boolean locked) {
+            this.pos = pos;
+            this.name = name;
+            this.locked = locked;
         }
 
         public DislocatorTarget setName(String name) {
             this.name = name;
             return this;
+        }
+
+        public void setPos(@NonNull TargetPos pos) {
+            this.pos = pos;
+        }
+
+        public TargetPos getPos() {
+            return pos;
+        }
+
+        public void update(Entity player) {
+            pos = TargetPos.of(player);
         }
 
         public String getName() {
@@ -464,30 +504,30 @@ public class DislocatorAdvanced extends Dislocator {
             return locked;
         }
 
-        @Override
         public CompoundTag writeToNBT(CompoundTag nbt) {
             nbt.putString("name", name);
             nbt.putBoolean("lock", locked);
-            return super.writeToNBT(nbt);
+            if (pos != null) {
+                pos.writeToNBT(nbt);
+            }
+            return nbt;
         }
 
-        @Override
         public void readFromNBT(CompoundTag nbt) {
-            super.readFromNBT(nbt);
+            pos = TargetPos.readFromNBT(nbt);
             name = nbt.getString("name");
             locked = nbt.getBoolean("lock");
         }
 
-        @Override
         public void write(MCDataOutput output) {
-            super.write(output);
+            pos.write(output);
             output.writeString(name);
             output.writeBoolean(locked);
         }
 
-        @Override
+
         public void read(MCDataInput input) {
-            super.read(input);
+            pos = TargetPos.read(input);
             name = input.readString();
             locked = input.readBoolean();
         }

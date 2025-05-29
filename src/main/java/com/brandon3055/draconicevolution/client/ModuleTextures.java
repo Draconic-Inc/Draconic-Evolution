@@ -25,7 +25,7 @@ public class ModuleTextures {
    }
 
    protected static Material getUncached(ResourceLocation texture) {
-      return new Material(ATLAS_HOLDER.atlasLocation(), new ResourceLocation(texture.getNamespace(), "module/" + texture.getPath()), ATLAS_HOLDER::getSprite);
+      return new Material(ATLAS_HOLDER.atlasLocation(), ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "module/" + texture.getPath()), ATLAS_HOLDER::getSprite);
    }
 
    public static Material get(Module<?> module) {

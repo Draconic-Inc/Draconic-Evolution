@@ -43,7 +43,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
 
     public RenderModularChestpiece(TechLevel techLevel) {
         super(techLevel, "chestpeice");
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("base_model").backfacedCopy());
         materialPart = materialPart(model.get("chevrons").backfacedCopy());
         gemPart = gemPart(model.get("power_crystals").backfacedCopy());
@@ -80,7 +80,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
         RenderType gemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
-                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
@@ -103,10 +103,10 @@ public class RenderModularChestpiece extends ToolRenderBase {
         }
 
         public void render(MultiBufferSource buffers, Matrix4 mat, int color) {
-            buffers.getBuffer(vboType.get().withCallback(() -> {
+            vboType.get().withCallback(() -> {
                 shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
-            }));
+            }).draw(buffers);
         }
     }
 

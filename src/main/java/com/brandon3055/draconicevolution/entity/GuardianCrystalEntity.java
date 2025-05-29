@@ -87,12 +87,12 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.getEntityData().define(BEAM_TARGET, Optional.empty());
-        this.getEntityData().define(SHOW_BOTTOM, true);
-        this.getEntityData().define(SHIELD_POWER, Math.max(20, (float) DEConfig.guardianCrystalShield));
-        this.getEntityData().define(UNSTABLE_TIME, 0);
-        this.getEntityData().define(BEAM_POWER, 1F);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(BEAM_TARGET, Optional.empty());
+        builder.define(SHOW_BOTTOM, true);
+        builder.define(SHIELD_POWER, Math.max(20, (float) DEConfig.guardianCrystalShield));
+        builder.define(UNSTABLE_TIME, 0);
+        builder.define(BEAM_POWER, 1F);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class GuardianCrystalEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("BeamTarget", 10)) {
-            setBeamTarget(NbtUtils.readBlockPos(compound.getCompound("BeamTarget")));
+            setBeamTarget(NbtUtils.readBlockPos(compound, "BeamTarget").orElse(null));
         }
 
         if (compound.contains("ShowBottom", 1)) {

@@ -15,7 +15,10 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -23,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,15 +160,18 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
     private void populateList(ItemStack stack, TileDisenchanter tile) {
         if (stack.isEmpty()) return;
         int index = 0;
-        for (Tag tag : stack.getEnchantmentTags()) {
-            CompoundTag cTag = (CompoundTag) tag;
-            int lvl = cTag.getShort("lvl");
-            Enchantment enchantment = BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(cTag.getString("id")));
+        ItemEnchantments list = stack.get(DataComponents.ENCHANTMENTS);
+        if (list == null) {
+            return;
+        }
 
-            Enchantment enchForLevel = tile.getEnchantmentFromTag(cTag);
-            GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), () -> Component.translatable(enchantment.getDescriptionId()))
-                    .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", enchForLevel == null ? 0 : tile.getCostInLevels(enchForLevel, lvl)))
-                    .onPress(() -> tile.sendPacketToServer(output -> output.writeString(cTag.getString("id")), 1))
+        for (Holder<Enchantment> enchantHolder : list.keySet()) {
+            int lvl = list.getLevel(enchantHolder);
+            Enchantment enchantment = enchantHolder.value();
+
+            GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), () -> enchantment.description())
+                    .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(enchantment, lvl)))
+                    .onPress(() -> tile.sendPacketToServer(output -> output.writeResourceLocation(enchantHolder.getKey().location()), 1))
                     .constrain(HEIGHT, literal(14))
                     .constrain(LEFT, match(scroll.getContentElement().get(LEFT)))
                     .constrain(RIGHT, match(scroll.getContentElement().get(RIGHT)))

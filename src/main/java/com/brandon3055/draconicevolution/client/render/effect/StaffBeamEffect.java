@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 29/4/21
@@ -33,11 +34,6 @@ public class StaffBeamEffect extends Particle {
         this.shooter = shooter;
         this.targetPos = targetPos;
         this.lifetime = 10;
-    }
-
-    @Override
-    public boolean shouldCull() {
-        return false;
     }
 
     @Override
@@ -122,29 +118,25 @@ public class StaffBeamEffect extends Particle {
     }
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
-        BCProfiler.RENDER.start("buffer_quad");
-        buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
-        buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
-        buffer.vertex(p4.x, p4.y, p4.z).uv(1.0F, dist + anim).endVertex();
-        buffer.vertex(p3.x, p3.y, p3.z).uv(1.0F, anim).endVertex();
-        BCProfiler.RENDER.stop();
+//        BCProfiler.RENDER.start("buffer_quad");
+        buffer.addVertex((float) p1.x, (float) p1.y, (float) p1.z).setUv(0.5F, anim);
+        buffer.addVertex((float) p2.x, (float) p2.y, (float) p2.z).setUv(0.5F, dist + anim);
+        buffer.addVertex((float) p4.x, (float) p4.y, (float) p4.z).setUv(1.0F, dist + anim);
+        buffer.addVertex((float) p3.x, (float) p3.y, (float) p3.z).setUv(1.0F, anim);
+//        BCProfiler.RENDER.stop();
     }
 
     private static ParticleRenderType renderType = new ParticleRenderType() {
-        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
+        private static ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
+
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             textureManager.bindForSetup(texture);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        }
-
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         }
     };
 }

@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IChangeListener;
@@ -28,23 +28,22 @@ import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
@@ -135,7 +134,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 double velX = (level.random.nextDouble() - 0.5) * 0.1;
                 double velY = (level.random.nextDouble() - 0.5) * 0.1;
                 double velZ = (level.random.nextDouble() - 0.5) * 0.1;
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY_BASIC.get(), 0, 255, 255, 64), getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, velX, velY, velZ);
+                level.addParticle(new IntParticleData(DEParticles.ENERGY_BASIC.get(), 0, 255, 255, 64), getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, velX, velY, velZ);
             }
         }
     }
@@ -246,12 +245,13 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             updateInjectors(); //TODO just have the injectors poke the core when placed so i dont need this
             player.openMenu(this, worldPosition);
+            return InteractionResult.CONSUME;
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable
@@ -292,6 +292,19 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                     .collect(Collectors.toList());
         }
         return injectorCache;
+    }
+
+    @Override
+    public ItemStack getItem(int index) {
+        if (index <= 0) return itemHandler.getStackInSlot(0);
+        index--;
+        List<IFusionInjector> injectors = getInjectors();
+        return index >= injectors.size() ? ItemStack.EMPTY : injectors.get(index).getInjectorStack();
+    }
+
+    @Override
+    public int size() {
+        return getInjectors().size() + 1;
     }
 
     @Override
@@ -400,14 +413,14 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public void writeExtraNBT(CompoundTag compound) {
-        super.writeExtraNBT(compound);
+    public void writeExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.writeExtraNBT(provider, compound);
         compound.putLongArray("injector_positions", injectorPositions.stream().mapToLong(BlockPos::asLong).toArray());
     }
 
     @Override
-    public void readExtraNBT(CompoundTag compound) {
-        super.readExtraNBT(compound);
+    public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.readExtraNBT(provider, compound);
         injectorPositions = Arrays.stream(compound.getLongArray("injector_positions")).mapToObj(BlockPos::of).collect(Collectors.toList());
         injectorCache = null;
     }

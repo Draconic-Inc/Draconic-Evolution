@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -78,7 +79,7 @@ public class DislocatorSaveData extends SavedData {
         return null;
     }
 
-    public static DislocatorSaveData load(CompoundTag nbt) {
+    public static DislocatorSaveData load(CompoundTag nbt, HolderLookup.Provider provider) {
         DislocatorSaveData data = new DislocatorSaveData();
         ListTag linkList = nbt.getList("link_map", 10);
         for (Tag lnbt : linkList) {
@@ -97,7 +98,7 @@ public class DislocatorSaveData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
         ListTag linkList = new ListTag();
         for (UUID linkID : linkTargetMap.keySet()) {
             Map<UUID, DislocatorTarget> targetMap = linkTargetMap.get(linkID);

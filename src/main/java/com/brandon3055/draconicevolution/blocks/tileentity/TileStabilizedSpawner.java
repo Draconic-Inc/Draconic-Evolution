@@ -10,10 +10,12 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -70,8 +72,7 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(DEContent.MOB_SOUL.get())) {
             if (!level.isClientSide) {
                 (mobSoul.set(stack.copy())).setCount(1);
@@ -79,32 +80,32 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
                     InventoryUtils.consumeHeldItem(player, stack, hand);
                 }
             }
-            return true;
+            return ItemInteractionResult.SUCCESS;
         } else if (stack.getItem() instanceof SpawnEggItem) {
-            EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
+            EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack);
             ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
             DEContent.MOB_SOUL.get().setEntity(BuiltInRegistries.ENTITY_TYPE.getKey(type), soul);
             mobSoul.set(soul);
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
-            return true;
+            return ItemInteractionResult.SUCCESS;
         } else if (!stack.isEmpty()) {
             SpawnerTier prevTier = spawnerTier.get();
             if (stack.is(DEContent.CORE_DRACONIUM.get())) {
-                if (spawnerTier.get() == SpawnerTier.BASIC) return false;
+                if (spawnerTier.get() == SpawnerTier.BASIC) return ItemInteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.BASIC);
             } else if (stack.is(DEContent.CORE_WYVERN.get())) {
-                if (spawnerTier.get() == SpawnerTier.WYVERN) return false;
+                if (spawnerTier.get() == SpawnerTier.WYVERN) return ItemInteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.WYVERN);
             } else if (stack.is(DEContent.CORE_AWAKENED.get())) {
-                if (spawnerTier.get() == SpawnerTier.DRACONIC) return false;
+                if (spawnerTier.get() == SpawnerTier.DRACONIC) return ItemInteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.DRACONIC);
             } else if (stack.is(DEContent.CORE_CHAOTIC.get())) {
-                if (spawnerTier.get() == SpawnerTier.CHAOTIC) return false;
+                if (spawnerTier.get() == SpawnerTier.CHAOTIC) return ItemInteractionResult.FAIL;
                 spawnerTier.set(SpawnerTier.CHAOTIC);
             } else {
-                return false;
+                return ItemInteractionResult.FAIL;
             }
 
             ItemStack dropStack = switch (prevTier) {
@@ -121,15 +122,15 @@ public class TileStabilizedSpawner extends TileBCore implements IInteractTile, I
             }
         }
 
-        return false;
+        return ItemInteractionResult.FAIL;
     }
 
     @Override
-    public void writeToItemStack(CompoundTag compound, boolean willHarvest) {
+    public void writeToItemStack(HolderLookup.Provider provider, CompoundTag compound, boolean willHarvest) {
         if (willHarvest) {
             mobSoul.set(ItemStack.EMPTY);
         }
-        super.writeToItemStack(compound, willHarvest);
+        super.writeToItemStack(provider, compound, willHarvest);
     }
 
     //region Render

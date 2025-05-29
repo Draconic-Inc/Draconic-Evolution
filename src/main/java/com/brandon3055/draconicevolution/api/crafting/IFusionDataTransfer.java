@@ -5,9 +5,11 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 /**
  * Created by brandon3055 on 06/10/2021
@@ -17,18 +19,8 @@ public interface IFusionDataTransfer {
     default void transferIngredientData(ItemStack result, IFusionInventory fusionInventory) {
         ItemStack cat = fusionInventory.getCatalystStack();
         if (cat.isEnchanted()) {
-            EnchantmentHelper.getEnchantments(cat).forEach((enchant, level) -> {
-                if (result.canApplyAtEnchantingTable(enchant)) {
-                    result.enchant(enchant, level);
-                }
-            });
-        }
-
-        if (cat.hasTag()) {
-            CompoundTag tag = cat.getTagElement("affix_data");
-            if (tag != null) {
-                result.addTagElement("affix_data", tag);
-            }
+            ItemEnchantments enchantments = cat.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+            result.set(DataComponents.ENCHANTMENTS, enchantments);
         }
 
         ModuleHost catHost = cat.getCapability(DECapabilities.Host.ITEM);

@@ -37,7 +37,7 @@ public class OverlayRenderHandler {
         ItemStack stack = player.getMainHandItem();
         ItemStack offStack = player.getOffhandItem();
         Minecraft mc = Minecraft.getInstance();
-        float partialTicks = event.getPartialTick();
+        float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
         try {
             if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {

@@ -15,8 +15,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianWitherRenderer extends MobRenderer<WitherBoss, WitherBossModel<WitherBoss>> {
-   private static final ResourceLocation WITHER_INVULNERABLE_LOCATION = new ResourceLocation("textures/entity/wither/wither_invulnerable.png");
-   private static final ResourceLocation WITHER_LOCATION = new ResourceLocation("textures/entity/wither/wither.png");
+   private static final ResourceLocation WITHER_INVULNERABLE_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/wither/wither_invulnerable.png");
+   private static final ResourceLocation WITHER_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/wither/wither.png");
 
    public GuardianWitherRenderer(EntityRendererProvider.Context context) {
       super(context, new WitherBossModel<>(context.bakeLayer(ModelLayers.WITHER)), 1.0F);

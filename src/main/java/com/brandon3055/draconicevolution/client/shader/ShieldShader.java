@@ -17,7 +17,7 @@ public class ShieldShader extends BCShader<ShieldShader> {
     private CCUniform baseColourUniform;
 
     public ShieldShader(String path, VertexFormat format) {
-        super(new ResourceLocation(DraconicEvolution.MODID, path), format);
+        super(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
     }
 
     public ShieldShader(ResourceLocation location, VertexFormat format) {

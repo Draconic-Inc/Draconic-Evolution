@@ -36,8 +36,8 @@ import java.util.OptionalDouble;
  */
 public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
-    private static final RenderType swordType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
-    private static final RenderType fanType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
+    private static final RenderType swordType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/grinder.png"));
+    private static final RenderType fanType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
     private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 256, RenderType.CompositeState.builder()
             .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -60,10 +60,10 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
 
 
     public RenderTileGrinder(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_fan.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/grinder/grinder_fan.obj")).quads().ignoreMtl().parse();
         fanModel = CCModel.combine(map.values());
 
-        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_sword.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/grinder/grinder_sword.obj")).quads().ignoreMtl().parse();
         swordModel = CCModel.combine(map.values());
         swordModel.computeNormals();
         swordModel.apply(new Scale(-1 / 16F));

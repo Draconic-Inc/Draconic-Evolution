@@ -76,14 +76,14 @@ public class RenderModularStaff extends ToolRenderBase {
     public RenderModularStaff(TechLevel techLevel) {
         super(techLevel, "staff");
 
-        Map<String, CCModel> guiModel = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/staff_gui.obj")).ignoreMtl().parse();
+        Map<String, CCModel> guiModel = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff_gui.obj")).ignoreMtl().parse();
         baseGuiPart = basePart(CCModel.combine(Arrays.asList(guiModel.get("handle"), guiModel.get("head_connection"))).backfacedCopy());
         materialGuiPart = materialPart(guiModel.get("head").backfacedCopy());
         traceGuiPart = tracePart(guiModel.get("trace"));
         bladeGuiPart = bladePart(guiModel.get("blade").backfacedCopy());
         gemGuiPart = gemPart(guiModel.get("focus_gem").backfacedCopy());
 
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/staff.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/staff.obj")).ignoreMtl().parse();
         basePart = basePart(CCModel.combine(Arrays.asList(model.get("handle"), model.get("head_connection"), model.get("cage_connection"))).backfacedCopy());
         materialPart = materialPart(CCModel.combine(Arrays.asList(model.get("head"), model.get("crystal_cage"))).backfacedCopy());
         tracePart = tracePart(model.get("trace"));
@@ -114,8 +114,9 @@ public class RenderModularStaff extends ToolRenderBase {
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         float flair = 0F;
+        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
         if (entity != null && entity.getMainHandItem() == stack) {
-            flair = MathHelper.interpolate(entity.oAttackAnim, entity.attackAnim, Minecraft.getInstance().getFrameTime());
+            flair = MathHelper.interpolate(entity.oAttackAnim, entity.attackAnim, partialTick);
             flair = MathHelper.clip(flair * 5F, 0F, 1F);
         }
 
@@ -154,7 +155,7 @@ public class RenderModularStaff extends ToolRenderBase {
         Minecraft mc = Minecraft.getInstance();
         mat.rotate(torad(90), Vector3.X_NEG);
         mat.translate(-0.5, 0.1, -0.5);
-        effectRenderer.renderEffect(mat, buffers, mc.getFrameTime(), techLevel);
+        effectRenderer.renderEffect(mat, buffers, partialTick, techLevel);
     }
 
     private void handleArmPose(ItemStack stack, ItemDisplayContext transform, Matrix4 mat) {

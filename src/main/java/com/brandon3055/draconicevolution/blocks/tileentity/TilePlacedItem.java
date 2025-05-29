@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -28,6 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,22 +128,20 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult clientHit) {
-        if (player.level().isClientSide()) return InteractionResult.SUCCESS;
+    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player.level().isClientSide()) return ItemInteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
 
-        HitResult hit = RayTracer.retrace(player);
+//        HitResult hit = RayTracer.retrace(player);
         if (!(hit instanceof SubHitBlockHitResult)){
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         int index = ((SubHitBlockHitResult) hit).subHit - 1;
-
-        ItemStack held = player.getItemInHand(hand);
-        if (!held.isEmpty() && held.getItem() == DEContent.CRYSTAL_BINDER.get() && getStacksInOrder().size() == 1) {
+        if (!heldStack.isEmpty() && heldStack.getItem() == DEContent.CRYSTAL_BINDER.get() && getStacksInOrder().size() == 1) {
             toolMode.invert();
             tick();
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         if (player.isShiftKeyDown()) {
@@ -150,24 +150,24 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
                 BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
                 tick();
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         if (index == -1) {
             onBroken(player, player.getOnPos().above(), true);
             level.removeBlock(getBlockPos(), false);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         if (index < stacks.size()) {
-            ItemStack stack = extractStackAtIndex(index);
-            InventoryUtils.givePlayerStack(player, stack);
+            ItemStack stackAtPos = extractStackAtIndex(index);
+            InventoryUtils.givePlayerStack(player, stackAtPos);
             if (stacks.size() == 1) {
                 level.removeBlock(getBlockPos(), false);
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

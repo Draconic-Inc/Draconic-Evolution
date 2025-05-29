@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 /**
  * Created by brandon3055 on 31/01/2023
@@ -51,8 +52,8 @@ public interface IHarvestHandler {
         FluidState fluidState = level.getFluidState(pos);
         Block block = state.getBlock();
 
-        int xp = CommonHooks.onBlockBreakEvent(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
-        if (xp == -1) {
+        BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(level, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos, state);
+        if (event.isCanceled()) {
             ServerPlayer mpPlayer = (ServerPlayer) player;
             mpPlayer.connection.send(new ClientboundBlockUpdatePacket(level, pos));
             return;
@@ -68,7 +69,7 @@ public interface IHarvestHandler {
         }
 
         stack.mineBlock(level, state, pos, player);
-        BlockToStackHelper.breakAndCollectWithPlayer(level, pos, stackCollector, player, xp);
+        BlockToStackHelper.breakAndCollectWithPlayer(level, pos, stackCollector, player);
         storage.modifyEnergyStored(-EquipCfg.energyHarvest);
     }
 }

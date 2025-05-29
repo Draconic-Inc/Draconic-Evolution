@@ -33,8 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.Logger;
 
@@ -381,7 +381,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
             guardianUniqueId = nbt.getUUID("guardian");
         }
         guardianKilled = nbt.getBoolean("guardian_killed");
-        arenaOrigin = NbtUtils.readBlockPos(nbt.getCompound("arena_origin"));
+        arenaOrigin = NbtUtils.readBlockPos(nbt, "arena_origin").orElse(arenaOrigin);
         validPlayer = EntitySelector.ENTITY_STILL_ALIVE.and(EntitySelector.withinDistance(arenaOrigin.getX(), arenaOrigin.getY(), arenaOrigin.getZ(), 192.0D));
         if (nbt.getBoolean("respawning")) {
             respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;

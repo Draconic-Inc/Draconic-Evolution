@@ -21,12 +21,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -132,7 +134,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
     @Override
     @OnlyIn (Dist.CLIENT)
-    public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
             if (getModule().getData().range() > 0) {
@@ -194,14 +196,14 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
-        itemBuffer.writeToNBT(nbt);
-        return super.writeExtraData(nbt);
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        itemBuffer.writeToNBT(provider, nbt);
+        return super.writeExtraData(nbt, provider);
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt) {
-        itemBuffer.readFromNBT(nbt);
-        super.readExtraData(nbt);
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        itemBuffer.readFromNBT(provider, nbt);
+        super.readExtraData(nbt, provider);
     }
 }

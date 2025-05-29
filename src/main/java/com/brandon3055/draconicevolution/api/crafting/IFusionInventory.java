@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * Its now simply and way to access and consume the crafting ingredients (including power) and nothing more.
  * So only what is needed by IFusionRecipe
  */
-public interface IFusionInventory extends Container {
+public interface IFusionInventory extends RecipeInput {
 
     /**
      * Gets the stack in the catalyst slot of the core<br>
@@ -47,16 +48,4 @@ public interface IFusionInventory extends Container {
      * @return the {@link TechLevel} of the lowest tier injector that is currently holding an item.
      */
     TechLevel getMinimumTier();
-
-    //@formatter:off
-    @Override default int getContainerSize() { return 0; }
-    @Override default boolean isEmpty() { return false; }
-    @Override default ItemStack getItem(int index) { return ItemStack.EMPTY; }
-    @Override default ItemStack removeItem(int index, int count) { return ItemStack.EMPTY; }
-    @Override default ItemStack removeItemNoUpdate(int index) { return ItemStack.EMPTY; }
-    @Override default void setItem(int index, ItemStack stack) { }
-    @Override default void setChanged() { }
-    @Override default boolean stillValid(Player player) { return false; }
-    @Override default void clearContent() { }
-    //@formatter:on
 }

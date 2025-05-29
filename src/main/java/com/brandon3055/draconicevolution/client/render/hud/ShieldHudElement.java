@@ -225,7 +225,6 @@ public class ShieldHudElement extends AbstractHudElement {
         render.pose().pushPose();
         render.pose().translate(xPos(), yPos(), 0);
         render.pose().scale(scale, scale, scale);
-        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
 
         hudOpacity = 1;
 
@@ -283,7 +282,7 @@ public class ShieldHudElement extends AbstractHudElement {
             particleExplosion(render, width - 4 - (totemEffectIndex * 9), height + 5, progress, rand);
         }
 
-        getter.endBatch();
+        render.flush(); //TODO, is this needed?
 
         //Draw Text (after end batch otherwise font rendering will break)
         double tPos = width / 2D - mc.font.width(shieldText) / 2D;

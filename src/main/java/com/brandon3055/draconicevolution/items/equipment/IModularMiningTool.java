@@ -31,6 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import org.antlr.v4.runtime.misc.IntegerStack;
 
 import java.util.List;
 import java.util.Random;
@@ -43,6 +45,11 @@ public interface IModularMiningTool extends IModularTieredItem {
     Random rand = new Random();
 
     @Override
+    default boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return IModularTieredItem.super.shouldCauseBlockBreakReset(oldStack, newStack);
+    }
+
+    //Now called via ModularArmorEventHandler, Will still cancel break if you return true
     default boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         if (getEnergyStored(stack) < EquipCfg.energyHarvest && !player.getAbilities().instabuild) {
             return false;
@@ -65,12 +72,12 @@ public interface IModularMiningTool extends IModularTieredItem {
 
     default boolean breakAOEBlocks(ModuleHost host, ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
         BlockState blockState = player.level().getBlockState(pos);
-        if (!isCorrectToolForDrops(stack, blockState)) {
+        if (!IModularItem.isCorrectToolForDrops(stack, blockState)) {
             return false;
         }
 
         InventoryDynamic inventoryDynamic = new InventoryDynamic();
-        float refStrength = blockStrength(blockState, player, player.level(), pos);
+        float refStrength = blockStrength(stack, blockState, player, player.level(), pos);
         Pair<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
         List<BlockPos> aoeBlocks = BlockPos.betweenClosedStream(aoe.key(), aoe.value()).map(BlockPos::new).toList();
 
@@ -97,13 +104,13 @@ public interface IModularMiningTool extends IModularTieredItem {
         return true;
     }
 
-    static float blockStrength(BlockState state, Player player, Level world, BlockPos pos) {
+    static float blockStrength(ItemStack stack, BlockState state, Player player, Level world, BlockPos pos) {
         float hardness = state.getDestroySpeed(world, pos);
         if (hardness < 0.0F) {
             return 0.0F;
         }
 
-        if (!CommonHooks.isCorrectToolForDrops(state, player)) {
+        if (!IModularItem.isCorrectToolForDrops(stack, state)) {
             return player.getDigSpeed(state, pos) / hardness / 100F;
         } else {
             return player.getDigSpeed(state, pos) / hardness / 30F;
@@ -179,19 +186,19 @@ public interface IModularMiningTool extends IModularTieredItem {
         FluidState fluidState = world.getFluidState(pos);
         Block block = state.getBlock();
 
-        if (!isCorrectToolForDrops(stack, state)) {
+        if (!IModularItem.isCorrectToolForDrops(stack, state)) {
             return;
         }
 
-        float strength = blockStrength(state, player, world, pos);
+        float strength = blockStrength(stack, state, player, world, pos);
 
-        if (!CommonHooks.isCorrectToolForDrops(state, player) || refStrength / strength > 10f) {
+        if (!IModularItem.isCorrectToolForDrops(stack, state) || refStrength / strength > 10f) {
             return;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            int xp = CommonHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
-            if (xp == -1) {
+            BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, state);
+            if (event.isCanceled()) {
                 ServerPlayer mpPlayer = (ServerPlayer) player;
                 mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));
                 return;
@@ -203,7 +210,7 @@ public interface IModularMiningTool extends IModularTieredItem {
                 }
             } else {
                 stack.mineBlock(world, state, pos, player);
-                BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
+                BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player);
                 extractEnergy(player, stack, EquipCfg.energyHarvest);
             }
         } else {

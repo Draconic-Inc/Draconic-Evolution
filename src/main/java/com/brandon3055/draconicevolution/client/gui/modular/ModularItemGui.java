@@ -97,7 +97,7 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
         //Setup top buttons
         ButtonRow leftButtons = ButtonRow.topLeftInside(root, Direction.RIGHT, 3, 3).setSpacing(1);
         leftButtons.addButton(e -> TOOLKIT.createThemedIconButton(e, "item_config")
-                .onPress(() -> DraconicNetwork.sendOpenItemConfig(false))
+                .onPress(() -> DraconicNetwork.sendOpenItemConfig(gui.mc().player.registryAccess(), false))
                 .setTooltip(TOOLKIT.translate("open_item_config.info"))
         );
         leftButtons.addButton(e -> TOOLKIT.createThemedIconButton(e, "hud_button")

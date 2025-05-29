@@ -5,7 +5,7 @@ import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -177,9 +177,8 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
     // ### Core Connection Handling
 
-
     @Override
-    public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
         if (!level.isClientSide) {
             ioMode.set(ioMode.get().reverse());
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.MODE, ioMode.get()));
@@ -269,7 +268,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             for (Direction dir : Direction.values()) {
                 BlockPos pos = worldPosition.relative(dir);
                 BlockState testState = level.getBlockState(pos);
-                if (testState.is(Tags.Blocks.GLASS)) {
+                if (testState.is(Tags.Blocks.GLASS_BLOCKS)) {
                     colour.set(getGlassColour(testState));
                     StructureBlock.buildingLock = true;
                     level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, dir));
@@ -309,7 +308,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     private boolean isGlass(BlockPos pos) {
-        return level.getBlockEntity(pos) instanceof TileStructureBlock tile && tile.getOriginalBlock().defaultBlockState().is(Tags.Blocks.GLASS);
+        return level.getBlockEntity(pos) instanceof TileStructureBlock tile && tile.getOriginalBlock().defaultBlockState().is(Tags.Blocks.GLASS_BLOCKS);
     }
 
     @Override
@@ -342,7 +341,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             double randZ = level.random.nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            level.addParticle(new IntParticleData(DEParticles.LINE_INDICATOR.get(), 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
@@ -369,13 +368,13 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+                level.addParticle(new IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+            level.addParticle(new IntParticleData(DEParticles.ENERGY.get(), r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 
@@ -411,22 +410,22 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
     @Nullable
     public static EnumColour getGlassColour(BlockState state) {
-        if (state.is(Tags.Blocks.GLASS_WHITE)) return EnumColour.WHITE;
-        else if (state.is(Tags.Blocks.GLASS_ORANGE)) return EnumColour.ORANGE;
-        else if (state.is(Tags.Blocks.GLASS_MAGENTA)) return EnumColour.MAGENTA;
-        else if (state.is(Tags.Blocks.GLASS_LIGHT_BLUE)) return EnumColour.LIGHT_BLUE;
-        else if (state.is(Tags.Blocks.GLASS_YELLOW)) return EnumColour.YELLOW;
-        else if (state.is(Tags.Blocks.GLASS_LIME)) return EnumColour.LIME;
-        else if (state.is(Tags.Blocks.GLASS_PINK)) return EnumColour.PINK;
-        else if (state.is(Tags.Blocks.GLASS_GRAY)) return EnumColour.GRAY;
-        else if (state.is(Tags.Blocks.GLASS_LIGHT_GRAY)) return EnumColour.LIGHT_GRAY;
-        else if (state.is(Tags.Blocks.GLASS_CYAN)) return EnumColour.CYAN;
-        else if (state.is(Tags.Blocks.GLASS_PURPLE)) return EnumColour.PURPLE;
-        else if (state.is(Tags.Blocks.GLASS_BLUE)) return EnumColour.BLUE;
-        else if (state.is(Tags.Blocks.GLASS_BROWN)) return EnumColour.BROWN;
-        else if (state.is(Tags.Blocks.GLASS_GREEN)) return EnumColour.GREEN;
-        else if (state.is(Tags.Blocks.GLASS_RED)) return EnumColour.RED;
-        else if (state.is(Tags.Blocks.GLASS_BLACK)) return EnumColour.BLACK;
+        if (state.is(Tags.Blocks.DYED_WHITE)) return EnumColour.WHITE;
+        else if (state.is(Tags.Blocks.DYED_ORANGE)) return EnumColour.ORANGE;
+        else if (state.is(Tags.Blocks.DYED_MAGENTA)) return EnumColour.MAGENTA;
+        else if (state.is(Tags.Blocks.DYED_LIGHT_BLUE)) return EnumColour.LIGHT_BLUE;
+        else if (state.is(Tags.Blocks.DYED_YELLOW)) return EnumColour.YELLOW;
+        else if (state.is(Tags.Blocks.DYED_LIME)) return EnumColour.LIME;
+        else if (state.is(Tags.Blocks.DYED_PINK)) return EnumColour.PINK;
+        else if (state.is(Tags.Blocks.DYED_GRAY)) return EnumColour.GRAY;
+        else if (state.is(Tags.Blocks.DYED_LIGHT_GRAY)) return EnumColour.LIGHT_GRAY;
+        else if (state.is(Tags.Blocks.DYED_CYAN)) return EnumColour.CYAN;
+        else if (state.is(Tags.Blocks.DYED_PURPLE)) return EnumColour.PURPLE;
+        else if (state.is(Tags.Blocks.DYED_BLUE)) return EnumColour.BLUE;
+        else if (state.is(Tags.Blocks.DYED_BROWN)) return EnumColour.BROWN;
+        else if (state.is(Tags.Blocks.DYED_GREEN)) return EnumColour.GREEN;
+        else if (state.is(Tags.Blocks.DYED_RED)) return EnumColour.RED;
+        else if (state.is(Tags.Blocks.DYED_BLACK)) return EnumColour.BLACK;
         return null;
     }
 }

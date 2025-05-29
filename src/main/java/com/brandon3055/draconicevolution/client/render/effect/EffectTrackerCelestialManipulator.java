@@ -67,8 +67,8 @@ public class EffectTrackerCelestialManipulator {
     }
 
     public void renderEffect(Tesselator tessellator, float partialTicks) {
-        BufferBuilder vertexbuffer = tessellator.getBuilder();
-        CCRenderState ccrs = CCRenderState.instance();
+//        BufferBuilder vertexbuffer = tessellator.getBuilder();
+//        CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
 //        float relativeX = (float) (this.prevPos.x + (this.pos.x - this.prevPos.x) * (double) partialTicks - interpPosX);

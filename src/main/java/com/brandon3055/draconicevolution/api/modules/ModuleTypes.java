@@ -30,7 +30,7 @@ public class ModuleTypes {
     public static final JumpType                         JUMP_BOOST          = new JumpType("jump_boost",                1, 1, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_FEET).setMaxInstallable(3);
     public static final ModuleType<NoData>               HILL_STEP           = new ModuleTypeImpl<>("hill_step",         2, 1, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_FEET).setMaxInstallable(1);
     //    public static final ModuleType<NoData>             FALL_PROTECT        = new ModuleTypeImpl<>("fall_protect",      1, 1, CHESTPIECE, ARMOR_FEET);
-    public static final ModuleType<NoData>               AQUA_ADAPT          = new ModuleTypeImpl<>("aqua_adapt",        1, 1, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST);
+    public static final ModuleType<NoData>               AQUA_ADEPT          = new ModuleTypeImpl<>("aqua_adept",        1, 1, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST);
 
     //Tool Specific
     public static final ModuleType<NoData>               MINING_STABILITY    = new ModuleTypeImpl<>("mining_stability",  1, 1, ModuleCategory.CHESTPIECE);

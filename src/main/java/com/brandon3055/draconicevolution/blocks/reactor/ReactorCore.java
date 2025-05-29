@@ -8,9 +8,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -34,12 +36,13 @@ public class ReactorCore extends EntityBlockBCore {
         setBlockEntity(DEContent.TILE_REACTOR_CORE::get, true);
     }
 
+
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!player.getAbilities().instabuild) {
-            return super.use(state, world, pos, player, hand, hit);
+            return super.useWithoutItem(state, level, pos, player, hit);
         }
-        if (world.getBlockEntity(pos) instanceof TileReactorCore core && player instanceof ServerPlayer serverPlayer) {
+        if (level.getBlockEntity(pos) instanceof TileReactorCore core && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(core, pos);
         }
         return InteractionResult.CONSUME;

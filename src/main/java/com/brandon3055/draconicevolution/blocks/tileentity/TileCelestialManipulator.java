@@ -5,7 +5,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -32,10 +32,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.BlockHitResult;
@@ -344,7 +346,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         if (timer > expandStart && timer < ascendStart) {
             for (int i = 0; i < 10; i++) {
                 Direction dir = Direction.values()[2 + level.random.nextInt(4)];
-                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                         0, //R
                         127,  //G
                         255,  //B
@@ -363,7 +365,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
         if (timer == ascendStart) {
             for (int i = 0; i < 100; i++) {
-                IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+                IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                         0, //R
                         127,  //G
                         255,  //B
@@ -489,7 +491,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 //			}
 //		}
 
-        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+        IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                 255, //R
                 127,  //G
                 0,  //B
@@ -502,7 +504,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         level.addParticle(data, pos.x, pos.y, pos.z, 0.002D, 0.04, 0.002D);
 
         Direction dir = Direction.values()[2 + level.random.nextInt(4)];
-        data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+        data = new IntParticleData(DEParticles.SPARK.get(),
                 255, //R
                 127,  //G
                 255,  //B
@@ -569,7 +571,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
-        IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.SPARK.get(),
+        IntParticleData data = new IntParticleData(DEParticles.SPARK.get(),
                 76, //R
                 0,  //G
                 255,  //B
@@ -652,11 +654,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
-
             player.openMenu(this, worldPosition);
+            return InteractionResult.CONSUME;
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }

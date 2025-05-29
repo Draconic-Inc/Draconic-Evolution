@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -9,10 +9,12 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created by brandon3055 on 2/5/2016.
@@ -20,18 +22,16 @@ import net.minecraft.world.level.Level;
  */
 public class ParticleLineIndicator extends TextureSheetParticle {
     public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
-        public void begin(BufferBuilder builder, TextureManager manager) {
+
+        @Override
+        public BufferBuilder begin(Tesselator builder, TextureManager manager) {
             RenderSystem.depthMask(false);
 //            RenderSystem.setShader(GameRenderer::getParticleShader);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
 //            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+            return builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         public String toString() {
@@ -57,7 +57,7 @@ public class ParticleLineIndicator extends TextureSheetParticle {
     }
 
 
-    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+    public static class Factory implements ParticleProvider<IntParticleData> {
         private final SpriteSet spriteSet;
 
         public Factory(SpriteSet p_i50823_1_) {
@@ -65,15 +65,16 @@ public class ParticleLineIndicator extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleLineIndicator particle = new ParticleLineIndicator(world, x, y, z, xSpeed, ySpeed, zSpeed);
             particle.pickSprite(spriteSet);
 
-            if (data.get().length >= 3) {
-                particle.setColor(data.get()[0] / 255F, data.get()[1] / 255F, data.get()[2] / 255F);
+            List<Integer> list = data.get();
+            if (list.size() >= 3) {
+                particle.setColor(list.get(0) / 255F, list.get(1) / 255F, list.get(2) / 255F);
             }
-            if (data.get().length >= 4) {
-                particle.setLifetime(data.get()[3]);
+            if (list.size() >= 4) {
+                particle.setLifetime(list.get(3));
             }
 
             return particle;

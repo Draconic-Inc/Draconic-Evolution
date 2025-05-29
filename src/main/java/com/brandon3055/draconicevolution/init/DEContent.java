@@ -35,10 +35,11 @@ import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
-import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
 import com.brandon3055.draconicevolution.world.EnderCometFeature;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -58,6 +59,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -85,7 +87,6 @@ public class DEContent {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIAL = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, MODID);
     public static final DeferredRegister<IngredientType<?>> INGREDIENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.INGREDIENT_TYPES, MODID);
-    public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(BuiltInRegistries.ENCHANTMENT, MODID);
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, MODID);
 
@@ -99,7 +100,6 @@ public class DEContent {
         WORLD_ENTITY_TYPES.register(modBus);
         RECIPE_TYPES.register(modBus);
         RECIPE_SERIAL.register(modBus);
-        ENCHANTMENTS.register(modBus);
         FEATURES.register(modBus);
         INGREDIENT_TYPES.register(modBus);
         modBus.addListener(DEContent::registerAttributes);
@@ -408,7 +408,8 @@ public class DEContent {
     // Enchantments
     //#################################################################
 
-    public static final DeferredHolder<Enchantment, Enchantment> ENCHANTMENT_REAPER              = ENCHANTMENTS.register("reaper_enchantment", EnchantmentReaper::new);
+    public static final ResourceKey<Enchantment> REAPER = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(MODID, "reaper"));
+
 
     //#################################################################
     // Features
@@ -423,10 +424,10 @@ public class DEContent {
 
     static {
         DraconicAPI.FUSION_RECIPE_SERIALIZER = RECIPE_SERIAL.register("fusion_crafting", FusionRecipe.Serializer::new);
-        DraconicAPI.FUSION_RECIPE_TYPE = RECIPE_TYPES.register("fusion_crafting", () -> RecipeType.simple(new ResourceLocation(MODID, "fusion_crafting")));
+        DraconicAPI.FUSION_RECIPE_TYPE = RECIPE_TYPES.register("fusion_crafting", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MODID, "fusion_crafting")));
     }
 
-    public static final DeferredHolder<IngredientType<?>, IngredientType<StackIngredient>> NBT_INGREDIENT_TYPE = INGREDIENT_TYPES.register("stack", () -> new IngredientType<>(StackIngredient.CODEC, StackIngredient.CODEC_NONEMPTY));
+    public static final DeferredHolder<IngredientType<?>, IngredientType<StackIngredient>> STACK_INGREDIENT_TYPE = INGREDIENT_TYPES.register("stack", () -> new IngredientType<>(StackIngredient.CODEC));
 
 
     //#################################################################

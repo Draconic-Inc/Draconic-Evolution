@@ -4,6 +4,7 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -131,8 +132,8 @@ public class IntegerProperty extends ConfigProperty {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         if (this.value != this.defaultValue) {
             nbt.putInt("value", value);
         }
@@ -140,12 +141,12 @@ public class IntegerProperty extends ConfigProperty {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (nbt.contains("value")) {
             value = nbt.getInt("value");
         }
         value = Math.max(min.get(), Math.min(max.get(), value));
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 
     @Override

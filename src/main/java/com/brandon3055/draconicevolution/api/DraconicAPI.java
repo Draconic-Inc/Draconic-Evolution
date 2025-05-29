@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.init.DEModules;
@@ -25,7 +26,7 @@ public class DraconicAPI {
 //    @ObjectHolder(registryName = "block", value = "draconicevolution:crafting_core")
     public static Block CRAFTING_CORE;
 
-    public static ResourceLocation INGREDIENT_STACK_TYPE = new ResourceLocation("draconicevolution:ingredient_stack");
+//    public static ResourceLocation INGREDIENT_STACK_TYPE = ResourceLocation.fromNamespaceAndPath("draconicevolution", "ingredient_stack");
 
     /**
      * Any mod that wants to add its own custom modules needs to register itself here so that its module textures will be loaded into the modules atlas.

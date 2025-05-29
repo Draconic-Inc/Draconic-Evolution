@@ -11,13 +11,18 @@ import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.DisenchanterMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +31,9 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -63,27 +70,19 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
             return;
         }
 
-        ListTag list = input.getEnchantmentTags();
-        if (list.isEmpty()) {
+        ItemEnchantments list = input.get(DataComponents.ENCHANTMENTS);
+        if (list == null) {
             return;
         }
 
-        String targetId = data.readString();
-        if (StringUtils.isEmpty(targetId)) {
-        	return;
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            CompoundTag compound = list.getCompound(i);
-            String id = compound.getString("id");
-            int lvl = compound.getShort("lvl");
-            Enchantment e = getEnchantmentFromTag(compound);
-
-            if (e == null || !id.equals(targetId)) {
+        ResourceKey<Enchantment> target = ResourceKey.create(Registries.ENCHANTMENT, data.readResourceLocation());
+        for (Holder<Enchantment> enchantHolder : list.keySet()) {
+            int lvl = list.getLevel(enchantHolder);
+            if (!target.equals(enchantHolder.getKey())) {
                 continue;
             }
-
-            int cost = getCostInLevels(e, lvl);
+            Enchantment enchantment = enchantHolder.value();
+            int cost = getCostInLevels(enchantment, lvl);
 
             if (!client.getAbilities().instabuild && cost > client.experienceLevel) {
                 client.sendSystemMessage(Component.translatable("disenchanter." + DraconicEvolution.MODID + ".not_enough_levels", cost).withStyle(ChatFormatting.RED));
@@ -94,27 +93,26 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
                 client.giveExperienceLevels(-cost);
             }
 
-            CompoundTag stackCompound = input.getTag();
-            if (stackCompound == null) {
-                return;
-            }
-
             books.shrink(1);
             if (books.getCount() <= 0) {
                 itemHandler.setStackInSlot(1, ItemStack.EMPTY);
             }
 
-            int repairCost = stackCompound.getInt("RepairCost");
-            repairCost -= ((double) repairCost * (1D / list.size()));
-            stackCompound.putInt("RepairCost", repairCost);
+            int repairCost = input.getOrDefault(DataComponents.REPAIR_COST, 0);
+            if (repairCost > 0) {
+                repairCost -= (int) (repairCost * (1D / list.size()));
+                input.set(DataComponents.REPAIR_COST, Math.max(repairCost, 0));
+            }
 
-            ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-            EnchantedBookItem.addEnchantment(book, new EnchantmentInstance(e, lvl));
+            ItemStack book = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantHolder, lvl));
             itemHandler.setStackInSlot(2, book);
-            list.remove(i);
 
-            if (list.size() <= 0) {
-                stackCompound.remove("ench");
+            if (list.size() == 1) {
+                input.remove(DataComponents.ENCHANTMENTS);
+            } else {
+                ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(list);
+                mutable.removeIf(enchantmentHolder -> enchantmentHolder == enchantHolder);
+                input.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
             }
             return;
         }
@@ -122,15 +120,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     
     public int getCostInLevels(Enchantment e, int level) {
     	int max = e.getMaxLevel();
-    	return (int)((20 - (max == 1 ? 0 : max == 2 ? 7 : 10)) * ((e.getRarity().ordinal() + 1) * 0.35D) * DEOldConfig.disenchnaterCostMultiplyer) * level;
-    }
-    
-    @Nullable
-    public Enchantment getEnchantmentFromTag(CompoundTag c) {
-    	if (c != null && c.getString("id") != null) {
-    		return BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(c.getString("id")));
-    	}
-    	return null;
+    	return (int)((20 - (max == 1 ? 0 : max == 2 ? 7 : 10)) * 0.35 * DEOldConfig.disenchnaterCostMultiplyer) * level;
     }
     
     @Nullable
@@ -140,10 +130,11 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer) {
             player.openMenu(this, worldPosition);
+            return InteractionResult.CONSUME;
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }

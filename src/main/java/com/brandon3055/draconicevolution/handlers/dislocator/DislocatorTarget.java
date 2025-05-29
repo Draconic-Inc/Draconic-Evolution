@@ -61,7 +61,7 @@ public abstract class DislocatorTarget {
     public static DislocatorTarget load(CompoundTag nbt) {
         try {
             TargetType type = TargetType.values()[nbt.getByte("target_type")];
-            ResourceKey<Level> worldKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world_key")));
+            ResourceKey<Level> worldKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world_key")));
             DislocatorTarget target = type.createInstance(worldKey);
             target.loadInternal(nbt);
             return target;

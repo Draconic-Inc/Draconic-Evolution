@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomFlameParticle extends TextureSheetParticle {
@@ -82,11 +84,12 @@ public class CustomFlameParticle extends TextureSheetParticle {
         public Particle createParticle(IntParticleData data, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             CustomFlameParticle flameparticle = new CustomFlameParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             flameparticle.pickSprite(this.spriteSet);
-            if (data.get().length >= 1) {
-                flameparticle.quadSize *= (data.get()[0] / 255F);
+            List<Integer> list = data.get();
+            if (list.size() >= 1) {
+                flameparticle.quadSize *= (list.get(0) / 255F);
             }
-            if (data.get().length >= 2) {
-                flameparticle.gravity = -data.get()[1] / 255F;
+            if (list.size() >= 2) {
+                flameparticle.gravity = -list.get(1) / 255F;
             }
             return flameparticle;
         }

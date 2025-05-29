@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -79,12 +79,12 @@ public class DraconiumChest extends EntityBlockBCore {
         return RenderShape.INVISIBLE;
     }
 
-    @Override
-    public CompoundTag getNBTShareTag(ItemStack stack) {
-        CompoundTag compound = new CompoundTag();
-        compound.putInt("ChestColour", ItemNBTHelper.getInteger(stack, "ChestColour", 0x640096));
-        return compound;
-    }
+//    @Override
+//    public CompoundTag getNBTShareTag(ItemStack stack) {
+//        CompoundTag compound = new CompoundTag();
+//        compound.putInt("ChestColour", ItemNBTHelper.getInteger(stack, "ChestColour", 0x640096));
+//        return compound;
+//    }
 
     @Override
     public boolean addLandingEffects(BlockState state1, ServerLevel worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
@@ -94,11 +94,5 @@ public class DraconiumChest extends EntityBlockBCore {
     @Override
     public boolean addRunningEffects(BlockState state, Level world, BlockPos pos, Entity entity) {
         return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

@@ -4,12 +4,14 @@ import codechicken.lib.model.PerspectiveModelState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
+import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.client.render.tile.DraconiumChestTileRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +42,11 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     @Override
     public void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         int colour = 0x640096;
-        if (stack.getTag() != null && stack.getTag().contains("bc_tile_data")) {
-            colour = stack.getTag().getCompound("bc_tile_data").getCompound("bc_managed_data").getInt("colour");
+        if (stack.has(BlockBCore.BC_TILE_DATA_TAG)) {
+            CompoundTag tag = stack.get(BlockBCore.BC_TILE_DATA_TAG).copyTag();
+            if (tag.contains("bc_managed_data")) {
+                colour = tag.getCompound("bc_managed_data").getInt("colour");
+            }
         }
         renderer.renderChest(mStack, getter, 180, 0, packedLight, packedOverlay, colour);
     }

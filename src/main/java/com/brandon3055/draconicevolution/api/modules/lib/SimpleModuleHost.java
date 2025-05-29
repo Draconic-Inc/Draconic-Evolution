@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -171,13 +172,13 @@ public class SimpleModuleHost implements ModuleHost {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         ListTag modules = new ListTag();
         for (ModuleEntity<?> entity : moduleEntities) {
             CompoundTag entityNBT = new CompoundTag();
             entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
-            entity.writeToNBT(entityNBT);
+            entity.writeToNBT(entityNBT, provider);
             modules.add(entityNBT);
         }
         nbt.put("modules", modules);
@@ -186,18 +187,18 @@ public class SimpleModuleHost implements ModuleHost {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         clearCaches();
         moduleEntities.clear();
         ListTag modules = nbt.getList("modules", 10);
         modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
-            ResourceLocation id = new ResourceLocation(compound.getString("id"));
+            ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
             com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
             if (module == null) {
                 LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
             } else {
                 ModuleEntity<?> entity = module.createEntity();
-                entity.readFromNBT(compound);
+                entity.readFromNBT(compound, provider);
                 if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
                     LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
                 } else {

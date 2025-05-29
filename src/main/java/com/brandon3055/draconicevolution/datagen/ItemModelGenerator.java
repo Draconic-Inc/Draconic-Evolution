@@ -147,8 +147,8 @@ public class ItemModelGenerator extends ItemModelProvider {
 
         DEModules.MODULES.getEntries().stream().filter(e -> e.getId().getNamespace().equals(MODID)).forEach((module) -> {
             String name = Objects.requireNonNull(module.getId()).getPath();
-            ResourceLocation baseTexture = new ResourceLocation(MODID, "item/module/" + module.get().getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));
-            ResourceLocation overlay = new ResourceLocation(MODID, "module/" + name);
+            ResourceLocation baseTexture = ResourceLocation.fromNamespaceAndPath(MODID, "item/module/" + module.get().getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));
+            ResourceLocation overlay = ResourceLocation.fromNamespaceAndPath(MODID, "module/" + name);
             multiLayerItem(module.get().getItem(), baseTexture, overlay);
         });
 
@@ -227,7 +227,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     @SuppressWarnings ("ConstantConditions")
     protected void simpleItem(DeferredHolder<? extends Item, ? extends Item> item, String textureFolder) {
         ResourceLocation reg = item.getId();
-        simpleItem(item, new ResourceLocation(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
+        simpleItem(item, ResourceLocation.fromNamespaceAndPath(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
     }
 
     @SuppressWarnings ("ConstantConditions")
@@ -258,7 +258,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block) {
         if (block == null) return;
         ResourceLocation reg = block.getId();
-        blockItem(block, new ResourceLocation(reg.getNamespace(), "block/" + reg.getPath()));
+        blockItem(block, ResourceLocation.fromNamespaceAndPath(reg.getNamespace(), "block/" + reg.getPath()));
     }
 
     protected void blockItem(DeferredHolder<? extends Block, ? extends Block> block, ResourceLocation blockModel) {

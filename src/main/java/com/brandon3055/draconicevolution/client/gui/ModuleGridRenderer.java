@@ -7,6 +7,7 @@ import codechicken.lib.gui.modular.lib.geometry.Constraint;
 import codechicken.lib.gui.modular.lib.geometry.GuiParent;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
@@ -127,7 +128,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
 
 
                 render.pose().pushPose();
-                entity.renderModule(this, render, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, mc().getDeltaFrameTime());
+                entity.renderModule(this, render, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, RenderUtils.partialTick());
                 if (stack.getCount() > 1 || altText != null) {
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
                     render.drawString(s, (float) (x - font().width(s)) + (mw / 2F) + 1, (float) (y - font().lineHeight) + (mh / 2F) + 2, 0xffffff, true);
@@ -220,7 +221,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
             x = (float) (mouseX - mx) / mw;
             y = (float) (mouseY - my) / mh;
         }
-        DraconicNetwork.sendModuleContainerClick(cell, x, y, mouseButton, type);
+        DraconicNetwork.sendModuleContainerClick(player.player.registryAccess(), cell, x, y, mouseButton, type);
         InstallResult result = grid.cellClicked(cell, x, y, mouseButton, type);
         if (result != null && result.resultType != InstallResult.InstallResultType.YES && result.resultType != InstallResult.InstallResultType.OVERRIDE) {
             lastError = result.reason;

@@ -7,6 +7,7 @@ import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -100,9 +101,10 @@ public class RenderItemMobSoul implements IItemRenderer {
         mStack.translate(0.5, 0, 0.5);
         mStack.scale(scale, scale, scale);
 
+        DeltaTracker delta = Minecraft.getInstance().getTimer();
         if (transformType != ItemDisplayContext.GROUND && transformType != ItemDisplayContext.FIXED) {
-            float rotA = (float) Math.sin((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 50F) * 15F;
-            float rotB = (TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) * 3;
+            float rotA = (float) Math.sin((TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) / 50F) * 15F;
+            float rotB = (TimeKeeper.getClientTick() + delta.getGameTimeDeltaPartialTick(false)) * 3;
 
             mStack.mulPose(new Quaternionf().rotationXYZ(1 * rotA * (float) MathHelper.torad, 0, -0.5F * rotA * (float) MathHelper.torad));
             mStack.mulPose(new Quaternionf().rotationXYZ(0, 1 * rotB * (float) MathHelper.torad, 0));

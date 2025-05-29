@@ -1,14 +1,19 @@
 package com.brandon3055.draconicevolution.client;
 
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.draconicevolution.client.render.particle.*;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,6 +21,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Function;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -33,16 +40,16 @@ public class DEParticles {
     }
 
     //@formatter:off
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        FLAME                   = PARTICLE_TYPES.register("flame",                  () -> new IntParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        LINE_INDICATOR          = PARTICLE_TYPES.register("line_indicator",         () -> new IntParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        ENERGY                  = PARTICLE_TYPES.register("energy",                 () -> new IntParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        ENERGY_BASIC            = PARTICLE_TYPES.register("energy_basic",           () -> new IntParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        ENERGY_CORE             = PARTICLE_TYPES.register("energy_core",            () -> new IntParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>     GUARDIAN_PROJECTILE     = PARTICLE_TYPES.register("guardian_projectile",    () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>     BLINK                   = PARTICLE_TYPES.register("blink",                  () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>     GUARDIAN_CLOUD          = PARTICLE_TYPES.register("guardian_cloud",         () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>     GUARDIAN_BEAM           = PARTICLE_TYPES.register("guardian_beam",          () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, IntParticleType>        SPARK                   = PARTICLE_TYPES.register("spark",                  () -> new IntParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          FLAME                   = PARTICLE_TYPES.register("flame",                  () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          LINE_INDICATOR          = PARTICLE_TYPES.register("line_indicator",         () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          ENERGY                  = PARTICLE_TYPES.register("energy",                 () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          ENERGY_BASIC            = PARTICLE_TYPES.register("energy_basic",           () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          ENERGY_CORE             = PARTICLE_TYPES.register("energy_core",            () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>                     GUARDIAN_PROJECTILE     = PARTICLE_TYPES.register("guardian_projectile",    () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>                     BLINK                   = PARTICLE_TYPES.register("blink",                  () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>                     GUARDIAN_CLOUD          = PARTICLE_TYPES.register("guardian_cloud",         () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType>                     GUARDIAN_BEAM           = PARTICLE_TYPES.register("guardian_beam",          () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<IntParticleData>>          SPARK                   = PARTICLE_TYPES.register("spark",                  () -> register(false, IntParticleData::codec, IntParticleData::streamCodec));
     //@formatter:on
 
     @OnlyIn (Dist.CLIENT)
@@ -71,5 +78,23 @@ public class DEParticles {
             }
         }
         return null;
+    }
+
+    private static <T extends ParticleOptions> ParticleType<T> register(
+            boolean overrideLimiter,
+            final Function<ParticleType<T>, MapCodec<T>> codec,
+            final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodec
+    ) {
+        return new ParticleType<T>(overrideLimiter) {
+            @Override
+            public MapCodec<T> codec() {
+                return codec.apply(this);
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec() {
+                return streamCodec.apply(this);
+            }
+        };
     }
 }

@@ -8,6 +8,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.world.phys.AABB;
 
 public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileCelestialManipulator> {
@@ -40,6 +42,7 @@ public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileC
 
     @Override
     public AABB getRenderBoundingBox(TileCelestialManipulator blockEntity) {
-        return INFINITE_EXTENT_AABB;
+        BlockPos pos = blockEntity.getBlockPos();
+        return new AABB(pos.getX() - 4, pos.getY() - 4, pos.getZ() - 4, pos.getX() + 5, pos.getY() + 5, pos.getZ() + 5);
     }
 }

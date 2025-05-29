@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
@@ -83,9 +85,9 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
             return;
         }
 
-        String name = item.hasCustomHoverName() ? item.getHoverName().getString() : "";
+        String name = item.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString();
         if (item.getItem() instanceof DislocatorAdvanced) {
-            DislocatorAdvanced.DislocatorTarget location = ((DislocatorAdvanced) item.getItem()).getTargetPos(item, tile.getLevel());
+            DislocatorAdvanced.DislocatorTarget location = ((DislocatorAdvanced) item.getItem()).getSelected(item);
             if (location != null) {
                 name = location.getName();
             }

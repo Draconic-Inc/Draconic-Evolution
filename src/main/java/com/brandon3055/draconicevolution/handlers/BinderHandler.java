@@ -1,32 +1,25 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -44,9 +37,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.OptionalDouble;
 
-import static net.minecraft.client.renderer.RenderStateShard.*;
+import static com.brandon3055.draconicevolution.init.ItemData.BINDER_POS;
 
 /**
  * Created by brandon3055 on 26/11/2016.
@@ -59,14 +51,14 @@ public class BinderHandler {
      *
      * @return true if an operation occurred (Cancels the right click event)
      */
-    public static boolean onBinderUse(Player player, InteractionHand hand, Level world, BlockPos blockClicked, @Nonnull ItemStack binder, Direction sideClicked) {
-        BlockEntity tile = world.getBlockEntity(blockClicked);
+    public static boolean onBinderUse(Player player, InteractionHand hand, Level level, BlockPos blockClicked, @Nonnull ItemStack binder, Direction sideClicked) {
+        BlockEntity tile = level.getBlockEntity(blockClicked);
         boolean isBound = isBound(binder);
 
         //If the tile is linkable and the player is sneaking bind the tile to the tool.
         if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
-            bind(binder, blockClicked);
-            if (world.isClientSide) {
+            bind(binder, blockClicked, level);
+            if (level.isClientSide) {
                 ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_saved_to_tool").withStyle(ChatFormatting.GREEN), TileCrystalBase.MSG_ID);
                 player.swing(hand);
             }
@@ -82,12 +74,17 @@ public class BinderHandler {
 
         //If the tool is bound then we now want to bass the call onto the bound ICrystalLink tile.
         if (isBound) {
-            BlockPos boundLinkable = getBound(binder);
+            GlobalPos boundPos = getBound(binder);
+            if (boundPos.dimension() != level.dimension()) {
+                ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_to_other_dimension").withStyle(ChatFormatting.RED), TileCrystalBase.MSG_ID);
+                return true;
+            }
+            BlockPos boundLinkable = boundPos.pos();
             if (boundLinkable.equals(blockClicked)) {
                 ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.link_to_self").withStyle(ChatFormatting.RED), TileCrystalBase.MSG_ID);
                 return true;
             }
-            BlockEntity boundTile = world.getBlockEntity(boundLinkable);
+            BlockEntity boundTile = level.getBlockEntity(boundLinkable);
             if (boundTile instanceof ICrystalLink) {
                 if (((ICrystalLink) boundTile).binderUsed(player, blockClicked, sideClicked)) {
                     player.swing(hand);
@@ -102,21 +99,20 @@ public class BinderHandler {
     }
 
     private static boolean isBound(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG, 11);
+        return stack.has(BINDER_POS);
     }
 
-    private static void bind(ItemStack stack, BlockPos pos) {
-        ItemNBTHelper.getCompound(stack).putIntArray(ICrystalBinder.BINDER_TAG, new int[]{pos.getX(), pos.getY(), pos.getZ()});
+    private static void bind(ItemStack stack, BlockPos pos, Level level) {
+        stack.set(BINDER_POS, GlobalPos.of(level.dimension(), pos));
     }
 
-    private static BlockPos getBound(ItemStack stack) {
-        int[] intArray = stack.getTag().getIntArray(ICrystalBinder.BINDER_TAG);
-        return new BlockPos(intArray[0], intArray[1], intArray[2]);
+    private static GlobalPos getBound(ItemStack stack) {
+        return stack.get(BINDER_POS);
     }
 
     public static boolean clearBinder(Player player, @Nonnull ItemStack stack) {
-        if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
-            stack.getTag().remove(ICrystalBinder.BINDER_TAG);
+        if (isBound(stack)) {
+            stack.remove(BINDER_POS);
             ChatHelper.sendIndexed(player, Component.translatable("gui.draconicevolution.energy_net.pos_cleared"), TileCrystalBase.MSG_ID);
             return true;
         }
@@ -126,16 +122,21 @@ public class BinderHandler {
     public static Map<AABB, CCModel> modelCache = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level world, ItemStack stack, Minecraft mc, float partialTicks) {
+    public static void renderWorldOverlay(LocalPlayer player, PoseStack pStack, Level level, ItemStack stack, Minecraft mc, float partialTicks) {
         if (!isBound(stack)) {
             return;
         }
 
-        BlockPos pos = getBound(stack);
-        boolean valid = world.getBlockEntity(pos) instanceof ICrystalLink;
+        GlobalPos gPos = getBound(stack);
+        if (gPos.dimension() != level.dimension()) {
+            return;
+        }
+        BlockPos pos = gPos.pos();
 
-        BlockState state = world.getBlockState(pos);
-        VoxelShape shape = state.getShape(world, pos);
+        boolean valid = level.getBlockEntity(pos) instanceof ICrystalLink;
+
+        BlockState state = level.getBlockState(pos);
+        VoxelShape shape = state.getShape(level, pos);
         if (shape.isEmpty()) {
             shape = Shapes.block();
         }

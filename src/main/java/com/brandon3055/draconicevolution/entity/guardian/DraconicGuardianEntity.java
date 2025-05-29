@@ -21,11 +21,13 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -37,6 +39,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.effects.AllOf;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -46,14 +50,16 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.BinaryHeap;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.Tags;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -159,12 +165,12 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(PHASE, PhaseType.HOVER.getId());
-        this.getEntityData().define(CRYSTAL_ID, -1);
-        this.getEntityData().define(SHIELD_POWER, (float) 0);
-        this.getEntityData().define(ORIGIN, Optional.empty());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PHASE, PhaseType.HOVER.getId());
+        builder.define(CRYSTAL_ID, -1);
+        builder.define(SHIELD_POWER, (float) 0);
+        builder.define(ORIGIN, Optional.empty());
     }
 
     @Override
@@ -344,9 +350,9 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 this.setPartPosition(this.dragonPartBody, f3 * 0.5F, 0.0D, -f18 * 0.5F);
                 this.setPartPosition(this.dragonPartRightWing, f18 * 4.5F, 2.0D, f3 * 4.5F);
                 this.setPartPosition(this.dragonPartLeftWing, f18 * -4.5F, 2.0D, f3 * -4.5F);
-                if (!this.level().isClientSide && this.hurtTime == 0) {
-                    this.collideWithEntities(this.level().getEntities(this, this.dragonPartRightWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
-                    this.collideWithEntities(this.level().getEntities(this, this.dragonPartLeftWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                if (level() instanceof ServerLevel serverLevel && this.hurtTime == 0) {
+                    this.collideWithEntities(serverLevel, this.level().getEntities(this, this.dragonPartRightWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+                    this.collideWithEntities(serverLevel, this.level().getEntities(this, this.dragonPartLeftWing.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                     this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartHead.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                     this.attackEntitiesInList(this.level().getEntities(this, this.dragonPartNeck.getBoundingBox().inflate(1.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                 }
@@ -444,7 +450,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         }
     }
 
-    private void collideWithEntities(List<Entity> entities) {
+    private void collideWithEntities(ServerLevel level, List<Entity> entities) {
         double d0 = (this.dragonPartBody.getBoundingBox().minX + this.dragonPartBody.getBoundingBox().maxX) / 2.0D;
         double d1 = (this.dragonPartBody.getBoundingBox().minZ + this.dragonPartBody.getBoundingBox().maxZ) / 2.0D;
 
@@ -455,8 +461,9 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
                 entity.push(d2 / d4 * 4.0D, 0.2F, d3 / d4 * 4.0D);
                 if (!this.phaseManager.getCurrentPhase().getIsStationary() && ((LivingEntity) entity).getLastHurtByMobTimestamp() < entity.tickCount - 2) {
-                    entity.hurt(DEDamage.guardian(level(), this), 15.0F);
-                    this.doEnchantDamageEffects(this, entity);
+                    DamageSource source = DEDamage.guardian(level(), this);
+                    entity.hurt(source, 15.0F);
+                    EnchantmentHelper.doPostAttackEffects(level, entity, source);
                 }
             }
         }
@@ -465,8 +472,11 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     private void attackEntitiesInList(List<Entity> entities) {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity) {
-                entity.hurt(DEDamage.guardian(level(), this), 20.0F);
-                this.doEnchantDamageEffects(this, entity);
+                DamageSource source = DEDamage.guardian(level(), this);
+                entity.hurt(source, 20.0F);
+                if (this.level() instanceof ServerLevel serverlevel) {
+                    EnchantmentHelper.doPostAttackEffects(serverlevel, entity, source);
+                }
             }
         }
     }
@@ -784,7 +794,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             phaseManager.setPhase(PhaseType.getById(compound.getInt("dragon_phase")));
         }
         if (compound.contains("arena_origin")) {
-            setArenaOrigin(NbtUtils.readBlockPos(compound.getCompound("arena_origin")));
+            setArenaOrigin(NbtUtils.readBlockPos(compound, "arena_origin").orElse(null));
         }
         if (level() instanceof ServerLevel) {
             fightManager = WorldEntityHandler.getWorldEntities()
@@ -898,7 +908,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 
     @Override
     public boolean addEffect(MobEffectInstance effectInstanceIn, @org.jetbrains.annotations.Nullable Entity p_147209_) {
-        if (effectInstanceIn.getEffect().isBeneficial()) {
+        if (effectInstanceIn.getEffect().value().isBeneficial()) {
             //This is mostly for testing purposes. I want to be able to heal the guardian
             return super.addEffect(effectInstanceIn, p_147209_);
         }
@@ -911,8 +921,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     @Override
-    public boolean canChangeDimensions() {
-        return false;
+    public @Nullable Entity changeDimension(DimensionTransition p_350951_) {
+        return null;
     }
 
     @Nullable
@@ -923,10 +933,5 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public boolean isMultipartEntity() {
         return true;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
     }
 }

@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -50,10 +52,10 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                 if (storedFood < data.foodStorage() && consumeFood.getValue()) {
                     //Do food consumption
                     for (ItemStack stack : player.getInventory().items) {
-                        if (!stack.isEmpty() && stack.isEdible()) {
-                            FoodProperties food = stack.getItem().getFoodProperties(stack, player);
-                            if (food != null && food.getNutrition() > 0 && food.getEffects().isEmpty()) {
-                                double val = food.getNutrition() + food.getSaturationModifier();
+                        FoodProperties food = stack.getFoodProperties(player);
+                        if (!stack.isEmpty() && food != null) {
+                            if (food.nutrition() > 0 && food.effects().isEmpty()) {
+                                double val = food.nutrition() + food.saturation();
                                 double rem = storedFood + val - data.foodStorage();
                                 if (rem <= val * 0.25) {
                                     storedFood = (float) Math.min(storedFood + val, data.foodStorage());
@@ -114,19 +116,19 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(Component.translatable("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
         }
     }
 
     @Override
-    protected void readExtraData(CompoundTag tag) {
+    protected void readExtraData(CompoundTag tag, HolderLookup.Provider provider) {
         storedFood = tag.getFloat("food");
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag tag) {
+    protected CompoundTag writeExtraData(CompoundTag tag, HolderLookup.Provider provider) {
         tag.putFloat("food", storedFood);
         return tag;
     }

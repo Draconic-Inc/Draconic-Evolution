@@ -51,7 +51,7 @@ public class RenderModularBow extends ToolRenderBase {
     };
     private static final RenderType bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.BOW_STRING_SHADER::getShaderInstance))
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
             .setWriteMaskState(RenderStateShard.WriteMaskStateShard.COLOR_WRITE)
@@ -69,7 +69,7 @@ public class RenderModularBow extends ToolRenderBase {
 
     public RenderModularBow(TechLevel techLevel) {
         super(techLevel, "bow");
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/bow.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/bow.obj")).ignoreMtl().parse();
         basePart = basePart(model.get("bow_handle").backfacedCopy());
         materialPart = materialPart(model.get("bow_arm").backfacedCopy());
         gemPart = gemPart(model.get("bow_gem").backfacedCopy());
@@ -92,7 +92,7 @@ public class RenderModularBow extends ToolRenderBase {
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, ItemDisplayContext context, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.46, 0.54, 0.5, gui ? 0.9 : 1.125);
-        double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getDeltaFrameTime());
+        double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
 
         basePart.render(context, buffers, mat);
 
@@ -202,7 +202,7 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     public void bufferVertex(VertexConsumer builder, double x, double y, double z, float u, float v, float normX, float normZ, float normY, int light) {
-        builder.vertex(x, y, z).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normX, normY, normZ).endVertex();
+        builder.addVertex((float) x, (float) y, (float) z).setColor(255, 255, 255, 255).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light).setNormal(normX, normY, normZ);
     }
 
     @Override

@@ -33,7 +33,7 @@ public interface MultiBlockController {
     /**
      * Called when a structure block associated with this controller is right-clicked by a player.
      * */
-    default InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+    default InteractionResult handleRemoteClick(Player player, BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 

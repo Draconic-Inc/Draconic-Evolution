@@ -33,18 +33,18 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public class RenderTileReactorComponent implements BlockEntityRenderer<TileReactorComponent> {
 
-    private static final RenderType STAB_FRAME_TYPE = RenderType.entitySolid(new ResourceLocation(MODID, "textures/block/reactor/reactor_stabilizer.png"));
-    private static final RenderType INJECTOR_FRAME_TYPE = RenderType.entitySolid(new ResourceLocation(MODID, "textures/block/reactor/reactor_injector.png"));
+    private static final RenderType STAB_FRAME_TYPE = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"));
+    private static final RenderType INJECTOR_FRAME_TYPE = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"));
 
     private static final RenderType STAB_GLOW_TYPE = RenderType.create(MODID + ":stab_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/reactor/reactor_stabilizer.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_stabilizer.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType INJECTOR_GLOW_TYPE = RenderType.create(MODID + ":injector_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/reactor/reactor_injector.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/reactor/reactor_injector.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader)) //TODO Does this shader work?
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
             .createCompositeState(false)
@@ -65,7 +65,7 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
     private static CCModel modelOuterRotorPart;
 
     static {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(MODID, "models/block/reactor/reactor_injector.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(MODID, "models/block/reactor/reactor_injector.obj")).quads().ignoreMtl().parse();
         modelInjectorBase = CCModel.combine(FastStream.of(map.entrySet())
                 .filter(e -> !e.getKey().startsWith("emitter"))
                 .map(Map.Entry::getValue)
@@ -75,7 +75,7 @@ public class RenderTileReactorComponent implements BlockEntityRenderer<TileReact
                 .map(Map.Entry::getValue)
                 .toLinkedList()).backfacedCopy();
 
-        Map<String, CCModel> stabMap = new OBJParser(new ResourceLocation(MODID, "models/block/reactor/reactor_stabilizer.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> stabMap = new OBJParser(ResourceLocation.fromNamespaceAndPath(MODID, "models/block/reactor/reactor_stabilizer.obj")).quads().ignoreMtl().parse();
         modelStabFrame = CCModel.combine(FastStream.of(stabMap.entrySet())
                 .filter(e -> e.getKey().startsWith("frame"))
                 .map(Map.Entry::getValue)

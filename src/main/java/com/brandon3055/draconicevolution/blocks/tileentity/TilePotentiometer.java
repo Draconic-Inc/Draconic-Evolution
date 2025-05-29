@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -54,7 +55,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player.isShiftKeyDown()) {
             power.dec();
             if (power.get() < 0) {
@@ -79,6 +80,6 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, II
         level.updateNeighborsAt(worldPosition.relative(getBlockState().getValue(Potentiometer.FACING).getOpposite()), getBlockState().getBlock());
         super.tick();
 
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }

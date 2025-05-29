@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.ButtonRow;
 import com.brandon3055.brandonscore.utils.DataUtils;
+import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.client.DEGuiTextures;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
@@ -115,16 +116,16 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(RIGHT, relative(root.get(RIGHT), -bgPad))
                 .setTooltip(() -> List.of(
                         Component.literal(AQUA + getTarget().getName()),
-                        Component.literal(GOLD + "X: " + (int) getTarget().getX()),
-                        Component.literal(GOLD + "Y: " + (int) getTarget().getY()),
-                        Component.literal(GOLD + "Z: " + (int) getTarget().getZ()),
-                        Component.literal(GOLD + (Screen.hasShiftDown() ? getTarget().getDimension().location().toString() : getTarget().getDimension().location().getPath()))
+                        Component.literal(GOLD + "X: " + (int) getTargetPos().getX()),
+                        Component.literal(GOLD + "Y: " + (int) getTargetPos().getY()),
+                        Component.literal(GOLD + "Z: " + (int) getTargetPos().getZ()),
+                        Component.literal(GOLD + (Screen.hasShiftDown() ? getTargetPos().getDimension().location().toString() : getTargetPos().getDimension().location().getPath()))
                 ));
 
         GuiText xLabel = new GuiText(infoBG)
                 .setAlignment(Align.LEFT)
                 .setShadow(() -> BCConfig.darkMode)
-                .setTextSupplier(() -> Component.literal("X: " + (int) getTarget().getX()))
+                .setTextSupplier(() -> Component.literal("X: " + (int) getTargetPos().getX()))
                 .constrain(TOP, relative(infoBG.get(TOP), 2))
                 .constrain(LEFT, relative(infoBG.get(LEFT), 2))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
@@ -135,7 +136,7 @@ public class DislocatorGui implements GuiProvider {
         GuiText yLabel = new GuiText(infoBG)
                 .setAlignment(Align.LEFT)
                 .setShadow(() -> BCConfig.darkMode)
-                .setTextSupplier(() -> Component.literal("Y: " + (int) getTarget().getY()))
+                .setTextSupplier(() -> Component.literal("Y: " + (int) getTargetPos().getY()))
                 .constrain(TOP, relative(xLabel.get(BOTTOM), 2))
                 .constrain(LEFT, relative(infoBG.get(LEFT), 2))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
@@ -146,7 +147,7 @@ public class DislocatorGui implements GuiProvider {
         GuiText zLabel = new GuiText(infoBG)
                 .setAlignment(Align.LEFT)
                 .setShadow(() -> BCConfig.darkMode)
-                .setTextSupplier(() -> Component.literal("Z: " + (int) getTarget().getZ()))
+                .setTextSupplier(() -> Component.literal("Z: " + (int) getTargetPos().getZ()))
                 .constrain(TOP, relative(yLabel.get(BOTTOM), 2))
                 .constrain(LEFT, relative(infoBG.get(LEFT), 2))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
@@ -157,7 +158,7 @@ public class DislocatorGui implements GuiProvider {
         GuiText dimLabel = new GuiText(infoBG)
                 .setAlignment(Align.LEFT)
                 .setShadow(() -> BCConfig.darkMode)
-                .setTextSupplier(() -> Component.literal(getTarget().getDimension().location().getPath()))
+                .setTextSupplier(() -> Component.literal(getTargetPos().getDimension().location().getPath()))
                 .constrain(TOP, relative(zLabel.get(BOTTOM), 2))
                 .constrain(LEFT, relative(infoBG.get(LEFT), 2))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
@@ -173,7 +174,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(RIGHT, match(infoBG.get(RIGHT)))
                 .constrain(TOP, relative(infoBG.get(BOTTOM), 2))
                 .constrain(HEIGHT, literal(15))
-                .onPress(() -> DraconicNetwork.sendDislocatorMessage(7, output -> output.writeVarInt(selectedIndex)))
+                .onPress(() -> DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 7, output -> output.writeVarInt(selectedIndex)))
                 .setDisabled(() -> !hasTarget() || getTarget().isLocked());
 
         //Fuel Add
@@ -181,14 +182,14 @@ public class DislocatorGui implements GuiProvider {
                 .setTooltip(TOOLKIT.translate("fuel_add_1.info"))
                 .constrain(LEFT, match(infoBG.get(LEFT)))
                 .constrain(BOTTOM, relative(root.get(BOTTOM), -bgPad - 1))
-                .onPress(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(false).writeBoolean(false)));
+                .onPress(() -> DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 6, output -> output.writeBoolean(false).writeBoolean(false)));
         Constraints.size(fuel1, 20, 13);
 
         GuiButton fuel16 = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("add_16"))
                 .setTooltip(TOOLKIT.translate("fuel_add_16.info"))
                 .constrain(LEFT, relative(fuel1.get(RIGHT), 1))
                 .constrain(TOP, match(fuel1.get(TOP)))
-                .onPress(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(true).writeBoolean(false)));
+                .onPress(() -> DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 6, output -> output.writeBoolean(true).writeBoolean(false)));
         Constraints.size(fuel16, 28, 13);
 
         GuiButton fuelAll = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("add_all"))
@@ -197,7 +198,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(RIGHT, match(infoBG.get(RIGHT)))
                 .constrain(TOP, match(fuel16.get(TOP)))
                 .constrain(HEIGHT, literal(13))
-                .onPress(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(false).writeBoolean(true)));
+                .onPress(() -> DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 6, output -> output.writeBoolean(false).writeBoolean(true)));
 
         //Fuel Display
         GuiRectangle fuelBG = TOOLKIT.shadedBorder(root)
@@ -223,7 +224,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(LEFT, match(infoBG.get(LEFT)))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -subWidth))
                 .constrain(BOTTOM, relative(fuelBG.get(TOP), -3))
-                .onPress(() -> addNew(0));
+                .onPress(() -> addNew(gui, 0));
 
         new GuiRectangle(root)
                 .fill(0xFF000000)
@@ -238,7 +239,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(HEIGHT, literal(6))
                 .constrain(LEFT, relative(addButton.get(RIGHT), 1))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
-                .onPress(() -> addNew(1));
+                .onPress(() -> addNew(gui, 1));
 
         GuiTexture upTex = new GuiTexture(upBtn, DEGuiTextures.get("dislocator/add_top"));
         Constraints.size(upTex, 8, 8);
@@ -250,7 +251,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(HEIGHT, literal(6))
                 .constrain(LEFT, relative(addButton.get(RIGHT), 1))
                 .constrain(RIGHT, relative(infoBG.get(RIGHT), -1))
-                .onPress(() -> addNew(2));
+                .onPress(() -> addNew(gui, 2));
 
         GuiTexture dwnTex = new GuiTexture(dwnBtn, DEGuiTextures.get("dislocator/add_bottom"));
         Constraints.size(dwnTex, 8, 8);
@@ -262,7 +263,7 @@ public class DislocatorGui implements GuiProvider {
                 .constrain(LEFT, match(infoBG.get(LEFT)))
                 .constrain(RIGHT, match(infoBG.get(RIGHT)))
                 .constrain(BOTTOM, relative(addButton.get(TOP), -2))
-                .onPress(() -> DraconicNetwork.sendDislocatorMessage(5, output -> output.writeBoolean(!blinkMode)))
+                .onPress(() -> DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 5, output -> output.writeBoolean(!blinkMode)))
                 .getLabel()
                 .setWrap(true);
 
@@ -274,13 +275,21 @@ public class DislocatorGui implements GuiProvider {
     }
 
     private DislocatorTarget getTarget() {
-        return DataUtils.safeGet(targetList, selectedIndex, () -> new DislocatorTarget(0, 0, 0, Level.OVERWORLD));
+        DislocatorTarget target = DataUtils.safeGet(targetList, selectedIndex, () -> new DislocatorTarget(0, 0, 0, Level.OVERWORLD));
+        if (target.getPos() == null) {
+            target.setPos(TargetPos.of(0, 0, 0, Level.OVERWORLD));
+        }
+        return target;
     }
 
-    private void addNew(int mode) {
+    private TargetPos getTargetPos() {
+        return getTarget().getPos();
+    }
+
+    private void addNew(ModularGui gui, int mode) {
         String tempName = (int) player.getX() + " " + (int) player.getY() + " " + (int) player.getZ();
         lastAdded = mode == 0 ? selectedIndex + 1 : mode == 1 ? 0 : targetList.size();
-        DraconicNetwork.sendDislocatorMessage(0, output -> output.writeByte(mode).writeVarInt(lastAdded).writeString(tempName));
+        DraconicNetwork.sendDislocatorMessage(gui.mc().level.registryAccess(), 0, output -> output.writeByte(mode).writeVarInt(lastAdded).writeString(tempName));
     }
 
     private void detectChanges(ModularGui gui) {
@@ -349,14 +358,14 @@ public class DislocatorGui implements GuiProvider {
                     .setTooltip(TOOLKIT.translate("edit_lock.info"))
                     .constrain(LEFT, relative(get(RIGHT), -9))
                     .constrain(TOP, relative(get(TOP), 2))
-                    .onPress(() -> DraconicNetwork.sendDislocatorMessage(3, e -> e.writeVarInt(index).writeBoolean(!isLocked())))
+                    .onPress(() -> DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 3, e -> e.writeVarInt(index).writeBoolean(!isLocked())))
                     .setEnabled(this::hasTarget);
 
             delete = TOOLKIT.createIconButton(this, 8, 8, DEGuiTextures.getter("dislocator/delete"))
                     .setTooltip(TOOLKIT.translate("delete.info"))
                     .constrain(LEFT, relative(lock.get(LEFT), -9))
                     .constrain(TOP, relative(get(TOP), 2))
-                    .onPress(() -> DraconicNetwork.sendDislocatorMessage(1, e -> e.writeVarInt(index)))
+                    .onPress(() -> DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 1, e -> e.writeVarInt(index)))
                     .setEnabled(() -> hasTarget() && !isLocked());
 
             field = new GuiTextField(this)
@@ -387,7 +396,7 @@ public class DislocatorGui implements GuiProvider {
 
         private void setName(String name) {
             this.name = name;
-            DraconicNetwork.sendDislocatorMessage(2, e -> e.writeVarInt(index).writeString(name));
+            DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 2, e -> e.writeVarInt(index).writeString(name));
         }
 
         @Override
@@ -398,7 +407,7 @@ public class DislocatorGui implements GuiProvider {
 
             //Teleport on right click
             if (mouseOver && button == 1) {
-                DraconicNetwork.sendDislocatorMessage(8, e -> e.writeVarInt(index));
+                DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 8, e -> e.writeVarInt(index));
                 getModularGui().getScreen().onClose();
                 return true;
             } else if (mouseOver && button == 0 && !getTarget().isLocked()) {
@@ -416,7 +425,7 @@ public class DislocatorGui implements GuiProvider {
 
             //Select
             if (!ret && mouseOver && index != selectedIndex) {
-                DraconicNetwork.sendDislocatorMessage(4, e -> e.writeVarInt(index));
+                DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 4, e -> e.writeVarInt(index));
                 return true;
             }
             return ret;
@@ -436,7 +445,7 @@ public class DislocatorGui implements GuiProvider {
                 TargetElement hovered = getHovered();
                 if (hovered != null) {
                     int moveIndex = mouseY > hovered.yMin() + (hovered.ySize() / 2D) ? hovered.index + 1 : hovered.index;
-                    DraconicNetwork.sendDislocatorMessage(10, e -> e.writeVarInt(moveIndex));
+                    DraconicNetwork.sendDislocatorMessage(mc().level.registryAccess(), 10, e -> e.writeVarInt(moveIndex));
                 }
             }
 

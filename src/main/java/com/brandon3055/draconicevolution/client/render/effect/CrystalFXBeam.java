@@ -135,10 +135,10 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
             float viewY = (float) (this.y - viewVec.y());
             float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(red, green, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(red, green, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(red, green, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(red, green, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(red, green, 1F, 1F).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(red, green, 1F, 1F).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(red, green, 1F, 1F).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(red, green, 1F, 1F).setUv(minU, maxV).setUv2(240, 240);
         }
 
         if (terminateTarget) {
@@ -146,10 +146,10 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
             float viewY = (float) (this.linkTarget.y - viewVec.y());
             float viewZ = (float) (this.linkTarget.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(red, green, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(red, green, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(red, green, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(red, green, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(red, green, 1F, 1F).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(red, green, 1F, 1F).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(red, green, 1F, 1F).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(red, green, 1F, 1F).setUv(minU, maxV).setUv2(240, 240);
         }
 
         BCProfiler.RENDER.stop();
@@ -157,10 +157,10 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist, float red, float green) {
         BCProfiler.RENDER.start("buffer_quad");
-        buffer.vertex(p1.x, p1.y, p1.z).color(red, green, 1F, 1F).uv(0.5F, anim).uv2(240, 240).endVertex();
-        buffer.vertex(p2.x, p2.y, p2.z).color(red, green, 1F, 1F).uv(0.5F, dist + anim).uv2(240, 240).endVertex();
-        buffer.vertex(p4.x, p4.y, p4.z).color(red, green, 1F, 1F).uv(1.0F, dist + anim).uv2(240, 240).endVertex();
-        buffer.vertex(p3.x, p3.y, p3.z).color(red, green, 1F, 1F).uv(1.0F, anim).uv2(240, 240).endVertex();
+        buffer.addVertex((float) p1.x, (float) p1.y, (float) p1.z).setColor(red, green, 1F, 1F).setUv(0.5F, anim).setUv2(240, 240);
+        buffer.addVertex((float) p2.x, (float) p2.y, (float) p2.z).setColor(red, green, 1F, 1F).setUv(0.5F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p4.x, (float) p4.y, (float) p4.z).setColor(red, green, 1F, 1F).setUv(1.0F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p3.x, (float) p3.y, (float) p3.z).setColor(red, green, 1F, 1F).setUv(1.0F, anim).setUv2(240, 240);
         BCProfiler.RENDER.stop();
     }
 
@@ -169,12 +169,12 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
 
     public static class FXHandler implements ParticleRenderType {
-        private static final ResourceLocation highlightTexture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
+        private static final ResourceLocation highlightTexture = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
         private ResourceLocation texture;
         private float green;
 
@@ -184,7 +184,7 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         }
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
@@ -195,12 +195,8 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
             } else {
                 RenderSystem.setShaderTexture(0, texture);
             }
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.end();
-        }
     }
 }

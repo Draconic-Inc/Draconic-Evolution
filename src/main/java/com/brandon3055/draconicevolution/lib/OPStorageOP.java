@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.lib.IValueHashable;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.google.common.math.BigIntegerMath;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -190,7 +191,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putLong("storage", valueStorage);
         if (!overflowCount.equals(BigInteger.ZERO)) {
@@ -200,7 +201,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         valueStorage = nbt.getLong("storage");
         if (nbt.contains("overflow", 7)) {
             overflowCount = new BigInteger(nbt.getByteArray("overflow"));

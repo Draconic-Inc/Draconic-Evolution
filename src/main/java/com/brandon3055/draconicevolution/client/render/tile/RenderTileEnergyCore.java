@@ -18,6 +18,7 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.DEShaders;
@@ -45,45 +46,45 @@ import java.util.*;
 public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore> {
     public static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
+    private static final RenderType innerCoreType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
     );
 
     private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexShader))
             .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
             .createCompositeState(false)
     );
 
-    private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexShader))
+    private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
             .createCompositeState(false)
     );
 
     private static RenderType coreShaderType = RenderType.create("test_shader", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.energyCoreShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
@@ -98,11 +99,11 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 //    private final VBORenderType shieldType;
 
     public RenderTileEnergyCore(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
         modelStabilizerSphere = CCModel.combine(map.values());
         modelStabilizerSphere.computeNormals();
 
-        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
         modelEnergyCore = CCModel.combine(map.values());
         modelEnergyCore.computeNormals();
 
@@ -296,25 +297,25 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         }
         innerMat.translate(-0.5, 0, -0.5);
 
-        builder.vertex(d7, beamLength, d9).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d7, 0, d9).uv(texXMax, d28).endVertex();
-        builder.vertex(d11, 0, d13).uv(texXMin, d28).endVertex();
-        builder.vertex(d11, beamLength, d13).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d7, beamLength, d9).setUv(texXMax, texHeight);
+        builder.addVertex(d7, 0, d9).setUv(texXMax, d28);
+        builder.addVertex(d11, 0, d13).setUv(texXMin, d28);
+        builder.addVertex(d11, beamLength, d13).setUv(texXMin, texHeight);
 
-        builder.vertex(d19, beamLength, d21).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d19, 0, d21).uv(texXMax, d28).endVertex();
-        builder.vertex(d15, 0, d17).uv(texXMin, d28).endVertex();
-        builder.vertex(d15, beamLength, d17).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d19, beamLength, d21).setUv(texXMax, texHeight);
+        builder.addVertex(d19, 0, d21).setUv(texXMax, d28);
+        builder.addVertex(d15, 0, d17).setUv(texXMin, d28);
+        builder.addVertex(d15, beamLength, d17).setUv(texXMin, texHeight);
 
-        builder.vertex(d11, beamLength, d13).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d11, 0, d13).uv(texXMax, d28).endVertex();
-        builder.vertex(d19, 0, d21).uv(texXMin, d28).endVertex();
-        builder.vertex(d19, beamLength, d21).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d11, beamLength, d13).setUv(texXMax, texHeight);
+        builder.addVertex(d11, 0, d13).setUv(texXMax, d28);
+        builder.addVertex(d19, 0, d21).setUv(texXMin, d28);
+        builder.addVertex(d19, beamLength, d21).setUv(texXMin, texHeight);
 
-        builder.vertex(d15, beamLength, d17).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d15, 0, d17).uv(texXMax, d28).endVertex();
-        builder.vertex(d7, 0, d9).uv(texXMin, d28).endVertex();
-        builder.vertex(d7, beamLength, d9).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d15, beamLength, d17).setUv(texXMax, texHeight);
+        builder.addVertex(d15, 0, d17).setUv(texXMax, d28);
+        builder.addVertex(d7, 0, d9).setUv(texXMin, d28);
+        builder.addVertex(d7, beamLength, d9).setUv(texXMin, texHeight);
 
         rotation += 0.77f;
         d7 = 0.5F + (float) Math.cos(rotation + 2.356194490192345F) * scale;
@@ -329,25 +330,25 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         d28 = (-1F + (beamMotion * 1));
         texHeight = beamLength * (0.5F / scale) + d28;
 
-        builder.vertex(d7, beamLength, d9).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d7, 0, d9).uv(texXMax, d28).endVertex();
-        builder.vertex(d11, 0, d13).uv(texXMin, d28).endVertex();
-        builder.vertex(d11, beamLength, d13).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d7, beamLength, d9).setUv(texXMax, texHeight);
+        builder.addVertex(d7, 0, d9).setUv(texXMax, d28);
+        builder.addVertex(d11, 0, d13).setUv(texXMin, d28);
+        builder.addVertex(d11, beamLength, d13).setUv(texXMin, texHeight);
 
-        builder.vertex(d19, beamLength, d21).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d19, 0, d21).uv(texXMax, d28).endVertex();
-        builder.vertex(d15, 0, d17).uv(texXMin, d28).endVertex();
-        builder.vertex(d15, beamLength, d17).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d19, beamLength, d21).setUv(texXMax, texHeight);
+        builder.addVertex(d19, 0, d21).setUv(texXMax, d28);
+        builder.addVertex(d15, 0, d17).setUv(texXMin, d28);
+        builder.addVertex(d15, beamLength, d17).setUv(texXMin, texHeight);
 
-        builder.vertex(d11, beamLength, d13).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d11, 0, d13).uv(texXMax, d28).endVertex();
-        builder.vertex(d19, 0, d21).uv(texXMin, d28).endVertex();
-        builder.vertex(d19, beamLength, d21).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d11, beamLength, d13).setUv(texXMax, texHeight);
+        builder.addVertex(d11, 0, d13).setUv(texXMax, d28);
+        builder.addVertex(d19, 0, d21).setUv(texXMin, d28);
+        builder.addVertex(d19, beamLength, d21).setUv(texXMin, texHeight);
 
-        builder.vertex(d15, beamLength, d17).uv(texXMax, texHeight).endVertex();
-        builder.vertex(d15, 0, d17).uv(texXMax, d28).endVertex();
-        builder.vertex(d7, 0, d9).uv(texXMin, d28).endVertex();
-        builder.vertex(d7, beamLength, d9).uv(texXMin, texHeight).endVertex();
+        builder.addVertex(d15, beamLength, d17).setUv(texXMax, texHeight);
+        builder.addVertex(d15, 0, d17).setUv(texXMax, d28);
+        builder.addVertex(d7, 0, d9).setUv(texXMin, d28);
+        builder.addVertex(d7, beamLength, d9).setUv(texXMin, texHeight);
         //endregion
 
         Matrix4 outerMat = matrix4.copy();
@@ -371,8 +372,8 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         for (int i = 0; i <= sides; i++) {
             float verX = (float) Math.sin((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
             float verY = (float) Math.cos((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
-            builder.vertex(verX * 0.35F, verY * 0.35F, 0.0D).color(255, 255, 255, 32).uv(i, (beamMotion * 2)).endVertex();
-            builder.vertex(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).uv(i, beamLength + (beamMotion * 2)).endVertex();
+            builder.addVertex(verX * 0.35F, verY * 0.35F, 0.0F).setColor(255, 255, 255, 32).setUv(i, (beamMotion * 2));
+            builder.addVertex(verX * enlarge, verY * enlarge, beamLength).setColor(255, 255, 255, 32).setUv(i, beamLength + (beamMotion * 2));
         }
     }
 
@@ -392,6 +393,7 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     @Override
     public AABB getRenderBoundingBox(TileEnergyCore blockEntity) {
-        return INFINITE_EXTENT_AABB;
+        BlockPos pos = blockEntity.getBlockPos();
+        return new AABB(pos.getX() - 14, pos.getY() - 14, pos.getZ() - 14, pos.getX() + 15, pos.getY() + 15, pos.getZ() + 15);
     }
 }

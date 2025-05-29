@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -83,6 +84,7 @@ public class ModuleGrid {
         if ((holdingStack && module == null) || !pos.isValidCell()) {
             return null; //Player tried to insert an item that is not a valid module
         }
+        RegistryAccess regAccess = player.player.registryAccess();;
 
         ModuleHost host = getModuleHost();
         //Really this could be pick up or drop off
@@ -92,7 +94,7 @@ public class ModuleGrid {
                 entity.setPos(pos.gridX, pos.gridY);
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
-                    entity.readFromItemStack(stack, context);
+                    entity.readFromItemStack(stack, context, regAccess);
                     host.addModule(entity, context);
                     stack.shrink(1);
                     onGridChange();
@@ -103,7 +105,7 @@ public class ModuleGrid {
             else if (pos.hasEntity()) { //Try to extract module
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(extracted, context);
+                entity.writeToItemStack(extracted, context, regAccess);
                 List<Component> error = new ArrayList<>();
                 if (!host.checkRemoveModule(entity, error)) {
                     return new InstallResult(InstallResultType.NO, null, null, error);
@@ -117,7 +119,7 @@ public class ModuleGrid {
             if (pos.hasEntity()) { //Try to transfer module
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(extracted, context);
+                entity.writeToItemStack(extracted, context, regAccess);
                 List<Component> error = new ArrayList<>();
                 if (!host.checkRemoveModule(entity, error)) {
                     return new InstallResult(InstallResultType.NO, null, null, error);
@@ -132,12 +134,12 @@ public class ModuleGrid {
             for (ModuleEntity<?> entity : ImmutableList.copyOf(host.getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
-                    entity.writeToItemStack(modStack, context);
+                    entity.writeToItemStack(modStack, context, regAccess);
                     List<Component> error = new ArrayList<>();
                     if (!host.checkRemoveModule(entity, error)) {
                         return new InstallResult(InstallResultType.NO, null, null, error);
                     }
-                    if (ItemStack.isSameItemSameTags(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
+                    if (ItemStack.isSameItemSameComponents(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
                         host.removeModule(entity, context);
                     }
@@ -149,7 +151,7 @@ public class ModuleGrid {
             if (player.player.getAbilities().instabuild && player.player.inventoryMenu.getCarried().isEmpty() && pos.hasEntity()) {
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
-                entity.writeToItemStack(modStack, context);
+                entity.writeToItemStack(modStack, context, regAccess);
                 player.player.containerMenu.setCarried(modStack);
             }
         }

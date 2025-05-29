@@ -212,7 +212,7 @@ public abstract class ChargeUpPhase extends Phase {
     public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
         if (isInvulnerable()) {
             if (source.getDirectEntity() instanceof AbstractArrow) {
-                source.getDirectEntity().setSecondsOnFire(1);
+                source.getDirectEntity().setRemainingFireTicks(1);
             }
             return 0.0F;
         } else {

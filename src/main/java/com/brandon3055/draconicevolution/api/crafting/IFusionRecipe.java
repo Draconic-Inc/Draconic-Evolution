@@ -191,8 +191,8 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
         }
 
         int catCount = 1;
-        if (recipe.getCatalyst() instanceof StackIngredient) {
-            catCount = ((StackIngredient) recipe.getCatalyst()).getCount();
+        if (recipe.getCatalyst().getCustomIngredient() instanceof StackIngredient) {
+            catCount = ((StackIngredient) recipe.getCatalyst().getCustomIngredient()).getCount();
         }
 
         ItemStack catalyst = inv.getCatalystStack();
@@ -226,7 +226,7 @@ public interface IFusionRecipe extends Recipe<IFusionInventory> {
         ItemStack output = inv.getOutputStack();
         if (!output.isEmpty()) {
             ItemStack result = assemble(inv, level.registryAccess());
-            if (!ItemStack.isSameItemSameTags(output, result) || output.getCount() + result.getCount() > result.getItem().getMaxStackSize(result)) {
+            if (!ItemStack.isSameItemSameComponents(output, result) || output.getCount() + result.getCount() > result.getItem().getMaxStackSize(result)) {
                 if (userStatus != null) {
                     userStatus.accept(Component.translatable("fusion_status.draconicevolution.output_obstructed").withStyle(ChatFormatting.RED));
                 }

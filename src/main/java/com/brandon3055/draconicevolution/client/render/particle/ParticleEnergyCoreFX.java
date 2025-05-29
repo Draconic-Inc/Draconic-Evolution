@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.brandon3055.brandonscore.client.particle.IntParticleData;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -13,10 +13,11 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
+
+import java.util.List;
 
 /**
  * Created by brandon3055 on 2/5/2016.
@@ -25,18 +26,18 @@ import net.minecraft.core.Direction;
 public class ParticleEnergyCoreFX extends TextureSheetParticle {
 
     public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
-        public void begin(BufferBuilder builder, TextureManager manager) {
+        public BufferBuilder begin(Tesselator builder, TextureManager manager) {
             RenderSystem.depthMask(false);
 //            RenderSystem.setShader(GameRenderer::getParticleShader);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            return builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
-        public void end(Tesselator tesselator) {
-            tesselator.end();
-        }
+//        public void end(Tesselator tesselator) {
+//            tesselator.end();
+//        }
 
         public String toString() {
             return "PARTICLE_NO_DEPTH_NO_LIGHT";
@@ -111,7 +112,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         BCProfiler.TICK.stop();
     }
 
-    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+    public static class Factory implements ParticleProvider<IntParticleData> {
         private final SpriteSet spriteSet;
 
         public Factory(SpriteSet p_i50823_1_) {
@@ -119,11 +120,12 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
-            particle.toCore = data.get().length >= 1 && data.get()[0] == 1;
-            particle.startRotation = data.get().length >= 2 ? data.get()[1] : 0;
-            particle.isLargeStabilizer = data.get().length >= 3 && data.get()[2] == 1;
+            List<Integer> list = data.get();
+            particle.toCore = list.size() >= 1 && list.get(0) == 1;
+            particle.startRotation = list.size() >= 2 ? list.get(1) : 0;
+            particle.isLargeStabilizer = list.size() >= 3 && list.get(2) == 1;
             particle.scale(particle.isLargeStabilizer ? 2 : 1);
             return particle;
         }

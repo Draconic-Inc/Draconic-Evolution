@@ -26,23 +26,23 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class DEDamage {
     private static Map<ResourceKey<DamageType>, DamageSource> SOURCES = new HashMap<>();
 
-    public static ResourceKey<DamageType> FUSION_EXPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "fusion_explosion"));
+    public static ResourceKey<DamageType> FUSION_EXPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "fusion_explosion"));
 //    public static ResourceKey<DamageType> ADMIN_KILL = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "admin_kill"));
     public static ResourceKey<DamageType> KILL = DamageTypes.GENERIC_KILL;
-    public static ResourceKey<DamageType> CRYSTAL_MOVE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "crystal_move"));
-    public static ResourceKey<DamageType> CHAOS_IMPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "chaos_implosion"));
-    public static ResourceKey<DamageType> GUARDIAN = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "guardian"));
-    public static ResourceKey<DamageType> GUARDIAN_PROJECTILE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "guardian_projectile"));
-    public static ResourceKey<DamageType> GUARDIAN_LASER = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "guardian_laser"));
+    public static ResourceKey<DamageType> CRYSTAL_MOVE = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "crystal_move"));
+    public static ResourceKey<DamageType> CHAOS_IMPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "chaos_implosion"));
+    public static ResourceKey<DamageType> GUARDIAN = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "guardian"));
+    public static ResourceKey<DamageType> GUARDIAN_PROJECTILE = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "guardian_projectile"));
+    public static ResourceKey<DamageType> GUARDIAN_LASER = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "guardian_laser"));
 
-    public static ResourceKey<DamageType> DRACONIUM_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconium_arrow"));
-    public static ResourceKey<DamageType> DRACONIUM_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconium_arrow_spoof"));
-    public static ResourceKey<DamageType> WYVERN_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "wyvern_arrow"));
-    public static ResourceKey<DamageType> WYVERN_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "wyvern_arrow_spoof"));
-    public static ResourceKey<DamageType> DRACONIC_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconic_arrow"));
-    public static ResourceKey<DamageType> DRACONIC_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconic_arrow_spoof"));
-    public static ResourceKey<DamageType> CHAOTIC_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "chaotic_arrow"));
-    public static ResourceKey<DamageType> CHAOTIC_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "chaotic_arrow_spoof"));
+    public static ResourceKey<DamageType> DRACONIUM_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconium_arrow"));
+    public static ResourceKey<DamageType> DRACONIUM_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconium_arrow_spoof"));
+    public static ResourceKey<DamageType> WYVERN_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "wyvern_arrow"));
+    public static ResourceKey<DamageType> WYVERN_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "wyvern_arrow_spoof"));
+    public static ResourceKey<DamageType> DRACONIC_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconic_arrow"));
+    public static ResourceKey<DamageType> DRACONIC_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconic_arrow_spoof"));
+    public static ResourceKey<DamageType> CHAOTIC_ARROW = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "chaotic_arrow"));
+    public static ResourceKey<DamageType> CHAOTIC_ARROW_SPOOF = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "chaotic_arrow_spoof"));
 
 
     public static DamageSource fusionDamage(Level level) {
@@ -96,12 +96,12 @@ public class DEDamage {
     }
 
     public static class Tags {
-        public static final TagKey<DamageType> CHAOTIC = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "chaotic"));
-        public static final TagKey<DamageType> DRACONIC = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconic"));
-        public static final TagKey<DamageType> WYVERN = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "wyvern"));
-        public static final TagKey<DamageType> DRACONIUM = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "draconium"));
+        public static final TagKey<DamageType> CHAOTIC = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "chaotic"));
+        public static final TagKey<DamageType> DRACONIC = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconic"));
+        public static final TagKey<DamageType> WYVERN = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "wyvern"));
+        public static final TagKey<DamageType> DRACONIUM = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "draconium"));
 
-        public static final TagKey<DamageType> PROJECTILE_ANTI_DODGE = TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "proj_anti_dodge"));
+        public static final TagKey<DamageType> PROJECTILE_ANTI_DODGE = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "proj_anti_dodge"));
     }
 
     /**

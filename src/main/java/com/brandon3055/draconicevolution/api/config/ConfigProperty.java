@@ -5,6 +5,7 @@ import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -109,7 +110,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("hud", showOnHud);
         if (uniqueName != null) {
@@ -119,7 +120,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         showOnHud = nbt.getBoolean("hud");
         if (nbt.hasUUID("uni_name")) {
             uniqueName = nbt.getUUID("uni_name");

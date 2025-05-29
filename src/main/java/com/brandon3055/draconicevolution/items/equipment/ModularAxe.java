@@ -35,7 +35,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     private final DETier itemTier;
 
     public ModularAxe(DETier tier, TechProperties props) {
-        super(tier, 0, 0, props);
+        super(tier, props);
         this.techLevel = props.getTechLevel();
         this.itemTier = (DETier) getTier();
     }
@@ -85,8 +85,8 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        addModularItemInformation(stack, context, tooltip, flagIn);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

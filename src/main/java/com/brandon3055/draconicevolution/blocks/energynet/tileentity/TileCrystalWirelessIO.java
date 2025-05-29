@@ -22,11 +22,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.level.Level;
@@ -130,12 +132,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         if (player.isShiftKeyDown()) {
             inputMode.invert();
-            return true;
+            return InteractionResult.SUCCESS;
         }
-        return super.onBlockActivated(state, player, handIn, hit);
+        return InteractionResult.FAIL;
     }
 
     /**
@@ -377,8 +379,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void writeExtraNBT(CompoundTag compound) {
-        super.writeExtraNBT(compound);
+    public void writeExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.writeExtraNBT(provider, compound);
         ListTag list = new ListTag();
         for (Vec3B vec : linkedReceivers) {
             CompoundTag receiver = new CompoundTag();
@@ -390,8 +392,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void readExtraNBT(CompoundTag compound) {
-        super.readExtraNBT(compound);
+    public void readExtraNBT(HolderLookup.Provider provider, CompoundTag compound) {
+        super.readExtraNBT(provider, compound);
         ListTag list = compound.getList("linked_receivers", 10);
         linkedReceivers.clear();
         receiverSideMap.clear();

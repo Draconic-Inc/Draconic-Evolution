@@ -24,6 +24,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -206,7 +207,7 @@ public class PropertyContainer extends GuiManipulable {
                 .setTooltip(() -> isMoving() ? Collections.emptyList() : Collections.singletonList(Component.translatable(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info")))
                 .onClick(() -> {
                     if (Screen.hasShiftDown()) {
-                        duplicateContainer();
+                        duplicateContainer(root.mc().player.registryAccess());
                     } else if (Screen.hasControlDown()) {
                         deleteContainer();
                     } else {
@@ -553,8 +554,8 @@ public class PropertyContainer extends GuiManipulable {
         saveGui();
     }
 
-    public void duplicateContainer() {
-        PropertyContainer newGroup = PropertyContainer.deserialize(gui, getParent(), serialize());
+    public void duplicateContainer(HolderLookup.Provider provider) {
+        PropertyContainer newGroup = PropertyContainer.deserialize(gui, getParent(), serialize(provider), provider);
     }
 
     @Override
@@ -644,7 +645,7 @@ public class PropertyContainer extends GuiManipulable {
     }
 
     private void applyData(PropertyData data) {
-        data.sendToServer();
+        data.sendToServer(mc().level.registryAccess());
         if (gui != null) {
             gui.updateAnimations.add(new UpdateAnim(data));
         }
@@ -864,7 +865,7 @@ public class PropertyContainer extends GuiManipulable {
 //        setYPos = yPos();
 //    }
 //
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("group", isGroup);
         if (isGroup) {
@@ -886,14 +887,14 @@ public class PropertyContainer extends GuiManipulable {
 //        nbt.putInt("x_size", xSize());
 //        nbt.putInt("y_size", expandedHeight);
         nbt.put("data", dataList.stream()
-                .map(PropertyData::serialize)
+                .map(e -> e.serialize(provider))
                 .collect(Collectors.toCollection(ListTag::new)));
 
         return nbt;
     }
 
     //
-    public static PropertyContainer deserialize(ConfigurableItemGui gui, GuiParent<?> parent, CompoundTag nbt) {
+    public static PropertyContainer deserialize(ConfigurableItemGui gui, GuiParent<?> parent, CompoundTag nbt, HolderLookup.Provider provider) {
         boolean isGroup = nbt.getBoolean("group");
         PropertyContainer container = new PropertyContainer(parent, gui, isGroup);
         if (isGroup) {
@@ -915,7 +916,7 @@ public class PropertyContainer extends GuiManipulable {
 
         container.dataList.addAll(nbt.getList("data", 10).stream()
                 .map(e -> (CompoundTag) e)
-                .map(PropertyData::deserialize)
+                .map(e -> PropertyData.deserialize(e, provider))
                 .filter(Objects::nonNull)
                 .toList()
         );

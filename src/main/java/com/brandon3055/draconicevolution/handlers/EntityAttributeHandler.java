@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -18,9 +20,9 @@ import java.util.function.Supplier;
  */
 public class EntityAttributeHandler<Data> {
 
-    private final Map<UUID, AttribData> modifiers = new HashMap<>();
+    private final Map<ResourceLocation, AttribData> modifiers = new HashMap<>();
 
-    public void register(UUID attribKey, Supplier<Attribute> attribute, BiFunction<LivingEntity, Data, @Nullable AttributeModifier> modifierFunc) {
+    public void register(ResourceLocation attribKey, Supplier<Holder<Attribute>> attribute, BiFunction<LivingEntity, Data, @Nullable AttributeModifier> modifierFunc) {
         modifiers.put(attribKey, new AttribData(attribute, SneakyUtils.unsafeCast(modifierFunc)));
     }
 
@@ -36,5 +38,5 @@ public class EntityAttributeHandler<Data> {
         });
     }
 
-    private record AttribData(Supplier<Attribute> attribute, BiFunction<LivingEntity, Object, @Nullable AttributeModifier> modifierFunc) {}
+    private record AttribData(Supplier<Holder<Attribute>> attribute, BiFunction<LivingEntity, Object, @Nullable AttributeModifier> modifierFunc) {}
 }

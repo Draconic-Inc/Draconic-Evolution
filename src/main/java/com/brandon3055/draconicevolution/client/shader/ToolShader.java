@@ -19,7 +19,7 @@ public final class ToolShader extends BCShader<ToolShader> {
     private CCUniform baseColorUniform;
 
     public ToolShader(String path, VertexFormat format) {
-        super(new ResourceLocation(DraconicEvolution.MODID, path), format);
+        super(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, path), format);
     }
 
     public ToolShader(ResourceLocation location, VertexFormat format) {

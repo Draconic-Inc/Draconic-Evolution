@@ -110,10 +110,10 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
             float viewY = (float) (this.y - viewVec.y());
             float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(1F, 0F, 0F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(1F, 0F, 0F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(1F, 0F, 0F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(1F, 0F, 0F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(1F, 0F, 0F, 1F).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(1F, 0F, 0F, 1F).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(1F, 0F, 0F, 1F).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(1F, 0F, 0F, 1F).setUv(minU, maxV).setUv2(240, 240);
         }
 
         if (terminateTarget) {
@@ -121,19 +121,19 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
             float viewY = (float) (this.linkTarget.y - viewVec.y());
             float viewZ = (float) (this.linkTarget.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(1F, 0F, 0F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(1F, 0F, 0F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(1F, 0F, 0F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(1F, 0F, 0F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(1F, 0F, 0F, 1F).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(1F, 0F, 0F, 1F).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(1F, 0F, 0F, 1F).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(1F, 0F, 0F, 1F).setUv(minU, maxV).setUv2(240, 240);
         }
 
     }
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
-        buffer.vertex(p1.x, p1.y, p1.z).color(1F, 0F, 0F, 1F).uv(0.5F, anim).uv2(240, 240).endVertex();
-        buffer.vertex(p2.x, p2.y, p2.z).color(1F, 0F, 0F, 1F).uv(0.5F, dist + anim).uv2(240, 240).endVertex();
-        buffer.vertex(p4.x, p4.y, p4.z).color(1F, 0F, 0F, 1F).uv(1.0F, dist + anim).uv2(240, 240).endVertex();
-        buffer.vertex(p3.x, p3.y, p3.z).color(1F, 0F, 0F, 1F).uv(1.0F, anim).uv2(240, 240).endVertex();
+        buffer.addVertex((float) p1.x, (float) p1.y, (float) p1.z).setColor(1F, 0F, 0F, 1F).setUv(0.5F, anim).setUv2(240, 240);
+        buffer.addVertex((float) p2.x, (float) p2.y, (float) p2.z).setColor(1F, 0F, 0F, 1F).setUv(0.5F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p4.x, (float) p4.y, (float) p4.z).setColor(1F, 0F, 0F, 1F).setUv(1.0F, dist + anim).setUv2(240, 240);
+        buffer.addVertex((float) p3.x, (float) p3.y, (float) p3.z).setColor(1F, 0F, 0F, 1F).setUv(1.0F, anim).setUv2(240, 240);
     }
 
     @Override
@@ -144,25 +144,20 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     private static final ParticleRenderType HANDLER = new FXHandler();
 
     public static class FXHandler implements ParticleRenderType {
-        private static final ResourceLocation highlightTexture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
+        private static final ResourceLocation highlightTexture = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 
         public FXHandler() {}
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
+            //TODO, Is this blend func going to cause issues?
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.setShaderTexture(0, highlightTexture);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.end();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
     }
 }

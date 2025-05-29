@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -133,7 +134,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
         }
 
         if (doTransfer) {
-            DraconicNetwork.sendFusionRecipeMove(recipe, maxTransfer);
+            DraconicNetwork.sendFusionRecipeMove(player.registryAccess(), recipe, maxTransfer);
         }
 
         return null;
@@ -240,7 +241,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
             fullSets++;
         }
 
-        int catCount = recipe.getCatalyst() instanceof StackIngredient ? ((StackIngredient) recipe.getCatalyst()).getCount() : 1;
+        int catCount = recipe.getCatalyst().getCustomIngredient() instanceof StackIngredient stackIngredient ? stackIngredient.getCount() : 1;
         int maxStack = recipe.getCatalyst().getItems().length > 0 ? recipe.getCatalyst().getItems()[0].getMaxStackSize() : 1;
         fullSets = Math.min(fullSets, maxStack / catCount);
 
@@ -271,10 +272,11 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
     }
 
     private static ItemStack getIngredient(ItemStack existing, Ingredient ingred, IItemHandler playerInv) {
-        int count = ingred instanceof StackIngredient ? ((StackIngredient) ingred).getCount() : 1;
+        ICustomIngredient custom = ingred.getCustomIngredient();
+        int count = custom instanceof StackIngredient stackIngredient ? stackIngredient.getCount() : 1;
         for (int i = 0; i < playerInv.getSlots(); i++) {
             ItemStack slot = playerInv.extractItem(i, count, true);
-            if (ingred instanceof StackIngredient ? ((StackIngredient) ingred).itemTest(slot) : ingred.test(slot)) {
+            if (ingred.test(slot)) {
                 if (InventoryUtils.canStack(existing, slot)) {
                     int maxInsert = existing.isEmpty() ? count : Math.min(count, existing.getMaxStackSize() - existing.getCount());
                     ItemStack extracted = playerInv.extractItem(i, maxInsert, false);
@@ -294,9 +296,10 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
     }
 
     private static boolean checkIngredient(List<ItemStack> availableStacks, Ingredient ingred, boolean consume) {
-        int count = ingred instanceof StackIngredient ? ((StackIngredient) ingred).getCount() : 1;
+        ICustomIngredient custom = ingred.getCustomIngredient();
+        int count = custom instanceof StackIngredient stackIngredient ? stackIngredient.getCount() : 1;
         for (ItemStack stack : availableStacks) {
-            if (ingred instanceof StackIngredient ? ((StackIngredient) ingred).itemTest(stack) : ingred.test(stack)) {
+            if (ingred.test(stack)) {
                 int stackSize = stack.getCount();
                 if (consume) {
                     stack.shrink(Math.min(count, stack.getCount()));

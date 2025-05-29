@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -93,8 +94,8 @@ public class ReactorComponent extends EntityBlockBCore {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        BlockEntity te = world.getBlockEntity(pos);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        BlockEntity te = level.getBlockEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onActivated(player);
@@ -110,12 +111,6 @@ public class ReactorComponent extends EntityBlockBCore {
             ((TileReactorComponent) te).onBroken();
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override

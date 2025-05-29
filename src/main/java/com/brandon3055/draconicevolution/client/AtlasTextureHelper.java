@@ -38,21 +38,18 @@ public class AtlasTextureHelper {
     public static TextureAtlasSprite ENERGY_CORE_OVERLAY;
 
     public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
-        public void begin(BufferBuilder builder, TextureManager manager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager manager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
-        public void end(Tesselator tessellator) {
-            tessellator.end();
-        }
+//        public void end(Tesselator tessellator) {
+//            tessellator.end();
+//        }
 
-        public String toString() {
-            return "TERRAIN_SHEET_TRANSLUCENT";
-        }
     };
 
     public static void init(IEventBus modBus) {
@@ -64,21 +61,21 @@ public class AtlasTextureHelper {
         if (atlas.location().equals(TextureAtlas.LOCATION_PARTICLES)) {
             ATLAS_CACHE.clear();
             for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
-                ENERGY_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "energy_" + i));
+                ENERGY_PARTICLE[i] = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "energy_" + i));
             }
             for (int i = 0; i < SPARK_PARTICLE.length; i++) {
-                SPARK_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "spark_" + i));
+                SPARK_PARTICLE[i] = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "spark_" + i));
             }
             for (int i = 0; i < SPELL_PARTICLE.length; i++) {
-                SPELL_PARTICLE[i] = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "spell_" + i));
+                SPELL_PARTICLE[i] = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "spell_" + i));
             }
             MIXED_PARTICLE = Stream.concat(Arrays.stream(SPARK_PARTICLE), Arrays.stream(SPELL_PARTICLE)).toArray(TextureAtlasSprite[]::new);
 
-            ORB_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "white_orb"));
-            PORTAL_PARTICLE = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "portal"));
+            ORB_PARTICLE = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "white_orb"));
+            PORTAL_PARTICLE = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "portal"));
         }
         if (atlas.location().equals(InventoryMenu.BLOCK_ATLAS)) {
-            ENERGY_CORE_OVERLAY = atlas.getSprite(new ResourceLocation(DraconicEvolution.MODID, "block/energy_core/energy_core_overlay"));
+            ENERGY_CORE_OVERLAY = atlas.getSprite(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "block/energy_core/energy_core_overlay"));
         }
     }
 }

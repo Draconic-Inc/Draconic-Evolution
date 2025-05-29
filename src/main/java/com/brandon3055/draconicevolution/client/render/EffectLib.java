@@ -127,10 +127,10 @@ public class EffectLib {
     }
 
     private static void addSegmentQuad(Matrix4f matrix4f, VertexConsumer builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
-        builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix4f, x1 + (invC ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
+        builder.addVertex(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).setColor(red, green, blue, alpha);
+        builder.addVertex(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).setColor(red, green, blue, alpha);
+        builder.addVertex(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).setColor(red, green, blue, alpha);
+        builder.addVertex(matrix4f, x1 + (invC ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invD ? offsetB : -offsetB)).setColor(red, green, blue, alpha);
     }
 
     public static void drawParticle(Camera renderInfo, VertexConsumer builder, TextureAtlasSprite sprite, float x, float y, float z, float scale, int light) {
@@ -144,10 +144,10 @@ public class EffectLib {
         float uMax = sprite.getU1();
         float vMin = sprite.getV0();
         float vMax = sprite.getV1();
-        builder.vertex(vectors[0].x, vectors[0].y, vectors[0].z).color(1F, 1F, 1F, 1F).uv(uMax, vMax).uv2(light).endVertex();
-        builder.vertex(vectors[1].x, vectors[1].y, vectors[1].z).color(1F, 1F, 1F, 1F).uv(uMax, vMin).uv2(light).endVertex();
-        builder.vertex(vectors[2].x, vectors[2].y, vectors[2].z).color(1F, 1F, 1F, 1F).uv(uMin, vMin).uv2(light).endVertex();
-        builder.vertex(vectors[3].x, vectors[3].y, vectors[3].z).color(1F, 1F, 1F, 1F).uv(uMin, vMax).uv2(light).endVertex();
+        builder.addVertex((float) vectors[0].x, (float) vectors[0].y, (float) vectors[0].z).setColor(1F, 1F, 1F, 1F).setUv(uMax, vMax).setLight(light);
+        builder.addVertex((float) vectors[1].x, (float) vectors[1].y, (float) vectors[1].z).setColor(1F, 1F, 1F, 1F).setUv(uMax, vMin).setLight(light);
+        builder.addVertex((float) vectors[2].x, (float) vectors[2].y, (float) vectors[2].z).setColor(1F, 1F, 1F, 1F).setUv(uMin, vMin).setLight(light);
+        builder.addVertex((float) vectors[3].x, (float) vectors[3].y, (float) vectors[3].z).setColor(1F, 1F, 1F, 1F).setUv(uMin, vMax).setLight(light);
     }
 
     public static void drawParticle(Rotation rotation, VertexConsumer builder, TextureAtlasSprite sprite, float r, float g, float b, double x, double y, double z, float scale, int light) {
@@ -160,9 +160,9 @@ public class EffectLib {
         float uMax = sprite.getU1();
         float vMin = sprite.getV0();
         float vMax = sprite.getV1();
-        builder.vertex(vectors[0].x, vectors[0].y, vectors[0].z).color(r, g, b, 1F).uv(uMax, vMax).uv2(light).endVertex();
-        builder.vertex(vectors[1].x, vectors[1].y, vectors[1].z).color(r, g, b, 1F).uv(uMax, vMin).uv2(light).endVertex();
-        builder.vertex(vectors[2].x, vectors[2].y, vectors[2].z).color(r, g, b, 1F).uv(uMin, vMin).uv2(light).endVertex();
-        builder.vertex(vectors[3].x, vectors[3].y, vectors[3].z).color(r, g, b, 1F).uv(uMin, vMax).uv2(light).endVertex();
+        builder.addVertex((float) vectors[0].x, (float) vectors[0].y, (float) vectors[0].z).setColor(r, g, b, 1F).setUv(uMax, vMax).setLight(light);
+        builder.addVertex((float) vectors[1].x, (float) vectors[1].y, (float) vectors[1].z).setColor(r, g, b, 1F).setUv(uMax, vMin).setLight(light);
+        builder.addVertex((float) vectors[2].x, (float) vectors[2].y, (float) vectors[2].z).setColor(r, g, b, 1F).setUv(uMin, vMin).setLight(light);
+        builder.addVertex((float) vectors[3].x, (float) vectors[3].y, (float) vectors[3].z).setColor(r, g, b, 1F).setUv(uMin, vMax).setLight(light);
     }
 }

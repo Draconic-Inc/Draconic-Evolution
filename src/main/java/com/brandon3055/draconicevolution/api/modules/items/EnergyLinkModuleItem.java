@@ -7,8 +7,10 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
+import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -47,16 +49,17 @@ public class EnergyLinkModuleItem extends ModuleItem<EnergyLinkData> {
     }
 
     public static void checkResetLink(ItemStack stack, ServerLevel level) {
-        if (!stack.hasTag()) return;
-        CompoundTag tag = stack.getOrCreateTag();
-        BlockPos pos = new BlockPos(tag.getInt("core_x"), tag.getInt("core_y"), tag.getInt("core_z"));
-        UUID uuid = tag.getUUID("link_id");
-        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim")));
-        ServerLevel coreLevel = level.getServer().getLevel(dimension);
+        GlobalPos pos = stack.get(ItemData.LINK_MODULE_LINK_POS);
+        UUID uuid = stack.get(ItemData.LINK_MODULE_LINK_ID);
+        if (pos == null || uuid == null) {
+            return;
+        }
+
+        ServerLevel coreLevel = level.getServer().getLevel(pos.dimension());
 
         boolean reset = coreLevel == null;
         if (!reset) {
-            if (coreLevel.getBlockEntity(pos) instanceof TileEnergyCore core) {
+            if (coreLevel.getBlockEntity(pos.pos()) instanceof TileEnergyCore core) {
                 if (!uuid.equals(core.linkUUID.get())) {
                     reset = true;
                 }
@@ -66,7 +69,8 @@ public class EnergyLinkModuleItem extends ModuleItem<EnergyLinkData> {
         }
 
         if (reset) {
-            stack.setTag(null);
+            stack.remove(ItemData.LINK_MODULE_LINK_POS);
+            stack.remove(ItemData.LINK_MODULE_LINK_ID);
         }
     }
 
@@ -89,13 +93,10 @@ public class EnergyLinkModuleItem extends ModuleItem<EnergyLinkData> {
         }
 
         ItemStack stack = context.getItemInHand();
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("dim", level.dimension().location().toString());
         BlockPos pos = core.getBlockPos();
-        tag.putInt("core_x", pos.getX());
-        tag.putInt("core_y", pos.getY());
-        tag.putInt("core_z", pos.getZ());
-        tag.putUUID("link_id", linkId);
+        stack.set(ItemData.LINK_MODULE_LINK_POS, GlobalPos.of(level.dimension(), pos));
+        stack.set(ItemData.LINK_MODULE_LINK_ID, linkId);
+
         return InteractionResult.CONSUME;
     }
 }

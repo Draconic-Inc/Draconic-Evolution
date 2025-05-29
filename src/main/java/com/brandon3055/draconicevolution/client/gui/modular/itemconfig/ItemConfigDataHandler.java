@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import com.brandon3055.draconicevolution.DEConfig;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -78,12 +79,12 @@ public class ItemConfigDataHandler {
             this.data = data;
         }
 
-        public static SinglePlayerWorldData load(CompoundTag nbt) {
+        public static SinglePlayerWorldData load(CompoundTag nbt, HolderLookup.Provider provider) {
             return new SinglePlayerWorldData(nbt);
         }
 
         @Override
-        public CompoundTag save(CompoundTag compound) {
+        public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
             return data;
         }
     }

@@ -23,6 +23,8 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
@@ -133,7 +135,7 @@ public class LootEventHandler {
             return;
         }
 
-        int dropChanceModifier = getSoulDropChance(player.getMainHandItem());
+        int dropChanceModifier = getSoulDropChance(level, player.getMainHandItem());
         if (dropChanceModifier == 0) {
             return;
         }
@@ -148,7 +150,7 @@ public class LootEventHandler {
         }
     }
 
-    private static int getSoulDropChance(ItemStack stack) {
+    private static int getSoulDropChance(Level level, ItemStack stack) {
         int chance = 0;
         if (stack.isEmpty()) {
             return 0;
@@ -158,12 +160,12 @@ public class LootEventHandler {
             chance = ((IReaperItem) stack.getItem()).getReaperLevel(stack);
         }
 
-        chance += stack.getEnchantmentLevel(DEContent.ENCHANTMENT_REAPER.get());
+        chance += level.registryAccess().holder(DEContent.REAPER).map(stack::getEnchantmentLevel).orElse(0);
         return chance;
     }
 
     private static boolean canEntityDropSoul(LivingEntity entity) {
-        if (!entity.canChangeDimensions() && !DEConfig.allowBossSouls) {
+        if (!entity.canUsePortal(false) && !DEConfig.allowBossSouls) {
             return false;
         }
         //noinspection DataFlowIssue

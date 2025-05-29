@@ -27,6 +27,7 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -226,7 +227,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             int index = 0;
             for (ConfigProperty property : provider.getProperties()) {
                 PropertyData data = new PropertyData(provider, property, true);
-                data.setChangeListener(data::sendToServer);
+                data.setChangeListener(() -> data.sendToServer(gui.mc().player.registryAccess()));
                 PropertyElement propEle = new PropertyElement(content, data, this, index, false)
                         .constrain(LEFT, match(content.get(LEFT)))
                         .constrain(RIGHT, match(content.get(RIGHT)))
@@ -417,7 +418,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         nbt.getList("property_containers", 10)
                 .stream()
                 .map(e -> (CompoundTag) e)
-                .map(e -> PropertyContainer.deserialize(this, root, e))
+                .map(e -> PropertyContainer.deserialize(this, root, e, gui.mc().player.registryAccess()))
                 .toList();
         resizeAnim = isNormalUI() ? 1 : 0;
         minimizeAnim = isMinimized() ? 1 : 0;
@@ -433,7 +434,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         nbt.putBoolean("minimize", minimize);
         nbt.put("property_containers", propertyContainers
                 .stream()
-                .map(PropertyContainer::serialize)
+                .map(e -> e.serialize(gui.mc().player.registryAccess()))
                 .collect(Collectors.toCollection(ListTag::new))
         );
         ItemConfigDataHandler.saveData(nbt);
@@ -441,12 +442,13 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
     private void openModulesGui() {
         gui.getScreen().onClose();
-        DraconicNetwork.sendOpenModuleConfig();
+        DraconicNetwork.sendOpenModuleConfig(gui.mc().player.registryAccess());
     }
 
     private static Map<InputConstants.Key, Integer> MULTI_BIND_INDEX_MAP = new HashMap<>();
     public static void checkKeybinding(int keyCode, int scanCode) {
-        if (Minecraft.getInstance().screen instanceof ConfigurableItemGui.Screen) {
+        net.minecraft.client.gui.screens.Screen screen = Minecraft.getInstance().screen;
+        if (screen instanceof ConfigurableItemGui.Screen) {
             return;
         }
         InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
@@ -457,7 +459,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             List<PropertyContainer> containers = nbt.getList("property_containers", 10)
                     .stream()
                     .map(e -> (CompoundTag) e)
-                    .map(e -> PropertyContainer.deserialize(null, dummy.getRoot(), e))
+                    .map(e -> PropertyContainer.deserialize(null, dummy.getRoot(), e, screen.getMinecraft().player.registryAccess()))
                     .toList();
             containers.stream()
                     .filter(e -> !e.boundKey.isEmpty() && e.globalKeyBind && e.presetMode)

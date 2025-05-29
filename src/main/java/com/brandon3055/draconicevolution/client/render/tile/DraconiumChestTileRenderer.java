@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * Created by brandon3055 on 4/06/2017.
  */
 public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraconiumChest> {
-    private static final RenderType renderType = RenderType.entityCutout(new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
+    private static final RenderType renderType = RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
     private final ModelPart lid;
     private final ModelPart bottom;
     private final ModelPart lock;
@@ -77,13 +77,10 @@ public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraco
     }
 
     private void render(PoseStack mStack, VertexConsumer buffer, ModelPart lidRenderer, ModelPart lockRenderer, ModelPart bottomRenderer, float lidAngle, int packedLight, int packedOverlay, int colour) {
-        float red = (float) ((colour >> 16) & 0xFF) / 255f;
-        float green = (float) ((colour >> 8) & 0xFF) / 255f;
-        float blue = (float) (colour & 0xFF) / 255f;
         lidRenderer.xRot = lidAngle;
         lockRenderer.xRot = lidRenderer.xRot;
-        lidRenderer.render(mStack, buffer, packedLight, packedOverlay, red, green, blue, 1.0F);
-        lockRenderer.render(mStack, buffer, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-        bottomRenderer.render(mStack, buffer, packedLight, packedOverlay, red, green, blue, 1.0F);
+        lidRenderer.render(mStack, buffer, packedLight, packedOverlay, colour);
+        lockRenderer.render(mStack, buffer, packedLight, packedOverlay, colour);
+        bottomRenderer.render(mStack, buffer, packedLight, packedOverlay, colour);
     }
 }

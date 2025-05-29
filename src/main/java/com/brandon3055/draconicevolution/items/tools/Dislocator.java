@@ -6,10 +6,12 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -82,14 +84,18 @@ public class Dislocator extends Item implements IHudItem {
             return true;
         }
 
-        if (player.level().isClientSide || !entity.canChangeDimensions() || !(entity instanceof LivingEntity) || player.getCooldowns().getCooldownPercent(this, 0) > 0) {
+        if (!(player.level() instanceof ServerLevel serverLevel) || !(entity instanceof LivingEntity) || player.getCooldowns().getCooldownPercent(this, 0) > 0) {
+            return true;
+        }
+        TargetPos location = getTargetPos(stack, player.level());
+        ServerLevel targetLevel = serverLevel.getServer().getLevel(location.getDimension());
+        if (entity.level() != targetLevel && !entity.canChangeDimensions(entity.level(), targetLevel)) {
             return true;
         }
 
-        TargetPos location = getTargetPos(stack, player.level());
         player.getCooldowns().addCooldown(this, 20);
         dislocateEntity(stack, player, entity, location);
-        stack.hurtAndBreak(1, player, e -> {});
+        stack.hurtAndBreak(1, serverLevel, player, e -> {});
         if (location != null) {
             messageUser(player, Component.literal(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
         }
@@ -99,17 +105,17 @@ public class Dislocator extends Item implements IHudItem {
 
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (world.isClientSide) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 
-        TargetPos targetPos = getTargetPos(stack, world);
+        TargetPos targetPos = getTargetPos(stack, level);
 
         if (player.isShiftKeyDown()) {
             if (targetPos == null) {
-                setLocation(stack, targetPos = new TargetPos(player));
+                setLocation(stack, targetPos = TargetPos.of(player));
                 messageUser(player, Component.translatable("dislocate.draconicevolution.bound_to").append("{" + targetPos.getReadableName(false) + "}").withStyle(ChatFormatting.GREEN));
             } else {
                 messageUser(player, Component.translatable("dislocate.draconicevolution.already_bound").withStyle(ChatFormatting.RED));
@@ -123,7 +129,7 @@ public class Dislocator extends Item implements IHudItem {
             if (player.getHealth() > 2 || player.getAbilities().instabuild) {
                 player.getCooldowns().addCooldown(this, 20);
                 dislocateEntity(stack, player, player, targetPos);
-                stack.hurtAndBreak(1, player, e -> {});
+                stack.hurtAndBreak(1, serverLevel, player, e -> {});
 
                 if (!player.getAbilities().instabuild) {
                     player.setHealth(player.getHealth() - 2);
@@ -142,8 +148,8 @@ public class Dislocator extends Item implements IHudItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flagIn) {
-        TargetPos targetPos = getTargetPos(stack, world);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        TargetPos targetPos = getTargetPos(stack, context.level());
         if (targetPos == null) {
             tooltip.add(Component.translatable("dislocate.draconicevolution.un_set_info1").withStyle(ChatFormatting.RED));
             tooltip.add(Component.translatable("dislocate.draconicevolution.un_set_info2").withStyle(ChatFormatting.WHITE));
@@ -157,16 +163,13 @@ public class Dislocator extends Item implements IHudItem {
         }
     }
 
+    @Nullable
     public TargetPos getTargetPos(ItemStack stack, @Nullable Level world) {
-        CompoundTag targetTag = stack.getTagElement("target");
-        if (targetTag != null) {
-            return new TargetPos(targetTag);
-        }
-        return null;
+        return stack.get(ItemData.DISLOCATOR_TARGET);
     }
 
     public void setLocation(ItemStack stack, TargetPos pos) {
-        stack.addTagElement("target", pos.writeToNBT());
+        stack.set(ItemData.DISLOCATOR_TARGET, pos);
     }
 
     @Override
@@ -194,7 +197,7 @@ public class Dislocator extends Item implements IHudItem {
     }
 
     @Override
-    public boolean canBeHurtBy(DamageSource source) {
+    public boolean canBeHurtBy(ItemStack stack, DamageSource source) {
         return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 

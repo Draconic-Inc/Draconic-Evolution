@@ -65,21 +65,21 @@ public class FusionRecipeBuilder extends AbstractItemStackRecipeBuilder<FusionRe
         return catalyst(Ingredient.of(catalyst));
     }
 
-    public FusionRecipeBuilder catalyst(int count, TagKey<Item> catalyst) {
-        return catalyst(StackIngredient.fromTag(catalyst, count));
-    }
+//    public FusionRecipeBuilder catalyst(int count, TagKey<Item> catalyst) {
+//        return catalyst(StackIngredient.of(catalyst, count));
+//    }
 
     public FusionRecipeBuilder catalyst(int count, ItemLike... catalyst) {
-        return catalyst(StackIngredient.fromItems(count, catalyst));
+        return catalyst(StackIngredient.of(count, catalyst));
     }
 
     public FusionRecipeBuilder catalyst(int count, Supplier<? extends ItemLike> catalyst) {
-        return catalyst(StackIngredient.fromItems(count, catalyst.get()));
+        return catalyst(StackIngredient.of(count, catalyst.get()));
     }
 
-    public FusionRecipeBuilder catalyst(int count, ItemStack... catalyst) {
-        return catalyst(StackIngredient.fromStacks(count, catalyst));
-    }
+//    public FusionRecipeBuilder catalyst(int count, ItemStack... catalyst) {
+//        return catalyst(StackIngredient.of(count, catalyst));
+//    }
 
     public FusionRecipeBuilder catalyst(Ingredient catalyst) {
         this.catalyst = catalyst;

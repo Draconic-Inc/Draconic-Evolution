@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
@@ -46,18 +47,19 @@ public class ItemCore extends Item {
                 if (id.isEmpty()) {
                     return InteractionResult.FAIL;
                 }
-                ResourceLocation name = new ResourceLocation(id);
+                ResourceLocation name = ResourceLocation.parse(id);
                 ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
                 DEContent.MOB_SOUL.get().setEntity(name, soul);
                 SpawnerTier tier = SpawnerTier.getTierFromCore(this);
 
                 ItemStack spawner = new ItemStack(DEContent.STABILIZED_SPAWNER.get());
                 CompoundTag managedData = new CompoundTag();
-                spawner.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
-                managedData.put("mob_soul", soul.save(new CompoundTag()));
+                managedData.put("mob_soul", soul.save(world.registryAccess()));
                 CompoundTag tierData = new CompoundTag();
                 tierData.putByte("value", (byte) tier.ordinal());
                 managedData.put("spawner_tier", tierData);
+
+                spawner.set(BlockBCore.BC_TILE_DATA_TAG, CustomData.of(managedData));
 
                 world.removeBlock(pos, false);
                 world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));

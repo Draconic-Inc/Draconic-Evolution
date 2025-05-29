@@ -54,20 +54,20 @@ public abstract class ModelEffect {
     protected void drawParticle(VertexConsumer builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
         double min = (1 - scale) * 0.5;
         double max = 0.5 + (scale * 0.5);
-        builder.vertex(x + min, y + 0.5, z + min).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + min, y + 0.5, z + max).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + max, y + 0.5, z + max).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + max, y + 0.5, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.addVertex((float) (x + min), (float) (y + 0.5), (float) (z + min)).setColor(red, green, blue, alpha).setUv(0, 0);
+        builder.addVertex((float) (x + min), (float) (y + 0.5), (float) (z + max)).setColor(red, green, blue, alpha).setUv(0, 1);
+        builder.addVertex((float) (x + max), (float) (y + 0.5), (float) (z + max)).setColor(red, green, blue, alpha).setUv(1, 1);
+        builder.addVertex((float) (x + max), (float) (y + 0.5), (float) (z + min)).setColor(red, green, blue, alpha).setUv(1, 0);
 
-        builder.vertex(x + min, y + min, z + 0.5).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + min, y + max, z + 0.5).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + max, y + max, z + 0.5).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + max, y + min, z + 0.5).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.addVertex((float) (x + min), (float) (y + min), (float) (z + 0.5)).setColor(red, green, blue, alpha).setUv(0, 0);
+        builder.addVertex((float) (x + min), (float) (y + max), (float) (z + 0.5)).setColor(red, green, blue, alpha).setUv(0, 1);
+        builder.addVertex((float) (x + max), (float) (y + max), (float) (z + 0.5)).setColor(red, green, blue, alpha).setUv(1, 1);
+        builder.addVertex((float) (x + max), (float) (y + min), (float) (z + 0.5)).setColor(red, green, blue, alpha).setUv(1, 0);
 
-        builder.vertex(x + 0.5, y + min, z + min).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + 0.5, y + min, z + max).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + 0.5, y + max, z + max).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.vertex(x + 0.5, y + max, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.addVertex((float) (x + 0.5), (float) (y + min), (float) (z + min)).setColor(red, green, blue, alpha).setUv(0, 0);
+        builder.addVertex((float) (x + 0.5), (float) (y + min), (float) (z + max)).setColor(red, green, blue, alpha).setUv(0, 1);
+        builder.addVertex((float) (x + 0.5), (float) (y + max), (float) (z + max)).setColor(red, green, blue, alpha).setUv(1, 1);
+        builder.addVertex((float) (x + 0.5), (float) (y + max), (float) (z + min)).setColor(red, green, blue, alpha).setUv(1, 0);
     }
 
     protected static float noise(float input) {

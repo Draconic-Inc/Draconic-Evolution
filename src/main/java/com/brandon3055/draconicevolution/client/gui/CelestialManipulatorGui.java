@@ -176,7 +176,7 @@ public class CelestialManipulatorGui extends ContainerGuiProvider<CelestialManip
 
         String[] rsButtonNames = {"clear", "rain", "storm", "sunrise", "noon", "sunset", "moonrise", "midnight", "moonset"};
         GuiRectangle rsBackground = new GuiRectangle(root).setSize(18, 18);
-        GuiItemStack rsItem = new GuiItemStack(rsBackground, BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:redstone")).getDefaultInstance())
+        GuiItemStack rsItem = new GuiItemStack(rsBackground, BuiltInRegistries.ITEM.get(ResourceLocation.parse("minecraft:redstone")).getDefaultInstance())
                 .enableStackToolTip(false);
         GuiButton rsButton = new GuiButton(rsBackground)
                 .onPress(() -> isRSActive = !isRSActive)

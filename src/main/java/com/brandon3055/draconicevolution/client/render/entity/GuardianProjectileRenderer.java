@@ -19,7 +19,7 @@ import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectileEntity> {
-   private static final ResourceLocation DRAGON_FIREBALL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
+   private static final ResourceLocation DRAGON_FIREBALL_TEXTURE = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(DRAGON_FIREBALL_TEXTURE);
 
    public GuardianProjectileRenderer(EntityRendererProvider.Context context) {
@@ -39,18 +39,17 @@ public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectil
       matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F));
       PoseStack.Pose matrixstack$entry = matrixStackIn.last();
       Matrix4f matrix4f = matrixstack$entry.pose();
-      Matrix3f matrix3f = matrixstack$entry.normal();
       VertexConsumer ivertexbuilder = bufferIn.getBuffer(RENDER_TYPE);
-      vertex(ivertexbuilder, matrix4f, matrix3f, packedLightIn, 0.0F, 0, 0, 1);
-      vertex(ivertexbuilder, matrix4f, matrix3f, packedLightIn, 1.0F, 0, 1, 1);
-      vertex(ivertexbuilder, matrix4f, matrix3f, packedLightIn, 1.0F, 1, 1, 0);
-      vertex(ivertexbuilder, matrix4f, matrix3f, packedLightIn, 0.0F, 1, 0, 0);
+      vertex(ivertexbuilder, matrix4f, matrixstack$entry, packedLightIn, 0.0F, 0, 0, 1);
+      vertex(ivertexbuilder, matrix4f, matrixstack$entry, packedLightIn, 1.0F, 0, 1, 1);
+      vertex(ivertexbuilder, matrix4f, matrixstack$entry, packedLightIn, 1.0F, 1, 1, 0);
+      vertex(ivertexbuilder, matrix4f, matrixstack$entry, packedLightIn, 0.0F, 1, 0, 0);
       matrixStackIn.popPose();
       super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
    }
 
-   private static void vertex(VertexConsumer p_229045_0_, Matrix4f p_229045_1_, Matrix3f p_229045_2_, int p_229045_3_, float p_229045_4_, int p_229045_5_, int p_229045_6_, int p_229045_7_) {
-      p_229045_0_.vertex(p_229045_1_, p_229045_4_ - 0.5F, (float)p_229045_5_ - 0.25F, 0.0F).color(255, 255, 255, 255).uv((float)p_229045_6_, (float)p_229045_7_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229045_3_).normal(p_229045_2_, 0.0F, 1.0F, 0.0F).endVertex();
+   private static void vertex(VertexConsumer p_229045_0_, Matrix4f p_229045_1_, PoseStack.Pose p_229045_2_, int p_229045_3_, float p_229045_4_, int p_229045_5_, int p_229045_6_, int p_229045_7_) {
+      p_229045_0_.addVertex(p_229045_1_, p_229045_4_ - 0.5F, (float)p_229045_5_ - 0.25F, 0.0F).setColor(255, 255, 255, 255).setUv((float)p_229045_6_, (float)p_229045_7_).setOverlay(OverlayTexture.NO_OVERLAY).setLight(p_229045_3_).setNormal(p_229045_2_, 0.0F, 1.0F, 0.0F);
    }
 
    @Override

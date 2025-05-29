@@ -13,8 +13,10 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEDamage;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -24,12 +26,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.util.thread.EffectiveSide;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Iterator;
 
@@ -81,7 +84,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         }
     }
 
-    public boolean tryBlockDamage(LivingAttackEvent event) {
+    public boolean tryBlockDamage(LivingIncomingDamageEvent event) {
         if (invulnerableTime > 0) {
             event.setCanceled(true);
             return true;
@@ -89,9 +92,9 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         return false;
     }
 
-    public boolean tryBlockDamage(LivingDamageEvent event) {
+    public boolean tryBlockDamage(LivingDamageEvent.Pre event) {
         if (invulnerableTime > 0) {
-            event.setCanceled(true);
+            event.setNewDamage(0); //TODO, Theoretically nothing should get past LivingIncomingDamageEvent
             return true;
         }
         return false;
@@ -137,7 +140,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
                 Iterator<MobEffectInstance> iterator = entity.getActiveEffectsMap().values().iterator();
                 while (iterator.hasNext()) {
                     MobEffectInstance effect = iterator.next();
-                    if (!effect.getEffect().isBeneficial()) {
+                    if (!effect.getEffect().value().isBeneficial()) {
                         entity.onEffectRemoved(effect);
                         iterator.remove();
                     }
@@ -168,29 +171,27 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
 
     @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
-        stack.getOrCreateTag().putInt("charge", charge);
+    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+        super.writeToItemStack(stack, tag, context, provider);
+        tag.putInt("charge", charge);
     }
 
     @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            charge = stack.getOrCreateTag().getInt("charge");
-        }
+    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+        super.readFromItemStack(stack, tag, context, provider);
+        charge = tag.getInt("charge");
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.writeToNBT(compound, provider);
         compound.putInt("charge", charge);
         compound.putInt("invul", invulnerableTime);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.readFromNBT(compound, provider);
         charge = compound.getInt("charge");
         invulnerableTime = compound.getInt("invul");
     }

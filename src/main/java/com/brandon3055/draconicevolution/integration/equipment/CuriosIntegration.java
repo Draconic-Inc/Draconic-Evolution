@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
-import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.data.tags.TagsProvider;
@@ -10,12 +9,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.InterModComms;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.*;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayList;
@@ -30,8 +29,8 @@ import java.util.function.Predicate;
  */
 public class CuriosIntegration extends EquipmentManager {
 
-    public static final TagKey<Item> CURIO_TAG = ItemTags.create(new ResourceLocation("curios", "curio"));
-    public static final TagKey<Item> BODY_TAG = ItemTags.create(new ResourceLocation("curios", "body"));
+    public static final TagKey<Item> CURIO_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "curio"));
+    public static final TagKey<Item> BODY_TAG = ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "body"));
 
 //    public static void sendIMC(InterModEnqueueEvent event) {
 //        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().size(2).build());
@@ -77,7 +76,7 @@ public class CuriosIntegration extends EquipmentManager {
             handler.getCurios().forEach((s, h) -> {
                 for (int i = 0; i < h.getSlots(); i++) {
                     ResourceLocation icon = CuriosApi.getSlotIcon(s); //Why couldnt this just be the full path?
-                    icons.add(new ResourceLocation(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
+                    icons.add(ResourceLocation.fromNamespaceAndPath(icon.getNamespace(), "textures/" + icon.getPath() + ".png"));
                 }
             });
             return icons;

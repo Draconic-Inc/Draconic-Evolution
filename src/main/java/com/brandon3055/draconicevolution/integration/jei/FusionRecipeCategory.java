@@ -41,7 +41,7 @@ public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusio
     private final int ySize = 111;
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(new ResourceLocation(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
+        background = guiHelper.createDrawable(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
         localizedName = Component.translatable(DEContent.CRAFTING_CORE.get().getDescriptionId());
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(DEContent.CRAFTING_CORE.get()));
     }

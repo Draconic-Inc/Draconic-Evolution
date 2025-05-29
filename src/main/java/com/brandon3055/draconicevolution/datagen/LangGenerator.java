@@ -318,8 +318,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("jump.name",                                                 "Jump Boost");
         helper.add("jump.value",                                                "+%s%%");
 
-        helper.addModule(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
-        helper.addModule(DEModules.WYVERN_AQUA_ADAPT,                                 "Aqua Adapt Module");
+        helper.addModule(ModuleTypes.AQUA_ADEPT,                                      "Aqua Adept");
+        helper.addModule(DEModules.WYVERN_AQUA_ADEPT,                                 "Aqua Adept Module");
 
         helper.addModule(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
         helper.addModule(DEModules.WYVERN_MINING_STABILITY,                           "Mining Stabilizer Module");
@@ -751,6 +751,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("device_invalid",                                            "That is not a valid device!");
         helper.add("link_failed_unknown",                                       "Link Failed! [Reason Unknown...]");
         helper.add("link_to_self",                                              "You can not link a device to itself...");
+        helper.add("link_to_other_dimension",                                   "You can not link to a device in another dimension...");
         helper.add("hud_charge",                                                "Charge");
         helper.add("hud_links",                                                 "Links");
         helper.add("hud_wireless_links",                                        "Wireless Links");
@@ -897,7 +898,7 @@ public class LangGenerator extends LanguageProvider {
         add("key." + MODID + ".dislocator_up",                "Advanced Dislocator Select Up");
         add("key." + MODID + ".dislocator_down",              "Advanced Dislocator Select Down");
 
-        add("enchantment." + MODID + ".reaper_enchantment",   "Reaper");
+        add("enchantment." + MODID + ".reaper",               "Reaper");
 
 
         add("numprefix." + MODID + ".10-3",                   " Kilo ");

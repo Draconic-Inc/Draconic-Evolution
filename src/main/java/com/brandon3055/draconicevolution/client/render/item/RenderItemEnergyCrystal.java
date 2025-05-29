@@ -40,7 +40,7 @@ import static com.brandon3055.draconicevolution.client.render.tile.RenderTileEne
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemEnergyCrystal implements IItemRenderer {
-    public static final RenderType crystalBaseType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    public static final RenderType crystalBaseType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     private final CrystalType type;
     private final TechLevel techLevel;
@@ -51,9 +51,9 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     public RenderItemEnergyCrystal(CrystalType type, TechLevel techLevel) {
         this.type = type;
         this.techLevel = techLevel;
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/crystal.obj")).quads().ignoreMtl().parse();
         crystalFull = CCModel.combine(map.values()).backfacedCopy();
-        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal_half.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/block/crystal_half.obj")).quads().ignoreMtl().parse();
         crystalHalf = map.get("Crystal").backfacedCopy();
         crystalBase = map.get("Base").backfacedCopy();
     }

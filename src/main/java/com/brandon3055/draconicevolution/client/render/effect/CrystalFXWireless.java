@@ -110,10 +110,10 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             pathVec.add(source);
 
             Vector3f[] renderVector = getRenderVectors(renderInfo, (float) pathVec.x, (float) pathVec.y, (float) pathVec.z, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(0, 1F, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(0, 1F, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(0, 1F, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(0, 1F, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
+            buffer.addVertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).setColor(0, 1F, 1F, 1F).setUv(maxU, maxV).setUv2(240, 240);
+            buffer.addVertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).setColor(0, 1F, 1F, 1F).setUv(maxU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).setColor(0, 1F, 1F, 1F).setUv(minU, minV).setUv2(240, 240);
+            buffer.addVertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).setColor(0, 1F, 1F, 1F).setUv(minU, maxV).setUv2(240, 240);
         }
     }
 
@@ -128,20 +128,20 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     public static class FXHandler implements ParticleRenderType {
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
-        @Override
-        public void end(Tesselator tessellator) {
-            tessellator.end();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        }
+//        @Override
+//        public void end(Tesselator tessellator) {
+//            tessellator.end();
+//            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        }
     }
 
     public static class PTracker {

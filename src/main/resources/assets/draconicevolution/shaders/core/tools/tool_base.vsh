@@ -44,7 +44,8 @@ void main() {
     fPos = (ModelViewMat * ModelMat * vec4(Position, 1.0)).xyz;
     gl_Position = ProjMat * ModelViewMat * ModelMat * vec4(Position, 1.0);
 
-    vertexDistance = fog_distance(ModelViewMat, IViewRotMat * Position, FogShape);
+//    vertexDistance = fog_distance(ModelViewMat, IViewRotMat * Position, FogShape);
+    vertexDistance = fog_distance(IViewRotMat * Position, FogShape);
 
     ivec2 uv1 = UV1;
     if (UV1Override.x != -1 && UV1Override.y != -1) {

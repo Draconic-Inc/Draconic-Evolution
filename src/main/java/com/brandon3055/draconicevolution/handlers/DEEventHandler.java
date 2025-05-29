@@ -17,11 +17,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,24 +55,22 @@ public class DEEventHandler {
 //        }
 //    }
 
-    public static void serverTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            CrystalUpdateBatcher.tickEnd();
-            serverTicks++;
+    public static void serverTick(ServerTickEvent.Post event) {
+        CrystalUpdateBatcher.tickEnd();
+        serverTicks++;
 
-            if (!deSpawnedMobs.isEmpty()) {
-                List<LivingEntity> toRemove = new ArrayList<>();
-                long time = System.currentTimeMillis();
+        if (!deSpawnedMobs.isEmpty()) {
+            List<LivingEntity> toRemove = new ArrayList<>();
+            long time = System.currentTimeMillis();
 
-                deSpawnedMobs.forEach((entity, aLong) -> {
-                    if (time - aLong > 30000) {
-                        entity.persistenceRequired = false;
-                        toRemove.add(entity);
-                    }
-                });
+            deSpawnedMobs.forEach((entity, aLong) -> {
+                if (time - aLong > 30000) {
+                    entity.persistenceRequired = false;
+                    toRemove.add(entity);
+                }
+            });
 
-                toRemove.forEach(entity -> deSpawnedMobs.remove(entity));
-            }
+            toRemove.forEach(entity -> deSpawnedMobs.remove(entity));
         }
     }
 

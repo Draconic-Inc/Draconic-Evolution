@@ -106,10 +106,10 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Player player, BlockHitResult hit) {
         MultiBlockController controller = getController();
         if (controller != null) {
-            return controller.handleRemoteClick(player, hand, hit);
+            return controller.handleRemoteClick(player, hit);
         }
         return InteractionResult.PASS;
     }

@@ -35,10 +35,10 @@ public class DETags {
 
         public static final TagKey<Item> ORES_DRACONIUM = tag("ores/draconium");
 
-        public static final TagKey<Item> MODULES = ItemTags.create(new ResourceLocation(DraconicEvolution.MODID, "modules"));
+        public static final TagKey<Item> MODULES = ItemTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "modules"));
 
         private static TagKey<Item> tag(String name) {
-            return ItemTags.create(new ResourceLocation("forge", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
         }
     }
 
@@ -50,8 +50,16 @@ public class DETags {
 
         public static final TagKey<Block> ORES_DRACONIUM = tag("ores/draconium");
 
+        public static final TagKey<Block> NEEDS_WYVERN_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_wyvern_tool"));
+        public static final TagKey<Block> NEEDS_AWAKENED_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_awakened_tool"));
+        public static final TagKey<Block> NEEDS_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "needs_chaotic_tool"));
+
+        public static final TagKey<Block> INCORRECT_FOR_WYVERN_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_wyvern_tool"));
+        public static final TagKey<Block> INCORRECT_FOR_AWAKENED_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_awakened_tool"));
+        public static final TagKey<Block> INCORRECT_FOR_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_chaotic_tool"));
+
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(new ResourceLocation("forge", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
         }
     }
 }

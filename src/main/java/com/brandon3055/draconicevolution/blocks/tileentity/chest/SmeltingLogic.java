@@ -14,9 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -116,8 +114,9 @@ public class SmeltingLogic {
             if (stack.isEmpty() || (stack.getCount() == 1 && feedMode.get() == FeedMode.STiCKY)) {
                 continue;
             }
+            SingleRecipeInput input = new SingleRecipeInput(stack);
 
-            RecipeHolder<SmeltingRecipe> holder = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, slot, world).orElse(null);
+            RecipeHolder<SmeltingRecipe> holder = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, world).orElse(null);
             if (holder == null) {
                 continue;
             }
@@ -126,7 +125,7 @@ public class SmeltingLogic {
             slowestRecipe = Math.max(slowestRecipe, recipe.getCookingTime());
 
             if (attemptSmelt) {
-                ItemStack result = recipe.assemble(slot, tile.getLevel().registryAccess());
+                ItemStack result = recipe.assemble(input, tile.getLevel().registryAccess());
                 if (InventoryUtils.insertItem(outputInv, result, true).isEmpty() && !inputInv.extractItem(i, 1, false).isEmpty()) {
                     InventoryUtils.insertItem(outputInv, result, false);
                     recipesUsed.addTo(holder.id(), 1);
@@ -249,17 +248,12 @@ public class SmeltingLogic {
     public void loadAdditionalNBT(CompoundTag nbt) {
         CompoundTag compound = nbt.getCompound("recipes_used");
         for (String s : compound.getAllKeys()) {
-            this.recipesUsed.put(new ResourceLocation(s), compound.getInt(s));
+            this.recipesUsed.put(ResourceLocation.parse(s), compound.getInt(s));
         }
     }
 
-    private InventorySimple smeltTestInv = new InventorySimple(new ItemStack[1]);
-
     public boolean isSmeltable(ItemStack stack) {
-        smeltTestInv.setItem(0, stack);
-        boolean ret = tile.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, smeltTestInv, tile.getLevel()).isPresent();
-        smeltTestInv.setItem(0, ItemStack.EMPTY);
-        return ret;
+        return tile.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), tile.getLevel()).isPresent();
     }
 
     public enum FeedMode {
@@ -283,7 +277,7 @@ public class SmeltingLogic {
         }
     }
 
-    private static class InventorySlotMapper implements Container {
+    private static class InventorySlotMapper implements RecipeInput {
         private final IItemHandlerModifiable itemHandler;
         private final int slot;
 
@@ -293,12 +287,7 @@ public class SmeltingLogic {
         }
 
         @Override
-        public void clearContent() {
-            itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-        }
-
-        @Override
-        public int getContainerSize() {
+        public int size() {
             return 1;
         }
 
@@ -311,35 +300,5 @@ public class SmeltingLogic {
         public ItemStack getItem(int index) {
             return index == 0 ? itemHandler.getStackInSlot(slot) : ItemStack.EMPTY;
         }
-
-        @Override
-        public ItemStack removeItem(int index, int count) {
-            if (index != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return itemHandler.extractItem(slot, count, false);
-        }
-
-        @Override
-        public ItemStack removeItemNoUpdate(int index) {
-            if (index != 0) {
-                return ItemStack.EMPTY;
-            }
-            ItemStack stack = itemHandler.getStackInSlot(slot);
-            itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-            return stack;
-        }
-
-        @Override
-        public void setItem(int index, ItemStack stack) {
-            if (index == 0) itemHandler.setStackInSlot(slot, stack);
-        }
-
-        @Override
-        public void setChanged() {}
-
-        @Override
-        public boolean stillValid(Player player) {return true;}
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
@@ -50,7 +51,8 @@ public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
         List<LivingEntity> entities = player.level().getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(aoe, 0.25D, aoe));
         double aoeAngle = 100;
         double yaw = player.getYRot() - 180;
-        int fireAspect = EnchantmentHelper.getFireAspect(player);
+
+        int fireAspect = player.level().registryAccess().holder(Enchantments.FIRE_ASPECT).map(e -> EnchantmentHelper.getEnchantmentLevel(e, player)).orElse(0);
 
         for (LivingEntity entity : entities) {
             if (getEnergyStored(stack) < energyPerHit && !player.getAbilities().instabuild) break;
@@ -63,7 +65,7 @@ public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
                 float health = entity.getHealth();
                 if (fireAspect > 0 && !entity.isOnFire()) {
                     lit = true;
-                    entity.setSecondsOnFire(1);
+                    entity.setRemainingFireTicks(20);
                 }
 
                 if (entity.hurt(entity.level().damageSources().playerAttack(player), damage)) {
@@ -71,7 +73,7 @@ public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
                     entity.knockback(0.4F, MathHelper.sin(player.getYRot() * MathHelper.torad), (-MathHelper.cos(player.getYRot() * MathHelper.torad)));
 
                     if (fireAspect > 0) {
-                        entity.setSecondsOnFire(fireAspect * 4);
+                        entity.setRemainingFireTicks(fireAspect * 4 * 20);
                     }
 
                     if (player.level() instanceof ServerLevel && damageDealt > 2.0F) {

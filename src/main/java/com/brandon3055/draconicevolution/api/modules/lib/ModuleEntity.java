@@ -13,14 +13,16 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.api.render.DERenderTypes;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,6 +33,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -123,7 +126,8 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * This is called whenever the module grid changes.
      * This allows you to cache module data as long as you clear said cache when this is called.
      */
-    public void clearCaches() {}
+    public void clearCaches() {
+    }
 
 //    /**
 //     * If you are using {@link #getAttributeModifiers(EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
@@ -132,23 +136,23 @@ public class ModuleEntity<T extends ModuleData<T>> {
 //     */
 //    public void getAttributeIDs(List<UUID> list) {}
 
-    public void writeToNBT(CompoundTag compound) {
+    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putByte("x", (byte) gridX);
         compound.putByte("y", (byte) gridY);
         if (!propertyMap.isEmpty()) {
             CompoundTag properties = new CompoundTag();
-            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
+            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
             compound.put("properties", properties);
         }
-        writeExtraData(compound);
+        writeExtraData(compound, provider);
     }
 
-    public void readFromNBT(CompoundTag compound) {
+    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
         gridX = compound.getByte("x");
         gridY = compound.getByte("y");
         CompoundTag properties = compound.getCompound("properties");
-        propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
-        readExtraData(compound);
+        propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
+        readExtraData(compound, provider);
     }
 
     /**
@@ -158,20 +162,20 @@ public class ModuleEntity<T extends ModuleData<T>> {
      *
      * @param stack The module stack
      */
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
+    public final void writeToItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        writeToItemStack(stack, tag, context, provider);
+        if (!tag.isEmpty()) {
+            stack.set(ItemData.MODULE_ENTITY_TAG, CustomData.of(tag));
+        }
+    }
+
+    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
         if (savePropertiesToItem && !propertyMap.isEmpty()) {
-            CompoundTag properties = stack.getOrCreateTagElement("properties");
-            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
+            CompoundTag properties = tag.getCompound("properties");
+            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
         }
-        if (stack.hasTag()) {
-            writeExtraData(stack.getTag());
-        } else {
-            CompoundTag tag = new CompoundTag();
-            writeExtraData(tag);
-            if (!tag.isEmpty()) {
-                stack.setTag(tag);
-            }
-        }
+        writeExtraData(tag, provider);
     }
 
     /**
@@ -180,17 +184,31 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * Note: there is no guarantee the module will actually be installed at this point so do not modify the context.
      *
      * @param stack The module stack
-     * @see #writeToItemStack(ItemStack, ModuleContext)
+     * @see #writeToItemStack(ItemStack, CompoundTag, ModuleContext, HolderLookup.Provider)
      */
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        CompoundTag properties;
-        if (savePropertiesToItem && (properties = stack.getTagElement("properties")) != null) {
-            propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
+    public final void readFromItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
+        if (!stack.has(ItemData.MODULE_ENTITY_TAG)) {
+            return;
         }
-        if (stack.hasTag()) {
-            readExtraData(stack.getTag());
+        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+        if (!tag.isEmpty()) {
+            readFromItemStack(stack, tag, context, provider);
         }
     }
+
+    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+        CompoundTag properties = tag.getCompound("properties");
+        if (savePropertiesToItem && !properties.isEmpty()) {
+            propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
+        }
+        readExtraData(tag, provider);
+    }
+
+
+    protected CompoundTag getStackData(ItemStack stack) {
+        return stack.has(ItemData.MODULE_ENTITY_TAG) ? stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag() : new CompoundTag();
+    }
+
 
     /**
      * Convenient method for storage extra data both when installed in a host
@@ -199,14 +217,14 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * @param nbt The tag to write your data to. Keep in mind this will be the raw CompoundTag from writeToNBT or the raw ItemStack tag
      * @return the nbt tag that was passed in.
      */
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
         return nbt;
     }
 
     /**
      * Read stored data from item or when loaded in a host.
      */
-    protected void readExtraData(CompoundTag nbt) {
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
     }
 
     //region Setters / Getters
@@ -254,7 +272,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     //end
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
 //            render.pose().translate(0, 0, 210);
@@ -266,10 +284,10 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
         if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
             VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderType.glint()), render.pose());
-            builder.vertex(x, y + height, 0).uv(0, ((float) height / width) / 64F).endVertex();
-            builder.vertex(x + width, y + height, 0).uv(((float) width / height) / 64F, ((float) height / width) / 64F).endVertex();
-            builder.vertex(x + width, y, 0).uv(((float) width / height) / 64F, 0).endVertex();
-            builder.vertex(x, y, 0).uv(0, 0).endVertex();
+            builder.addVertex(x, y + height, 0).setUv(0, ((float) height / width) / 64F);
+            builder.addVertex(x + width, y + height, 0).setUv(((float) width / height) / 64F, ((float) height / width) / 64F);
+            builder.addVertex(x + width, y, 0).setUv(((float) width / height) / 64F, 0);
+            builder.addVertex(x, y, 0).setUv(0, 0);
             RenderUtils.endBatch(render.buffers());
         }
 
@@ -300,14 +318,14 @@ public class ModuleEntity<T extends ModuleData<T>> {
      *
      * @return true to block further overlay rendering. (Equivalent to returning true in {@link GuiElement#renderOverlay(GuiRender, double, double, float, boolean)} )
      */
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, GuiRender render, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (hoverTicks > 10) {
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
-            writeToItemStack(stack, context);
-            List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+            writeToItemStack(stack, context, mc.level.registryAccess());
+            List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.componentTooltip(list, mouseX, mouseY);
             return true;
         }
@@ -321,7 +339,8 @@ public class ModuleEntity<T extends ModuleData<T>> {
      *
      * @param list The list to which tool tip entries should be added
      */
-    public void addToolTip(List<Component> list) {}
+    public void addToolTip(List<Component> list) {
+    }
 
     /**
      * Use this method to display information in the tooltip of the {@link com.brandon3055.draconicevolution.items.equipment.IModularItem} this module is installed in.
@@ -331,11 +350,12 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * For a {@link ModuleData} based implementation see {@link ModuleData#addHostHoverText(ItemStack, Level, List, TooltipFlag)}
      *
      * @param stack   The modular item this tool tip will be added to
-     * @param level   The current level
+     * @param context The current level
      * @param tooltip The tooltip list
      */
-    @OnlyIn(Dist.CLIENT)
-    public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {}
+    @OnlyIn (Dist.CLIENT)
+    public void addHostHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    }
 
     /**
      * Called client side when a module in the grid is clicked. This is called before the normal container click.
@@ -431,10 +451,10 @@ public class ModuleEntity<T extends ModuleData<T>> {
     @Override
     public String toString() {
         return "ModuleEntity{" +
-                "module=" + DEModules.REGISTRY.getKey(module) +
-                ", gridX=" + gridX +
-                ", gridY=" + gridY +
-                '}';
+               "module=" + DEModules.REGISTRY.getKey(module) +
+               ", gridX=" + gridX +
+               ", gridY=" + gridY +
+               '}';
     }
 
     /**
@@ -443,13 +463,13 @@ public class ModuleEntity<T extends ModuleData<T>> {
      *
      * @param dataConsumer The data consumer
      */
-    public void sendMessageToServer(Consumer<MCDataOutput> dataConsumer) {
-        DraconicNetwork.sendModuleMessage(getGridX(), getGridY(), dataConsumer);
+    public void sendMessageToServer(RegistryAccess registryAccess, Consumer<MCDataOutput> dataConsumer) {
+        DraconicNetwork.sendModuleMessage(registryAccess, getGridX(), getGridY(), dataConsumer);
     }
 
     /**
      * Handle a message sent from the client side module entity.
-     * Send message using {@link #sendMessageToServer(Consumer)}
+     * Send message using {@link #sendMessageToServer(RegistryAccess, Consumer)}
      *
      * @param input The message data
      */
@@ -460,18 +480,18 @@ public class ModuleEntity<T extends ModuleData<T>> {
     //Render Utils
 
     @Deprecated //TODO, Can probably use RenderUtils version... maybe.
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable String text1, @Nullable String text2) {
         double diameter = Math.min(width, height) * 0.425;
 
         render.rect(x, y, width, height, 0x60FF0000);
         VertexConsumer builder = new TransformingVertexConsumer(render.buffers().getBuffer(RenderUtils.FAN_TYPE), render.pose());
-        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
+        builder.addVertex(x + (width / 2F), y + (height / 2F), 0).setColor(0, 255, 255, 128);
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
             double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
+            builder.addVertex((float) vertX, (float) vertY, 0).setColor(255, 255, 255, 128);
         }
         RenderUtils.endBatch(render.buffers());
 
@@ -483,7 +503,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public static void drawBackgroundString(GuiRender render, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
         int width = render.font().width(text);
         x = centered ? x - width / 2F : x;

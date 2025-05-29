@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class RenderItemEnderEnergyManipulator implements IItemRenderer {
 
 //    private final SkullModel skeletonHead = new SkullModel(0, 0, 64, 32);
-    private static final ResourceLocation WITHER_SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/wither_skeleton.png");
+//    private static final ResourceLocation WITHER_SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/wither_skeleton.png");
 //    private static ItemStack stack = new ItemStack(Items.SKULL, 1, 1);
 
     private static ShaderProgram shaderProgram;

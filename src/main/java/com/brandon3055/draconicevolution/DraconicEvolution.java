@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution;
 
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -11,8 +12,6 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.DistExecutor;
-import net.neoforged.fml.OptionalMod;
 import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,10 +26,11 @@ public class DraconicEvolution {
     public static CommonProxy proxy;
 
     public DraconicEvolution(IEventBus modBus) {
-        proxy = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        proxy = Utils.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
         DEConfig.load();
         DETags.init();
+        ItemData.init(modBus);
         DEContent.init(modBus);
         DEModules.init(modBus);
         DESounds.init(modBus);
@@ -45,9 +45,9 @@ public class DraconicEvolution {
         DraconicNetwork.init(modBus);
         DEEventHandler.init(modBus);
 
-        OptionalMod.of("computercraft").ifPresent(e -> modBus.register(new ComputerCraftCompatEventHandler()));
+        Utils.loadOptionalMod("computercraft", () -> () -> modBus.register(new ComputerCraftCompatEventHandler()));
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DEClient.init(modBus));
+        Utils.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DEClient.init(modBus));
         DraconicAPI.addModuleProvider(MODID);
     }
 }

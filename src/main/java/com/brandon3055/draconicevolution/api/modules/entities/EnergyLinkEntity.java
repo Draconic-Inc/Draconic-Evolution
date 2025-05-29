@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -143,29 +144,29 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.readFromNBT(compound, provider);
         linkCharge = compound.getLong("link_charge");
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
+        super.writeToNBT(compound, provider);
         compound.putLong("link_charge", linkCharge);
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt) {
-        super.readExtraData(nbt);
+    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+        super.readExtraData(nbt, provider);
         if (nbt.contains("link_id")) {
             linkId = nbt.getUUID("link_id");
             corePos = new BlockPos(nbt.getInt("core_x"), nbt.getInt("core_y"), nbt.getInt("core_z"));
-            dimKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("dim")));
+            dimKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("dim")));
         }
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
         if (linkId != null) {
             nbt.putString("dim", dimKey.location().toString());
             nbt.putInt("core_x", corePos.getX());
@@ -173,7 +174,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             nbt.putInt("core_z", corePos.getZ());
             nbt.putUUID("link_id", linkId);
         }
-        return super.writeExtraData(nbt);
+        return super.writeExtraData(nbt, provider);
     }
 
     @Override

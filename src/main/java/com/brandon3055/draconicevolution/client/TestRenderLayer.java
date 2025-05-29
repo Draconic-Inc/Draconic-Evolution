@@ -30,7 +30,7 @@ public class TestRenderLayer extends RenderLayer<LivingEntity, EntityModel<Livin
     ModelPart renderOn;
     ModelPart.Cube box;
 
-    private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
+    private static RenderType modelType = RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
     private CCModel trackerModel;
 
     public TestRenderLayer(RenderLayerParent<LivingEntity, EntityModel<LivingEntity>> entityRenderer) {
@@ -56,7 +56,7 @@ public class TestRenderLayer extends RenderLayer<LivingEntity, EntityModel<Livin
         }
 
         //I just needed something to render
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
         trackerModel = CCModel.combine(map.values()).backfacedCopy();
 //        trackerModel.apply(new Scale(-0.35, -0.35, -0.35));
         trackerModel.computeNormals();

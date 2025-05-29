@@ -26,7 +26,7 @@ public class RenderModularShovel extends ToolRenderBase {
 
     public RenderModularShovel(TechLevel techLevel) {
         super(techLevel, "shovel");
-        Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/shovel.obj")).ignoreMtl().parse();
+        Map<String, CCModel> model = new OBJParser(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "models/item/equipment/shovel.obj")).ignoreMtl().parse();
 
         basePart = basePart(CCModel.combine(Arrays.asList(model.get("handle"), model.get("gem_holder"))).backfacedCopy());
         materialPart = materialPart(model.get("blade").twoFacedCopy());
