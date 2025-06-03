@@ -127,7 +127,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             entity.setHealth(entity.getHealth() + data.healthBoost());
             ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
-                ModuleHost stackHost = stack.getCapability(DECapabilities.Host.ITEM);
+                ModuleHost stackHost = DECapabilities.getHost(stack, entity.registryAccess());
                 if (stackHost != null) {
                     ShieldControlEntity shield = stackHost.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
                     if (shield != null) {

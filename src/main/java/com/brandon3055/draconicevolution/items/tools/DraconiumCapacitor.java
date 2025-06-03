@@ -63,8 +63,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     }
 
     @Override
-    public ModuleHost createHostCapForRegistration(ItemStack stack) {
-        ModuleHost host = IModularEnergyItem.super.createHostCapForRegistration(stack);
+    public ModuleHostImpl createHostCapForRegistration(ItemStack stack) {
+        ModuleHostImpl host = IModularEnergyItem.super.createHostCapForRegistration(stack);
         if (this == DEContent.CAPACITOR_CREATIVE.get()) {
             host.getModuleCategories().remove(ModuleCategory.ENERGY);
         }
@@ -121,12 +121,12 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     }
 
     @Override
-    public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
-        IModularEnergyItem.super.handleTick(stack, entity, slot, inEquipModSlot);
+    public void handleTick(ModuleHost host, ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
+        IModularEnergyItem.super.handleTick(host, stack, entity, slot, inEquipModSlot);
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
-        PropertyProvider provider = stack.getCapability(DECapabilities.Properties.ITEM);
+        PropertyProvider provider = DECapabilities.getProps(stack, entity.registryAccess());
         if (provider != null){
             boolean held = provider.getBool("charge_held_item").getValue();
             boolean armor = provider.getBool("charge_armor").getValue();

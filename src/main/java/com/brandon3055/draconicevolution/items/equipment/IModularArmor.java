@@ -40,8 +40,8 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
     @Override
     default void addModularItemInformation(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, context, tooltip, flagIn);
-        if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.Host.ITEM) != null) {
-            ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.Host.ITEM) != null && context.level() != null) {
+            ModuleHost host = DECapabilities.getHost(stack, context.level().registryAccess());
             assert host != null;
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.speedMultiplier() > DEConfig.armorSpeedLimit) {
@@ -52,7 +52,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 
     @Override
     default boolean canElytraFlyBC(ItemStack stack, LivingEntity entity) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
         assert host != null;
         FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
         return flight != null && flight.getElytraEnabled();
@@ -71,7 +71,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 
             } else{
                 if (InputSync.getSprintState(entity.getUUID())) {
-                    ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+                    ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
                     assert host != null;
                     FlightEntity module = (FlightEntity)host.getEntitiesByType(ModuleTypes.FLIGHT).findAny().orElse(null);
                     double flightSpeed = module == null ? 0 : module.getElytraBoost();

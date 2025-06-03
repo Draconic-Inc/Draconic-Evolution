@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.capability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
@@ -28,11 +29,12 @@ public interface IdentityProvider {
     void regenIdentity();
 
     //Only supports resolving duplicates ModuleHostImpl capabilities (Which also combines PropertyProvider)
-    static void resolveDuplicateIdentities(Stream<ItemStack> stacks) {
+    static void resolveDuplicateIdentities(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
         HashSet<UUID> uuids = new HashSet<>();
         stacks.map(e -> e.getCapability(DECapabilities.Host.ITEM))
                 .filter(Objects::nonNull)
-                .filter(provider -> !uuids.add(provider.getIdentity()))
+                .map(e -> e.get(provider))
+                .filter(host -> !uuids.add(host.getIdentity()))
                 .forEach(ModuleHost::regenIdentity);
     }
 

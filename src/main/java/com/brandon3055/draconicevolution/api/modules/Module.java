@@ -36,9 +36,6 @@ import java.util.stream.Stream;
  */
 public interface Module<T extends ModuleData<T>> {
 
-    StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> STREAM_CODEC = ByteBufCodecs.holderRegistry(DEModules.MODULES.getRegistryKey());
-    //TODO figure our deferred registry codecs
-
     ModuleType<T> getType();
 
     ModuleProperties<T> getProperties();

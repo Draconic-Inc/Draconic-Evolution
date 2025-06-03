@@ -10,8 +10,13 @@ import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -43,6 +48,8 @@ public class DEModules {
 
     public static final Set<String> MODULE_PROVIDING_MODS = new HashSet<>();
 
+    private static final StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> STREAM_CODEC = ByteBufCodecs.holderRegistry(DEModules.MODULES.getRegistryKey());
+
     public static void init(IEventBus eventBus) {
         eventBus.addListener(DEModules::createRegistries);
         MODULES.register(eventBus);
@@ -54,6 +61,18 @@ public class DEModules {
         REGISTRY = event.create(new RegistryBuilder<>(MODULE_KEY)
                 .sync(true)
         );
+    }
+
+    public static StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> streamCodec() {
+        return STREAM_CODEC;
+    }
+
+    public static Codec<Module<?>> codec() {
+        return REGISTRY.byNameCodec();
+    }
+
+    public static Codec<Holder<Module<?>>> holderCodec() {
+        return REGISTRY.holderByNameCodec();
     }
 
     public static void registerEvent(FMLCommonSetupEvent event) {

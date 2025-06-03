@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.IModularMiningTool;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -109,7 +110,7 @@ public class ModularArmorEventHandler {
     @Nullable
     private static AttributeModifier getStepHeight(LivingEntity entity, ArmorAbilities abilities) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
         boolean hasHost = !chestStack.isEmpty() && host != null;
         boolean hasHighStep = hasHost && host.getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
         AttributeInstance instance = entity.getAttribute(Attributes.STEP_HEIGHT);
@@ -128,7 +129,7 @@ public class ModularArmorEventHandler {
     @Nullable
     private static AttributeModifier getSubmergedMiningSpeed(LivingEntity entity, ArmorAbilities abilities) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
         boolean hasHost = !chestStack.isEmpty() && host != null;
         boolean hasAquaAdapt = hasHost && host.getModuleData(ModuleTypes.AQUA_ADEPT) != null && !entity.isShiftKeyDown();
 
@@ -151,7 +152,7 @@ public class ModularArmorEventHandler {
         float newDigSpeed = event.getOriginalSpeed();
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, player.registryAccess());
         if (host == null) return;
 
         if (!player.onGround() && host.getModuleData(ModuleTypes.MINING_STABILITY) != null) {
@@ -171,7 +172,7 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
         if (chestStack.isEmpty() || host == null) {
             return;
         }
@@ -202,7 +203,7 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
 
         if (chestStack.isEmpty() || host == null) {
             return;
@@ -241,21 +242,21 @@ public class ModularArmorEventHandler {
             Player player = (Player) entity;
             NonNullList<ItemStack> stacks = player.getInventory().items;
             for (int i = 0; i < stacks.size(); ++i) {
-                getUndyingEntities(stacks.get(i), undyingModules, player.getInventory().selected == i ? EquipmentSlot.MAINHAND : null, false);
+                getUndyingEntities(stacks.get(i), undyingModules, player.getInventory().selected == i ? EquipmentSlot.MAINHAND : null, false, entity.registryAccess());
             }
             for (EquipmentSlot slot : ARMOR_SLOTS) {
-                getUndyingEntities(player.getInventory().armor.get(slot.getIndex()), undyingModules, slot, false);
+                getUndyingEntities(player.getInventory().armor.get(slot.getIndex()), undyingModules, slot, false, entity.registryAccess());
             }
             for (ItemStack stack : player.getInventory().offhand) {
-                getUndyingEntities(stack, undyingModules, EquipmentSlot.OFFHAND, false);
+                getUndyingEntities(stack, undyingModules, EquipmentSlot.OFFHAND, false, entity.registryAccess());
             }
             for (ItemStack stack : EquipmentManager.getAllItems(entity)) {
-                getUndyingEntities(stack, undyingModules, null, true);
+                getUndyingEntities(stack, undyingModules, null, true, entity.registryAccess());
             }
         } else {
             if (EquipmentManager.equipModLoaded()) {
                 for (EquipmentSlot slot : EquipmentSlot.values()) {
-                    getUndyingEntities(entity.getItemBySlot(slot), undyingModules, slot, true);
+                    getUndyingEntities(entity.getItemBySlot(slot), undyingModules, slot, true, entity.registryAccess());
                 }
             }
         }
@@ -273,8 +274,8 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlot slot, boolean inEquipModSlot) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+    private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlot slot, boolean inEquipModSlot, HolderLookup.Provider provider) {
+        ModuleHost host = DECapabilities.getHost(stack, provider);
         if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
             if (host != null) {
                 entities.addAll(host.getModuleEntities()
@@ -409,7 +410,7 @@ public class ModularArmorEventHandler {
 
     private static float getJumpBoost(LivingEntity entity, boolean max) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
         if (host != null) {
             JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jumpData != null) {
@@ -431,14 +432,16 @@ public class ModularArmorEventHandler {
     }
 
     private static void tryTickStack(ItemStack stack, LivingEntity entity, EquipmentSlot slot, ArmorAbilities abilities, boolean equipMod) {
-        if (stack.getItem() instanceof IModularItem) {
-            ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
+        if (stack.getItem() instanceof IModularItem modularItem) {
+            ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
+            if (host == null) {
+                return;
+            }
+
+            modularItem.handleTick(host, stack, entity, slot, equipMod);
 
             if ((slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) || equipMod) {
-                ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-                if (host != null){
-                    gatherArmorProps(stack, host, entity, abilities);
-                }
+                gatherArmorProps(stack, host, entity, abilities);
             }
         }
     }
@@ -456,7 +459,7 @@ public class ModularArmorEventHandler {
         if (player.onGround()) return;
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, player.registryAccess());
         if (host != null) {
             FlightData flightData = host.getModuleData(ModuleTypes.FLIGHT);
             if (flightData != null && flightData.creative()) {

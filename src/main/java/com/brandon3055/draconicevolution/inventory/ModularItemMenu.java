@@ -70,14 +70,14 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
         offhand.addPlayerOffhand(inv);
         EquipmentManager.getEquipmentInventory(inv.player).ifPresent(handler -> curios.addSlots(handler.getSlots(), 0, i -> new ModularSlot(handler, i)));
 
-        IdentityProvider.resolveDuplicateIdentities(getInventoryStacks());
+        IdentityProvider.resolveDuplicateIdentities(getInventoryStacks(), player.registryAccess());
 
         hostStack = slot.getStackInSlot(inv.player);
         if (hostStack.isEmpty()) {
             return;
         }
 
-        hostCache = hostStack.getCapability(DECapabilities.Host.ITEM);
+        hostCache = DECapabilities.getHost(hostStack, inv.player.registryAccess());;
         if (hostCache == null) {
             return;
         }
@@ -112,7 +112,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     @Override
     public ModuleHost getModuleHost() {
-        ModuleHost host = slot.getStackInSlot(player).getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player), player.registryAccess());
         return host == null || !host.getIdentity().equals(hostIdentity) ? hostCache : (hostCache = host);
     }
 
@@ -144,7 +144,7 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
             return false;
         }
 
-        ModuleHost host = slot.getStackInSlot(player).getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player), playerIn.registryAccess());
         return host != null && host.getIdentity().equals(hostIdentity);
     }
 

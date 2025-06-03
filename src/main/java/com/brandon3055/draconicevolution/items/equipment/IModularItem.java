@@ -24,8 +24,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
@@ -33,15 +32,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -61,7 +56,7 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
 
     TechLevel getTechLevel();
 
-    default ModuleHost createHostCapForRegistration(ItemStack stack) {
+    default ModuleHostImpl createHostCapForRegistration(ItemStack stack) {
         ModuleHostImpl host = instantiateHost(stack);
         if (this instanceof IModularEnergyItem) {
             host.addCategories(ModuleCategory.ENERGY);
@@ -168,7 +163,7 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, context.registries());
         if (host != null) {
             host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, context, tooltip, flagIn));
             host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, context.level(), tooltip, flagIn));
@@ -183,10 +178,35 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
         }
     }
 
-    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-        StackModuleContext context = new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot);
-        host.handleTick(context);
+    default void handleTick(ModuleHost host, ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
+        host.handleTick(new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot));
+
+        SpeedData data = host.getModuleData(ModuleTypes.SPEED);
+        float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
+        //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
+        float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
+        float speedSetting = 1F;
+        //Module host should always be a property provider because it needs to provide module properties.
+        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("mining_speed")) {
+            speedSetting = (float) ((PropertyProvider) host).getDecimal("mining_speed").getValue();
+            speedSetting *= speedSetting; //Make this exponential
+        }
+
+        float aoeSetting = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
+        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
+            aoeSetting = ((PropertyProvider) host).getInt("mining_aoe").getValue();
+        }
+
+        if (getEnergyStored(stack) < EquipCfg.energyHarvest) {
+            multiplier = 0;
+        } else if (aoeSetting > 0) {
+            float userTarget = multiplier * speedSetting;
+            multiplier = Math.min(userTarget, multiplier / (1 + (aoeSetting * 10)));
+        } else {
+            multiplier *= speedSetting;
+        }
+
+        stack.set(ItemData.DESTROY_SPEED_DATA, new DestroySpeedData(multiplier, speedSetting, aoeSetting));
     }
 
     /**
@@ -203,36 +223,15 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
     }
 
     default float getDestroySpeed(ItemStack stack, BlockState state) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-        SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-        float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
-        //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
-        float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
-        float propVal = 1F;
-        //Module host should always be a property provider because it needs to provide module properties.
-        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("mining_speed")) {
-            propVal = (float) ((PropertyProvider) host).getDecimal("mining_speed").getValue();
-            propVal *= propVal; //Make this exponential
+        DestroySpeedData data = stack.get(ItemData.DESTROY_SPEED_DATA);
+        if (data == null) {
+            return 0F;
         }
 
-        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
-        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
-            aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
-        }
-
-        if (getEnergyStored(stack) < EquipCfg.energyHarvest) {
-            multiplier = 0;
-        } else if (aoe > 0) {
-            float userTarget = multiplier * propVal;
-            multiplier = Math.min(userTarget, multiplier / (1 + (aoe * 10)));
+        if (isCorrectToolForDrops(stack, state) && (data.multiplier > 0 || data.speedSetting == 0)) {
+            return getBaseEfficiency() * data.multiplier;
         } else {
-            multiplier *= propVal;
-        }
-
-        if (isCorrectToolForDrops(stack, state) && (multiplier > 0 || propVal == 0)) {
-            return getBaseEfficiency() * multiplier;
-        } else {
-            return propVal == 0 ? 0 : 1F;
+            return data.speedSetting == 0 ? 0 : 1F;
         }
     }
 
@@ -244,18 +243,6 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
     default float getBaseEfficiency() {
         return 1F;
     }
-
-//    @Nullable
-//    @Override
-//    default CompoundTag getShareTag(ItemStack stack) {
-//        return DECapabilities.writeToShareTag(stack, stack.getTag());
-//    }
-//
-//    @Override
-//    default void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-//        stack.setTag(nbt);
-//        DECapabilities.readFromShareTag(stack, nbt);
-//    }
 
     default long getEnergyStored(ItemStack stack) {
         return EnergyUtils.getEnergyStored(stack);
@@ -293,4 +280,6 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
     default boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return oldStack.getItem() != newStack.getItem() || slotChanged;
     }
+
+    record DestroySpeedData(float multiplier, float speedSetting, float aoeSetting) {}
 }

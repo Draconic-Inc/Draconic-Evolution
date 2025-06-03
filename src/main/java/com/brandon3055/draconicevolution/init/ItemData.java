@@ -4,26 +4,25 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
-import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem.DestroySpeedData;
+import com.brandon3055.draconicevolution.items.equipment.IModularTieredItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularTieredItem.AttributeData;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -64,8 +63,14 @@ public class ItemData {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>>                   LINK_MODULE_LINK_ID         = DATA.register("link_module_link_id",          () -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>>              LINK_MODULE_LINK_POS        = DATA.register("link_module_link_pos",         () -> DataComponentType.<GlobalPos>builder().persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC).build());
 
-//    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModuleHost>>             MODULAR_ITEM_HOST           = DATA.register("module_item_host",             () -> DataComponentType.<ModuleHost>builder().persistent()serializable(CapabilityData::createHostFor).build());
-//    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularOPStorage>>       MODULAR_ITEM_ENERGY         = DATA.register("module_item_energy",           () -> DataComponentType.<ModularOPStorage>builder().persistent()serializable(CapabilityData::createEnergyFor).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModuleHost>>             MODULE_HOST_CAP_INSTANCE    = DATA.register("module_host_cap_instance",     () -> DataComponentType.<ModuleHost>builder().build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularOPStorage>>       ENERGY_CAP_INSTANCE         = DATA.register("energy_cap_instance",          () -> DataComponentType.<ModularOPStorage>builder().build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DestroySpeedData>>       DESTROY_SPEED_DATA          = DATA.register("destroy_speed_data",           () -> DataComponentType.<DestroySpeedData>builder().build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AttributeData>>          ATTRIBUTE_DATA              = DATA.register("attribute_data",               () -> DataComponentType.<AttributeData>builder().build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>>             MODULE_HOST_STORAGE         = DATA.register("module_host_storage",          () -> DataComponentType.<CustomData>builder().persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>>             MODULAR_ENERGY_STORAGE      = DATA.register("modular_energy_storage",       () -> DataComponentType.<CustomData>builder().persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC).build());
 
     //@formatter:on
 }

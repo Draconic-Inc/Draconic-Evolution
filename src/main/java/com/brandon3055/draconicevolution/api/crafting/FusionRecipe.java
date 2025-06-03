@@ -69,7 +69,7 @@ public class FusionRecipe implements IFusionRecipe {
     public ItemStack assemble(IFusionInventory inv, HolderLookup.Provider provider) {
         ItemStack stack = result.copy();
         if (stack.getItem() instanceof IFusionDataTransfer) {
-            ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
+            ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv, provider);
         }
         return stack;
     }

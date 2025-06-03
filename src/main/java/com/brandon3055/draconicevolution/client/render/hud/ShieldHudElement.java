@@ -117,7 +117,7 @@ public class ShieldHudElement extends AbstractHudElement {
 
         //Get and validate the armor chestpiece
         ItemStack chestStack = IModularArmor.getArmor(mc.player);
-        ModuleHost host = chestStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(chestStack, mc.player.registryAccess());
         IOPStorage opStorage = chestStack.getCapability(CapabilityOP.ITEM);
         if (chestStack.isEmpty() || host == null || opStorage == null) {
             renderHud = false; //The storage check is just a safety check. If the item has a ModuleHost it should always have storage unless something is broken (even without storage modules the capacity is just zero)

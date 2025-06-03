@@ -55,7 +55,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             return false;
         }
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
         int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         boolean aoeSafe = false;
         if (host instanceof PropertyProvider) {

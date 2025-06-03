@@ -46,7 +46,7 @@ public class ModularItemRenderOverrideHandler {
         if (renderingMainHand && player.isUsingItem() && player.getUsedItemHand() != hand && player.getUseItemRemainingTicks() > 0) {
             ItemStack usingItem = player.getUseItem();
             if (usingItem.getItem() instanceof IModularItem) {
-                ModuleHost host = usingItem.getCapability(DECapabilities.Host.ITEM);
+                ModuleHost host = DECapabilities.getHost(usingItem, player.registryAccess());
                 if (host != null) {
                     for (ModuleEntity<?> entity : host.getModuleEntities()) {
                         if (entity instanceof EntityOverridesItemUse override && override.overrideUsingPose(usingItem)) {
@@ -97,7 +97,7 @@ public class ModularItemRenderOverrideHandler {
         AbstractClientPlayer player = mc.player;
         if (player == null || player.isScoping() || !player.isUsingItem() || player.getUseItemRemainingTicks() <= 0 || player.getUsedItemHand() != event.getHand()) return;
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
         if (host != null) {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
                 if (entity instanceof EntityOverridesItemUse override) {
@@ -137,7 +137,7 @@ public class ModularItemRenderOverrideHandler {
         HumanoidArm arm = mainHand ? player.getMainArm() : player.getMainArm().getOpposite();
         boolean leftHand = arm == HumanoidArm.LEFT;
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
         if (host != null) {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
                 if (entity instanceof EntityOverridesItemUse override) {

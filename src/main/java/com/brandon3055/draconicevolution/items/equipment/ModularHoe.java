@@ -88,8 +88,8 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     }
 
     @Override
-    public ModuleHost createHostCapForRegistration(ItemStack stack) {
-        ModuleHost host = IModularTieredItem.super.createHostCapForRegistration(stack);
+    public ModuleHostImpl createHostCapForRegistration(ItemStack stack) {
+        ModuleHostImpl host = IModularTieredItem.super.createHostCapForRegistration(stack);
         if (host instanceof ModuleHostImpl provider) {
             provider.addPropertyBuilder(props -> {
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
@@ -166,7 +166,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, context.getLevel().registryAccess());
         assert host != null;
         int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         if (host instanceof PropertyProvider) {

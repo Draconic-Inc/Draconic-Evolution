@@ -221,7 +221,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
         content.getChildren().forEach(content::removeChild);
         simpleUIScroll.scrollState(Axis.Y).setPos(0);
 
-        PropertyProvider provider = menu.findProvider(selectedItem);
+        PropertyProvider provider = menu.findProvider(selectedItem, gui.mc().level.registryAccess());
         if (provider != null) {
             double yOffset = 0;
             int index = 0;
@@ -259,7 +259,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             selectedItem = menu.getSelectedIdentity();
             loadSelectedItemProperties();
         } else if (advancedUI && !initialLoad) {
-            PropertyProvider provider = menu.findProvider(menu.getSelectedIdentity());
+            PropertyProvider provider = menu.findProvider(menu.getSelectedIdentity(), gui.mc().level.registryAccess());
             if (provider == null || provider.getProperties().isEmpty()) {
                 return;
             }
@@ -308,7 +308,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
                     .findAny()
                     .orElse(null);
             if (hovered != null) {
-                PropertyProvider provider = hovered.getItem().getCapability(DECapabilities.Properties.ITEM);
+                PropertyProvider provider = DECapabilities.getProps(hovered.getItem(), gui.mc().level.registryAccess());
                 if (provider != null) {
                     hoveredProvider = provider;
                 }
@@ -354,7 +354,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
     private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
         ItemStack stack = slot.getItem();
-        PropertyProvider provider = stack.getCapability(DECapabilities.Properties.ITEM);
+        PropertyProvider provider = DECapabilities.getProps(stack, gui.mc().level.registryAccess());
         if (!stack.isEmpty() && provider != null) {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;

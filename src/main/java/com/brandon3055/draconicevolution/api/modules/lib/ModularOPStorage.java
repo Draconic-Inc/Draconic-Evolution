@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.DataAccess;
+import com.brandon3055.draconicevolution.api.capability.DataCapability;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
@@ -12,8 +14,9 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 16/11/2022
  */
-public class ModularOPStorage extends OPStorage {
+public class ModularOPStorage extends OPStorage implements DataCapability {
 
+    private DataAccess dataAccess;
     private Supplier<ModuleHost> hostSupplier;
     private TileBCore tile;
 
@@ -100,5 +103,14 @@ public class ModularOPStorage extends OPStorage {
         if (tile != null) {
             tile.setChanged();
         }
+        if (dataAccess != null) {
+            dataAccess.setData(writeNBTInternal());
+        }
+    }
+
+    @Override
+    public void updateDataAccess(DataAccess newAccess) {
+        dataAccess = newAccess;
+        readNBTInternal(dataAccess.getData());
     }
 }

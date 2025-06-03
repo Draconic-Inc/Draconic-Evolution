@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,9 +62,9 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
         offhand.addPlayerOffhand(playerInv);
         EquipmentManager.getEquipmentInventory(playerInv.player).ifPresent(handler -> curios.addSlots(handler.getSlots(), 0, i -> new ModularSlot(handler, i)));
 
-        IdentityProvider.resolveDuplicateIdentities(getInventoryStacks());
+        IdentityProvider.resolveDuplicateIdentities(getInventoryStacks(), playerInv.player.registryAccess());
 
-        UUID found = getIdentity(slot.getStackInSlot(playerInv.player));
+        UUID found = getIdentity(slot.getStackInSlot(playerInv.player), playerInv.player.registryAccess());
         if (found != null) {
             stackCache = slot.getStackInSlot(playerInv.player);
         }
@@ -88,7 +89,7 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
-                PropertyProvider provider = slot.getItem().getCapability(DECapabilities.Properties.ITEM);
+                PropertyProvider provider = DECapabilities.getProps(slot.getItem(), player.registryAccess());
                 if (provider != null) {
                     if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
                         selectedIdentity = provider.getIdentity();
@@ -115,22 +116,22 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
         return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
-    public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks) {
+    public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
         return stacks
-                .map(e -> Pair.of(e, e.getCapability(DECapabilities.Properties.ITEM)))
+                .map(e -> Pair.of(e, DECapabilities.getProps(e, provider)))
                 .filter(e -> e.value() != null);
     }
 
     public static void handlePropertyData(Player player, PropertyData data) {
         if (data.isGlobal) {
-            getStackProviders(getPlayerInventory(player.getInventory()))
+            getStackProviders(getPlayerInventory(player.getInventory()), player.registryAccess())
                     .filter(e -> e.value().getProviderName().equals(data.providerName))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
                     .filter(e -> e.value().getType() == data.type)
                     .forEach(e -> e.value().loadData(data, e.key()));
         } else {
-            getStackProviders(getPlayerInventory(player.getInventory()))
+            getStackProviders(getPlayerInventory(player.getInventory()), player.registryAccess())
                     .filter(e -> e.value().getIdentity().equals(data.providerID))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
@@ -173,7 +174,7 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
                 onSelectionMade.accept(true);
             }
         }
-        if (selectedIdentity != lastSelected || findProvider(selectedIdentity) == null) {
+        if (selectedIdentity != lastSelected || findProvider(selectedIdentity, inventory.player.registryAccess()) == null) {
             lastSelected = selectedIdentity;
             if (onInventoryChange != null) {
                 onInventoryChange.run();

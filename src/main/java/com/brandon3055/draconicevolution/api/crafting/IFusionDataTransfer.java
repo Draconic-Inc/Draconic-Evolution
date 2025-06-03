@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -16,16 +17,16 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
  */
 public interface IFusionDataTransfer {
 
-    default void transferIngredientData(ItemStack result, IFusionInventory fusionInventory) {
+    default void transferIngredientData(ItemStack result, IFusionInventory fusionInventory, HolderLookup.Provider provider) {
         ItemStack cat = fusionInventory.getCatalystStack();
         if (cat.isEnchanted()) {
             ItemEnchantments enchantments = cat.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
             result.set(DataComponents.ENCHANTMENTS, enchantments);
         }
 
-        ModuleHost catHost = cat.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost catHost = DECapabilities.getHost(cat, provider);
         if (catHost != null) {
-            ModuleHost resultHost = result.getCapability(DECapabilities.Host.ITEM);
+            ModuleHost resultHost = DECapabilities.getHost(result, provider);
             if (resultHost != null) {
                 if (resultHost instanceof ModuleHostImpl && catHost instanceof ModuleHostImpl) {
                     ((ModuleHostImpl) resultHost).transferModules((ModuleHostImpl) catHost);

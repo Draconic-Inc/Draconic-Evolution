@@ -182,7 +182,7 @@ public class LootEventHandler {
         ItemStack hostStack = player.getMainHandItem();
         if (hostStack.isEmpty() || event.getDrops().isEmpty()) return;
 
-        ModuleHost host = hostStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(hostStack, player.registryAccess());
 
         if (host != null) {
             Predicate<ItemStack> junkTest = null;

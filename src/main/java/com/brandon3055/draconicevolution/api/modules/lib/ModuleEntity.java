@@ -18,13 +18,17 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -39,10 +43,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -52,13 +53,27 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     protected final Module<T> module;
     protected ModuleHost host;
-    protected Map<String, ConfigProperty> propertyMap = new HashMap<>();
+//    Get rid of this here, its mainly just here for serialisation, so dont need it. Will just need a way to get props from entitues that actually regiszter them
+//    protected Map<String, ConfigProperty> propertyMap = createProperties();
     protected boolean savePropertiesToItem = false;
     protected int gridX;
     protected int gridY;
 
+    public static final Codec<ModuleEntity<T>> CODEC;
+
+
+    //Think I want these on the module itself "entityCodec"
+//    public Codec<ModuleEntity<T>> codec() {
+//
+//    }
+//
+//    public StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<T>> streamCodec() {
+//
+//    }
+
     public ModuleEntity(Module<T> module) {
         this.module = module;
+        propertyMap.values().forEach(ConfigProperty::generateUnique);
     }
 
     public void setHost(ModuleHost host) {
@@ -85,30 +100,30 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     }
 
-    /**
-     * This can be used to add per module properties.
-     * Properties should be added via your {@link ModuleEntity} constructor. These will be saved and loaded along
-     * with the rest of the entities data. If you set 'savePropertiesToItem' to true the properties
-     * will also be saved and loaded from the ItemStack when this module is removed or installed.<br><br>
-     * <p>
-     * These properties will be generated for every single instance of this module that is installed.
-     * Therefor these are best used with modules that have a max install count of 1.<br><br>
-     * <p>
-     * If you need to add "global" where you have a single set of properties that apply to all installed modules
-     * rather than a set of properties for each module see {@link ModuleType#getTypeProperties(ModuleData, Map)} )}
-     *
-     * @param property the property to add.
-     * @return the property for convenience.
-     * @see ModuleType#getTypeProperties(ModuleData, Map)
-     */
-    public ConfigProperty addProperty(ConfigProperty property) {
-        propertyMap.put(property.getName(), property);
-        property.generateUnique();
-        return property;
-    }
+//    /**
+//     * This can be used to add per module properties.
+//     * Properties should be added via your {@link ModuleEntity} constructor. These will be saved and loaded along
+//     * with the rest of the entities data. If you set 'savePropertiesToItem' to true the properties
+//     * will also be saved and loaded from the ItemStack when this module is removed or installed.<br><br>
+//     * <p>
+//     * These properties will be generated for every single instance of this module that is installed.
+//     * Therefor these are best used with modules that have a max install count of 1.<br><br>
+//     * <p>
+//     * If you need to add "global" where you have a single set of properties that apply to all installed modules
+//     * rather than a set of properties for each module see {@link ModuleType#getTypeProperties(ModuleData, Map)} )}
+//     *
+//     * @param property the property to add.
+//     * @return the property for convenience.
+//     * @see ModuleType#getTypeProperties(ModuleData, Map)
+//     */
+//    public ConfigProperty addProperty(ConfigProperty property) {
+//        propertyMap.put(property.getName(), property);
+//        property.generateUnique();
+//        return property;
+//    }
 
-    public Collection<ConfigProperty> getEntityProperties() {
-        return propertyMap.values();
+    //Override in all entities that add properties, and add props to list.
+    public void getEntityProperties(List<ConfigProperty> properties) {
     }
 
     /**

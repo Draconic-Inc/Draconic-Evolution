@@ -255,11 +255,11 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public static Module<DamageModData> getDamageModule(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-        ModuleEntity entity = host.getEntitiesByType(ModuleTypes.DAMAGE_MOD).findAny().orElse(null);
-        return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>) entity.getModule() : null;
-    }
+//    @SuppressWarnings("unchecked")
+//    @Nullable
+//    public static Module<DamageModData> getDamageModule(ItemStack stack) {
+//        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+//        ModuleEntity entity = host.getEntitiesByType(ModuleTypes.DAMAGE_MOD).findAny().orElse(null);
+//        return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>) entity.getModule() : null;
+//    }
 }

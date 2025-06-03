@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.capability.DataAccess;
+import com.brandon3055.draconicevolution.api.capability.DataCapability;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -28,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public class ModuleHostImpl implements ModuleHost, PropertyProvider {
+public class ModuleHostImpl implements ModuleHost, PropertyProvider, DataCapability {
     private static final Logger LOGGER = LogManager.getLogger(ModuleHostImpl.class);
 
     private final int gridWidth;
@@ -47,6 +49,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
     private BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck = null;
+    private DataAccess dataAccess = null;
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -332,5 +335,11 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             CompoundTag properties = nbt.getCompound("properties");
             providedProperties.forEach(e -> e.deserializeNBT(provider, properties.getCompound(e.getName())));
         }
+    }
+
+    @Override
+    public void updateDataAccess(DataAccess newAccess) {
+        this.dataAccess = newAccess;
+        deserializeNBT(dataAccess.getProvider(), dataAccess.getData());
     }
 }

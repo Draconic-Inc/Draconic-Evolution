@@ -19,6 +19,7 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -90,8 +91,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
     @Override
     public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int count) {
-        if (getUseDuration(stack, player) - count >= getChargeTicks(stack)) {
-            AutoFireEntity entity = stack.getCapability(DECapabilities.Host.ITEM).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+        if (getUseDuration(stack, player) - count >= getChargeTicks(stack, player.registryAccess())) {
+            AutoFireEntity entity = DECapabilities.getHost(stack, player.registryAccess()).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
                 InteractionHand usingHand = player.getUsedItemHand();
@@ -112,7 +113,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         InteractionResultHolder<ItemStack> ret = net.neoforged.neoforge.event.EventHooks.onArrowNock(bowStack, level, player, hand, hasAmmo);
         if (ret != null) return ret;
 
-        if (EnergyUtils.getEnergyStored(bowStack) < calculateShotEnergy(bowStack)) {
+        if (EnergyUtils.getEnergyStored(bowStack) < calculateShotEnergy(bowStack, player.registryAccess())) {
             hasAmmo = false;
         }
 
@@ -148,10 +149,10 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
             return;
         }
 
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
         ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
-        float powerForTime = getPowerForTime(drawTime, stack) * (projData.velocity() + 1);
+        float powerForTime = getPowerForTime(drawTime, stack, player.registryAccess()) * (projData.velocity() + 1);
         if (!(powerForTime >= 0.1D)) {
             return;
         }
@@ -224,8 +225,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         return newArrow;
     }
 
-    public static float calculateDamage(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+    public static float calculateDamage(ItemStack stack, HolderLookup.Provider provider) {
+        ModuleHost host = DECapabilities.getHost(stack, provider);
         ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
         float baseDamage = 2;
@@ -234,14 +235,14 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         return baseDamage;
     }
 
-    public static long calculateShotEnergy(ItemStack stack) {
-        float damage = calculateDamage(stack);
+    public static long calculateShotEnergy(ItemStack stack, HolderLookup.Provider provider) {
+        float damage = calculateDamage(stack, provider);
         //TODO add some energy usage for other modules
         return (long) (damage * EquipCfg.bowBaseEnergy);
     }
 
-    public static float getPowerForTime(int time, ItemStack stack) {
-        float fullChargeTime = getChargeTicks(stack);
+    public static float getPowerForTime(int time, ItemStack stack, HolderLookup.Provider provider) {
+        float fullChargeTime = getChargeTicks(stack, provider);
         float power = (float) time / fullChargeTime;
         power = ((power * power) + (power * 2.0F)) / 3.0F;
         if (power > 1.0F) {
@@ -250,8 +251,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         return power;
     }
 
-    public static int getChargeTicks(ItemStack stack) {
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+    public static int getChargeTicks(ItemStack stack, HolderLookup.Provider provider) {
+        ModuleHost host = DECapabilities.getHost(stack, provider);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float speedModifier = data == null ? 0 : (float) data.speedMultiplier();
         speedModifier++;
@@ -262,8 +263,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     public void addModularItemInformation(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         IModularEnergyItem.super.addModularItemInformation(stack, context, tooltip, flagIn);
         if (context.level() != null && stack.getCapability(DECapabilities.Host.ITEM) != null) {
-            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack, context.level().registryAccess()) * 10) / 10F).withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.translatable("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack, context.level().registryAccess()))).withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 

@@ -137,7 +137,7 @@ public class PropertyData {
     }
 
     public void pullData(ConfigurableItemMenu container, boolean pullValue) {
-        PropertyProvider provider = container.findProvider(providerID);
+        PropertyProvider provider = container.findProvider(providerID, container.inventory.player.registryAccess());
         isProviderAvailable = provider != null;
         if (isProviderAvailable) {
             pullData(provider.getProperty(getPropertyName()), pullValue);

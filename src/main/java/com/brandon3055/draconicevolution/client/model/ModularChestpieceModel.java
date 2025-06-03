@@ -153,7 +153,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     public void render(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
         if (!stack.isEmpty() && host != null) {
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl != null) {

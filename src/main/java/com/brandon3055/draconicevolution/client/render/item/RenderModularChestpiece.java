@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -60,7 +61,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
         materialPart.render(context, buffers, mat);
 
         int shieldColour = 0xFFFFFFFF;
-        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host = DECapabilities.getHost(stack, Minecraft.getInstance().level.registryAccess());
         if (!stack.isEmpty() && host != null) {
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl != null) {

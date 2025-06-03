@@ -1,20 +1,20 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.DamageData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.google.common.collect.Multimap;
+import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -26,18 +26,23 @@ public interface IModularTieredItem extends IModularItem {
     DETier getItemTier();
 
     @Override
+    default void handleTick(ModuleHost host, ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
+        IModularItem.super.handleTick(host, stack, entity, slot, inEquipModSlot);
+
+        double damage = getAttackDamage(host, stack);
+        double speed = 1 + host.getModuleData(ModuleTypes.SPEED, new SpeedData(0)).speedMultiplier();
+        stack.set(ItemData.ATTRIBUTE_DATA, new AttributeData(damage, speed));
+    }
+
+    @Override
     default ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         var builder = ItemAttributeModifiers.builder();
+        AttributeData data = stack.get(ItemData.ATTRIBUTE_DATA);
 
-        if (stack.getCapability(DECapabilities.Host.ITEM) != null) {
+        if (data != null) {
             DETier tier = getItemTier();
-
-            ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-            double damage = getAttackDamage(host, stack);
-            double speed = 1 + host.getModuleData(ModuleTypes.SPEED, new SpeedData(0)).speedMultiplier();
-
-            builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, damage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
-            builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, (tier.getAttackSpeed() * getSwingSpeedMultiplier() * speed) - 4, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+            builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, data.damage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+            builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, (tier.getAttackSpeed() * getSwingSpeedMultiplier() * data.speed) - 4, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
         }
 
         return builder.build();
@@ -54,4 +59,6 @@ public interface IModularTieredItem extends IModularItem {
     double getSwingSpeedMultiplier();
 
     double getDamageMultiplier();
+
+    record AttributeData(double damage, double speed) {}
 }
