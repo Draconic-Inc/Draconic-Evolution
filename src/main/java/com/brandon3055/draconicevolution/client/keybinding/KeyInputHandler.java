@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.keybinding;
 
 import com.brandon3055.draconicevolution.client.gui.DislocatorGui;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.ConfigurableItemGui;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.network.InputSync;
@@ -30,6 +31,7 @@ public class KeyInputHandler {
 
         onInput(player);
     }
+
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseButton.Pre event) {
@@ -39,15 +41,22 @@ public class KeyInputHandler {
         }
 
         onInput(player);
+    }
 
-//        int change = event.getDwheel();
-//        if (change == 0 || !player.isShiftKeyDown()) return;
-//
-//        ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
-//        if (item.getItem() == DEFeatures.dislocatorAdvanced) {
-//            event.setCanceled(true);
-//            DraconicEvolution.network.sendToServer(new PacketDislocator(PacketDislocator.SCROLL, change < 0 ? -1 : 1, false));
-//        }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void onMouseInput(InputEvent.MouseScrollingEvent event) {
+        Player player = Minecraft.getInstance().player;
+        double change = event.getScrollDeltaY();
+        if (player == null || change == 0 || !player.isShiftKeyDown()) {
+            return;
+        }
+
+        ItemStack item = player.getMainHandItem();
+        if (item.is(DEContent.DISLOCATOR_ADVANCED)) {
+            event.setCanceled(true);
+            DraconicNetwork.sendDislocatorScroll(player.registryAccess(), change < 0 ? -1 : 1);
+        }
     }
 
     private void onInput(Player player) {

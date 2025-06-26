@@ -395,6 +395,21 @@ public class DislocatorAdvanced extends Dislocator {
         }
     }
 
+    public void scrollSelected(ServerPlayer sender, ItemStack stack, int dir) {
+        int selectIndex = getSelectedIndex(stack) + dir;
+        LinkedList<DislocatorTarget> list = new LinkedList<>(getTargetList(stack));
+        //if (list.size() <= 1 && action != 6 && action != 0) return;
+        DislocatorTarget selected = selectIndex >= 0 && selectIndex < list.size() ? list.get(selectIndex) : null;
+
+        if (selected != null) {
+            if (list.contains(selected)) {
+                setSelectedIndex(stack, list.indexOf(selected));
+            } else if (selectIndex > 0) {
+                setSelectedIndex(stack, selectIndex - 1);
+            }
+        }
+    }
+
     public void addFuel(ItemStack dislocator, Player player, boolean fullStack, boolean allStacks) {
         int max = DEConfig.dislocatorMaxFuel - getFuel(dislocator);
         int wanted = allStacks ? max : Math.min(max, fullStack ? 16 : 1);

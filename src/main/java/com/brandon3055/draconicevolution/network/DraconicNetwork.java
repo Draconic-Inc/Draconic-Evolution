@@ -61,6 +61,7 @@ public class DraconicNetwork {
     public static final int S_PLACE_ITEM =              11;
     public static final int S_MODULE_ENTITY_MESSAGE =   12;
     public static final int S_BOOST_STATE =             13;
+    public static final int S_DISLOCATOR_SCROLL =       14;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -166,6 +167,12 @@ public class DraconicNetwork {
         PacketCustom packet = new PacketCustom(CHANNEL_NAME, S_DISLOCATOR_MESSAGE, registryAccess);
         packet.writeByte(id);
         callback.accept(packet);
+        packet.sendToServer();
+    }
+
+    public static void sendDislocatorScroll(RegistryAccess registryAccess, int dir) {
+        PacketCustom packet = new PacketCustom(CHANNEL_NAME, S_DISLOCATOR_SCROLL, registryAccess);
+        packet.writeByte(dir);
         packet.sendToServer();
     }
 

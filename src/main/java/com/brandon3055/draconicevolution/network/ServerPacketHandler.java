@@ -77,6 +77,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             case DraconicNetwork.S_DISLOCATOR_MESSAGE:
                 dislocatorMessage(sender, packet);
                 break;
+            case DraconicNetwork.S_DISLOCATOR_SCROLL:
+                dislocatorScroll(sender, packet);
+                break;
             case DraconicNetwork.S_JEI_FUSION_TRANSFER:
                 jeiFusionTransfer(sender, packet);
                 break;
@@ -216,6 +219,13 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         ItemStack stack = DislocatorAdvanced.findDislocator(sender);
         if (!stack.isEmpty()) {
             DEContent.DISLOCATOR_ADVANCED.get().handleClientAction(sender, stack, packet);
+        }
+    }
+
+    private void dislocatorScroll(ServerPlayer sender, PacketCustom packet) {
+        ItemStack stack = DislocatorAdvanced.findDislocator(sender);
+        if (!stack.isEmpty()) {
+            DEContent.DISLOCATOR_ADVANCED.get().scrollSelected(sender, stack, (int) packet.readByte());
         }
     }
 
