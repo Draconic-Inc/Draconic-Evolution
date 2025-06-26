@@ -211,10 +211,11 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
-                buffers.getBuffer(renderType.withCallback(() -> {
+                renderType.withCallback(() -> {
                     ToolRenderBase.glUniformBaseColor(shader, techLevel, 1F);
                     shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }));
+                }).draw(buffers);
+
                 poseStack.popPose();
             }
         }
@@ -235,10 +236,11 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
                 int color = shieldColour;
-                buffers.getBuffer(renderType.withCallback(() -> {
+                renderType.withCallback(() -> {
                     shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                     shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }));
+                }).draw(buffers);
+
                 poseStack.popPose();
             }
         }
@@ -260,11 +262,12 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 Matrix4 mat = new Matrix4(poseStack);
                 int color = shieldColour;
                 float state = shieldState;
-                buffers.getBuffer(renderType.withCallback(() -> {
+                renderType.withCallback(() -> {
                     shader.getBaseColourUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                     shader.getActivationUniform().glUniform1f(state);
                     shader.getModelMatUniform().glUniformMatrix4f(mat);
-                }));
+                }).draw(buffers);
+
                 poseStack.popPose();
             }
         }
