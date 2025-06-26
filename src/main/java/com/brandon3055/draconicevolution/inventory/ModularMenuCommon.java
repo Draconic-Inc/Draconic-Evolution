@@ -25,9 +25,9 @@ public interface ModularMenuCommon {
                 .filter(stack -> !stack.isEmpty());
     }
     
-    static Stream<PropertyProvider> getProviders(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
+    static Stream<ModuleHost> getProviders(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
         return stacks
-                .map(e -> DECapabilities.getProps(e, provider))
+                .map(DECapabilities::getHost)
                 .filter(Objects::nonNull);
     }
 
@@ -40,7 +40,7 @@ public interface ModularMenuCommon {
 
     static Stream<ModuleHost> getHosts(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
         return stacks
-                .map(e -> DECapabilities.getHost(e, provider))
+                .map(DECapabilities::getHost)
                 .filter(Objects::nonNull);
     }
 
@@ -52,9 +52,10 @@ public interface ModularMenuCommon {
     }
 
     default UUID getIdentity(ItemStack stack, HolderLookup.Provider access) {
-        PropertyProvider provider = DECapabilities.getProps(stack, access);
-        if (!stack.isEmpty() && provider != null) {
-            return provider.getIdentity();
+        try (PropertyProvider provider = DECapabilities.getHost(stack)) {
+            if (!stack.isEmpty() && provider != null) {
+                return provider.getIdentity();
+            }
         }
         return null;
     }

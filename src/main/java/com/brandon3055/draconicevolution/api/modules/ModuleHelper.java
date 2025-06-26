@@ -71,7 +71,7 @@ public class ModuleHelper {
 
     public static FastStream<ModuleHost> getEquippedHosts(LivingEntity entity) {
         return FastStream.of(getEquippedHostItems(entity))
-                .map(e -> DECapabilities.getHost(e, entity.registryAccess()))
+                .map(DECapabilities::getHost)
                 .filter(Objects::nonNull);
     }
 

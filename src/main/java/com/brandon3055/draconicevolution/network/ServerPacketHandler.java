@@ -5,6 +5,7 @@ import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.handlers.HandHelper;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostContainer;
@@ -27,14 +28,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
-import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.ArrayList;
@@ -124,7 +123,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //                    ToolConfigHelper.incrementProfile(stack);
 //                    int newProfile = ToolConfigHelper.getProfile(stack);
 //                    String name = ToolConfigHelper.getProfileName(stack, newProfile);
-////                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").toString() + " " + name, -30553045 + i);
+
+    /// /                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").toString() + " " + name, -30553045 + i);
 //                }
 //                i++;
 //            }
@@ -181,13 +181,14 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //        }
 //
 //    }
-
     private void moduleSlotClick(Player player, MCDataInput input) {
         if (player.containerMenu instanceof ModuleHostContainer container) {
             ModuleGrid grid = container.getGrid();
             if (grid != null) {
-                ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
-                grid.cellClicked(pos, input.readFloat(), input.readFloat(), input.readByte(), input.readEnum(ClickType.class));
+                try (ModuleHost host = container.getModuleHost()) {
+                    ModuleGrid.GridPos pos = grid.getCell(host, input.readByte(), input.readByte());
+                    grid.cellClicked(host, pos, input.readFloat(), input.readFloat(), input.readByte(), input.readEnum(ClickType.class));
+                }
             }
         }
     }
@@ -196,9 +197,11 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         if (player.containerMenu instanceof ModuleHostContainer container) {
             ModuleGrid grid = container.getGrid();
             if (grid != null) {
-                ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
-                if (pos.hasEntity()) {
-                    pos.getEntity().handleClientMessage(input);
+                try (ModuleHost host = container.getModuleHost()) {
+                    ModuleGrid.GridPos pos = grid.getCell(host, input.readByte(), input.readByte());
+                    if (pos.hasEntity()) {
+                        pos.getEntity().handleClientMessage(input);
+                    }
                 }
             }
         }

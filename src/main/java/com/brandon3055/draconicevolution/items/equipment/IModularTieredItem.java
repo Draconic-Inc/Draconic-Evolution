@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.api.modules.data.DamageData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ItemData;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,5 +62,13 @@ public interface IModularTieredItem extends IModularItem {
 
     double getDamageMultiplier();
 
-    record AttributeData(double damage, double speed) {}
+    record AttributeData(double damage, double speed) {
+        public static final Codec<AttributeData> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                                Codec.DOUBLE.fieldOf("damage").forGetter(AttributeData::damage),
+                                Codec.DOUBLE.fieldOf("speed").forGetter(AttributeData::speed)
+                        )
+                        .apply(instance, AttributeData::new)
+        );
+    }
 }

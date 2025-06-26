@@ -85,28 +85,25 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         host.addPropertyBuilder(props -> {
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null) {
-                Supplier<Double> speedGetter = () -> {
-                    SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-                    double maxSpeed = data == null ? 0 : data.speedMultiplier();
-                    if (DEConfig.armorSpeedLimit != -1) {
-                        maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
-                    }
-                    return maxSpeed;
-                };
+                SpeedData data = host.getModuleData(ModuleTypes.SPEED);
+                double maxSpeed = data == null ? 0 : data.speedMultiplier();
+                if (DEConfig.armorSpeedLimit != -1) {
+                    maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
+                }
 
-                props.add(new DecimalProperty("walk_speed", 0).min(0).max(speedGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
-                props.add(new DecimalProperty("run_speed", speedGetter.get()).min(0).max(speedGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                //TODO Do these still work properly now that we are not using dynamic getters? Props are regenerated on data load so it should be fine?
+                props.add(new DecimalProperty("walk_speed", 0).min(0).max(maxSpeed).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                props.add(new DecimalProperty("run_speed", maxSpeed).min(0).max(maxSpeed).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
             }
 
             JumpData jump = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jump != null) {
-                Supplier<Double> jumpGetter = () -> {
-                    JumpData data = host.getModuleData(ModuleTypes.JUMP_BOOST);
-                    return data == null ? 0 : data.multiplier();
-                };
+                JumpData data = host.getModuleData(ModuleTypes.JUMP_BOOST);
+                double jumpSetting =  data == null ? 0 : data.multiplier();
 
-                props.add(new DecimalProperty("jump_boost_run", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
-                props.add(new DecimalProperty("jump_boost", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                //TODO Do these still work properly now that we are not using dynamic getters? Props are regenerated on data load so it should be fine?
+                props.add(new DecimalProperty("jump_boost_run", jumpSetting).min(0).max(jumpSetting).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                props.add(new DecimalProperty("jump_boost", jumpSetting).min(0).max(jumpSetting).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
             }
         });
         return host;

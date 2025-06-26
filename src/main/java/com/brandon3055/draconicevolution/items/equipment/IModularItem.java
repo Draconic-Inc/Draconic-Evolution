@@ -25,6 +25,8 @@ import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ItemData;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
@@ -87,7 +89,6 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
         NeoForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
         return host;
     }
-
 
 
 //    idk about this. I may want to re implement my own optional type delio...
@@ -163,7 +164,7 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
             tooltip.add(Component.translatable("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
 
-        ModuleHost host = DECapabilities.getHost(stack, context.registries());
+        ModuleHost host = DECapabilities.getHost(stack); //Closing not required as this is client side read only
         if (host != null) {
             host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, context, tooltip, flagIn));
             host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, context.level(), tooltip, flagIn));
@@ -180,7 +181,9 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
 
     default void handleTick(ModuleHost host, ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
         host.handleTick(new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot));
-
+        if (!(this instanceof IModularMiningTool)) {
+            return;
+        }
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
@@ -281,5 +284,14 @@ public interface IModularItem extends IItemExtension, IFusionDataTransfer {
         return oldStack.getItem() != newStack.getItem() || slotChanged;
     }
 
-    record DestroySpeedData(float multiplier, float speedSetting, float aoeSetting) {}
+    record DestroySpeedData(float multiplier, float speedSetting, float aoeSetting) {
+        public static final Codec<DestroySpeedData> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                                Codec.FLOAT.fieldOf("multiplier").forGetter(DestroySpeedData::multiplier),
+                                Codec.FLOAT.fieldOf("speedSetting").forGetter(DestroySpeedData::speedSetting),
+                                Codec.FLOAT.fieldOf("aoeSetting").forGetter(DestroySpeedData::aoeSetting)
+                        )
+                        .apply(instance, DestroySpeedData::new)
+        );
+    }
 }

@@ -78,6 +78,14 @@ public interface Module<T extends ModuleData<T>> {
         return getType().createEntity(this);
     }
 
+    default Codec<ModuleEntity<?>> entityCodec() {
+        return getType().entityCodec();
+    }
+
+    default StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<?>> entityStreamCodec() {
+        return getType().entityStreamCodec();
+    }
+
     /**
      * This allows you to prevent this module from being installed along side any other specific module.
      *

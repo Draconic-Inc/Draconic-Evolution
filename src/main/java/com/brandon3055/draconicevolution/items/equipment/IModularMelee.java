@@ -29,14 +29,18 @@ public interface IModularMelee extends IModularTieredItem, IDraconicMelee {
 
     @Override
     default boolean onLeftClickEntity(ItemStack stack, Player player, Entity target) {
-        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
-        float damage = (float) getAttackDamage(host, stack);
-        long energyPerHit = (long) (EquipCfg.energyAttack * damage);
-        extractEnergy(player, stack, energyPerHit);
+        float damage;
+        long energyPerHit;
+        double aoe;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            damage = (float) getAttackDamage(host, stack);
+            energyPerHit = (long) (EquipCfg.energyAttack * damage);
+            extractEnergy(player, stack, energyPerHit);
 
-        double aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe() * 1.5;
-        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("attack_aoe")) {
-            aoe = ((PropertyProvider) host).getDecimal("attack_aoe").getValue();
+            aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe() * 1.5;
+            if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("attack_aoe")) {
+                aoe = ((PropertyProvider) host).getDecimal("attack_aoe").getValue();
+            }
         }
 
         float attackStrength = player.getAttackStrengthScale(0.5F);

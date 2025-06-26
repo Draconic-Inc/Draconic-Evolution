@@ -166,12 +166,14 @@ public class ModularHoe extends HoeItem implements IModularTieredItem, IDraconic
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
 
-        ModuleHost host = DECapabilities.getHost(stack, context.getLevel().registryAccess());
-        assert host != null;
-        int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
-        if (host instanceof PropertyProvider) {
-            if (((PropertyProvider) host).hasInt("tool_aoe")) {
-                aoe = ((PropertyProvider) host).getInt("tool_aoe").getValue();
+        int aoe;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            assert host != null;
+            aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
+            if (host instanceof PropertyProvider) {
+                if (((PropertyProvider) host).hasInt("tool_aoe")) {
+                    aoe = ((PropertyProvider) host).getInt("tool_aoe").getValue();
+                }
             }
         }
 

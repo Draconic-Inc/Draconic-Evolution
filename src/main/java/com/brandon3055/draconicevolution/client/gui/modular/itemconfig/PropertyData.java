@@ -22,6 +22,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -119,14 +120,14 @@ public class PropertyData {
                         decimalValue = prop.getValue();
                     }
                 }
-                case ENUM -> {
-                    EnumProperty<?> prop = (EnumProperty<?>) property;
-                    enumValueOptions = prop.getAllowedValues().stream().map(Enum::ordinal).collect(Collectors.toList());
-                    enumDisplayValues = prop.generateValueDisplayMap();
-                    if (pullValue) {
-                        enumValueIndex = prop.getValue().ordinal();
-                    }
-                }
+//                case ENUM -> {
+//                    EnumProperty<?> prop = (EnumProperty<?>) property;
+//                    enumValueOptions = prop.getAllowedValues().stream().map(Enum::ordinal).collect(Collectors.toList());
+//                    enumDisplayValues = prop.generateValueDisplayMap();
+//                    if (pullValue) {
+//                        enumValueIndex = prop.getValue().ordinal();
+//                    }
+//                }
             }
         }
         updateDisplayValue();
@@ -161,11 +162,11 @@ public class PropertyData {
                     displayValue = decimalFormatter.format(decimalValue);
                 }
             }
-            case ENUM -> {
-                if (enumDisplayValues != null) {
-                    displayValue = enumDisplayValues.getOrDefault(enumValueIndex, "[Error]");
-                }
-            }
+//            case ENUM -> {
+//                if (enumDisplayValues != null) {
+//                    displayValue = enumDisplayValues.getOrDefault(enumValueIndex, "[Error]");
+//                }
+//            }
         }
     }
 
@@ -182,11 +183,12 @@ public class PropertyData {
     }
 
     public void updateEnumValue(int newIndex) {
-        if (type == Type.ENUM && enumValueOptions.contains(newIndex)) {
-            enumValueIndex = newIndex;
-            updateDisplayValue();
-            onValueChanged();
-        }
+        throw new NotImplementedException();
+//        if (type == Type.ENUM && enumValueOptions.contains(newIndex)) {
+//            enumValueIndex = newIndex;
+//            updateDisplayValue();
+//            onValueChanged();
+//        }
     }
 
     public void updateNumberValue(double value, boolean isFinalValue) {
@@ -210,11 +212,13 @@ public class PropertyData {
         } else if (type == Type.DECIMAL) {
             double inc = getInc(maxValue - minValue) * dir * (Screen.hasShiftDown() ? 2 : 1);
             decimalValue = MathHelper.clip(decimalValue + inc, minValue, maxValue);
-        } else if (type == Type.ENUM && enumValueOptions != null && enumValueOptions.contains(enumValueIndex)) {
-            int index = enumValueOptions.indexOf(enumValueIndex);
-            int newIndex = Math.floorMod(index + dir, enumValueOptions.size());
-            enumValueIndex = enumValueOptions.get(newIndex);
-        } else {
+        }
+//        else if (type == Type.ENUM && enumValueOptions != null && enumValueOptions.contains(enumValueIndex)) {
+//            int index = enumValueOptions.indexOf(enumValueIndex);
+//            int newIndex = Math.floorMod(index + dir, enumValueOptions.size());
+//            enumValueIndex = enumValueOptions.get(newIndex);
+//        }
+        else {
             return;
         }
         updateDisplayValue();
@@ -262,7 +266,7 @@ public class PropertyData {
             case BOOLEAN -> prop instanceof BooleanProperty && ((BooleanProperty) prop).getValue() == booleanValue;
             case INTEGER -> prop instanceof IntegerProperty && ((IntegerProperty) prop).getValue() == integerValue;
             case DECIMAL -> prop instanceof DecimalProperty && ((DecimalProperty) prop).getValue() == decimalValue;
-            case ENUM -> prop instanceof EnumProperty && ((EnumProperty<?>) prop).getValue().ordinal() == enumValueIndex;
+//            case ENUM -> throw new NotImplementedException();//prop instanceof EnumProperty && ((EnumProperty<?>) prop).getValue().ordinal() == enumValueIndex;
         };
     }
 
@@ -332,17 +336,17 @@ public class PropertyData {
                 nbt.putDouble("min", minValue);
                 nbt.putDouble("max", maxValue);
             }
-            case ENUM -> {
-                nbt.putInt("value", enumValueIndex);
-                if (enumValueOptions != null) {
-                    nbt.put("names", enumValueOptions.stream().map(IntTag::valueOf).collect(Collectors.toCollection(ListTag::new)));
-                }
-                if (enumDisplayValues != null) {
-                    CompoundTag nameValues = new CompoundTag();
-                    enumDisplayValues.forEach((key, value) -> nameValues.putString(String.valueOf(key), value));
-                    nbt.put("name_values", nameValues);
-                }
-            }
+//            case ENUM -> {
+//                nbt.putInt("value", enumValueIndex);
+//                if (enumValueOptions != null) {
+//                    nbt.put("names", enumValueOptions.stream().map(IntTag::valueOf).collect(Collectors.toCollection(ListTag::new)));
+//                }
+//                if (enumDisplayValues != null) {
+//                    CompoundTag nameValues = new CompoundTag();
+//                    enumDisplayValues.forEach((key, value) -> nameValues.putString(String.valueOf(key), value));
+//                    nbt.put("name_values", nameValues);
+//                }
+//            }
         }
         return nbt;
     }
@@ -395,16 +399,16 @@ public class PropertyData {
                 data.minValue = nbt.getDouble("min");
                 data.maxValue = nbt.getDouble("max");
             }
-            case ENUM -> {
-                data.enumValueIndex = nbt.getInt("value");
-                if (nbt.contains("names")) {
-                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntTag) inbt).getAsInt()).collect(Collectors.toList());
-                }
-                if (nbt.contains("name_values")) {
-                    CompoundTag nameValues = nbt.getCompound("name_values");
-                    data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
-                }
-            }
+//            case ENUM -> {
+//                data.enumValueIndex = nbt.getInt("value");
+//                if (nbt.contains("names")) {
+//                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntTag) inbt).getAsInt()).collect(Collectors.toList());
+//                }
+//                if (nbt.contains("name_values")) {
+//                    CompoundTag nameValues = nbt.getCompound("name_values");
+//                    data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
+//                }
+//            }
         }
 
         return data;
@@ -426,7 +430,7 @@ public class PropertyData {
             case BOOLEAN -> output.writeBoolean(booleanValue);
             case INTEGER -> output.writeVarInt(integerValue);
             case DECIMAL -> output.writeDouble(decimalValue);
-            case ENUM -> output.writeVarInt(enumValueIndex);
+//            case ENUM -> output.writeVarInt(enumValueIndex);
         }
     }
 
@@ -447,7 +451,7 @@ public class PropertyData {
             case BOOLEAN -> data.booleanValue = input.readBoolean();
             case INTEGER -> data.integerValue = input.readVarInt();
             case DECIMAL -> data.decimalValue = input.readDouble();
-            case ENUM -> data.enumValueIndex = input.readVarInt();
+//            case ENUM -> data.enumValueIndex = input.readVarInt();
         }
         return data;
     }

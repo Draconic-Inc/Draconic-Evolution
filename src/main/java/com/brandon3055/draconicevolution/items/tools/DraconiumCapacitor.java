@@ -5,25 +5,21 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IInvCharge;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.brandon3055.draconicevolution.init.ModuleCfg;
-import com.brandon3055.draconicevolution.init.TechProperties;
+import com.brandon3055.draconicevolution.init.*;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.DETier;
 import com.brandon3055.draconicevolution.items.equipment.IModularEnergyItem;
-import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -39,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -126,41 +123,38 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
-        PropertyProvider provider = DECapabilities.getProps(stack, entity.registryAccess());
-        if (provider != null){
-            boolean held = provider.getBool("charge_held_item").getValue();
-            boolean armor = provider.getBool("charge_armor").getValue();
-            boolean hot_bar = provider.getBool("charge_hot_bar").getValue();
-            boolean main = provider.getBool("charge_main").getValue();
+        boolean held = host.getBool("charge_held_item").getValue();
+        boolean armor = host.getBool("charge_armor").getValue();
+        boolean hot_bar = host.getBool("charge_hot_bar").getValue();
+        boolean main = host.getBool("charge_main").getValue();
 
-            if (EquipmentManager.equipModLoaded() && provider.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
-                stacks.addAll(EquipmentManager.getAllItems(entity));
-            }
+        if (EquipmentManager.equipModLoaded() && host.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
+            stacks.addAll(EquipmentManager.getAllItems(entity));
+        }
 
-            if (entity instanceof Player) {
-                Player player = (Player) entity;
-                if (hot_bar && main) {
-                    stacks.addAll(player.getInventory().items);
-                } else if (hot_bar) {
-                    stacks.addAll(player.getInventory().items.subList(0, 9));
-                } else if (main) {
-                    stacks.addAll(player.getInventory().items.subList(9, 36));
-                }
-                if (held) {
-                    if (!hot_bar) {
-                        stacks.add(entity.getMainHandItem());
-                    }
-                    stacks.add(entity.getOffhandItem());
-                }
-            } else {
-                if (held) {
-                    entity.getHandSlots().forEach(stacks::add);
-                }
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            if (hot_bar && main) {
+                stacks.addAll(player.getInventory().items);
+            } else if (hot_bar) {
+                stacks.addAll(player.getInventory().items.subList(0, 9));
+            } else if (main) {
+                stacks.addAll(player.getInventory().items.subList(9, 36));
             }
+            if (held) {
+                if (!hot_bar) {
+                    stacks.add(entity.getMainHandItem());
+                }
+                stacks.add(entity.getOffhandItem());
+            }
+        } else {
+            if (held) {
+                entity.getHandSlots().forEach(stacks::add);
+            }
+        }
 
-            if (armor) {
-                entity.getArmorSlots().forEach(stacks::add);
-            }
+        if (armor) {
+            entity.getArmorSlots().forEach(stacks::add);
         }
 
         stacks.remove(stack);
@@ -186,7 +180,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn (Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, context, tooltip, flagIn);
     }

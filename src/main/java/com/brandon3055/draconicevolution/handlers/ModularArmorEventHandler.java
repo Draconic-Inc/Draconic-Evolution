@@ -110,7 +110,7 @@ public class ModularArmorEventHandler {
     @Nullable
     private static AttributeModifier getStepHeight(LivingEntity entity, ArmorAbilities abilities) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
+        ModuleHost host = DECapabilities.getHost(chestStack);
         boolean hasHost = !chestStack.isEmpty() && host != null;
         boolean hasHighStep = hasHost && host.getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
         AttributeInstance instance = entity.getAttribute(Attributes.STEP_HEIGHT);
@@ -129,7 +129,7 @@ public class ModularArmorEventHandler {
     @Nullable
     private static AttributeModifier getSubmergedMiningSpeed(LivingEntity entity, ArmorAbilities abilities) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
+        ModuleHost host = DECapabilities.getHost(chestStack);
         boolean hasHost = !chestStack.isEmpty() && host != null;
         boolean hasAquaAdapt = hasHost && host.getModuleData(ModuleTypes.AQUA_ADEPT) != null && !entity.isShiftKeyDown();
 
@@ -152,7 +152,7 @@ public class ModularArmorEventHandler {
         float newDigSpeed = event.getOriginalSpeed();
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        ModuleHost host = DECapabilities.getHost(chestStack, player.registryAccess());
+        ModuleHost host = DECapabilities.getHost(chestStack);
         if (host == null) return;
 
         if (!player.onGround() && host.getModuleData(ModuleTypes.MINING_STABILITY) != null) {
@@ -172,28 +172,29 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
-        if (chestStack.isEmpty() || host == null) {
-            return;
-        }
+        try (ModuleHost host = DECapabilities.getHost(chestStack)) {
+            if (chestStack.isEmpty() || host == null) {
+                return;
+            }
 
-        //Allows /kill to completely bypass all protections
-        if (event.getAmount() == Float.MAX_VALUE && event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) {
-            event.setCanceled(true);
-            entity.hurt(DEDamage.killDamage(entity.level()), Float.MAX_VALUE / 5);
-            return;
-        }
+            //Allows /kill to completely bypass all protections
+            if (event.getAmount() == Float.MAX_VALUE && event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) {
+                event.setCanceled(true);
+                entity.hurt(DEDamage.killDamage(entity.level()), Float.MAX_VALUE / 5);
+                return;
+            }
 
-        if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
-            return;
-        }
+            if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
+                return;
+            }
 
-        ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-        if (shieldControl == null) {
-            return;
-        }
+            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+            if (shieldControl == null) {
+                return;
+            }
 
-        shieldControl.tryBlockDamage(event);
+            shieldControl.tryBlockDamage(event);
+        }
     }
 
     private static void onEntityDamaged(LivingDamageEvent.Pre event) {
@@ -203,22 +204,23 @@ public class ModularArmorEventHandler {
         }
 
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
+        try (ModuleHost host = DECapabilities.getHost(chestStack)) {
 
-        if (chestStack.isEmpty() || host == null) {
-            return;
+            if (chestStack.isEmpty() || host == null) {
+                return;
+            }
+
+            if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
+                return;
+            }
+
+            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+            if (shieldControl == null) {
+                return;
+            }
+
+            shieldControl.tryBlockDamage(event);
         }
-
-        if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
-            return;
-        }
-
-        ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-        if (shieldControl == null) {
-            return;
-        }
-
-        shieldControl.tryBlockDamage(event);
     }
 
     private static void onEntityFall(LivingFallEvent event) {
@@ -275,15 +277,16 @@ public class ModularArmorEventHandler {
     }
 
     private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlot slot, boolean inEquipModSlot, HolderLookup.Provider provider) {
-        ModuleHost host = DECapabilities.getHost(stack, provider);
-        if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
-            if (host != null) {
-                entities.addAll(host.getModuleEntities()
-                        .stream()
-                        .filter(e -> e instanceof UndyingEntity)
-                        .map(e -> (UndyingEntity) e)
-                        .toList()
-                );
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
+                if (host != null) {
+                    entities.addAll(host.getModuleEntities()
+                            .stream()
+                            .filter(e -> e instanceof UndyingEntity)
+                            .map(e -> (UndyingEntity) e)
+                            .toList()
+                    );
+                }
             }
         }
     }
@@ -410,22 +413,23 @@ public class ModularArmorEventHandler {
 
     private static float getJumpBoost(LivingEntity entity, boolean max) {
         ItemStack chestStack = IModularArmor.getArmor(entity);
-        ModuleHost host = DECapabilities.getHost(chestStack, entity.registryAccess());
-        if (host != null) {
-            JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
-            if (jumpData != null) {
-                double jump = jumpData.multiplier();
-                if (max) return (float) jump;
-                if (entity.isSprinting()) {
-                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost_run")) {
-                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost_run").getValue());
+        try (ModuleHost host = DECapabilities.getHost(chestStack)) {
+            if (host != null) {
+                JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
+                if (jumpData != null) {
+                    double jump = jumpData.multiplier();
+                    if (max) return (float) jump;
+                    if (entity.isSprinting()) {
+                        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost_run")) {
+                            jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost_run").getValue());
+                        }
+                    } else {
+                        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost")) {
+                            jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost").getValue());
+                        }
                     }
-                } else {
-                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost")) {
-                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost").getValue());
-                    }
+                    return (float) jump;
                 }
-                return (float) jump;
             }
         }
         return 0;
@@ -433,15 +437,16 @@ public class ModularArmorEventHandler {
 
     private static void tryTickStack(ItemStack stack, LivingEntity entity, EquipmentSlot slot, ArmorAbilities abilities, boolean equipMod) {
         if (stack.getItem() instanceof IModularItem modularItem) {
-            ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
-            if (host == null) {
-                return;
-            }
+            try (ModuleHost host = DECapabilities.getHost(stack)) {
+                if (host == null) {
+                    return;
+                }
 
-            modularItem.handleTick(host, stack, entity, slot, equipMod);
+                modularItem.handleTick(host, stack, entity, slot, equipMod);
 
-            if ((slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) || equipMod) {
-                gatherArmorProps(stack, host, entity, abilities);
+                if ((slot != null && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) || equipMod) {
+                    gatherArmorProps(stack, host, entity, abilities);
+                }
             }
         }
     }
@@ -459,12 +464,13 @@ public class ModularArmorEventHandler {
         if (player.onGround()) return;
 
         ItemStack chestStack = IModularArmor.getArmor(player);
-        ModuleHost host = DECapabilities.getHost(chestStack, player.registryAccess());
-        if (host != null) {
-            FlightData flightData = host.getModuleData(ModuleTypes.FLIGHT);
-            if (flightData != null && flightData.creative()) {
-                player.getAbilities().flying = true;
-                player.onUpdateAbilities();
+        try (ModuleHost host = DECapabilities.getHost(chestStack)) {
+            if (host != null) {
+                FlightData flightData = host.getModuleData(ModuleTypes.FLIGHT);
+                if (flightData != null && flightData.creative()) {
+                    player.getAbilities().flying = true;
+                    player.onUpdateAbilities();
+                }
             }
         }
     }

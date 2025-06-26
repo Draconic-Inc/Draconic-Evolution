@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.IdentityProvider;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -89,15 +90,16 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
-                PropertyProvider provider = DECapabilities.getProps(slot.getItem(), player.registryAccess());
-                if (provider != null) {
-                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
-                        selectedIdentity = provider.getIdentity();
-                        if (onSelectionMade != null) {
-                            onSelectionMade.accept(false);
+                try (PropertyProvider provider = DECapabilities.getHost(slot.getItem())) {
+                    if (provider != null) {
+                        if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
+                            selectedIdentity = provider.getIdentity();
+                            if (onSelectionMade != null) {
+                                onSelectionMade.accept(false);
+                            }
+                            stackCache = slot.getItem();
+                            return;
                         }
-                        stackCache = slot.getItem();
-                        return;
                     }
                 }
             }
@@ -116,28 +118,34 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
         return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
-    public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks, HolderLookup.Provider provider) {
+    public static Stream<Pair<ItemStack, ModuleHost>> getStackProviders(Stream<ItemStack> stacks) {
         return stacks
-                .map(e -> Pair.of(e, DECapabilities.getProps(e, provider)))
+                .map(e -> Pair.of(e, DECapabilities.getHost(e)))
                 .filter(e -> e.value() != null);
     }
 
     public static void handlePropertyData(Player player, PropertyData data) {
         if (data.isGlobal) {
-            getStackProviders(getPlayerInventory(player.getInventory()), player.registryAccess())
+            getStackProviders(getPlayerInventory(player.getInventory()))
                     .filter(e -> e.value().getProviderName().equals(data.providerName))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
                     .filter(e -> e.value().getType() == data.type)
-                    .forEach(e -> e.value().loadData(data, e.key()));
+                    .forEach(e -> {
+                        e.value().loadData(data, e.key());
+                        e.value().getProvider().close();
+                    });
         } else {
-            getStackProviders(getPlayerInventory(player.getInventory()), player.registryAccess())
+            getStackProviders(getPlayerInventory(player.getInventory()))
                     .filter(e -> e.value().getIdentity().equals(data.providerID))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
                     .filter(e -> e.value().getType() == data.type)
                     .findAny()
-                    .ifPresent(e -> e.value().loadData(data, e.key()));
+                    .ifPresent(e -> {
+                        e.value().loadData(data, e.key());
+                        e.value().getProvider().close();
+                    });
         }
     }
 
@@ -191,12 +199,12 @@ public class ConfigurableItemMenu extends ModularGuiContainerMenu implements Mod
 
     public static void tryOpenGui(ServerPlayer sender) {
         ItemStack stack = sender.getMainHandItem();
-        if (!stack.isEmpty() && stack.getCapability(DECapabilities.Properties.ITEM) != null) {
+        if (!stack.isEmpty() && stack.getCapability(DECapabilities.Host.ITEM) != null) {
             PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
             sender.openMenu(new ConfigurableItemMenu.Provider(slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.Properties.ITEM) != null);
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.Host.ITEM) != null);
             if (slot != null) {
                 sender.openMenu(new ConfigurableItemMenu.Provider(slot), slot::toBuff);
                 return;

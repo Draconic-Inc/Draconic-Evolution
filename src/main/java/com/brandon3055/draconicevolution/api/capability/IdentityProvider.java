@@ -33,9 +33,11 @@ public interface IdentityProvider {
         HashSet<UUID> uuids = new HashSet<>();
         stacks.map(e -> e.getCapability(DECapabilities.Host.ITEM))
                 .filter(Objects::nonNull)
-                .map(e -> e.get(provider))
                 .filter(host -> !uuids.add(host.getIdentity()))
-                .forEach(ModuleHost::regenIdentity);
+                .forEach(host -> {
+                    host.regenIdentity();
+                    host.save();
+                });
     }
 
 

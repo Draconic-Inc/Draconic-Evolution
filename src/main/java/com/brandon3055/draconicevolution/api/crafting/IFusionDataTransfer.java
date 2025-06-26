@@ -24,12 +24,14 @@ public interface IFusionDataTransfer {
             result.set(DataComponents.ENCHANTMENTS, enchantments);
         }
 
-        ModuleHost catHost = DECapabilities.getHost(cat, provider);
-        if (catHost != null) {
-            ModuleHost resultHost = DECapabilities.getHost(result, provider);
-            if (resultHost != null) {
-                if (resultHost instanceof ModuleHostImpl && catHost instanceof ModuleHostImpl) {
-                    ((ModuleHostImpl) resultHost).transferModules((ModuleHostImpl) catHost);
+        try (ModuleHost catHost = DECapabilities.getHost(cat)) {
+            if (catHost != null) {
+                try (ModuleHost resultHost = DECapabilities.getHost(result)) {
+                    if (resultHost != null) {
+                        if (resultHost instanceof ModuleHostImpl && catHost instanceof ModuleHostImpl) {
+                            ((ModuleHostImpl) resultHost).transferModules((ModuleHostImpl) catHost);
+                        }
+                    }
                 }
             }
         }

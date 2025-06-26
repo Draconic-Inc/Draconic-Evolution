@@ -35,6 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -308,7 +309,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
                     .findAny()
                     .orElse(null);
             if (hovered != null) {
-                PropertyProvider provider = DECapabilities.getProps(hovered.getItem(), gui.mc().level.registryAccess());
+                PropertyProvider provider = DECapabilities.getHost(hovered.getItem());
                 if (provider != null) {
                     hoveredProvider = provider;
                 }
@@ -354,7 +355,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
 
     private void renderSlotOverlay(Slot slot, Position pos, GuiRender render) {
         ItemStack stack = slot.getItem();
-        PropertyProvider provider = DECapabilities.getProps(stack, gui.mc().level.registryAccess());
+        PropertyProvider provider = DECapabilities.getHost(stack);
         if (!stack.isEmpty() && provider != null) {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
@@ -448,7 +449,8 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
     private static Map<InputConstants.Key, Integer> MULTI_BIND_INDEX_MAP = new HashMap<>();
     public static void checkKeybinding(int keyCode, int scanCode) {
         net.minecraft.client.gui.screens.Screen screen = Minecraft.getInstance().screen;
-        if (screen instanceof ConfigurableItemGui.Screen) {
+        Player player = Minecraft.getInstance().player;
+        if (screen instanceof ConfigurableItemGui.Screen || player == null) {
             return;
         }
         InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
@@ -459,7 +461,7 @@ public class ConfigurableItemGui extends ContainerGuiProvider<ConfigurableItemMe
             List<PropertyContainer> containers = nbt.getList("property_containers", 10)
                     .stream()
                     .map(e -> (CompoundTag) e)
-                    .map(e -> PropertyContainer.deserialize(null, dummy.getRoot(), e, screen.getMinecraft().player.registryAccess()))
+                    .map(e -> PropertyContainer.deserialize(null, dummy.getRoot(), e, player.registryAccess()))
                     .toList();
             containers.stream()
                     .filter(e -> !e.boundKey.isEmpty() && e.globalKeyBind && e.presetMode)

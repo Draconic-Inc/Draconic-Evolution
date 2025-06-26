@@ -48,7 +48,9 @@ public class DEModules {
 
     public static final Set<String> MODULE_PROVIDING_MODS = new HashSet<>();
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> STREAM_CODEC = ByteBufCodecs.holderRegistry(DEModules.MODULES.getRegistryKey());
+    private static final StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(DEModules.MODULES.getRegistryKey());
+    private static final StreamCodec<RegistryFriendlyByteBuf, Module<?>> STREAM_CODEC = ByteBufCodecs.registry(DEModules.MODULES.getRegistryKey());
+
 
     public static void init(IEventBus eventBus) {
         eventBus.addListener(DEModules::createRegistries);
@@ -63,7 +65,11 @@ public class DEModules {
         );
     }
 
-    public static StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> streamCodec() {
+    public static StreamCodec<RegistryFriendlyByteBuf, Holder<Module<?>>> holderStreamCodec() {
+        return HOLDER_STREAM_CODEC;
+    }
+
+    public static StreamCodec<RegistryFriendlyByteBuf, Module<?>> streamCodec() {
         return STREAM_CODEC;
     }
 

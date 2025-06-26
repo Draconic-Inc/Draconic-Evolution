@@ -55,19 +55,20 @@ public interface IModularMiningTool extends IModularTieredItem {
             return false;
         }
 
-        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
-        int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
-        boolean aoeSafe = false;
-        if (host instanceof PropertyProvider) {
-            if (((PropertyProvider) host).hasInt("mining_aoe")) {
-                aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
+            boolean aoeSafe = false;
+            if (host instanceof PropertyProvider) {
+                if (((PropertyProvider) host).hasInt("mining_aoe")) {
+                    aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
+                }
+                if (((PropertyProvider) host).hasBool("aoe_safe")) {
+                    aoeSafe = ((PropertyProvider) host).getBool("aoe_safe").getValue();
+                }
             }
-            if (((PropertyProvider) host).hasBool("aoe_safe")) {
-                aoeSafe = ((PropertyProvider) host).getBool("aoe_safe").getValue();
-            }
-        }
 
-        return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
+            return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
+        }
     }
 
     default boolean breakAOEBlocks(ModuleHost host, ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {

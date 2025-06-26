@@ -2,21 +2,21 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.draconicevolution.api.DataComponentAccessor;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.capability.DataAccess;
-import com.brandon3055.draconicevolution.api.capability.DataCapability;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
+import com.brandon3055.draconicevolution.init.ItemData;
 
 import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 16/11/2022
  */
-public class ModularOPStorage extends OPStorage implements DataCapability {
+public class ModularOPStorage extends OPStorage {
 
-    private DataAccess dataAccess;
+    private DataComponentAccessor dataAccess;
     private Supplier<ModuleHost> hostSupplier;
     private TileBCore tile;
 
@@ -53,6 +53,7 @@ public class ModularOPStorage extends OPStorage implements DataCapability {
         this.tile = tile;
     }
 
+    //Used for read operations only, so we dont need to worry about closing.
     private ModuleHost getHost() {
         if (tile != null) {
             return DECapabilities.Host.fromBlockEntity(tile);
@@ -104,13 +105,12 @@ public class ModularOPStorage extends OPStorage implements DataCapability {
             tile.setChanged();
         }
         if (dataAccess != null) {
-            dataAccess.setData(writeNBTInternal());
+            dataAccess.setter().set(ItemData.MODULAR_ENERGY_CAPABILITY, energy);
         }
     }
 
-    @Override
-    public void updateDataAccess(DataAccess newAccess) {
+    public void updateDataAccess(DataComponentAccessor newAccess) {
         dataAccess = newAccess;
-        readNBTInternal(dataAccess.getData());
+        energy = dataAccess.getter().getOrDefault(ItemData.MODULAR_ENERGY_CAPABILITY, 0L);
     }
 }

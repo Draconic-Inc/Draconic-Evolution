@@ -16,18 +16,22 @@ public interface ModuleHostContainer {
 
     ModuleHost getModuleHost();
 
+    int getGridWidth();
+
+    int getGridHeight();
+
     ModuleContext getModuleContext();
 
     void onGridChange();
 
-    default boolean quickMoveModule(Player player, Slot slot) {
+    default boolean quickMoveModule(ModuleHost host, Player player, Slot slot) {
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity<?> entity = module.createEntity();
-                entity.readFromItemStack(stack, getModuleContext(), player.registryAccess());
-                if (getGrid().attemptInstall(entity)) {
+                entity.saveEntityToStack(stack, getModuleContext());
+                if (getGrid().attemptInstall(entity, host)) {
                     stack.shrink(1);
                     return true;
                 }

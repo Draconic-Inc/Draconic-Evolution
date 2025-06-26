@@ -8,6 +8,7 @@ import codechicken.lib.gui.modular.lib.geometry.GuiParent;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
@@ -82,7 +83,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
     public boolean renderOverlay(GuiRender render, double mouseX, double mouseY, float partialTicks, boolean consumed) {
         if (consumed) return super.renderOverlay(render, mouseX, mouseY, partialTicks, consumed);
 
-        for (ModuleEntity<?> entity : grid.getModuleHost().getModuleEntities()) {
+        for (ModuleEntity<?> entity : grid.container.getModuleHost().getModuleEntities()) {
             int cs = grid.getCellSize();
             int mw = entity.getWidth() * cs;
             int mh = entity.getHeight() * cs;
@@ -98,7 +99,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
     }
 
     public void renderCell(GuiRender render, int x, int y, int size, int cellX, int cellY, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        ModuleGrid.GridPos cell = grid.getCell(cellX, cellY);
+        ModuleGrid.GridPos cell = grid.getCell(grid.container.getModuleHost(), cellX, cellY);
         if (cell.hasEntity()) {
             ModuleEntity<?> entity = cell.getEntity();
             int cs = grid.getCellSize();
@@ -150,44 +151,46 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
                 containerScreen.skipNextRelease = true;
             }
 
-            InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
-            boolean pickBlock = mc().options.keyPickItem.isActiveAndMatches(mouseKey);
-            ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, true);
-            long i = Util.getMillis();
-            //Double click pickup wont track the cell you click
-            doubleClick = i - lastClickTime < 250L && lastClickButton == button && getCellAtPos(mouseX, mouseY, false).equals(lastClickPos);
+            try (ModuleHost host = grid.container.getModuleHost()) {
+                InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
+                boolean pickBlock = mc().options.keyPickItem.isActiveAndMatches(mouseKey);
+                ModuleGrid.GridPos cell = getCellAtPos(host, mouseX, mouseY, true);
+                long i = Util.getMillis();
+                //Double click pickup wont track the cell you click
+                doubleClick = i - lastClickTime < 250L && lastClickButton == button && getCellAtPos(host, mouseX, mouseY, false).equals(lastClickPos);
 
-            if (cell.isValidCell()) {
-                ModuleEntity<?> entity = cell.getEntity();
-                if (entity != null) {
-                    int cs = grid.getCellSize();
-                    int mw = entity.getWidth() * cs;
-                    int mh = entity.getHeight() * cs;
-                    int xPos = (int) xMin() + (entity.getGridX() * cs);
-                    int yPos = (int) yMin() + (entity.getGridY() * cs);
-                    if (entity.clientModuleClicked(this, player.player, xPos, yPos, mw, mh, mouseX, mouseY, button)) {
-                        return true;
-                    }
-                }
-
-                if (player.player.containerMenu.getCarried().isEmpty()) {
-                    if (pickBlock) {
-                        handleGridClick(cell, mouseX, mouseY, button, ClickType.CLONE); //Creative Clone
-                    } else {
-                        boolean shiftClick = (InputConstants.isKeyDown(mc().getWindow().getWindow(), 340) || InputConstants.isKeyDown(mc().getWindow().getWindow(), 344));
-                        ClickType clicktype = ClickType.PICKUP;
-                        if (shiftClick) {
-                            clicktype = ClickType.QUICK_MOVE;
+                if (cell.isValidCell()) {
+                    ModuleEntity<?> entity = cell.getEntity();
+                    if (entity != null) {
+                        int cs = grid.getCellSize();
+                        int mw = entity.getWidth() * cs;
+                        int mh = entity.getHeight() * cs;
+                        int xPos = (int) xMin() + (entity.getGridX() * cs);
+                        int yPos = (int) yMin() + (entity.getGridY() * cs);
+                        if (entity.clientModuleClicked(this, player.player, xPos, yPos, mw, mh, mouseX, mouseY, button)) {
+                            return true;
                         }
-                        handleGridClick(cell, mouseX, mouseY, button, clicktype);
                     }
-                } else {
-                    canDrop = true;
-                }
-            }
 
-            lastClickTime = i;
-            lastClickPos = getCellAtPos(mouseX, mouseY, false);
+                    if (player.player.containerMenu.getCarried().isEmpty()) {
+                        if (pickBlock) {
+                            handleGridClick(host, cell, mouseX, mouseY, button, ClickType.CLONE); //Creative Clone
+                        } else {
+                            boolean shiftClick = (InputConstants.isKeyDown(mc().getWindow().getWindow(), 340) || InputConstants.isKeyDown(mc().getWindow().getWindow(), 344));
+                            ClickType clicktype = ClickType.PICKUP;
+                            if (shiftClick) {
+                                clicktype = ClickType.QUICK_MOVE;
+                            }
+                            handleGridClick(host, cell, mouseX, mouseY, button, clicktype);
+                        }
+                    } else {
+                        canDrop = true;
+                    }
+                }
+
+                lastClickTime = i;
+                lastClickPos = getCellAtPos(host, mouseX, mouseY, false);
+            }
             lastClickButton = button;
             return true;
         }
@@ -196,19 +199,21 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, true);
-        if (this.doubleClick && button == 0) {
-            this.handleGridClick(cell, mouseX, mouseY, button, ClickType.PICKUP_ALL);
-            this.doubleClick = false;
-            this.lastClickTime = 0L;
-        } else if (canDrop) {
-            handleGridClick(cell, mouseX, mouseY, button, ClickType.PICKUP);
+        try (ModuleHost host = grid.container.getModuleHost()){
+            ModuleGrid.GridPos cell = getCellAtPos(host, mouseX, mouseY, true);
+            if (this.doubleClick && button == 0) {
+                this.handleGridClick(host, cell, mouseX, mouseY, button, ClickType.PICKUP_ALL);
+                this.doubleClick = false;
+                this.lastClickTime = 0L;
+            } else if (canDrop) {
+                handleGridClick(host, cell, mouseX, mouseY, button, ClickType.PICKUP);
+            }
         }
 
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
-    protected void handleGridClick(ModuleGrid.GridPos cell, double mouseX, double mouseY, int mouseButton, ClickType type) {
+    protected void handleGridClick(ModuleHost host, ModuleGrid.GridPos cell, double mouseX, double mouseY, int mouseButton, ClickType type) {
         float x = 0.5F;
         float y = 0.5F;
         ModuleEntity<?> entity = cell.getEntity();
@@ -222,7 +227,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
             y = (float) (mouseY - my) / mh;
         }
         DraconicNetwork.sendModuleContainerClick(player.player.registryAccess(), cell, x, y, mouseButton, type);
-        InstallResult result = grid.cellClicked(cell, x, y, mouseButton, type);
+        InstallResult result = grid.cellClicked(host, cell, x, y, mouseButton, type);
         if (result != null && result.resultType != InstallResult.InstallResultType.YES && result.resultType != InstallResult.InstallResultType.OVERRIDE) {
             lastError = result.reason;
             lastErrorTime = 0;
@@ -235,7 +240,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
      *                        at the top left of the module. Basically the cell the module is
      *                        going to be in stalled in.
      */
-    private ModuleGrid.GridPos getCellAtPos(double xPos, double yPos, boolean withPlaceOffset) {
+    private ModuleGrid.GridPos getCellAtPos(ModuleHost host, double xPos, double yPos, boolean withPlaceOffset) {
         int cs = grid.getCellSize();
         int x = (int) ((xPos - xMin()) / cs);
         int y = (int) ((yPos - yMin()) / cs);
@@ -246,7 +251,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
             x = (int) ((xPos - xMin() - (mw / 2D) + (cs / 2D)) / cs);
             y = (int) ((yPos - yMin() - (mh / 2D) + (cs / 2D)) / cs);
         }
-        return grid.getCell(x, y);
+        return grid.getCell(host, x, y);
     }
 
     private ModuleGrid.GridPos hoverCell = null;
@@ -254,10 +259,11 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> implement
 
     @Override
     public void tick(double mouseX, double mouseY) {
-        ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, false);
+        ModuleHost host = grid.container.getModuleHost();
+        ModuleGrid.GridPos cell = getCellAtPos(host, mouseX, mouseY, false);
         if (cell.hasEntity()) {
             ModuleEntity<?> entity = cell.getEntity();
-            cell = grid.getCell(entity.getGridX(), entity.getGridY());
+            cell = grid.getCell(host, entity.getGridX(), entity.getGridY());
             if (cell.equals(hoverCell)) {
                 hoverTime++;
             } else {

@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.capability;
 
-import com.brandon3055.draconicevolution.api.config.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.DecimalProperty;
+import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -13,10 +13,10 @@ import java.util.Collection;
  * This capability forms the base of the DE item configuration system.
  * Note any item implementing this MUST also implement the share tag read and write functions from {@link DECapabilities} Or something similar.
  *
- * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
- * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
+// * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
+// * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
  */
-public interface PropertyProvider extends INBTSerializable<CompoundTag>, IdentityProvider{
+public interface PropertyProvider extends /*INBTSerializable<CompoundTag>,*/ IdentityProvider, AutoCloseable {
 
     /**
      * This should be unique to this "type" of provider. (type in most cases refers to the item this provider belongs to)<br>
@@ -54,9 +54,9 @@ public interface PropertyProvider extends INBTSerializable<CompoundTag>, Identit
         return getProperty(propertyName) instanceof IntegerProperty;
     }
 
-    default boolean hasEnum(String propertyName) {
-        return getProperty(propertyName) instanceof EnumProperty;
-    }
+//    default boolean hasEnum(String propertyName) {
+//        return getProperty(propertyName) instanceof EnumProperty;
+//    }
 
     default BooleanProperty getBool(String propertyName) {
         return (BooleanProperty) getProperty(propertyName);
@@ -70,7 +70,16 @@ public interface PropertyProvider extends INBTSerializable<CompoundTag>, Identit
         return (IntegerProperty) getProperty(propertyName);
     }
 
-    default EnumProperty<?> getEnum(String propertyName) {
-        return (EnumProperty<?>) getProperty(propertyName);
-    }
+//    default EnumProperty<?> getEnum(String propertyName) {
+//        return (EnumProperty<?>) getProperty(propertyName);
+//    }
+
+    void markDirty();
+
+    /**
+     * Close must be called once you are finished with the capability instance in order for any data changes to be saved.
+     * Unlike other closable, you can continue to use the capability instance after you call close, so long as you call close again when you are done.
+     */
+    @Override
+    void close();
 }

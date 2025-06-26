@@ -25,6 +25,8 @@ public abstract class DETileMenu<T extends TileBCore> extends ContainerBCTile<T>
 
     protected ModuleGrid moduleGrid;
     protected ModuleHost moduleHost = null;
+    private int gridWidth;
+    private int gridHeight;
 
     public DETileMenu(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
         super(type, windowId, player, extraData);
@@ -40,15 +42,28 @@ public abstract class DETileMenu<T extends TileBCore> extends ContainerBCTile<T>
         ModuleHost host = DECapabilities.Host.fromBlockEntity(tile);
         if (host != null) {
             this.moduleHost = host;
+            gridWidth = moduleHost.getGridWidth();
+            gridHeight = moduleHost.getGridHeight();
             this.moduleGrid = new ModuleGrid(this, player);
         }
     }
 
     @Override
+    public int getGridWidth() {
+        return gridWidth;
+    }
+
+    @Override
+    public int getGridHeight() {
+        return gridHeight;
+    }
+
+    @Override
     public ItemStack quickMoveStack(Player player, int i) {
-        if (moduleHost != null && quickMoveModule(player, getSlot(i))) {
+        if (moduleHost != null && quickMoveModule(moduleHost, player, getSlot(i))) {
             return ItemStack.EMPTY;
         }
+        if (moduleHost != null) moduleHost.save();
         return super.quickMoveStack(player, i);
     }
 

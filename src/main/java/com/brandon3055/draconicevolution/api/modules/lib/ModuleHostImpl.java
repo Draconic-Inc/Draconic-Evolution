@@ -1,22 +1,20 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.capability.DataAccess;
-import com.brandon3055.draconicevolution.api.capability.DataCapability;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.DataComponentAccessor;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
-import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.init.ItemData;
+import net.covers1624.quack.collection.FastStream;
 import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -30,26 +28,31 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public class ModuleHostImpl implements ModuleHost, PropertyProvider, DataCapability {
+public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private static final Logger LOGGER = LogManager.getLogger(ModuleHostImpl.class);
 
     private final int gridWidth;
     private final int gridHeight;
-    private UUID identity = null;
     private final String providerName;
     private final boolean deleteInvalidModules;
     private final TechLevel techLevel;
-    private final List<ModuleEntity<?>> moduleEntities = new ArrayList<>();
+
     private final Set<ModuleType<?>> additionalTypeList = new HashSet<>();
     private final Set<ModuleType<?>> typeBlackList = new HashSet<>();
     private final Set<ModuleCategory> categories = new HashSet<>();
-    private final List<ConfigProperty> providedProperties = new ArrayList<>();
     private final Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
     private final Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
     private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
     private BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck = null;
-    private DataAccess dataAccess = null;
+    private DataComponentAccessor dataAccess = null;
+
+    private boolean isDirty = true;
+
+    //Serialized
+    private final List<ModuleEntity<?>> moduleEntities = new ArrayList<>();
+    private final List<ConfigProperty> providedProperties = new ArrayList<>();
+    private UUID identity = null;
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -267,79 +270,63 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider, DataCapabil
 
             //Repopulate the property map.
             propertyMap.clear();
-            providedProperties.forEach(e -> propertyMap.put(e.getName(), e));
+            providedProperties.forEach(e -> {
+                e.setProvider(this);
+                propertyMap.put(e.getName(), e);
+            });
 
-            getModuleEntities().forEach(e -> e.getEntityProperties().forEach(p -> {
-                if (propertyMap.containsKey(p.getName())) {
-                    p.generateUnique(); //This avoids duplicate names due to creative duped items.
-                }
-                propertyMap.put(p.getName(), p);
-            }));
+            getModuleEntities().forEach(e -> {
+                List<ConfigProperty> entityProps = new ArrayList<>();
+                e.getEntityProperties(entityProps);
+                entityProps.forEach(p -> {
+                    if (propertyMap.containsKey(p.getName())) {
+                        //TODO, This is a data change that will need to be saved, but theoretically, this will never get called.
+                        p.generateUnique(); //This avoids duplicate names due to creative duped items.
+                    }
+                    propertyMap.put(p.getName(), p);
+                });
+            });
         }
     }
 
     //endregion
+    public void saveData() {
+        if (dataAccess == null) return;
 
-    @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        //Serialize Modules
-        ListTag modules = new ListTag();
-        synchronized (moduleEntities) {
-            for (ModuleEntity<?> entity : moduleEntities) {
-                CompoundTag entityNBT = new CompoundTag();
-                entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
-                entity.writeToNBT(entityNBT, provider);
-                modules.add(entityNBT);
-            }
-        }
-        nbt.put("modules", modules);
-
-        //Serialize Properties
-        nbt.putUUID("identity", getIdentity());
-        CompoundTag properties = new CompoundTag();
-        providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT(provider)));
-        nbt.put("properties", properties);
-        return nbt;
+        dataAccess.setter().set(ItemData.MODULE_ENTITIES, FastStream.of(moduleEntities).map(ModuleEntity::copy).toImmutableList(FastStream.infer()));
+        dataAccess.setter().set(ItemData.CONFIG_PROPERTIES, FastStream.of(providedProperties).map(ConfigProperty::copy).toImmutableList());
+        dataAccess.setter().set(ItemData.PROVIDER_IDENTITY, getIdentity());
     }
 
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        synchronized (moduleEntities) {
-            clearCaches();
-            //Deserialize modules first
-            moduleEntities.clear();
-            ListTag modules = nbt.getList("modules", 10);
-            modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
-                ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
-                com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
-                if (module == null) {
-                    LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
-                } else {
-                    ModuleEntity<?> entity = module.createEntity();
-                    entity.readFromNBT(compound, provider);
-                    if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-                        LOGGER.warn("Deleting module from invalid grid position: " + entity);
-                    } else {
-                        moduleEntities.add(entity);
-                        entity.setHost(this);
-                    }
-                }
-            });
+    public void loadData() {
+        if (dataAccess == null) return;
+        moduleEntities.clear();
+        providedProperties.clear();
 
-            //So that we can gather properties which may depend on installed modules.
-            gatherProperties();
-            if (nbt.hasUUID("identity")) {
-                identity = nbt.getUUID("identity");
-            }
-            CompoundTag properties = nbt.getCompound("properties");
-            providedProperties.forEach(e -> e.deserializeNBT(provider, properties.getCompound(e.getName())));
-        }
+        dataAccess.getter().getOrDefault(ItemData.MODULE_ENTITIES, moduleEntities).forEach(e -> moduleEntities.add(e.copy()));
+        dataAccess.getter().getOrDefault(ItemData.CONFIG_PROPERTIES, providedProperties).forEach(e -> providedProperties.add(e.copy()));
+        identity = dataAccess.getter().getOrDefault(ItemData.PROVIDER_IDENTITY, getIdentity());
+
+        moduleEntities.forEach(e -> e.setHost(this));
+        providedProperties.forEach(e -> e.setProvider(this));
+        gatherProperties();
     }
 
-    @Override
-    public void updateDataAccess(DataAccess newAccess) {
+    public void updateDataAccess(DataComponentAccessor newAccess) {
         this.dataAccess = newAccess;
-        deserializeNBT(dataAccess.getProvider(), dataAccess.getData());
+        loadData();
+    }
+
+    @Override
+    public void markDirty() {
+        isDirty = true;
+    }
+
+    @Override
+    public void close() {
+        if (isDirty) {
+            isDirty = false;
+            saveData();
+        }
     }
 }

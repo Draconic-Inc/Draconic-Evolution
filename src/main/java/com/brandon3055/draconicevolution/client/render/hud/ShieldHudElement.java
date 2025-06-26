@@ -117,94 +117,95 @@ public class ShieldHudElement extends AbstractHudElement {
 
         //Get and validate the armor chestpiece
         ItemStack chestStack = IModularArmor.getArmor(mc.player);
-        ModuleHost host = DECapabilities.getHost(chestStack, mc.player.registryAccess());
-        IOPStorage opStorage = chestStack.getCapability(CapabilityOP.ITEM);
-        if (chestStack.isEmpty() || host == null || opStorage == null) {
-            renderHud = false; //The storage check is just a safety check. If the item has a ModuleHost it should always have storage unless something is broken (even without storage modules the capacity is just zero)
-            if (configuring) setupExample();
-            return;
-        }
-
-        //Update Shield
-        ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-        if (shieldControl == null) {
-            shieldCharge = 0;
-            shieldText = I18n.get("hud_armor.draconicevolution.no_shield");
-        } else if (!shieldControl.isShieldEnabled()) {
-            shieldCharge = 0;
-            shieldText = I18n.get("hud_armor.draconicevolution.shield_disabled");
-        } else {
-            double capacity = shieldControl.getShieldCapacity() + shieldControl.getMaxShieldBoost();
-            if (capacity == 0 && shieldControl.getMaxShieldBoost() > 0) {
-                capacity = shieldControl.getMaxShieldBoost();
-            }
-            double points = shieldControl.getShieldPoints();
-            shieldCharge = capacity > 0 ? points / capacity : 0;
-            shieldText = (int) points + "/" + (int) capacity;
-            double maxCooldown = shieldControl.getMaxShieldCoolDown();
-            coolDown = maxCooldown > 0 ? shieldControl.getShieldCoolDown() / maxCooldown : 0;
-        }
-
-        //Energy
-        long energy = opStorage.getOPStored();
-        long maxEnergy = opStorage.getMaxOPStored();
-
-        if (energyMode > 0) {
-            List<ItemStack> capacitors = new ArrayList<>(EquipmentManager.findItems(e -> e.getItem() instanceof DraconiumCapacitor, mc.player));
-            for (ItemStack stack : mc.player.getInventory().items) {
-                if (stack.getItem() instanceof DraconiumCapacitor) {
-                    capacitors.add(stack);
-                }
-            }
-            long capMax = 0;
-            long capEnergy = 0;
-
-            for (ItemStack stack : capacitors) {
-                IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
-                if (storage != null) {
-                    capMax = Utils.safeAdd(storage.getMaxOPStored(), capMax);
-                    capEnergy = Utils.safeAdd(storage.getOPStored(), capEnergy);
-                }
+        try (ModuleHost host = DECapabilities.getHost(chestStack)) {
+            IOPStorage opStorage = chestStack.getCapability(CapabilityOP.ITEM);
+            if (chestStack.isEmpty() || host == null || opStorage == null) {
+                renderHud = false; //The storage check is just a safety check. If the item has a ModuleHost it should always have storage unless something is broken (even without storage modules the capacity is just zero)
+                if (configuring) setupExample();
+                return;
             }
 
-            if (energyMode == 1) {
-                energy = capEnergy;
-                maxEnergy = capMax;
+            //Update Shield
+            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+            if (shieldControl == null) {
+                shieldCharge = 0;
+                shieldText = I18n.get("hud_armor.draconicevolution.no_shield");
+            } else if (!shieldControl.isShieldEnabled()) {
+                shieldCharge = 0;
+                shieldText = I18n.get("hud_armor.draconicevolution.shield_disabled");
             } else {
-                energy = Utils.safeAdd(capEnergy, energy);
-                maxEnergy = Utils.safeAdd(capMax, maxEnergy);
-            }
-        }
-
-        energyBar = maxEnergy > 0 ? energy / (double) maxEnergy : 0;
-        if (numericEnergy) {
-            energyText = I18n.get("op.brandonscore.op") + ": " + Utils.formatNumber(energy);
-        }
-
-        //Totems
-        if (showUndying) {
-            List<UndyingEntity> totems = host.getEntitiesByType(ModuleTypes.UNDYING)
-                    .map(e -> (UndyingEntity) e)
-//                    .sorted(Comparator.comparing(e -> e.isCharged() ? -1 : e.getCharge()))
-                    .sorted(Comparator.comparing(e -> e.getModule().getModuleTechLevel().index))
-                    .collect(Collectors.toList());
-            int chargedTotems = 0;
-            totemStatus = new double[totems.size()];
-            for (int i = 0; i < totems.size(); i++) {
-                UndyingEntity entity = totems.get(i);
-                if (entity.isCharged()) {
-                    chargedTotems++;
+                double capacity = shieldControl.getShieldCapacity() + shieldControl.getMaxShieldBoost();
+                if (capacity == 0 && shieldControl.getMaxShieldBoost() > 0) {
+                    capacity = shieldControl.getMaxShieldBoost();
                 }
-                totemStatus[i] = entity.isCharged() ? -1 : entity.getCharge();
+                double points = shieldControl.getShieldPoints();
+                shieldCharge = capacity > 0 ? points / capacity : 0;
+                shieldText = (int) points + "/" + (int) capacity;
+                double maxCooldown = shieldControl.getMaxShieldCoolDown();
+                coolDown = maxCooldown > 0 ? shieldControl.getShieldCoolDown() / maxCooldown : 0;
             }
-            if (lastTotemCount != totems.size()) {
-                lastTotemCount = totems.size();
-            } else if (chargedTotems > lastChargedTotemCount && mc.level != null) {
-                mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1, 2, false);
+
+            //Energy
+            long energy = opStorage.getOPStored();
+            long maxEnergy = opStorage.getMaxOPStored();
+
+            if (energyMode > 0) {
+                List<ItemStack> capacitors = new ArrayList<>(EquipmentManager.findItems(e -> e.getItem() instanceof DraconiumCapacitor, mc.player));
+                for (ItemStack stack : mc.player.getInventory().items) {
+                    if (stack.getItem() instanceof DraconiumCapacitor) {
+                        capacitors.add(stack);
+                    }
+                }
+                long capMax = 0;
+                long capEnergy = 0;
+
+                for (ItemStack stack : capacitors) {
+                    IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
+                    if (storage != null) {
+                        capMax = Utils.safeAdd(storage.getMaxOPStored(), capMax);
+                        capEnergy = Utils.safeAdd(storage.getOPStored(), capEnergy);
+                    }
+                }
+
+                if (energyMode == 1) {
+                    energy = capEnergy;
+                    maxEnergy = capMax;
+                } else {
+                    energy = Utils.safeAdd(capEnergy, energy);
+                    maxEnergy = Utils.safeAdd(capMax, maxEnergy);
+                }
             }
-            lastChargedTotemCount = chargedTotems;
-        } else {
-            totemStatus = new double[0];
+
+            energyBar = maxEnergy > 0 ? energy / (double) maxEnergy : 0;
+            if (numericEnergy) {
+                energyText = I18n.get("op.brandonscore.op") + ": " + Utils.formatNumber(energy);
+            }
+
+            //Totems
+            if (showUndying) {
+                List<UndyingEntity> totems = host.getEntitiesByType(ModuleTypes.UNDYING)
+                        .map(e -> (UndyingEntity) e)
+    //                    .sorted(Comparator.comparing(e -> e.isCharged() ? -1 : e.getCharge()))
+                        .sorted(Comparator.comparing(e -> e.getModule().getModuleTechLevel().index))
+                        .collect(Collectors.toList());
+                int chargedTotems = 0;
+                totemStatus = new double[totems.size()];
+                for (int i = 0; i < totems.size(); i++) {
+                    UndyingEntity entity = totems.get(i);
+                    if (entity.isCharged()) {
+                        chargedTotems++;
+                    }
+                    totemStatus[i] = entity.isCharged() ? -1 : entity.getCharge();
+                }
+                if (lastTotemCount != totems.size()) {
+                    lastTotemCount = totems.size();
+                } else if (chargedTotems > lastChargedTotemCount && mc.level != null) {
+                    mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1, 2, false);
+                }
+                lastChargedTotemCount = chargedTotems;
+            } else {
+                totemStatus = new double[0];
+            }
         }
 
         renderHud = true;

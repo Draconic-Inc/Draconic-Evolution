@@ -31,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -41,11 +43,15 @@ import java.util.stream.Stream;
  * Created by brandon3055 on 19/4/20.
  */
 public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHostContainer, ModularMenuCommon {
+    public static final Logger LOGGER = LogManager.getLogger();
+    private int gridWidth;
+    private int gridHeight;
+
     private UUID hostIdentity;
     private PlayerSlot slot;
     public ItemStack hostStack;
     private ModuleGrid moduleGrid;
-    private ModuleHost hostCache;
+    private ModuleHost fallbackHost;
     private Player player;
 
     public final SlotGroup main = createSlotGroup(0);
@@ -77,11 +83,23 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
             return;
         }
 
-        hostCache = DECapabilities.getHost(hostStack, inv.player.registryAccess());;
-        if (hostCache == null) {
+        fallbackHost = DECapabilities.getHost(hostStack);
+        if (fallbackHost == null) {
             return;
         }
-        hostIdentity = hostCache.getIdentity();
+        gridWidth = fallbackHost.getGridWidth();
+        gridHeight = fallbackHost.getGridHeight();
+        hostIdentity = fallbackHost.getIdentity();
+    }
+
+    @Override
+    public int getGridWidth() {
+        return gridWidth;
+    }
+
+    @Override
+    public int getGridHeight() {
+        return gridHeight;
     }
 
     @Override
@@ -112,8 +130,11 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
 
     @Override
     public ModuleHost getModuleHost() {
-        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player), player.registryAccess());
-        return host == null || !host.getIdentity().equals(hostIdentity) ? hostCache : (hostCache = host);
+        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player));
+        if (host == null) {
+            LOGGER.error("Module host is null! Something is probably broken, or about to break!, Slot: {} Stack: {}", slot, slot.getStackInSlot(player));
+        }
+        return host == null || !host.getIdentity().equals(hostIdentity) ? fallbackHost : (fallbackHost = host);
     }
 
     @Override
@@ -144,14 +165,16 @@ public class ModularItemMenu extends ModularGuiContainerMenu implements ModuleHo
             return false;
         }
 
-        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player), playerIn.registryAccess());
+        ModuleHost host = DECapabilities.getHost(slot.getStackInSlot(player));
         return host != null && host.getIdentity().equals(hostIdentity);
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
-        if (quickMoveModule(player, getSlot(i))) {
-            return ItemStack.EMPTY;
+        try (ModuleHost host = getModuleHost()) {
+            if (quickMoveModule(host, player, getSlot(i))) {
+                return ItemStack.EMPTY;
+            }
         }
         return super.quickMoveStack(player, i);
     }

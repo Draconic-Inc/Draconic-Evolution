@@ -31,12 +31,13 @@ public class ModuleEventHandler {
     private static void onPlayerInteractItem(PlayerInteractEvent.RightClickItem event) {
         ItemStack stack = event.getItemStack();
         if (stack.isEmpty()) return;
-        ModuleHost host = DECapabilities.getHost(stack, event.getEntity().registryAccess());
-        if (host != null) {
-            for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                if (entity instanceof EntityOverridesItemUse override) {
-                    override.onPlayerInteractEvent(event);
-                    return;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (host != null) {
+                for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                    if (entity instanceof EntityOverridesItemUse override) {
+                        override.onPlayerInteractEvent(event);
+                        return;
+                    }
                 }
             }
         }
@@ -45,12 +46,13 @@ public class ModuleEventHandler {
     private static void onPlayerInteractBlock(PlayerInteractEvent.RightClickBlock event) {
         ItemStack stack = event.getItemStack();
         if (stack.isEmpty()) return;
-        ModuleHost host = DECapabilities.getHost(stack, event.getEntity().registryAccess());
-        if (host != null) {
-            for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                if (entity instanceof EntityOverridesItemUse override) {
-                    override.onPlayerInteractEvent(event);
-                    return;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (host != null) {
+                for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                    if (entity instanceof EntityOverridesItemUse override) {
+                        override.onPlayerInteractEvent(event);
+                        return;
+                    }
                 }
             }
         }
@@ -59,12 +61,13 @@ public class ModuleEventHandler {
     private static void onLivingUseItem(LivingEntityUseItemEvent event) {
         ItemStack stack = event.getItem();
         if (stack.isEmpty()) return;
-        ModuleHost host = DECapabilities.getHost(stack, event.getEntity().registryAccess());
-        if (host != null) {
-            for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                if (entity instanceof EntityOverridesItemUse override) {
-                    override.onEntityUseItem(event);
-                    return;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (host != null) {
+                for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                    if (entity instanceof EntityOverridesItemUse override) {
+                        override.onEntityUseItem(event);
+                        return;
+                    }
                 }
             }
         }

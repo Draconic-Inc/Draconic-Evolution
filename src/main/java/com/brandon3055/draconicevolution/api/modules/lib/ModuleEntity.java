@@ -11,21 +11,17 @@ import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
-import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,44 +33,56 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 18/4/20.
  */
-public class ModuleEntity<T extends ModuleData<T>> {
+public abstract class ModuleEntity<T extends ModuleData<T>> {
 
-    protected final Module<T> module;
+    public static final Codec<ModuleEntity<?>> CODEC = new ModuleEntityCodec();
+    public static final StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<?>> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public ModuleEntity<?> decode(RegistryFriendlyByteBuf buf) {
+            Module<?> module = DEModules.streamCodec().decode(buf);
+            return module.entityStreamCodec().decode(buf);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, ModuleEntity<?> entity) {
+            DEModules.streamCodec().encode(buf, entity.getModule());
+            entity.getModule().entityStreamCodec().encode(buf, entity);
+        }
+    };
+
+    @Deprecated //Should avoid using this if at all possible!
     protected ModuleHost host;
-//    Get rid of this here, its mainly just here for serialisation, so dont need it. Will just need a way to get props from entitues that actually regiszter them
-//    protected Map<String, ConfigProperty> propertyMap = createProperties();
-    protected boolean savePropertiesToItem = false;
-    protected int gridX;
-    protected int gridY;
+    //TODO Not sure about this, not sure if there is anm easy way to implement it.
+//    protected boolean savePropertiesToItem = false;
+    //    Get rid of this here, its mainly just here for serialisation, so dont need it. Will just need a way to get props from entitues that actually regiszter them
+    //    protected Map<String, ConfigProperty> propertyMap = createProperties();
+    protected final Module<T> module;
+    private int gridX;
+    private int gridY;
 
-    public static final Codec<ModuleEntity<T>> CODEC;
-
-
-    //Think I want these on the module itself "entityCodec"
-//    public Codec<ModuleEntity<T>> codec() {
-//
-//    }
-//
-//    public StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<T>> streamCodec() {
-//
-//    }
-
-    public ModuleEntity(Module<T> module) {
+    protected ModuleEntity(Module<T> module) {
         this.module = module;
-        propertyMap.values().forEach(ConfigProperty::generateUnique);
     }
+
+    protected ModuleEntity(Module<T> module, int gridX, int gridY) {
+        this.module = module;
+        this.gridX = gridX;
+        this.gridY = gridY;
+    }
+
+    public abstract ModuleEntity<?> copy();
 
     public void setHost(ModuleHost host) {
         this.host = host;
@@ -144,6 +152,28 @@ public class ModuleEntity<T extends ModuleData<T>> {
     public void clearCaches() {
     }
 
+    /**
+     * Save module data to module item stack. Mainly used to store module data when module is removed from host.
+     * Data should be stored as data components.
+     *
+     * @param stack   The module item stack.
+     * @param context The module context.
+     */
+    public void saveEntityToStack(ItemStack stack, ModuleContext context) {
+
+    }
+
+    /**
+     * Save module data to module item stack. Mainly used to store module data when module is removed from host.
+     * Data should be stored as data components.
+     *
+     * @param stack   The module item stack.
+     * @param context The module context.
+     */
+    public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
+
+    }
+
 //    /**
 //     * If you are using {@link #getAttributeModifiers(EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
 //     * implement this method and add all of your attribute id's to the provided list. This list is used to refresh or remove attributes added by modules.
@@ -151,96 +181,96 @@ public class ModuleEntity<T extends ModuleData<T>> {
 //     */
 //    public void getAttributeIDs(List<UUID> list) {}
 
-    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        compound.putByte("x", (byte) gridX);
-        compound.putByte("y", (byte) gridY);
-        if (!propertyMap.isEmpty()) {
-            CompoundTag properties = new CompoundTag();
-            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
-            compound.put("properties", properties);
-        }
-        writeExtraData(compound, provider);
-    }
+//    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
+//        compound.putByte("x", (byte) gridX);
+//        compound.putByte("y", (byte) gridY);
+//        if (!propertyMap.isEmpty()) {
+//            CompoundTag properties = new CompoundTag();
+//            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
+//            compound.put("properties", properties);
+//        }
+//        writeExtraData(compound, provider);
+//    }
+//
+//    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
+//        gridX = compound.getByte("x");
+//        gridY = compound.getByte("y");
+//        CompoundTag properties = compound.getCompound("properties");
+//        propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
+//        readExtraData(compound, provider);
+//    }
 
-    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        gridX = compound.getByte("x");
-        gridY = compound.getByte("y");
-        CompoundTag properties = compound.getCompound("properties");
-        propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
-        readExtraData(compound, provider);
-    }
+//    /**
+//     * Called when the module is about to be removed from the module grid.
+//     * This allows you to store data on the module item stack.<br>
+//     * Note: there is no guarantee the module will actually be removed at this point so do not modify the context.
+//     *
+//     * @param stack The module stack
+//     */
+//    public final void writeToItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
+//        CompoundTag tag = new CompoundTag();
+//        writeToItemStack(stack, tag, context, provider);
+//        if (!tag.isEmpty()) {
+//            stack.set(ItemData.MODULE_ENTITY_TAG, CustomData.of(tag));
+//        }
+//    }
 
-    /**
-     * Called when the module is about to be removed from the module grid.
-     * This allows you to store data on the module item stack.<br>
-     * Note: there is no guarantee the module will actually be removed at this point so do not modify the context.
-     *
-     * @param stack The module stack
-     */
-    public final void writeToItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        writeToItemStack(stack, tag, context, provider);
-        if (!tag.isEmpty()) {
-            stack.set(ItemData.MODULE_ENTITY_TAG, CustomData.of(tag));
-        }
-    }
+//    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+//        if (savePropertiesToItem && !propertyMap.isEmpty()) {
+//            CompoundTag properties = tag.getCompound("properties");
+//            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
+//        }
+//        writeExtraData(tag, provider);
+//    }
 
-    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
-        if (savePropertiesToItem && !propertyMap.isEmpty()) {
-            CompoundTag properties = tag.getCompound("properties");
-            propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT(provider)));
-        }
-        writeExtraData(tag, provider);
-    }
-
-    /**
-     * Called when a module is about to be inserted into a module grid.
-     * This allows you to load any previously saved data.<br>
-     * Note: there is no guarantee the module will actually be installed at this point so do not modify the context.
-     *
-     * @param stack The module stack
-     * @see #writeToItemStack(ItemStack, CompoundTag, ModuleContext, HolderLookup.Provider)
-     */
-    public final void readFromItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
-        if (!stack.has(ItemData.MODULE_ENTITY_TAG)) {
-            return;
-        }
-        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
-        if (!tag.isEmpty()) {
-            readFromItemStack(stack, tag, context, provider);
-        }
-    }
-
-    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
-        CompoundTag properties = tag.getCompound("properties");
-        if (savePropertiesToItem && !properties.isEmpty()) {
-            propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
-        }
-        readExtraData(tag, provider);
-    }
-
-
-    protected CompoundTag getStackData(ItemStack stack) {
-        return stack.has(ItemData.MODULE_ENTITY_TAG) ? stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag() : new CompoundTag();
-    }
+//    /**
+//     * Called when a module is about to be inserted into a module grid.
+//     * This allows you to load any previously saved data.<br>
+//     * Note: there is no guarantee the module will actually be installed at this point so do not modify the context.
+//     *
+//     * @param stack The module stack
+//     * @see #writeToItemStack(ItemStack, CompoundTag, ModuleContext, HolderLookup.Provider)
+//     */
+//    public final void readFromItemStack(ItemStack stack, ModuleContext context, HolderLookup.Provider provider) {
+//        if (!stack.has(ItemData.MODULE_ENTITY_TAG)) {
+//            return;
+//        }
+//        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+//        if (!tag.isEmpty()) {
+//            readFromItemStack(stack, tag, context, provider);
+//        }
+//    }
+//
+//    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
+//        CompoundTag properties = tag.getCompound("properties");
+//        if (savePropertiesToItem && !properties.isEmpty()) {
+//            propertyMap.forEach((name, property) -> property.deserializeNBT(provider, properties.getCompound(name)));
+//        }
+//        readExtraData(tag, provider);
+//    }
 
 
-    /**
-     * Convenient method for storage extra data both when installed in a host
-     * and when in item form.
-     *
-     * @param nbt The tag to write your data to. Keep in mind this will be the raw CompoundTag from writeToNBT or the raw ItemStack tag
-     * @return the nbt tag that was passed in.
-     */
-    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        return nbt;
-    }
+//    protected CompoundTag getStackData(ItemStack stack) {
+//        return stack.has(ItemData.MODULE_ENTITY_TAG) ? stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag() : new CompoundTag();
+//    }
 
-    /**
-     * Read stored data from item or when loaded in a host.
-     */
-    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-    }
+
+//    /**
+//     * Convenient method for storage extra data both when installed in a host
+//     * and when in item form.
+//     *
+//     * @param nbt The tag to write your data to. Keep in mind this will be the raw CompoundTag from writeToNBT or the raw ItemStack tag
+//     * @return the nbt tag that was passed in.
+//     */
+//    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+//        return nbt;
+//    }
+//
+//    /**
+//     * Read stored data from item or when loaded in a host.
+//     */
+//    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
+//    }
 
     //region Setters / Getters
 
@@ -254,10 +284,12 @@ public class ModuleEntity<T extends ModuleData<T>> {
     }
 
     public void setGridX(int gridX) {
+        if (this.gridX != gridX) markDirty();
         this.gridX = gridX;
     }
 
     public void setGridY(int gridY) {
+        if (this.gridY != gridY) markDirty();
         this.gridY = gridY;
     }
 
@@ -339,9 +371,10 @@ public class ModuleEntity<T extends ModuleData<T>> {
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
-            writeToItemStack(stack, context, mc.level.registryAccess());
+            saveEntityToStack(stack, context);
             List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.componentTooltip(list, mouseX, mouseY);
+            //TODO, need a new get stack that encodes the required data. Probably going to need tata components for module data.... but maybe I can atleast use the builtin data component tooltip stuff?
             return true;
         }
         return false;
@@ -492,6 +525,12 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     }
 
+    public void markDirty() {
+        if (host != null) {
+            host.markDirty();
+        }
+    }
+
     //Render Utils
 
     @Deprecated //TODO, Can probably use RenderUtils version... maybe.
@@ -524,5 +563,60 @@ public class ModuleEntity<T extends ModuleData<T>> {
         x = centered ? x - width / 2F : x;
         render.rect(x - padding, y - padding, width + padding * 2, render.font().lineHeight - 2 + padding * 2, background);
         render.drawString(text, x, y, colour, shadow);
+    }
+
+    public static class ModuleEntityCodec implements Codec<ModuleEntity<?>> {
+
+        @Override
+        public <T> DataResult<Pair<ModuleEntity<?>, T>> decode(DynamicOps<T> ops, T input) {
+            return ops.getList(input)
+                    .setLifecycle(Lifecycle.stable())
+                    .flatMap(stream -> {
+                        ModuleEntityCodec.DecoderState<T> decoder = new DecoderState<>(ops);
+                        stream.accept(decoder::accept);
+                        return decoder.build();
+                    });
+        }
+
+        @Override
+        public <T> DataResult<T> encode(ModuleEntity<?> input, DynamicOps<T> ops, T prefix) {
+            ListBuilder<T> builder = ops.listBuilder();
+            builder.add(DEModules.codec().encodeStart(ops, input.getModule()));
+            builder.add(input.getModule().entityCodec().encodeStart(ops, input));
+            return builder.build(prefix);
+        }
+
+        private static class DecoderState<T> {
+            private final DynamicOps<T> ops;
+            private final Stream.Builder<T> failed = Stream.builder();
+            private int count;
+            private Module<?> module = null;
+            private ModuleEntity<?> entity = null;
+
+            private DecoderState(DynamicOps<T> ops) {
+                this.ops = ops;
+            }
+
+            public void accept(T value) {
+                count++;
+                if (module == null) {
+                    DataResult<Pair<Module<?>, T>> elementResult = DEModules.codec().decode(ops, value);
+                    elementResult.error().ifPresent(error -> failed.add(value));
+                    elementResult.resultOrPartial().ifPresent(e -> module = e.getFirst());
+                } else {
+                    DataResult<Pair<ModuleEntity<?>, T>> elementResult = module.entityCodec().decode(ops, value);
+                    elementResult.error().ifPresent(error -> failed.add(value));
+                    elementResult.resultOrPartial().ifPresent(e -> entity = e.getFirst());
+                }
+            }
+
+            public DataResult<Pair<ModuleEntity<?>, T>> build() {
+                if (count != 2) {
+                    return DataResult.error(() -> "ConfigProperty is invalid. Read: " + count + " inputs, expected is 2");
+                }
+                T errors = ops.createList(failed.build());
+                return DataResult.success(Pair.of(entity, errors), Lifecycle.stable());
+            }
+        }
     }
 }

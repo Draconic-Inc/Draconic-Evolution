@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -274,12 +275,12 @@ public class DislocatorAdvanced extends Dislocator {
         return false;
     }
 
-    public ImmutableList<DislocatorTarget> getTargetList(ItemStack stack) {
-        return ImmutableList.copyOf(stack.getOrDefault(ItemData.DISLOCATOR_TARGETS, new ArrayList<>()));
+    public List<DislocatorTarget> getTargetList(ItemStack stack) {
+        return FastStream.of(stack.getOrDefault(ItemData.DISLOCATOR_TARGETS, new ArrayList<>())).map(DislocatorTarget::copy).toList();
     }
 
     public void setTargetList(ItemStack stack, List<DislocatorTarget> targets) {
-        stack.set(ItemData.DISLOCATOR_TARGETS, targets);
+        stack.set(ItemData.DISLOCATOR_TARGETS, FastStream.of(targets).map(DislocatorTarget::copy).toList());
     }
 
     public int getSelectedIndex(ItemStack stack) {
@@ -525,11 +526,14 @@ public class DislocatorAdvanced extends Dislocator {
             output.writeBoolean(locked);
         }
 
-
         public void read(MCDataInput input) {
             pos = TargetPos.read(input);
             name = input.readString();
             locked = input.readBoolean();
+        }
+
+        public DislocatorTarget copy() {
+            return new DislocatorTarget(pos, name, locked);
         }
     }
 }

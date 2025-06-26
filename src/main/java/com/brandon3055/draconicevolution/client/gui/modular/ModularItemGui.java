@@ -158,7 +158,7 @@ public class ModularItemGui extends ContainerGuiProvider<ModularItemMenu> {
         infoPanel.label(label);
 
         Map<Component, Component> nameStatMap = new LinkedHashMap<>();
-        grid.getModuleHost().addInformation(nameStatMap, menu.getModuleContext());
+        menu.getModuleHost().addInformation(nameStatMap, menu.getModuleContext());
         for (Component name : nameStatMap.keySet()) {
             infoPanel.labeledValue(name.copy().withStyle(GOLD), () -> nameStatMap.get(name).copy().withStyle(GRAY));
         }

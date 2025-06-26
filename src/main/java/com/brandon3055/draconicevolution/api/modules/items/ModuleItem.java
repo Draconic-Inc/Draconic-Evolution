@@ -59,7 +59,7 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
         getModule().addInformation(tooltip, new LimitedModuleContext(stack, null, context.level(), null));
         ModuleEntity<?> entity = getModule().createEntity();
         if (context.level() != null) {
-            entity.readFromItemStack(stack, new StackModuleContext(stack, null, null), context.level().registryAccess());
+            entity.loadEntityFromStack(stack, new StackModuleContext(stack, null, null));
             entity.addToolTip(tooltip);
         }
     }

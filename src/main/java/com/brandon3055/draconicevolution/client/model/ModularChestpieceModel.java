@@ -153,16 +153,17 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     public void render(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
-        ModuleHost host = DECapabilities.getHost(stack, entity.registryAccess());
-        if (!stack.isEmpty() && host != null) {
-            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-            if (shieldControl != null) {
-                shieldState = shieldControl.getShieldState();
-                shieldColour = shieldControl.getShieldColour() | 0xFF000000;
-                if (entity instanceof Player player) {
-                    ContributorProperties props = ContributorHandler.getProps(player);
-                    if (props.hasShieldRGB() && props.getConfig().overrideShield()) {
-                        shieldColour = props.getConfig().getShieldColour(partialTicks);
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (!stack.isEmpty() && host != null) {
+                ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+                if (shieldControl != null) {
+                    shieldState = shieldControl.getShieldState();
+                    shieldColour = shieldControl.getShieldColour() | 0xFF000000;
+                    if (entity instanceof Player player) {
+                        ContributorProperties props = ContributorHandler.getProps(player);
+                        if (props.hasShieldRGB() && props.getConfig().overrideShield()) {
+                            shieldColour = props.getConfig().getShieldColour(partialTicks);
+                        }
                     }
                 }
             }

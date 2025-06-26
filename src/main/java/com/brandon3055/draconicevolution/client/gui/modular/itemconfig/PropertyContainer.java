@@ -621,7 +621,7 @@ public class PropertyContainer extends GuiManipulable {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        List<ItemStack> effectedItems = ConfigurableItemMenu.getStackProviders(ConfigurableItemMenu.getPlayerInventory(player.getInventory()), player.registryAccess())
+        List<ItemStack> effectedItems = ConfigurableItemMenu.getStackProviders(ConfigurableItemMenu.getPlayerInventory(player.getInventory()))
                 .filter(e -> dataList.stream().anyMatch(data -> data.getPropIfApplicable(e.value()) != null))
                 .map(Pair::key)
                 .toList();

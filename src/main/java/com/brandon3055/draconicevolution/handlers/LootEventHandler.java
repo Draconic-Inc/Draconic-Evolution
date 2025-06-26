@@ -182,36 +182,36 @@ public class LootEventHandler {
         ItemStack hostStack = player.getMainHandItem();
         if (hostStack.isEmpty() || event.getDrops().isEmpty()) return;
 
-        ModuleHost host = DECapabilities.getHost(hostStack, player.registryAccess());
-
-        if (host != null) {
-            Predicate<ItemStack> junkTest = null;
-            for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
-                junkTest = junkTest == null ? ((JunkFilterEntity) entity).createFilterTest() : junkTest.or(((JunkFilterEntity) entity).createFilterTest());
-            }
-            if (junkTest != null) {
-                Predicate<ItemStack> finalJunkTest = junkTest;
-                event.getDrops().removeIf(e -> finalJunkTest.test(e.getItem()));
-            }
-
-            if (event.getDrops().isEmpty()) return;
-
-            IOPStorage storage = EnergyUtils.getStorage(hostStack);
-            ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-            if (optionalCollector instanceof EnderCollectionEntity collector) {
-                List<ItemEntity> remove = new ArrayList<>();
-                for (ItemEntity drop : event.getDrops()) {
-                    ItemStack stack = drop.getItem();
-                    int remainder = collector.insertStack(player, stack, storage);
-                    if (remainder == 0) {
-                        drop.setItem(ItemStack.EMPTY);
-                        remove.add(drop);
-                    } else {
-                        stack.setCount(remainder);
-                        drop.setItem(stack);
-                    }
+        try (ModuleHost host = DECapabilities.getHost(hostStack)) {
+            if (host != null) {
+                Predicate<ItemStack> junkTest = null;
+                for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
+                    junkTest = junkTest == null ? ((JunkFilterEntity) entity).createFilterTest() : junkTest.or(((JunkFilterEntity) entity).createFilterTest());
                 }
-                event.getDrops().removeAll(remove);
+                if (junkTest != null) {
+                    Predicate<ItemStack> finalJunkTest = junkTest;
+                    event.getDrops().removeIf(e -> finalJunkTest.test(e.getItem()));
+                }
+
+                if (event.getDrops().isEmpty()) return;
+
+                IOPStorage storage = EnergyUtils.getStorage(hostStack);
+                ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
+                if (optionalCollector instanceof EnderCollectionEntity collector) {
+                    List<ItemEntity> remove = new ArrayList<>();
+                    for (ItemEntity drop : event.getDrops()) {
+                        ItemStack stack = drop.getItem();
+                        int remainder = collector.insertStack(player, stack, storage);
+                        if (remainder == 0) {
+                            drop.setItem(ItemStack.EMPTY);
+                            remove.add(drop);
+                        } else {
+                            stack.setCount(remainder);
+                            drop.setItem(stack);
+                        }
+                    }
+                    event.getDrops().removeAll(remove);
+                }
             }
         }
     }

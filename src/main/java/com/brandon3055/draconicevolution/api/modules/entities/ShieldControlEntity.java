@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
@@ -13,11 +15,16 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.covers1624.quack.collection.FastStream;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -25,11 +32,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,37 +59,77 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         ENV_SOURCES.put(DamageTypes.CACTUS, 1D);
     }
 
-    private BooleanProperty shieldEnabled;
-    private BooleanProperty alwaysVisible;
-
-    private ShieldData shieldCache;
-    private long lastHitTime;
-    private double passivePowerCache = 0;
-
     //Persistent Fields
-    private double shieldPoints;
-    private double shieldBoost; //This is a "boost modifier" separate from the main shield point pool. Its used by things like the last stand module.
-    private double maxBoost;
-    private int boostTime = 0;
-    private int shieldCapacity;
-    private int shieldCoolDown;
-    private byte envDmgCoolDown = 0;
-    private boolean shieldVisible;
+    private ShieldSaveData data = new ShieldSaveData(0D, 0D, 0D, 0, 0, 0, (byte) 0, false);
 
     //Client Sync Fields
     private float shieldAnim;
     private float shieldHitIndicator;
-    private int shieldColour;
+    private final int shieldColour;
 
+    private BooleanProperty shieldEnabled = new BooleanProperty("shield_mod.enabled", true).setFormatter(BooleanFormatter.ENABLED_DISABLED);
+    private BooleanProperty alwaysVisible = new BooleanProperty("shield_mod.always_visible", true).setFormatter(BooleanFormatter.YES_NO);
+
+    //No Sync
     private int tick;
     private boolean conflict = false;
+    private ShieldData shieldCache;
+    private long lastHitTime;
+    private double passivePowerCache = 0;
+
+    public static final Codec<ShieldControlEntity> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            DEModules.codec().fieldOf("module").forGetter(ShieldControlEntity::getModule),
+            Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
+            Codec.INT.fieldOf("gridy").forGetter(ModuleEntity::getGridY),
+            ShieldSaveData.CODEC.fieldOf("data").forGetter(e -> e.data),
+            Codec.FLOAT.fieldOf("shield_anim").forGetter(e -> e.shieldAnim),
+            Codec.FLOAT.fieldOf("shield_hit_indicator").forGetter(e -> e.shieldHitIndicator),
+//            Codec.INT.fieldOf("shield_colour").forGetter(e -> e.shieldColour),
+            BooleanProperty.CODEC.fieldOf("shield_enabled").forGetter(e -> e.shieldEnabled),
+            BooleanProperty.CODEC.fieldOf("always_visible").forGetter(e -> e.alwaysVisible)
+    ).apply(builder, ShieldControlEntity::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ShieldControlEntity> STREAM_CODEC = BCStreamCodec.composite(
+            DEModules.streamCodec(), ModuleEntity::getModule,
+            ByteBufCodecs.INT, ModuleEntity::getGridX,
+            ByteBufCodecs.INT, ModuleEntity::getGridY,
+            ShieldSaveData.STREAM_CODEC, e -> e.data,
+            ByteBufCodecs.FLOAT, e -> e.shieldAnim,
+            ByteBufCodecs.FLOAT, e -> e.shieldHitIndicator,
+//            ByteBufCodecs.INT, e -> e.shieldColour,
+            BooleanProperty.STREAM_CODEC, e -> e.shieldEnabled,
+            BooleanProperty.STREAM_CODEC, e -> e.alwaysVisible,
+            ShieldControlEntity::new
+    );
 
     public ShieldControlEntity(Module<ShieldControlData> module) {
         super(module);
         this.shieldColour = getDefaultShieldColour(module.getModuleTechLevel());
-        addProperty(shieldEnabled = new BooleanProperty("shield_mod.enabled", true).setFormatter(BooleanFormatter.ENABLED_DISABLED));
-        addProperty(alwaysVisible = new BooleanProperty("shield_mod.always_visible", true).setFormatter(BooleanFormatter.YES_NO));
-        this.savePropertiesToItem = true;
+//        addProperty(shieldEnabled = new BooleanProperty("shield_mod.enabled", true).setFormatter(BooleanFormatter.ENABLED_DISABLED));
+//        addProperty(alwaysVisible = new BooleanProperty("shield_mod.always_visible", true).setFormatter(BooleanFormatter.YES_NO));
+//        this.savePropertiesToItem = true;
+    }
+
+    ShieldControlEntity(Module<?> module, int gridX, int gridY, ShieldSaveData data, float shieldAnim, float shieldHitIndicator/*, int shieldColour*/, BooleanProperty shieldEnabled, BooleanProperty alwaysVisible) {
+        super((Module<ShieldControlData>) module, gridX, gridY);
+        this.data = data;
+        this.shieldAnim = shieldAnim;
+        this.shieldHitIndicator = shieldHitIndicator;
+//        this.shieldColour = shieldColour;
+        this.shieldColour = getDefaultShieldColour(module.getModuleTechLevel());
+        this.shieldEnabled = shieldEnabled;
+        this.alwaysVisible = alwaysVisible;
+    }
+
+    @Override
+    public ModuleEntity<?> copy() {
+        return new ShieldControlEntity(module, getGridX(), getGridY(), new ShieldSaveData(data), shieldAnim, shieldHitIndicator, shieldEnabled.copy(), alwaysVisible.copy());
+    }
+
+    @Override
+    public void getEntityProperties(List<ConfigProperty> properties) {
+        properties.add(shieldEnabled);
+        properties.add(alwaysVisible);
     }
 
     //region Shield Logic Methods
@@ -93,14 +142,16 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         }
 
         if (tick++ % 10 == 0) clearCaches();
+        markDirty();
 
-        ShieldData data = getShieldData(context.getEntity());
-        shieldCapacity = data.shieldCapacity();
-        double chargeRate = data.shieldRecharge();
+
+        ShieldData shieldData = getShieldData(context.getEntity());
+        data.shieldCapacity = shieldData.shieldCapacity();
+        double chargeRate = shieldData.shieldRecharge();
         boolean enabled = shieldEnabled.getValue() && getShieldPoints() > 0;
 
-        if (shieldPoints > shieldCapacity) {
-            shieldPoints = shieldCapacity;
+        if (data.shieldPoints > data.shieldCapacity) {
+            data.shieldPoints = data.shieldCapacity;
         }
 
         //# Rendering #
@@ -109,14 +160,14 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
             shieldHitIndicator -= 0.1F;
         }
 
-        shieldVisible = enabled && (alwaysVisible.getValue() || System.currentTimeMillis() - lastHitTime < 5000);
-        if (shieldVisible && shieldAnim < 1) {
+        data.shieldVisible = enabled && (alwaysVisible.getValue() || System.currentTimeMillis() - lastHitTime < 5000);
+        if (data.shieldVisible && shieldAnim < 1) {
             shieldAnim = Math.min(shieldAnim + 0.05F, 1F);
-        } else if (!shieldVisible && shieldAnim > 0) {
+        } else if (!data.shieldVisible && shieldAnim > 0) {
             shieldAnim = Math.max(shieldAnim - 0.05F, 0F);
         }
 
-        if (envDmgCoolDown > 0) envDmgCoolDown--;
+        if (data.envDmgCoolDown > 0) data.envDmgCoolDown--;
 
         //# Logic #
         if (!context.isEquipped()) {
@@ -124,14 +175,14 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         }
 
         if (conflict) {
-            shieldCapacity = 0;
-            shieldPoints = 0;
+            data.shieldCapacity = 0;
+            data.shieldPoints = 0;
             return;
         }
 
         //Passive Draw
         if (enabled && storage.getOPStored() > 0) {
-            double passiveDraw = shieldPoints * shieldPoints * EquipCfg.shieldPassiveModifier;
+            double passiveDraw = data.shieldPoints * data.shieldPoints * EquipCfg.shieldPassiveModifier;
             if (passiveDraw > 0) {
                 passivePowerCache += passiveDraw;
                 if (passivePowerCache >= 1) {
@@ -139,46 +190,46 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
                     passivePowerCache = passivePowerCache % 1;
                 }
             }
-        } else if (enabled && shieldPoints > 0) {
+        } else if (enabled && data.shieldPoints > 0) {
             //Shield drains if you run out of power. It takes 60 seconds to drain from full to zero.
-            shieldPoints = Math.max(0, shieldPoints - (shieldCapacity / (60D * 20D)));
+            data.shieldPoints = Math.max(0, data.shieldPoints - (data.shieldCapacity / (60D * 20D)));
         }
-        if (shieldBoost > 0) {
-            boostTime--;
-            if (boostTime == 0) {
-                shieldBoost = 0;
+        if (data.shieldBoost > 0) {
+            data.boostTime--;
+            if (data.boostTime == 0) {
+                data.shieldBoost = 0;
             }
         }
 
         //Recharge Logic
         if (!enabled) chargeRate *= 1.25;
-        if (shieldCoolDown > 0) {
-            shieldCoolDown = Math.max(0, shieldCoolDown - (enabled ? 100 : 125));
-        } else if (shieldPoints < shieldCapacity && shieldCapacity > 0 && chargeRate > 0 && storage.getOPStored() > 0) {
+        if (data.shieldCoolDown > 0) {
+            data.shieldCoolDown = Math.max(0, data.shieldCoolDown - (enabled ? 100 : 125));
+        } else if (data.shieldPoints < data.shieldCapacity && data.shieldCapacity > 0 && chargeRate > 0 && storage.getOPStored() > 0) {
             double energyPerPoint = Math.max(chargeRate * EquipCfg.energyShieldChg, EquipCfg.energyShieldChg);
-            long extracted = storage.modifyEnergyStored(-(int) Math.max(1, Math.min(chargeRate, shieldCapacity - shieldPoints) * energyPerPoint));
-            shieldPoints += extracted / energyPerPoint;
+            long extracted = storage.modifyEnergyStored(-(int) Math.max(1, Math.min(chargeRate, data.shieldCapacity - data.shieldPoints) * energyPerPoint));
+            data.shieldPoints += extracted / energyPerPoint;
         }
     }
 
     public double getShieldPoints() {
-        return shieldPoints + shieldBoost;
+        return data.shieldPoints + data.shieldBoost;
     }
 
     public int getShieldCapacity() {
-        return shieldCapacity;
+        return data.shieldCapacity;
     }
 
     public double getMaxShieldBoost() {
-        return shieldBoost == 0 ? 0 : maxBoost;
+        return data.shieldBoost == 0 ? 0 : data.maxBoost;
     }
 
     public double getShieldBoost() {
-        return shieldBoost;
+        return data.shieldBoost;
     }
 
     public int getShieldCoolDown() {
-        return shieldCoolDown;
+        return data.shieldCoolDown;
     }
 
     public int getMaxShieldCoolDown() {
@@ -186,7 +237,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     public void setShieldCoolDown(int shieldCoolDown) {
-        this.shieldCoolDown = shieldCoolDown;
+        data.shieldCoolDown = shieldCoolDown;
     }
 
     /**
@@ -227,12 +278,13 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
                 event.setCanceled(true);
                 lastHitTime = System.currentTimeMillis();
                 shieldHitIndicator = shieldAnim = 1;
-                shieldCoolDown = getMaxShieldCoolDown();
-                if (envDmgCoolDown == 0) {
-                    float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
+                data.shieldCoolDown = getMaxShieldCoolDown();
+                if (data.envDmgCoolDown == 0) {
+                    float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((data.shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
                     entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
-                    envDmgCoolDown = 40;
+                    data.envDmgCoolDown = 40;
                 }
+                markDirty();
                 return true;
             }
         }
@@ -262,30 +314,33 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
             damage -= getShieldPoints();
             event.setNewDamage(damage);
             onShieldHit(entity, false);
-            shieldPoints = 0;
-            shieldBoost = 0;
+            data.shieldPoints = 0;
+            data.shieldBoost = 0;
         }
+        markDirty();
     }
 
     private void onShieldHit(LivingEntity entity, boolean damageBlocked) {
         lastHitTime = System.currentTimeMillis();
         shieldHitIndicator = shieldAnim = 1;
-        if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
-            shieldCoolDown = getMaxShieldCoolDown();
-            float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
+        if (damageBlocked && (data.shieldCapacity + getMaxShieldBoost()) > 0) {
+            data.shieldCoolDown = getMaxShieldCoolDown();
+            float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((data.shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
             entity.level().playSound(null, entity.blockPosition(), DESounds.SHIELD_STRIKE.get(), SoundSource.PLAYERS, 1F, (0.95F + (entity.level().random.nextFloat() * 0.1F)) * hitPitch);
         }
+        markDirty();
     }
 
     private ShieldData getShieldData(LivingEntity entity) {
         if (shieldCache == null) {
             conflict = false;
-            if (entity == null){
+            if (entity == null) {
                 shieldCache = host.getModuleData(ModuleTypes.SHIELD_BOOST, new ShieldData(0, 0));
             } else {
                 shieldCache = ModuleHelper.getCombinedEquippedData(entity, ModuleTypes.SHIELD_BOOST, new ShieldData(0, 0));
                 conflict = ModuleHelper.getEquippedModules(entity, ModuleTypes.SHIELD_CONTROLLER).size() > 1;
             }
+            markDirty();
         }
         return shieldCache;
     }
@@ -297,19 +352,21 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     public void boost(float shieldBoost, int boostTime) {
-        this.shieldBoost += shieldBoost;
-        this.boostTime = Math.max(this.boostTime, boostTime);
-        this.maxBoost = this.shieldBoost;
+        data.shieldBoost += shieldBoost;
+        data.boostTime = Math.max(data.boostTime, boostTime);
+        data.maxBoost = data.shieldBoost;
+        markDirty();
     }
 
     public void subtractShieldPoints(double points) {
         if (points > 0) {
-            if (shieldBoost > 0) {
-                double number = Math.min(shieldBoost, points);
-                shieldBoost -= number;
+            if (data.shieldBoost > 0) {
+                double number = Math.min(data.shieldBoost, points);
+                data.shieldBoost -= number;
                 points -= number;
             }
-            shieldPoints = Math.max(0, shieldPoints - points);
+            data.shieldPoints = Math.max(0, data.shieldPoints - points);
+            markDirty();
         }
     }
 
@@ -318,7 +375,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     //region Render Methods
 
     public int getShieldColour() {
-        return shieldEnabled.getValue() || shieldAnim > 0 ? shieldColour | ((int) ((63 + (192 * shieldHitIndicator)) * Math.min(1, getShieldPoints() / (shieldCapacity * 0.1))) << 24) : 0xFFFFFF;
+        return shieldEnabled.getValue() || shieldAnim > 0 ? shieldColour | ((int) ((63 + (192 * shieldHitIndicator)) * Math.min(1, getShieldPoints() / (data.shieldCapacity * 0.1))) << 24) : 0xFFFFFF;
     }
 
     public boolean isShieldEnabled() {
@@ -348,43 +405,78 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        super.writeToNBT(compound, provider);
-        compound.putDouble("boost", shieldBoost);
-        compound.putDouble("max_boost", maxBoost);
-        compound.putInt("boost_time", boostTime);
-        compound.putByte("env_cdwn", envDmgCoolDown);
-        compound.putBoolean("visible", shieldVisible);
-        compound.putFloat("anim", shieldAnim);
-        compound.putFloat("hit", shieldHitIndicator);
+    public void saveEntityToStack(ItemStack stack, ModuleContext context) {
+        stack.set(ItemData.SHIELD_MODULE_CAP, data.shieldCapacity);
+        stack.set(ItemData.SHIELD_MODULE_POINTS, data.shieldPoints);
+        stack.set(ItemData.SHIELD_MODULE_COOLDWN, data.shieldCoolDown);
+        stack.set(ItemData.BOOL_ITEM_PROP_1, shieldEnabled).copy();
+        stack.set(ItemData.BOOL_ITEM_PROP_2, alwaysVisible).copy();
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        super.readFromNBT(compound, provider);
-        shieldBoost = compound.getDouble("boost");
-        maxBoost = compound.getDouble("max_boost");
-        boostTime = compound.getInt("boost_time");
-        envDmgCoolDown = compound.getByte("env_cdwn");
-        shieldVisible = compound.getBoolean("visible");
-        shieldAnim = compound.getFloat("anim");
-        shieldHitIndicator = compound.getFloat("hit");
-    }
-
-    @Override
-    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        shieldCapacity = nbt.getInt("cap");
-        shieldPoints = nbt.getDouble("points");
-        shieldCoolDown = nbt.getInt("cooldwn");
-    }
-
-    @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        nbt.putInt("cap", shieldCapacity);
-        nbt.putDouble("points", shieldPoints);
-        nbt.putInt("cooldwn", shieldCoolDown);
-        return nbt;
+    public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
+        data.shieldCapacity = stack.getOrDefault(ItemData.SHIELD_MODULE_CAP, 0);
+        data.shieldPoints = stack.getOrDefault(ItemData.SHIELD_MODULE_POINTS, 0D);
+        data.shieldCoolDown = stack.getOrDefault(ItemData.SHIELD_MODULE_COOLDWN, 0);
+        shieldEnabled = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_1, shieldEnabled.copy());
+        alwaysVisible = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_2, alwaysVisible.copy());
     }
 
     //endregion
+
+    private static class ShieldSaveData {
+        public double shieldPoints;
+        public double shieldBoost;
+        public double maxBoost;
+        public int boostTime;
+        public int shieldCapacity;
+        public int shieldCoolDown;
+        public byte envDmgCoolDown;
+        public boolean shieldVisible;
+
+        public static final Codec<ShieldSaveData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.DOUBLE.fieldOf("shield_points").forGetter(e -> e.shieldPoints),
+                Codec.DOUBLE.fieldOf("shield_boost").forGetter(e -> e.shieldBoost),
+                Codec.DOUBLE.fieldOf("max_boost").forGetter(e -> e.maxBoost),
+                Codec.INT.fieldOf("boost_time").forGetter(e -> e.boostTime),
+                Codec.INT.fieldOf("shield_capacity").forGetter(e -> e.shieldCapacity),
+                Codec.INT.fieldOf("shield_cool_down").forGetter(e -> e.shieldCoolDown),
+                Codec.BYTE.fieldOf("env_dmg_cool_down").forGetter(e -> e.envDmgCoolDown),
+                Codec.BOOL.fieldOf("shield_visible").forGetter(e -> e.shieldVisible)
+        ).apply(builder, ShieldSaveData::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, ShieldSaveData> STREAM_CODEC = BCStreamCodec.composite(
+                ByteBufCodecs.DOUBLE, e -> e.shieldPoints,
+                ByteBufCodecs.DOUBLE, e -> e.shieldBoost,
+                ByteBufCodecs.DOUBLE, e -> e.maxBoost,
+                ByteBufCodecs.INT, e -> e.boostTime,
+                ByteBufCodecs.INT, e -> e.shieldCapacity,
+                ByteBufCodecs.INT, e -> e.shieldCoolDown,
+                ByteBufCodecs.BYTE, e -> e.envDmgCoolDown,
+                ByteBufCodecs.BOOL, e -> e.shieldVisible,
+                ShieldSaveData::new
+        );
+
+        public ShieldSaveData(double shieldPoints, double shieldBoost, double maxBoost, int boostTime, int shieldCapacity, int shieldCoolDown, byte envDmgCoolDown, boolean shieldVisible) {
+            this.shieldPoints = shieldPoints;
+            this.shieldBoost = shieldBoost;
+            this.maxBoost = maxBoost;
+            this.boostTime = boostTime;
+            this.shieldCapacity = shieldCapacity;
+            this.shieldCoolDown = shieldCoolDown;
+            this.envDmgCoolDown = envDmgCoolDown;
+            this.shieldVisible = shieldVisible;
+        }
+
+        public ShieldSaveData(ShieldSaveData copyFrom) {
+            this.shieldPoints = copyFrom.shieldPoints;
+            this.shieldBoost = copyFrom.shieldBoost;
+            this.maxBoost = copyFrom.maxBoost;
+            this.boostTime = copyFrom.boostTime;
+            this.shieldCapacity = copyFrom.shieldCapacity;
+            this.shieldCoolDown = copyFrom.shieldCoolDown;
+            this.envDmgCoolDown = copyFrom.envDmgCoolDown;
+            this.shieldVisible = copyFrom.shieldVisible;
+        }
+    }
 }

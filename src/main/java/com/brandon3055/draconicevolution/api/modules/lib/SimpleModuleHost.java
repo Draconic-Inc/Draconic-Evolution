@@ -1,12 +1,16 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.DataComponentAccessor;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.init.ItemData;
+import net.covers1624.quack.collection.FastStream;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -37,6 +41,8 @@ public class SimpleModuleHost implements ModuleHost {
     private final Set<ModuleCategory> categories = new HashSet<>();
     private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
     private BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck = null;
+
+    private boolean isDirty = true;
 
     public SimpleModuleHost(TechLevel techLevel, int gridWidth, int gridHeight, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -171,44 +177,84 @@ public class SimpleModuleHost implements ModuleHost {
         identity = UUID.randomUUID();
     }
 
+//    @Override
+//    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+//        CompoundTag nbt = new CompoundTag();
+//        ListTag modules = new ListTag();
+//        for (ModuleEntity<?> entity : moduleEntities) {
+//            CompoundTag entityNBT = new CompoundTag();
+//            entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
+//            entity.writeToNBT(entityNBT, provider);
+//            modules.add(entityNBT);
+//        }
+//        nbt.put("modules", modules);
+//        nbt.putUUID("identity", getIdentity());
+//        return nbt;
+//    }
+//
+//    @Override
+//    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+//        clearCaches();
+//        moduleEntities.clear();
+//        ListTag modules = nbt.getList("modules", 10);
+//        modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
+//            ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
+//            com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
+//            if (module == null) {
+//                LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
+//            } else {
+//                ModuleEntity<?> entity = module.createEntity();
+//                entity.readFromNBT(compound, provider);
+//                if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
+//                    LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
+//                } else {
+//                    moduleEntities.add(entity);
+//                    entity.setHost(this);
+//                }
+//            }
+//        });
+//        if (nbt.hasUUID("identity")) {
+//            identity = nbt.getUUID("identity");
+//        }
+//    }
+
+    public void saveData(DataComponentAccessor.Setter setter) {
+        setter.set(ItemData.MODULE_ENTITIES, FastStream.of(moduleEntities).map(ModuleEntity::copy).toImmutableList(FastStream.infer()));
+        setter.set(ItemData.PROVIDER_IDENTITY, getIdentity());
+    }
+
+    public void loadData(DataComponentAccessor.Getter getter) {
+        moduleEntities.clear();
+
+        getter.getOrDefault(ItemData.MODULE_ENTITIES, moduleEntities).forEach(e -> moduleEntities.add(e.copy()));
+        identity = getter.getOrDefault(ItemData.PROVIDER_IDENTITY, getIdentity());
+
+        moduleEntities.forEach(e -> e.setHost(this));
+    }
+
+
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        ListTag modules = new ListTag();
-        for (ModuleEntity<?> entity : moduleEntities) {
-            CompoundTag entityNBT = new CompoundTag();
-            entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
-            entity.writeToNBT(entityNBT, provider);
-            modules.add(entityNBT);
-        }
-        nbt.put("modules", modules);
-        nbt.putUUID("identity", getIdentity());
-        return nbt;
+    public String getProviderName() {
+        return "";
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        clearCaches();
-        moduleEntities.clear();
-        ListTag modules = nbt.getList("modules", 10);
-        modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
-            ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
-            com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
-            if (module == null) {
-                LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
-            } else {
-                ModuleEntity<?> entity = module.createEntity();
-                entity.readFromNBT(compound, provider);
-                if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-                    LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
-                } else {
-                    moduleEntities.add(entity);
-                    entity.setHost(this);
-                }
-            }
-        });
-        if (nbt.hasUUID("identity")) {
-            identity = nbt.getUUID("identity");
-        }
+    public Collection<ConfigProperty> getProperties() {
+        return List.of();
+    }
+
+    @Override
+    public @Nullable ConfigProperty getProperty(String propertyName) {
+        return null;
+    }
+
+    @Override
+    public void markDirty() {
+        //noop SimpleModuleHost is for things like tiles that will use save/load
+    }
+
+    @Override
+    public void close() {
+        //noop SimpleModuleHost is for things like tiles that will use save/load
     }
 }

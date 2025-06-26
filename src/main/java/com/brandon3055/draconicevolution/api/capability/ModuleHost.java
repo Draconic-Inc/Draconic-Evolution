@@ -9,11 +9,9 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -29,7 +27,7 @@ import java.util.stream.Stream;
  * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
  * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
  */
-public interface ModuleHost extends INBTSerializable<CompoundTag>, IdentityProvider {
+public interface ModuleHost extends /*INBTSerializable<CompoundTag>,*/ IdentityProvider, AutoCloseable, PropertyProvider {
 
     /**
      * @return a list of installed modules.
@@ -170,4 +168,21 @@ public interface ModuleHost extends INBTSerializable<CompoundTag>, IdentityProvi
 //    void markAttributesDirty();
 
     void handleTick(ModuleContext context);
+
+    void markDirty();
+
+    /**
+     * Close must be called once you are finished with the capability instance in order for any data changes to be saved.
+     * Unlike other closable, you can continue to use the capability instance after you call close, so long as you call close again when you are done.
+     */
+    @Override
+    void close();
+
+    /**
+     * Does the exact same thing as calling close, but close does not actually "close" anything, it just saves dirty data, and it means ModuleHost can be used in a try-with-resources.
+     * This save method is just for instances where we need to manually trigger a save. It just makes more sense, and is less likely to cause confusing if we are calling a method called 'save' rather than one called 'close'
+     */
+    default void save() {
+        close();
+    }
 }

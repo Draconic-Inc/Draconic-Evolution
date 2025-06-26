@@ -15,11 +15,11 @@ import org.apache.commons.lang3.NotImplementedException;
  */
 public interface IModularEnergyItem extends IModularItem {
 
-    default ModularOPStorage createOPCapForRegistration(ItemStack stack, ModuleHost host) {
-//        ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM);
-//        ModularOPStorage storage = instantiateOPStorage(stack, () -> stack.getCapability(DECapabilities.Host.ITEM));
-//        NeoForge.EVENT_BUS.post(new ModularEnergyItemInitEvent(stack, host, host instanceof PropertyProvider provider ? provider : null, storage));
-//        return storage;
-        throw new NotImplementedException();
+    default ModularOPStorage createOPCapForRegistration(ItemStack stack) {
+        try (ModuleHost host = stack.getCapability(DECapabilities.Host.ITEM)){
+            ModularOPStorage storage = instantiateOPStorage(stack, () -> stack.getCapability(DECapabilities.Host.ITEM));
+            NeoForge.EVENT_BUS.post(new ModularEnergyItemInitEvent(stack, host, host instanceof PropertyProvider provider ? provider : null, storage));
+            return storage;
+        }
     }
 }

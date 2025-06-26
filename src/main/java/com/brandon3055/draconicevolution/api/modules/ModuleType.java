@@ -6,8 +6,11 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -73,7 +76,11 @@ public interface ModuleType<T extends ModuleData<T>> {
      * @param module The module this entity is being created for.
      * @return a new {@link ModuleEntity} instance for this module.
      */
-    ModuleEntity createEntity(Module<T> module);
+    ModuleEntity<?> createEntity(Module<T> module);
+
+    Codec<ModuleEntity<?>> entityCodec();
+
+    StreamCodec<RegistryFriendlyByteBuf, ModuleEntity<?>> entityStreamCodec();
 
     /**
      * These can be thought of as "global" properties for a specific type and their data is stored in the module host capability.

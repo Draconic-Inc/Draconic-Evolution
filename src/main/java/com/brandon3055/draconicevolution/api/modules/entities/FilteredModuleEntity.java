@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import codechicken.lib.data.MCDataByteBuf;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.gui.modular.elements.*;
 import codechicken.lib.gui.modular.lib.Constraints;
@@ -10,6 +11,7 @@ import codechicken.lib.gui.modular.lib.geometry.Axis;
 import codechicken.lib.gui.modular.sprite.Material;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
+import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCGuiTextures;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
@@ -22,8 +24,8 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.client.ModuleTextures;
-import io.netty.util.collection.IntObjectHashMap;
-import io.netty.util.collection.IntObjectMap;
+import com.brandon3055.draconicevolution.init.ItemData;
+import com.mojang.serialization.Codec;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,11 +33,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -47,7 +53,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -60,19 +68,30 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends ModuleEntity<T> {
 
-    protected BooleanProperty filterEnabled;
-    protected IntObjectMap<ItemStack> filterStacks = new IntObjectHashMap<>();
-    protected IntObjectMap<TagKey<Item>> filterTags = new IntObjectHashMap<>();
+    public static final Codec<Map<Integer, ItemStack>> STACKS_CODEC = Codec.unboundedMap(Codec.INT, ItemStack.CODEC);
+    public static final Codec<Map<Integer, TagKey<Item>>> TAGS_CODEC = Codec.unboundedMap(Codec.INT, TagKey.codec(Registries.ITEM));
+    public static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, ItemStack>> STACKS_STREAM_CODEC = ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, TagKey<Item>>> TAGS_STREAM_CODEC = ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, BCStreamCodec.tagKeyCodec(Registries.ITEM));
+
+    protected Map<Integer, ItemStack> filterStacks = new HashMap<>();
+    protected Map<Integer, TagKey<Item>> filterTags = new HashMap<>();
     protected final int slotsCount;
 
     public FilteredModuleEntity(Module<T> module, int slotsCount) {
         super(module);
         this.slotsCount = slotsCount;
-        savePropertiesToItem = true;
+//        savePropertiesToItem = true;
     }
 
-    protected void addEnabledProperty(String moduleName, boolean includeFilter) {
-        addProperty(filterEnabled = new BooleanProperty(moduleName + ".enabled", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED));
+    FilteredModuleEntity(Module<T> module, int gridX, int gridY, int slotsCount, Map<Integer, TagKey<Item>> filterTags, Map<Integer, ItemStack> filterStacks) {
+        super(module, gridX, gridY);
+        this.slotsCount = slotsCount;
+        this.filterTags = filterTags;
+        this.filterStacks = filterStacks;
+    }
+
+    protected BooleanProperty createEnabledProperty(String moduleName, boolean includeFilter) {
+        BooleanProperty filterEnabled = new BooleanProperty(moduleName + ".enabled", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED);
         if (includeFilter) {
             Function<Boolean, Component> nameGen = (trim) -> {
                 MutableComponent component = Component.translatable("item_prop." + MODID + "." + moduleName + ".enabled");
@@ -105,6 +124,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             filterEnabled.setDisplayName(() -> nameGen.apply(true));
             filterEnabled.setToolTip(() -> nameGen.apply(false));
         }
+        return filterEnabled;
     }
 
     protected abstract List<Slot> layoutSlots(int x, int y, int width, int height);
@@ -200,7 +220,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
-            writeToItemStack(stack, context, mc.level.registryAccess());
+            saveEntityToStack(stack, context);
             List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
             render.componentTooltip(list, (int) mouseX, (int) mouseY);
             return true;
@@ -255,7 +275,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         if (button == 1 && Screen.hasShiftDown()) {
             filterStacks.remove(index);
             filterTags.remove(index);
-            sendMessageToServer(player.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
+            sendMessageToServer(player.registryAccess(), e -> sendConfigToServer(player.registryAccess()));
+            markDirty();
             return true;
         } else if (button == 1) {
             displayTagDialog(parent, index);
@@ -271,7 +292,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         newFilter.setCount(1);
         filterStacks.put(index, newFilter);
         filterTags.remove(index);
-        sendMessageToServer(player.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
+        markDirty();
+        sendMessageToServer(player.registryAccess(), e -> sendConfigToServer(player.registryAccess()));
         return true;
     }
 
@@ -396,7 +418,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
             if (location == null && filterTags.containsKey(index)) {
                 filterTags.remove(index); //Remove old key from server
-                sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
+                sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
                 return;
             } else if (location == null || (key != null && location.equals(key.location()) && !content.getChildren().isEmpty())) {
                 return;
@@ -411,7 +433,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(key)).map(Holder::value).toList();
             if (matchingItems.isEmpty()) {
                 filterTags.remove(index);
-                sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
+                sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
                 return;
             }
 
@@ -423,7 +445,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             }
 
             filterTags.put(index, key);
-            sendMessageToServer(mc.level.registryAccess(), e -> e.writeCompoundNBT(writeExtraData(new CompoundTag(), Minecraft.getInstance().level.registryAccess())));
+            sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
         }));
 
         textField.setEnterPressed(dialog::close);
@@ -433,9 +455,20 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         }
     }
 
+    private void sendConfigToServer(RegistryAccess access) {
+        if (slotsCount == 0) return;
+        sendMessageToServer(access, e -> {
+            STACKS_STREAM_CODEC.encode(((MCDataByteBuf) e).toRegistryFriendlyByteBuf(), filterStacks);
+            TAGS_STREAM_CODEC.encode(((MCDataByteBuf) e).toRegistryFriendlyByteBuf(), filterTags);
+        });
+    }
+
     @Override
     public void handleClientMessage(MCDataInput input) {
-        readExtraData(input.readCompoundNBT(), Minecraft.getInstance().level.registryAccess());
+        if (slotsCount == 0) return;
+        filterStacks = STACKS_STREAM_CODEC.decode(((MCDataByteBuf) input).toRegistryFriendlyByteBuf());
+        filterTags = TAGS_STREAM_CODEC.decode(((MCDataByteBuf) input).toRegistryFriendlyByteBuf());
+        markDirty();
     }
 
     //Filtering
@@ -489,63 +522,30 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     public boolean isEnabled() {
-        return filterEnabled == null || filterEnabled.getValue();
+        return true;//filterEnabled == null || filterEnabled.getValue();
     }
 
     //Data
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        super.writeExtraData(nbt, provider);
-        if (slotsCount == 0) return nbt;
-
-        ListTag itemList = new ListTag();
-        filterStacks.forEach((slot, stack) -> {
-            CompoundTag compoundtag = new CompoundTag();
-            compoundtag.putByte("slot", (byte) slot.intValue());
-            filterStacks.get(slot).save(provider, compoundtag);
-            itemList.add(compoundtag);
-        });
-        nbt.put("items", itemList);
-
-        ListTag tagList = new ListTag();
-        filterTags.forEach((slot, key) -> {
-            CompoundTag tag = new CompoundTag();
-            tag.putByte("slot", (byte) slot.intValue());
-            tag.putString("key", key.location().toString());
-            tagList.add(tag);
-        });
-        nbt.put("tags", tagList);
-        return nbt;
+    public void saveEntityToStack(ItemStack stack, ModuleContext context) {
+        if (slotsCount == 0) return;
+        stack.set(ItemData.FILTER_MODULE_STACKS, copyStackMap(filterStacks));
+        stack.set(ItemData.FILTER_MODULE_TAGS, new HashMap<>(filterTags));
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        super.readExtraData(nbt, provider);
+    public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
         if (slotsCount == 0) return;
-
-        filterStacks.clear();
-        filterTags.clear();
-        ListTag itemList = nbt.getList("items", 10);
-        for (int i = 0; i < itemList.size(); ++i) {
-            CompoundTag compoundtag = itemList.getCompound(i);
-            int slot = compoundtag.getByte("slot");
-            if (slot >= 0 && slot < slotsCount) {
-                filterStacks.put(slot, ItemStack.parseOptional(provider, compoundtag));
-            }
-        }
-
-        ListTag tagList = nbt.getList("tags", 10);
-        for (int i = 0; i < tagList.size(); ++i) {
-            CompoundTag tag = tagList.getCompound(i);
-            int slot = tag.getByte("slot");
-            TagKey<Item> key = ItemTags.create(ResourceLocation.parse(tag.getString("key")));
-            if (slot >= 0 && slot < slotsCount) {
-                filterTags.put(slot, key);
-            }
-        }
+        filterStacks = copyStackMap(stack.getOrDefault(ItemData.FILTER_MODULE_STACKS, filterStacks));
+        filterTags = new HashMap<>(stack.getOrDefault(ItemData.FILTER_MODULE_TAGS, filterTags));
     }
 
+    private Map<Integer, ItemStack> copyStackMap(Map<Integer, ItemStack> map) {
+        Map<Integer, ItemStack> copy = new HashMap<>();
+        map.forEach((index, value) -> copy.put(index, value.copy()));
+        return map;
+    }
 
     protected record Slot(int index, double x, double y, double size) {
         public boolean isInSlot(double testX, double textY) {

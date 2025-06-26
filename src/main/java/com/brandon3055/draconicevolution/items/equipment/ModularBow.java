@@ -92,7 +92,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     @Override
     public void onUseTick(Level pLevel, LivingEntity player, ItemStack stack, int count) {
         if (getUseDuration(stack, player) - count >= getChargeTicks(stack, player.registryAccess())) {
-            AutoFireEntity entity = DECapabilities.getHost(stack, player.registryAccess()).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+            AutoFireEntity entity = DECapabilities.getHost(stack).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
                 InteractionHand usingHand = player.getUsedItemHand();
@@ -149,47 +149,50 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
             return;
         }
 
-        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
-        ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
+        float powerForTime;
+        boolean infiniteAmmo;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
-        float powerForTime = getPowerForTime(drawTime, stack, player.registryAccess()) * (projData.velocity() + 1);
-        if (!(powerForTime >= 0.1D)) {
-            return;
-        }
-
-        boolean infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
-
-        if (!level.isClientSide) {
-            ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
-            AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player, stack), ammoStack, stack);
-            arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());
-            if (arrowEntity instanceof DraconicArrowEntity) {
-                DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
-                deArrow.setTechLevel(techLevel);
-                deArrow.setPenetration(projData.penetration());
-                deArrow.setGravComp(projData.antiGrav());
-
-                if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
-                    deArrow.setProjectileImmuneOverride(true);
-                }
-            }
-
-            if (powerForTime == 1.0F) {
-                arrowEntity.setCritArrow(true);
-            }
-
-            arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
-
-            long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
-            if (extractEnergy(player, stack, energyRequired) < energyRequired) {
+            powerForTime = getPowerForTime(drawTime, stack, player.registryAccess()) * (projData.velocity() + 1);
+            if (!(powerForTime >= 0.1D)) {
                 return;
             }
 
-            if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
-                arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-            }
+            infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
 
-            level.addFreshEntity(arrowEntity);
+            if (!level.isClientSide) {
+                ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
+                AbstractArrow arrowEntity = customArrow(arrowitem.createArrow(level, ammoStack, player, stack), ammoStack, stack);
+                arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());
+                if (arrowEntity instanceof DraconicArrowEntity) {
+                    DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
+                    deArrow.setTechLevel(techLevel);
+                    deArrow.setPenetration(projData.penetration());
+                    deArrow.setGravComp(projData.antiGrav());
+
+                    if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
+                        deArrow.setProjectileImmuneOverride(true);
+                    }
+                }
+
+                if (powerForTime == 1.0F) {
+                    arrowEntity.setCritArrow(true);
+                }
+
+                arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
+
+                long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
+                if (extractEnergy(player, stack, energyRequired) < energyRequired) {
+                    return;
+                }
+
+                if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
+                    arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                }
+
+                level.addFreshEntity(arrowEntity);
+            }
         }
 
         level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
@@ -226,13 +229,13 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     public static float calculateDamage(ItemStack stack, HolderLookup.Provider provider) {
-        ModuleHost host = DECapabilities.getHost(stack, provider);
-        ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
-
-        float baseDamage = 2;
-        baseDamage *= (1 + projData.damage());
-        baseDamage *= (3 * (1 + projData.velocity()));
-        return baseDamage;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
+            float baseDamage = 2;
+            baseDamage *= (1 + projData.damage());
+            baseDamage *= (3 * (1 + projData.velocity()));
+            return baseDamage;
+        }
     }
 
     public static long calculateShotEnergy(ItemStack stack, HolderLookup.Provider provider) {
@@ -252,7 +255,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
     }
 
     public static int getChargeTicks(ItemStack stack, HolderLookup.Provider provider) {
-        ModuleHost host = DECapabilities.getHost(stack, provider);
+        ModuleHost host = DECapabilities.getHost(stack);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float speedModifier = data == null ? 0 : (float) data.speedMultiplier();
         speedModifier++;

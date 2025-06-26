@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
@@ -14,16 +15,22 @@ import com.brandon3055.draconicevolution.api.modules.entities.logic.ForestHarves
 import com.brandon3055.draconicevolution.api.modules.entities.logic.IHarvestHandler;
 import com.brandon3055.draconicevolution.api.modules.entities.logic.TreeHarvestHandler;
 import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -31,34 +38,72 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements EntityOverridesItemUse {
 
-    private IHarvestHandler activeHandler = null;
-    private InventoryDynamic itemBuffer = new InventoryDynamic();
+    private static final Map<UUID, IHarvestHandler> activeHandlers = new HashMap<>();
 
-    private BooleanProperty harvestLeaves;
-    private IntegerProperty harvestRange;
+    private InventoryDynamic itemBuffer = new InventoryDynamic();
+    private BooleanProperty harvestLeaves = new BooleanProperty("tree_harvest_mod.leaves", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO);
+    private IntegerProperty harvestRange = new IntegerProperty("tree_harvest_mod.range", module.getData().range()).setFormatter(ConfigProperty.IntegerFormatter.RAW).range(0, module.getData().range());
+
+    public static final Codec<TreeHarvestEntity> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            DEModules.codec().fieldOf("module").forGetter(ModuleEntity::getModule),
+            Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
+            Codec.INT.fieldOf("gridy").forGetter(ModuleEntity::getGridY),
+            InventoryDynamic.CODEC.fieldOf("item_buffer").forGetter(e -> e.itemBuffer),
+            BooleanProperty.CODEC.fieldOf("harvest_leaves").forGetter(e -> e.harvestLeaves),
+            IntegerProperty.CODEC.fieldOf("harvest_range").forGetter(e -> e.harvestRange)
+    ).apply(builder, TreeHarvestEntity::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TreeHarvestEntity> STREAM_CODEC = BCStreamCodec.composite(
+            DEModules.streamCodec(), ModuleEntity::getModule,
+            ByteBufCodecs.INT, ModuleEntity::getGridX,
+            ByteBufCodecs.INT, ModuleEntity::getGridY,
+            InventoryDynamic.STREAM_CODEC, e -> e.itemBuffer,
+            BooleanProperty.STREAM_CODEC, e -> e.harvestLeaves,
+            IntegerProperty.STREAM_CODEC, e -> e.harvestRange,
+            TreeHarvestEntity::new
+    );
 
     public TreeHarvestEntity(Module<TreeHarvestData> module) {
         super(module);
-        addProperty(harvestLeaves = new BooleanProperty("tree_harvest_mod.leaves", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO));
-        addProperty(harvestRange = new IntegerProperty("tree_harvest_mod.range", module.getData().range()).setFormatter(ConfigProperty.IntegerFormatter.RAW).range(0, module.getData().range()));
+    }
+
+    TreeHarvestEntity(Module<?> module, int gridX, int gridY, InventoryDynamic itemBuffer, BooleanProperty harvestLeaves, IntegerProperty harvestRange) {
+        super((Module<TreeHarvestData>) module, gridX, gridY);
+        this.itemBuffer = itemBuffer;
+        this.harvestLeaves = harvestLeaves;
+        this.harvestRange = harvestRange;
+    }
+
+    @Override
+    public ModuleEntity<?> copy() {
+        return new TreeHarvestEntity(module, getGridX(), getGridY(), itemBuffer.copy(), harvestLeaves.copy(), harvestRange.copy());
+    }
+
+    @Override
+    public void getEntityProperties(List<ConfigProperty> properties) {
+        super.getEntityProperties(properties);
+        properties.add(harvestLeaves);
+        properties.add(harvestRange);
     }
 
     private void useTick(LivingEntityUseItemEvent.Tick event) {
+        IHarvestHandler activeHandler = activeHandlers.get(event.getEntity().getUUID());
         if (activeHandler == null || !(event.getEntity() instanceof ServerPlayer player)) return;
         ItemStack stack = event.getItem();
         IOPStorage storage = stack.getCapability(CapabilityOP.ITEM);
@@ -67,6 +112,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         }
 
         activeHandler.tick(player.level(), player, stack, storage, itemBuffer);
+        markDirty();
 
         if (itemBuffer.getStacks().size() > 8) {
             dropContents(player, stack);
@@ -74,10 +120,11 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     private void endUse(LivingEntityUseItemEvent event) {
+        IHarvestHandler activeHandler = activeHandlers.get(event.getEntity().getUUID());
         if (activeHandler != null && event.getEntity() instanceof ServerPlayer player) {
             activeHandler.stop(player.level(), player);
         }
-        activeHandler = null;
+        activeHandlers.remove(event.getEntity().getUUID());
 
         dropContents(event.getEntity(), event.getItem());
     }
@@ -86,6 +133,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         if (entity instanceof ServerPlayer serverPlayer && !itemBuffer.isEmpty()) {
             ModuleHelper.handleItemCollection(serverPlayer, host, EnergyUtils.getStorage(stack), itemBuffer);
             itemBuffer.clearContent();
+            markDirty();
         }
     }
 
@@ -105,11 +153,14 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
         if (event.isCanceled()) return;
         TreeHarvestData data = getModule().getData();
+        IHarvestHandler activeHandler = activeHandlers.get(event.getEntity().getUUID());
         if (activeHandler == null) {
             if (data.range() <= 0) return;
             if (event.getEntity() instanceof ServerPlayer player) {
                 activeHandler = new ForestHarvestHandler(data.speed(), harvestRange.getValue(), harvestLeaves.getValue());
                 activeHandler.start(event.getPos(), event.getLevel(), player);
+                activeHandlers.put(event.getEntity().getUUID(), activeHandler);
+                markDirty();
             }
         } else {
             return;
@@ -124,8 +175,10 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         if (event.isCanceled()) return;
         TreeHarvestData data = getModule().getData();
         if (event.getEntity() instanceof ServerPlayer player) {
-            activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
+            IHarvestHandler activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
             activeHandler.start(event.getPos(), event.getLevel(), player);
+            activeHandlers.put(event.getEntity().getUUID(), activeHandler);
+            markDirty();
         }
 
         event.setCanceled(true);
@@ -196,14 +249,16 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     }
 
     @Override
-    protected CompoundTag writeExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        itemBuffer.writeToNBT(provider, nbt);
-        return super.writeExtraData(nbt, provider);
+    public void saveEntityToStack(ItemStack stack, ModuleContext context) {
+        stack.set(ItemData.TREE_MODULE_INVENTORY, itemBuffer.copy());
+        stack.set(ItemData.BOOL_ITEM_PROP_1, harvestLeaves.copy());
+        stack.set(ItemData.INT_ITEM_PROP_1, harvestRange.copy());
     }
 
     @Override
-    protected void readExtraData(CompoundTag nbt, HolderLookup.Provider provider) {
-        itemBuffer.readFromNBT(provider, nbt);
-        super.readExtraData(nbt, provider);
+    public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
+        itemBuffer = stack.getOrDefault(ItemData.TREE_MODULE_INVENTORY, itemBuffer).copy();
+        harvestLeaves = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_1, harvestLeaves).copy();
+        harvestRange = stack.getOrDefault(ItemData.INT_ITEM_PROP_1, harvestRange).copy();
     }
 }

@@ -61,11 +61,12 @@ public class RenderModularChestpiece extends ToolRenderBase {
         materialPart.render(context, buffers, mat);
 
         int shieldColour = 0xFFFFFFFF;
-        ModuleHost host = DECapabilities.getHost(stack, Minecraft.getInstance().level.registryAccess());
-        if (!stack.isEmpty() && host != null) {
-            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-            if (shieldControl != null) {
-                shieldColour = shieldControl.getShieldColour();
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (!stack.isEmpty() && host != null) {
+                ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+                if (shieldControl != null) {
+                    shieldColour = shieldControl.getShieldColour();
+                }
             }
         }
         gemPart.render(context, buffers, mat);

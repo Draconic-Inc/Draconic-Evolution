@@ -13,12 +13,16 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEDamage;
+import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,7 +30,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.util.thread.EffectiveSide;
@@ -41,8 +44,36 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
     private int charge;
     private int invulnerableTime = 0;
 
+    public static final Codec<UndyingEntity> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            DEModules.codec().fieldOf("module").forGetter(UndyingEntity::getModule),
+            Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
+            Codec.INT.fieldOf("gridy").forGetter(ModuleEntity::getGridY),
+            Codec.INT.fieldOf("charge").forGetter(e -> e.charge),
+            Codec.INT.fieldOf("invul_time").forGetter(e -> e.invulnerableTime)
+    ).apply(builder, UndyingEntity::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UndyingEntity> STREAM_CODEC = StreamCodec.composite(
+            DEModules.streamCodec(), ModuleEntity::getModule,
+            ByteBufCodecs.INT, ModuleEntity::getGridX,
+            ByteBufCodecs.INT, ModuleEntity::getGridY,
+            ByteBufCodecs.INT, e -> e.charge,
+            ByteBufCodecs.INT, e -> e.invulnerableTime,
+            UndyingEntity::new
+    );
+
     public UndyingEntity(Module<UndyingData> module) {
         super(module);
+    }
+
+    UndyingEntity(Module<?> module, int gridX, int gridY, int charge, int invulnerableTime) {
+        super((Module<UndyingData>) module, gridX, gridY);
+        this.charge = charge;
+        this.invulnerableTime = invulnerableTime;
+    }
+
+    @Override
+    public ModuleEntity<?> copy() {
+        return new UndyingEntity(module, getGridX(), getGridY(), charge, invulnerableTime);
     }
 
     @Override
@@ -55,6 +86,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
     public void tick(ModuleContext moduleContext) {
         if (invulnerableTime > 0) {
             invulnerableTime--;
+            markDirty();
             if (moduleContext instanceof StackModuleContext) {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof Player) {
@@ -81,6 +113,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         if (storage.getOPStored() >= data.getChargeEnergyRate()) {
             storage.modifyEnergyStored(-data.getChargeEnergyRate());
             charge++;
+            markDirty();
         }
     }
 
@@ -127,11 +160,12 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             entity.setHealth(entity.getHealth() + data.healthBoost());
             ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
-                ModuleHost stackHost = DECapabilities.getHost(stack, entity.registryAccess());
-                if (stackHost != null) {
-                    ShieldControlEntity shield = stackHost.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-                    if (shield != null) {
-                        shield.boost(data.shieldBoost(), data.shieldBoostTime());
+                try (ModuleHost stackHost = DECapabilities.getHost(stack)) {
+                    if (stackHost != null) {
+                        ShieldControlEntity shield = stackHost.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+                        if (shield != null) {
+                            shield.boost(data.shieldBoost(), data.shieldBoostTime());
+                        }
                     }
                 }
             }
@@ -150,6 +184,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             DraconicNetwork.sendUndyingActivation(entity, module.getItem());
             entity.level().playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level().random.nextFloat() * 0.1F)));
             invulnerableTime = data.invulnerableTime();
+            markDirty();
             return true;
         }
         return false;
@@ -169,30 +204,13 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         drawChargeProgress(render, x, y, width, height, progress, pText, tText);
     }
 
-
     @Override
-    protected void writeToItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
-        super.writeToItemStack(stack, tag, context, provider);
-        tag.putInt("charge", charge);
+    public void saveEntityToStack(ItemStack stack, ModuleContext context) {
+        stack.set(ItemData.UNDYING_MODULE_CHARGE, charge);
     }
 
     @Override
-    public void readFromItemStack(ItemStack stack, CompoundTag tag, ModuleContext context, HolderLookup.Provider provider) {
-        super.readFromItemStack(stack, tag, context, provider);
-        charge = tag.getInt("charge");
-    }
-
-    @Override
-    public void writeToNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        super.writeToNBT(compound, provider);
-        compound.putInt("charge", charge);
-        compound.putInt("invul", invulnerableTime);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, HolderLookup.Provider provider) {
-        super.readFromNBT(compound, provider);
-        charge = compound.getInt("charge");
-        invulnerableTime = compound.getInt("invul");
+    public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
+        charge = stack.getOrDefault(ItemData.UNDYING_MODULE_CHARGE, 0);
     }
 }

@@ -46,12 +46,13 @@ public class ModularItemRenderOverrideHandler {
         if (renderingMainHand && player.isUsingItem() && player.getUsedItemHand() != hand && player.getUseItemRemainingTicks() > 0) {
             ItemStack usingItem = player.getUseItem();
             if (usingItem.getItem() instanceof IModularItem) {
-                ModuleHost host = DECapabilities.getHost(usingItem, player.registryAccess());
-                if (host != null) {
-                    for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                        if (entity instanceof EntityOverridesItemUse override && override.overrideUsingPose(usingItem)) {
-                            event.setCanceled(true);
-                            return;
+                try (ModuleHost host = DECapabilities.getHost(usingItem)) {
+                    if (host != null) {
+                        for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                            if (entity instanceof EntityOverridesItemUse override && override.overrideUsingPose(usingItem)) {
+                                event.setCanceled(true);
+                                return;
+                            }
                         }
                     }
                 }
@@ -97,19 +98,20 @@ public class ModularItemRenderOverrideHandler {
         AbstractClientPlayer player = mc.player;
         if (player == null || player.isScoping() || !player.isUsingItem() || player.getUseItemRemainingTicks() <= 0 || player.getUsedItemHand() != event.getHand()) return;
 
-        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
-        if (host != null) {
-            for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                if (entity instanceof EntityOverridesItemUse override) {
-                    if (!override.overrideUsingPose(stack)) return;
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (host != null) {
+                for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                    if (entity instanceof EntityOverridesItemUse override) {
+                        if (!override.overrideUsingPose(stack)) return;
 
-                    event.setCanceled(true);
+                        event.setCanceled(true);
 
-                    ItemInHandRenderer renderer = mc.gameRenderer.itemInHandRenderer;
-                    if (event.getHand() == InteractionHand.MAIN_HAND) {
-                        renderArmWithItem(event, override, renderer, mc.player, InteractionHand.MAIN_HAND, event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-                    } else {
-                        renderArmWithItem(event, override, renderer, mc.player, InteractionHand.OFF_HAND, event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                        ItemInHandRenderer renderer = mc.gameRenderer.itemInHandRenderer;
+                        if (event.getHand() == InteractionHand.MAIN_HAND) {
+                            renderArmWithItem(event, override, renderer, mc.player, InteractionHand.MAIN_HAND, event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                        } else {
+                            renderArmWithItem(event, override, renderer, mc.player, InteractionHand.OFF_HAND, event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                        }
                     }
                 }
             }
@@ -137,12 +139,13 @@ public class ModularItemRenderOverrideHandler {
         HumanoidArm arm = mainHand ? player.getMainArm() : player.getMainArm().getOpposite();
         boolean leftHand = arm == HumanoidArm.LEFT;
 
-        ModuleHost host = DECapabilities.getHost(stack, player.registryAccess());
-        if (host != null) {
-            for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                if (entity instanceof EntityOverridesItemUse override) {
-                    if (!override.overrideUsingPose(stack)) return;
-                    override.modifyPlayerModelPose(player, model, leftHand);
+        try (ModuleHost host = DECapabilities.getHost(stack)) {
+            if (host != null) {
+                for (ModuleEntity<?> entity : host.getModuleEntities()) {
+                    if (entity instanceof EntityOverridesItemUse override) {
+                        if (!override.overrideUsingPose(stack)) return;
+                        override.modifyPlayerModelPose(player, model, leftHand);
+                    }
                 }
             }
         }

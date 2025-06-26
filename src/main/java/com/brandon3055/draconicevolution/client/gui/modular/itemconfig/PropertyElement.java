@@ -68,7 +68,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
                 .constrain(RIGHT, relative(get(RIGHT), -10));
 
         GuiButton valueButton = new GuiButton(this)
-                .setEnabled(() -> data.type == ConfigProperty.Type.BOOLEAN || data.type == ConfigProperty.Type.ENUM)
+                .setEnabled(() -> data.type == ConfigProperty.Type.BOOLEAN /*|| data.type == ConfigProperty.Type.ENUM*/)
                 .setPressSound(null)
                 .onPress(this::valueClicked)
                 .constrain(HEIGHT, literal(10))
@@ -161,45 +161,46 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         if (data.type == ConfigProperty.Type.BOOLEAN) {
             data.toggleBooleanValue();
             mc().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
-        } else if (data.type == ConfigProperty.Type.ENUM && data.enumValueOptions.size() > 1) {
-            //Cycle through options. [Temporary... Probably permanently temporary...]
-            int i = data.enumValueOptions.indexOf(data.enumValueIndex);
-            i++;
-            if (i >= data.enumValueOptions.size()) {
-                i = 0;
-            }
-            data.updateEnumValue(data.enumValueOptions.get(i));
-            //TODO Enum Selection Dialog
-//            GuiSelectDialog<Integer> dialog = new GuiSelectDialog<>(this);
-//            dialog.setRendererBuilder(e -> {
-//                GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(ChatFormatting.DARK_AQUA, ChatFormatting.AQUA);
-//                GuiToolkit.addHoverHighlight(label, 16, 0);
-//                return label;
-//            });
-//            dialog.addItem(data.enumValueIndex);
-//            dialog.addItems(data.enumValueOptions.stream().filter(e -> e != data.enumValueIndex).collect(Collectors.toList()));
-//            dialog.setInsets(1, 1, 1, 1);
-//            dialog.setSize(increment.xPos() - decrement.maxXPos(), Math.min(120, (data.enumValueOptions.size() * 10) + 3));
-//
-//            dialog.getScrollElement().setVerticalScrollBar(new GuiSlideControl(GuiSlideControl.SliderRotation.VERTICAL)
-//                    .setPos(dialog.maxXPos() - 7, dialog.yPos() + 1)
-//                    .setSize(7, dialog.ySize() - 2)
-//                    .setInsets(0, 0, 0, 0)
-//                    .setParentScroll(true)
-//                    .setBackgroundElement(new GuiBorderedRect().setFillColours(mixColours(ThemedElements.getBgFill(), 0xE0101010, true), mixColours(ThemedElements.getBgFill(), 0xB0101010, true)).setBorderColour(0))
-//                    .setSliderElement(new ThemedElements.ScrollBar(false)));
-//
-//            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setBorderColour(0xFF000000 | ChatFormatting.DARK_AQUA.getColor()).setFillColour(0xFF101010));
-//            gui.toolkit.placeOutside(dialog, this, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -13);
-//            dialog.setBlockOutsideClicks(true);
-//            dialog.normalizePosition();
-//            dialog.setSelectionListener(newIndex -> {
-//                data.updateEnumValue(newIndex);
-//                GuiButton.playGenericClick();
-//            });
-//            dialog.setCloseOnSelection(true);
-//            dialog.show();
         }
+//        else if (data.type == ConfigProperty.Type.ENUM && data.enumValueOptions.size() > 1) {
+//            //Cycle through options. [Temporary... Probably permanently temporary...]
+//            int i = data.enumValueOptions.indexOf(data.enumValueIndex);
+//            i++;
+//            if (i >= data.enumValueOptions.size()) {
+//                i = 0;
+//            }
+//            data.updateEnumValue(data.enumValueOptions.get(i));
+//            //TODO Enum Selection Dialog
+////            GuiSelectDialog<Integer> dialog = new GuiSelectDialog<>(this);
+////            dialog.setRendererBuilder(e -> {
+////                GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(ChatFormatting.DARK_AQUA, ChatFormatting.AQUA);
+////                GuiToolkit.addHoverHighlight(label, 16, 0);
+////                return label;
+////            });
+////            dialog.addItem(data.enumValueIndex);
+////            dialog.addItems(data.enumValueOptions.stream().filter(e -> e != data.enumValueIndex).collect(Collectors.toList()));
+////            dialog.setInsets(1, 1, 1, 1);
+////            dialog.setSize(increment.xPos() - decrement.maxXPos(), Math.min(120, (data.enumValueOptions.size() * 10) + 3));
+////
+////            dialog.getScrollElement().setVerticalScrollBar(new GuiSlideControl(GuiSlideControl.SliderRotation.VERTICAL)
+////                    .setPos(dialog.maxXPos() - 7, dialog.yPos() + 1)
+////                    .setSize(7, dialog.ySize() - 2)
+////                    .setInsets(0, 0, 0, 0)
+////                    .setParentScroll(true)
+////                    .setBackgroundElement(new GuiBorderedRect().setFillColours(mixColours(ThemedElements.getBgFill(), 0xE0101010, true), mixColours(ThemedElements.getBgFill(), 0xB0101010, true)).setBorderColour(0))
+////                    .setSliderElement(new ThemedElements.ScrollBar(false)));
+////
+////            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setBorderColour(0xFF000000 | ChatFormatting.DARK_AQUA.getColor()).setFillColour(0xFF101010));
+////            gui.toolkit.placeOutside(dialog, this, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -13);
+////            dialog.setBlockOutsideClicks(true);
+////            dialog.normalizePosition();
+////            dialog.setSelectionListener(newIndex -> {
+////                data.updateEnumValue(newIndex);
+////                GuiButton.playGenericClick();
+////            });
+////            dialog.setCloseOnSelection(true);
+////            dialog.show();
+//        }
     }
 
     //
