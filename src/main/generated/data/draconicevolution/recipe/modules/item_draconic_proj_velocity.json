@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:nuggets/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:item_wyvern_proj_velocity"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "###",
+    "ABA",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconic_proj_velocity"
+  }
+}

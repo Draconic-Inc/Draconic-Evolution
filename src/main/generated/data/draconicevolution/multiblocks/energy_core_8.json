@@ -1,10 +1,10 @@
 {
   "keys": {
     "A": {
-      "tag": "forge:storage_blocks/draconium_awakened"
+      "tag": "c:storage_blocks/draconium_awakened"
     },
     "D": {
-      "tag": "forge:storage_blocks/draconium"
+      "tag": "c:storage_blocks/draconium"
     },
     "X": {
       "block": "draconicevolution:energy_core"

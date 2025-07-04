@@ -1,7 +1,7 @@
 {
   "keys": {
     "D": {
-      "tag": "forge:storage_blocks/draconium"
+      "tag": "c:storage_blocks/draconium"
     },
     "X": {
       "block": "draconicevolution:energy_core"

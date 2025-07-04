@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:piston"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "I": {
+      "tag": "c:ingots/draconium"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconium_aoe"
+  }
+}

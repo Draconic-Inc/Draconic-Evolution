@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/draconium"
+    },
+    "B": {
+      "tag": "c:ingots/gold"
+    },
+    "C": {
+      "tag": "c:gems/diamond"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:draconium_core"
+  }
+}

@@ -38,7 +38,7 @@ public class DETags {
         public static final TagKey<Item> MODULES = ItemTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "modules"));
 
         private static TagKey<Item> tag(String name) {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 
@@ -59,7 +59,7 @@ public class DETags {
         public static final TagKey<Block> INCORRECT_FOR_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_chaotic_tool"));
 
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 }

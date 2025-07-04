@@ -1,0 +1,68 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "draconicevolution:awakened_crafting_injector"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:large_chaos_frag"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:dragon_egg"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:chaotic_crafting_injector"
+  },
+  "techLevel": "draconic",
+  "totalEnergy": 8000000
+}

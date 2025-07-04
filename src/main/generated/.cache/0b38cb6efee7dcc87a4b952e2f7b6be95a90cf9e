@@ -1,18 +1,16 @@
-// 1.20.4	2024-11-08T19:15:17.50146501	Tags for minecraft:item mod id draconicevolution
-9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/items/body.json
-474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/items/curio.json
-3f5e3521f3d587cb2d27bc5d66d7d2ca9ed0d1af data/draconicevolution/tags/items/modules.json
-cb626dc6c627c42fbd0b589c6d7420e1e7dcb27e data/forge/tags/items/dusts.json
-26a02ca040deced33c1f86c215e347e169ce3499 data/forge/tags/items/dusts/draconium.json
-9864e525e028426969eb33f4b4a445b8ad2a3b89 data/forge/tags/items/dusts/draconium_awakened.json
-24060ef2d87f3c4a3c166d346c050ffe1cdacbfb data/forge/tags/items/ingots.json
-dfa819b0763812751deeeab28237aef8066d2ff1 data/forge/tags/items/ingots/draconium.json
-b84123cbe5d4449b219ea0dd632564beefca219b data/forge/tags/items/ingots/draconium_awakened.json
-188aa993c70f6b4b84564077b67d15a2598ee119 data/forge/tags/items/nuggets.json
-ed7b649e3d0b9aba6f8047b53de74d220fa889f9 data/forge/tags/items/nuggets/draconium.json
-d6e849ce45014fce8572def4935daf749982910c data/forge/tags/items/nuggets/draconium_awakened.json
-1c106c8cc56a70d22bc9c21c9dede992bc19923a data/forge/tags/items/ores.json
-e1ab416e7e78411c08a640ffc4bc9535023d0566 data/forge/tags/items/ores/draconium.json
-bdb736e6f52cea51cdb88deb79d7c10a0bd92595 data/forge/tags/items/storage_blocks.json
-59987491edcad8feef7cf904cb84da279dae8781 data/forge/tags/items/storage_blocks/draconium.json
-e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/forge/tags/items/storage_blocks/draconium_awakened.json
+// 1.21.1	2025-07-04T15:28:36.123570624	Tags for minecraft:item mod id draconicevolution
+7a2a766d2f40919d17e6ebc12bd6f0a1205da117 data/c/tags/item/dusts.json
+26a02ca040deced33c1f86c215e347e169ce3499 data/c/tags/item/dusts/draconium.json
+9864e525e028426969eb33f4b4a445b8ad2a3b89 data/c/tags/item/dusts/draconium_awakened.json
+3abb8a8d9b9f242bfd4d27de3aee4f3a80d7eb62 data/c/tags/item/ingots.json
+dfa819b0763812751deeeab28237aef8066d2ff1 data/c/tags/item/ingots/draconium.json
+b84123cbe5d4449b219ea0dd632564beefca219b data/c/tags/item/ingots/draconium_awakened.json
+f8c8a59dbb6bf8c72fd5a6b5c1701d440de0f56c data/c/tags/item/nuggets.json
+ed7b649e3d0b9aba6f8047b53de74d220fa889f9 data/c/tags/item/nuggets/draconium.json
+d6e849ce45014fce8572def4935daf749982910c data/c/tags/item/nuggets/draconium_awakened.json
+8f7b56ce3d8f6cd6f93977ffe6970bb51b54f057 data/c/tags/item/ores.json
+e1ab416e7e78411c08a640ffc4bc9535023d0566 data/c/tags/item/ores/draconium.json
+9f3877878dfc9dffb76615fc11ddc532e08bcb3b data/c/tags/item/storage_blocks.json
+59987491edcad8feef7cf904cb84da279dae8781 data/c/tags/item/storage_blocks/draconium.json
+e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/c/tags/item/storage_blocks/draconium_awakened.json
+3f5e3521f3d587cb2d27bc5d66d7d2ca9ed0d1af data/draconicevolution/tags/item/modules.json

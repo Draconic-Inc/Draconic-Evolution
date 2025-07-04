@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "draconicevolution:item_draconium_damage"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "I": {
+      "tag": "c:ingots/draconium"
+    },
+    "P": {
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 1,
+        "minecraft:potion_contents": {
+          "potion": "minecraft:strong_strength"
+        },
+        "minecraft:rarity": "common",
+        "minecraft:repair_cost": 0
+      },
+      "items": "minecraft:potion"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_wyvern_damage"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:gems/emerald"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "C": {
+      "item": "minecraft:enchanted_book"
+    },
+    "D": {
+      "item": "minecraft:enchanting_table"
+    },
+    "E": {
+      "item": "minecraft:bookshelf"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EEE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:disenchanter"
+  }
+}

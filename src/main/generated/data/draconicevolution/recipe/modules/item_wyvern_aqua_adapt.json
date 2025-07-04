@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    "D": {
+      "item": "minecraft:iron_pickaxe"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_wyvern_aqua_adapt"
+  }
+}

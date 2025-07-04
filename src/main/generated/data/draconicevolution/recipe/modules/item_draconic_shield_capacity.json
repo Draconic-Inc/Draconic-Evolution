@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/netherite"
+    },
+    "A": {
+      "tag": "c:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "draconicevolution:item_wyvern_shield_capacity"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "D": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconic_shield_capacity"
+  }
+}

@@ -152,21 +152,12 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
         return RENDER_TYPE;
     }
 
-    public static final ParticleRenderType RENDER_TYPE = new ParticleRenderType() {
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        }
-
-//        @Override
-//        public void end(Tesselator tessellator) {
-//            tessellator.getBuilder().setQuadSorting(VertexSorting.byDistance(0, 0, 0));//TODO is this valid?
-//            tessellator.end();
-//        }
+    public static final ParticleRenderType RENDER_TYPE = (tesselator, textureManager) -> {
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.setShader(GameRenderer::getParticleShader);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+        return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
     };
 }

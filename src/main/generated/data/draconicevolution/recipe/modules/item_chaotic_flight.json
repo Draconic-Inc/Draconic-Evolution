@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 1,
+        "minecraft:potion_contents": {
+          "potion": "minecraft:strong_swiftness"
+        },
+        "minecraft:rarity": "common",
+        "minecraft:repair_cost": 0
+      },
+      "items": "minecraft:potion"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "B": {
+      "item": "draconicevolution:item_draconic_flight"
+    },
+    "C": {
+      "item": "draconicevolution:large_chaos_frag"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#C#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_chaotic_flight"
+  }
+}

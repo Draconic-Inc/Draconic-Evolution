@@ -1,0 +1,58 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "type": "draconicevolution:stack",
+    "count": 4,
+    "items": "draconicevolution:draconium_block"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:dragon_heart"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "draconicevolution:awakened_draconium_block"
+  },
+  "techLevel": "wyvern",
+  "totalEnergy": 50000000
+}

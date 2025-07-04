@@ -5,6 +5,8 @@ import codechicken.lib.vec.Quat;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
@@ -12,6 +14,8 @@ import com.brandon3055.draconicevolution.client.AtlasTextureHelper;
 import com.brandon3055.draconicevolution.client.render.EffectLib;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler.IngredFX;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -148,7 +152,7 @@ public class RenderTileFusionCraftingCore implements BlockEntityRenderer<TileFus
 
     private void renderIngredientEffect(Camera renderInfo, PoseStack mStack, MultiBufferSource getter, float partialTicks, long randSeed, IngredFX ingred, int totalParticles) {
         Rotation cameraRotation = new Rotation(new Quat(renderInfo.rotation()));
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(particleType), mStack);
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(this.particleType), mStack);
 
         //Charge particle ball
         rand.setSeed(randSeed);

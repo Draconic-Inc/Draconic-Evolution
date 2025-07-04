@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "B": {
+      "item": "draconicevolution:item_wyvern_undying"
+    },
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 1,
+        "minecraft:potion_contents": {
+          "potion": "minecraft:strong_healing"
+        },
+        "minecraft:rarity": "common",
+        "minecraft:repair_cost": 0
+      },
+      "items": "minecraft:potion"
+    },
+    "D": {
+      "item": "draconicevolution:item_draconic_shield_capacity"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconic_undying"
+  }
+}

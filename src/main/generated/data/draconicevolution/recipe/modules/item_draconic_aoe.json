@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/netherite"
+    },
+    "A": {
+      "item": "draconicevolution:item_wyvern_aoe"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "I": {
+      "tag": "c:ingots/draconium_awakened"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconic_aoe"
+  }
+}

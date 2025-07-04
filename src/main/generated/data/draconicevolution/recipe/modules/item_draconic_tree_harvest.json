@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/draconium_awakened"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "I": {
+      "tag": "c:ingots/netherite"
+    },
+    "M": {
+      "item": "draconicevolution:item_wyvern_tree_harvest"
+    },
+    "W": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "IMI",
+    "#W#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_draconic_tree_harvest"
+  }
+}

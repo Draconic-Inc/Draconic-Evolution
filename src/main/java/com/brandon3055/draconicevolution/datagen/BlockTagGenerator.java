@@ -31,6 +31,10 @@ public class BlockTagGenerator extends BlockTagsProvider {
         tag(Tags.Blocks.ORES).add(DEContent.END_DRACONIUM_ORE.get(), DEContent.NETHER_DRACONIUM_ORE.get(), DEContent.OVERWORLD_DRACONIUM_ORE.get(), DEContent.DEEPSLATE_DRACONIUM_ORE.get());
         tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.INFUSED_OBSIDIAN.get());
 
+        tag(DETags.Blocks.NEEDS_WYVERN_TOOL);
+        tag(DETags.Blocks.NEEDS_AWAKENED_TOOL);
+        tag(DETags.Blocks.NEEDS_CHAOTIC_TOOL);
+
         tag(BlockTags.INCORRECT_FOR_NETHERITE_TOOL).addTag(DETags.Blocks.NEEDS_WYVERN_TOOL);
         tag(DETags.Blocks.INCORRECT_FOR_WYVERN_TOOL).addTag(DETags.Blocks.NEEDS_AWAKENED_TOOL);
         tag(DETags.Blocks.INCORRECT_FOR_AWAKENED_TOOL).addTag(DETags.Blocks.NEEDS_CHAOTIC_TOOL);

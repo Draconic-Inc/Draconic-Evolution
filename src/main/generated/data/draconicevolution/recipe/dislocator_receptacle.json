@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/iron"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "C": {
+      "item": "draconicevolution:infused_obsidian"
+    }
+  },
+  "pattern": [
+    "ABA",
+    " C ",
+    "A A"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:dislocator_receptacle"
+  }
+}

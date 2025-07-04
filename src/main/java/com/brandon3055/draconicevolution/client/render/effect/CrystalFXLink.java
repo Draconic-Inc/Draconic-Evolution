@@ -25,7 +25,7 @@ import org.joml.Vector3f;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
+public class   CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;

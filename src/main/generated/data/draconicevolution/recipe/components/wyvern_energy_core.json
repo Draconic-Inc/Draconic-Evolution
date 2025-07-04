@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/draconium"
+    },
+    "B": {
+      "tag": "c:storage_blocks/redstone"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:wyvern_energy_core"
+  }
+}

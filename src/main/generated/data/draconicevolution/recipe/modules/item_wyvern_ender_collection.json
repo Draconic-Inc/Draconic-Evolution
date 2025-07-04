@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:ender_eye"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "I": {
+      "tag": "c:ingots/draconium"
+    },
+    "M": {
+      "item": "draconicevolution:module_core"
+    },
+    "W": {
+      "tag": "c:chests/ender"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "IMI",
+    "#W#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_wyvern_ender_collection"
+  }
+}

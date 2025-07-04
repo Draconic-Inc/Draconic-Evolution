@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/draconium"
+    },
+    "A": {
+      "tag": "c:dusts/redstone"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "I": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_wyvern_shield_recovery"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "draconicevolution:wyvern_io_crystal"
+    },
+    {
+      "item": "draconicevolution:wyvern_io_crystal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:wyvern_relay_crystal"
+  }
+}

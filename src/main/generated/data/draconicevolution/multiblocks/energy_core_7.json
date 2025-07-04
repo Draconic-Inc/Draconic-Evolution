@@ -1,10 +1,10 @@
 {
   "keys": {
     "D": {
-      "tag": "forge:storage_blocks/draconium"
+      "tag": "c:storage_blocks/draconium"
     },
     "R": {
-      "tag": "forge:storage_blocks/redstone"
+      "tag": "c:storage_blocks/redstone"
     },
     "X": {
       "block": "draconicevolution:energy_core"

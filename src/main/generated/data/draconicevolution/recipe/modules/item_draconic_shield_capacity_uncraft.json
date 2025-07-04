@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "draconicevolution:item_draconic_large_shield_capacity"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "id": "draconicevolution:item_draconic_shield_capacity"
+  }
+}

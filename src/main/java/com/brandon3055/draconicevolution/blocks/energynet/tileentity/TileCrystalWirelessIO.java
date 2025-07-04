@@ -352,10 +352,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     public void addDisplayData(List<Component> displayList) {
         super.addDisplayData(displayList);
         displayList.add(Component.translatable("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(ChatFormatting.GREEN));
-
-        //TODO. I dont think i need to tell myself to stop this shit when i re write but... I need to stop this shit when i re write! (Injecting colours into translations like this)
         ChatFormatting colour = !inputMode.get() ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
-        displayList.add(Component.translatable("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
+        displayList.add(Component.translatable("gui.draconicevolution.energy_net.io_mode").append(" ").append(Component.translatable("gui.draconicevolution.energy_net.io_output_" + !inputMode.get()).withStyle(colour)));
     }
 
     //endregion

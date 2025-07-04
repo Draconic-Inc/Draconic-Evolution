@@ -1,0 +1,74 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "item": "minecraft:chest"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:draconium_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:crafting_table"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:storage_blocks/draconium"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:furnace"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "minecraft:crafting_table"
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:draconium_chest"
+  },
+  "techLevel": "draconium",
+  "totalEnergy": 2000000
+}

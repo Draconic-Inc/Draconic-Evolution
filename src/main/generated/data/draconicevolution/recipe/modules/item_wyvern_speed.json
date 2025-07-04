@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:item_draconium_speed"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "pattern": [
+    "###",
+    "ABA",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:item_wyvern_speed"
+  }
+}

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.util.ArrayUtils;
 import codechicken.lib.vec.Quat;
 import codechicken.lib.vec.Rotation;
@@ -136,9 +137,9 @@ public class EffectLib {
     public static void drawParticle(Camera renderInfo, VertexConsumer builder, TextureAtlasSprite sprite, float x, float y, float z, float scale, int light) {
         Rotation rot = new Rotation(new Quat(renderInfo.rotation()));
         vectors[0].set(-1.0F, -1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
-        vectors[1].set(-1.0F, 1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
+        vectors[1].set(1.0F, -1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
         vectors[2].set(1.0F, 1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
-        vectors[3].set(1.0F, -1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
+        vectors[3].set(-1.0F, 1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
 
         float uMin = sprite.getU0();
         float uMax = sprite.getU1();
@@ -152,9 +153,9 @@ public class EffectLib {
 
     public static void drawParticle(Rotation rotation, VertexConsumer builder, TextureAtlasSprite sprite, float r, float g, float b, double x, double y, double z, float scale, int light) {
         vectors[0].set(-1.0F, -1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
-        vectors[1].set(-1.0F, 1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
+        vectors[1].set(1.0F, -1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
         vectors[2].set(1.0F, 1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
-        vectors[3].set(1.0F, -1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
+        vectors[3].set(-1.0F, 1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
 
         float uMin = sprite.getU0();
         float uMax = sprite.getU1();

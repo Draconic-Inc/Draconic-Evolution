@@ -1,0 +1,70 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "catalyst": {
+    "type": "draconicevolution:stack",
+    "count": 4,
+    "items": "draconicevolution:wyvern_relay_crystal"
+  },
+  "ingredients": [
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    },
+    {
+      "consume": true,
+      "ingredient": {
+        "item": "draconicevolution:wyvern_energy_core"
+      }
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "draconicevolution:draconic_relay_crystal"
+  },
+  "techLevel": "draconic",
+  "totalEnergy": 128000
+}

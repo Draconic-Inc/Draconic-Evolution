@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:draconic_energy_core"
+  }
+}

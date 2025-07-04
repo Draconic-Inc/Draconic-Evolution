@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:gems/diamond"
+    },
+    "B": {
+      "item": "draconicevolution:particle_generator"
+    }
+  },
+  "pattern": [
+    "A A",
+    " B ",
+    "A A"
+  ],
+  "result": {
+    "count": 1,
+    "id": "draconicevolution:energy_core_stabilizer"
+  }
+}
