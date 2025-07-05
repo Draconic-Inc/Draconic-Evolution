@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.brandon3055.draconicevolution.items.equipment.ModularBow;
@@ -44,10 +45,10 @@ import java.util.Map;
 public class RenderModularBow extends ToolRenderBase {
 
     private static final float[][] STRING_BASE_COLORS = {
-            { 0.1F, 0.5F, 0.8F, 1F },
-            { 0.55F, 0.25F, 0.65F, 1F },
-            { 0.7F, 0.4F, 0.2F, 1F },
-            { 0.55F, 0.2F, 0.1F, 0.2F },
+            {0.1F, 0.5F, 0.8F, 1F},
+            {0.55F, 0.25F, 0.65F, 1F},
+            {0.7F, 0.4F, 0.2F, 1F},
+            {0.55F, 0.2F, 0.1F, 0.2F},
     };
     private static final RenderType bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.BOW_STRING_SHADER::getShaderInstance))
@@ -216,11 +217,17 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     private double getDrawAngle(ItemStack stack, float partialTicks) {
-        if (entity != null && entity.getUseItem() == stack) {
-            float maxCount = entity.getTicksUsingItem() - partialTicks;
-            return Math.max(0, ModularBow.getPowerForTime((int) (maxCount), stack, Minecraft.getInstance().level.registryAccess()) * 45F);
+        if (entity == null || !entity.getUseItem().is(stack.getItem())) {
+            return 0;
         }
-        return 0;
+        ModuleHost host1 = stack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host2 = entity.getUseItem().getCapability(DECapabilities.Host.ITEM);
+        if (host1 == null || host2 == null || !host1.getIdentity().equals(host2.getIdentity())) {
+            return 0;
+        }
+
+        float maxCount = entity.getTicksUsingItem() - partialTicks;
+        return Math.max(0, ModularBow.getPowerForTime((int) (maxCount), stack, Minecraft.getInstance().level.registryAccess()) * 45F);
     }
 
     private boolean isCreative(LivingEntity entity) {

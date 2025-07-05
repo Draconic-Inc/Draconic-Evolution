@@ -645,9 +645,9 @@ public class DraconicArrowEntity extends AbstractArrow {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity p_352459_) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
         Entity entity = this.getOwner();
-        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this, entity == null ? 0 : entity.getId()));
+        return SneakyUtils.unsafeCast(BCoreNetwork.getEntitySpawnPacket(this, serverEntity, entity == null ? 0 : entity.getId()));
     }
 
     @Override

@@ -219,9 +219,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
 
         Entity owner = arrow.getOwner();
         if (!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
-            return new DraconicArrowEntity(arrow.level(), arrow.getX(), arrow.getY(), arrow.getZ(), stack, weaponStack);
+            return new DraconicArrowEntity(arrow.level(), arrow.getX(), arrow.getY(), arrow.getZ(), stack.copyWithCount(1), weaponStack);
         }
-        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner(), stack, weaponStack);
+        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level(), (LivingEntity) arrow.getOwner(), stack.copyWithCount(1), weaponStack);
         if (arrow instanceof SpectralArrow) {
             newArrow.setSpectral(((SpectralArrow) arrow).duration);
         }
