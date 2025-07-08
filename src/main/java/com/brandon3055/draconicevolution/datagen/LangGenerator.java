@@ -755,8 +755,6 @@ public class LangGenerator extends LanguageProvider {
         helper.add("hud_charge",                                                "Charge");
         helper.add("hud_links",                                                 "Links");
         helper.add("hud_wireless_links",                                        "Wireless Links");
-//        helper.add("io_output_true",                                            "I/O Mode:%s Output to Block");
-//        helper.add("io_output_false",                                           "I/O Mode:%s Input from Block");
         helper.add("io_mode",                                                   "I/O Mode:");
         helper.add("io_output_true",                                            "Output to Block");
         helper.add("io_output_false",                                           "Input from Block");

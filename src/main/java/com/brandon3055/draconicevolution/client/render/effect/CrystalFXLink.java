@@ -25,7 +25,7 @@ import org.joml.Vector3f;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class   CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
+public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
@@ -146,7 +146,8 @@ public class   CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     public static class FXHandler implements ParticleRenderType {
         private static final ResourceLocation highlightTexture = ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
 
-        public FXHandler() {}
+        public FXHandler() {
+        }
 
         @Override
         public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
