@@ -120,7 +120,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         if (!level.isLoaded(linkedPos.pos())) return;
 
         BlockEntity entity = level.getBlockEntity(linkedPos.pos());
-        if (!(entity instanceof TileEnergyCore core) || !linkId.equals(core.linkUUID.get())) {
+        if (!(entity instanceof TileEnergyCore core) || !linkId.get().equals(core.linkUUID.get())) {
             clear();
             return;
         }
@@ -175,8 +175,8 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
     }
 
     private void clear() {
-        linkId = null;
-        linkedPos = null;
+        linkId = Optional.empty();
+        linkedPos = Optional.empty();
         markDirty();
     }
 
