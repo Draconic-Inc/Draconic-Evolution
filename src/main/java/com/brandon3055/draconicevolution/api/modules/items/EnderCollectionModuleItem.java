@@ -59,9 +59,9 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
                 frequency = frequency.withoutOwner();
             }
 
-            CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+            CompoundTag tag = stack.getOrDefault(ItemData.ENDER_MODULE_FREQUENCY, CustomData.EMPTY).copyTag();
             tag.put("frequency", writeFrequency(frequency, level.registryAccess()));
-            stack.set(ItemData.MODULE_ENTITY_TAG, CustomData.of(tag));
+            stack.set(ItemData.ENDER_MODULE_FREQUENCY, CustomData.of(tag));
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
@@ -84,10 +84,10 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
             return InteractionResultHolder.pass(stack);
         }
 
-        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+        CompoundTag tag = stack.getOrDefault(ItemData.ENDER_MODULE_FREQUENCY, CustomData.EMPTY).copyTag();
         if (player.isCrouching() && ModHelper.ENDERSTORAGE && !tag.contains("frequency")) {
             tag.remove("frequency");
-            stack.set(ItemData.MODULE_ENTITY_TAG, CustomData.of(tag));
+            stack.set(ItemData.ENDER_MODULE_FREQUENCY, CustomData.of(tag));
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
 
@@ -98,7 +98,7 @@ public class EnderCollectionModuleItem extends ModuleItem<NoData> {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, context, tooltip, flagIn);
 
-        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+        CompoundTag tag = stack.getOrDefault(ItemData.ENDER_MODULE_FREQUENCY, CustomData.EMPTY).copyTag();
         if (ModHelper.ENDERSTORAGE && tag.contains("frequency")) {
             addEnderStorageInfo(tag, tooltip);
         }

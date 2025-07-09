@@ -32,12 +32,12 @@ public class EnergyModuleItem extends ModuleItem<EnergyData> {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, context, tooltip, flagIn);
-        CompoundTag tag = stack.getOrDefault(ItemData.MODULE_ENTITY_TAG, CustomData.EMPTY).copyTag();
+        long energy = stack.getOrDefault(ItemData.ENERGY_MODULE_ENERGY, 0L);
 
-        if (tag.contains("stored_energy")) {
+        if (energy > 0) {
             tooltip.add(Component.literal(I18n.get("module.draconicevolution.energy.stored_energy")
                             + ": "
-                            + Utils.formatNumber(tag.getLong("stored_energy"))
+                            + Utils.formatNumber(energy)
                             + " "
                             + I18n.get("op.brandonscore." + (Screen.hasShiftDown() ? "operational_potential" : "op")))
                     .withStyle(ChatFormatting.GRAY));

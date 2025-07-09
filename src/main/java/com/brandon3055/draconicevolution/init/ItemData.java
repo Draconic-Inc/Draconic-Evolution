@@ -69,8 +69,6 @@ public class ItemData {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>>                  BINDER_POS                  = DATA.register("binder_pos",                   () -> DataComponentType.<GlobalPos>builder().persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC).build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>>                 MODULE_ENTITY_TAG           = DATA.register("module_entity_tag",            () -> DataComponentType.<CustomData>builder().persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC).build());
-
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModuleHost>>>        HOST_CAP_HOLDER             = DATA.register("module_host_cap_instance",     () -> DataComponentType.<DumData<ModuleHost>>builder().persistent(Codec.unit(DumData::new)).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DumData<ModularOPStorage>>>  ENERGY_CAP_HOLDER           = DATA.register("energy_cap_instance",          () -> DataComponentType.<DumData<ModularOPStorage>>builder().persistent(Codec.unit(DumData::new)).build());
 

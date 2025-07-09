@@ -88,6 +88,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         }
         entity.setHost(this);
         clearCaches();
+        saveData(); //Some modules need to read back host data, e.g. energy modules.
         entity.onInstalled(context);
         gatherProperties();
     }
