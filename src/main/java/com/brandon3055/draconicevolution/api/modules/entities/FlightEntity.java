@@ -102,8 +102,8 @@ public class FlightEntity extends ModuleEntity<FlightData> {
 
     @Override
     public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
-        elytraEnabled = Optional.ofNullable(stack.get(ItemData.BOOL_ITEM_PROP_1)).map(BooleanProperty::copy);
-        creativeEnabled = Optional.ofNullable(stack.get(ItemData.BOOL_ITEM_PROP_2)).map(BooleanProperty::copy);
-        elytraBoost = Optional.ofNullable(stack.get(ItemData.DECIMAL_ITEM_PROP_1)).map(DecimalProperty::copy);
+        elytraEnabled = optionalDefault(stack.get(ItemData.BOOL_ITEM_PROP_1), elytraEnabled).map(BooleanProperty::copy);
+        creativeEnabled = optionalDefault(stack.get(ItemData.BOOL_ITEM_PROP_2), creativeEnabled).map(BooleanProperty::copy);
+        elytraBoost = optionalDefault(stack.get(ItemData.DECIMAL_ITEM_PROP_1), elytraBoost).map(DecimalProperty::copy);
     }
 }

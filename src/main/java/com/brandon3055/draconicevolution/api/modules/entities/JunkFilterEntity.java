@@ -55,10 +55,6 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
             JunkFilterEntity::new
     );
 
-    public static <T> Codec<Map<Integer, T>> intObjectMap(Codec<T> codec) {
-        return Codec.unboundedMap(Codec.INT, codec);
-    }
-
     public JunkFilterEntity(Module<NoData> module) {
         super(module, 9);
     }
