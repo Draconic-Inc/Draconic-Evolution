@@ -114,7 +114,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_GRINDER, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_GRINDER);
         capability(event, DEContent.TILE_GRINDER, Capabilities.ItemHandler.BLOCK);
     }
 

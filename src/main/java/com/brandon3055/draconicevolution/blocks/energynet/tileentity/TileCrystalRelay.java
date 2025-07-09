@@ -30,7 +30,7 @@ public class TileCrystalRelay extends TileCrystalBase {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_RELAY_CRYSTAL, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_RELAY_CRYSTAL);
     }
 
     //region Rendering

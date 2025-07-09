@@ -70,7 +70,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_DRACONIUM_CHEST, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_DRACONIUM_CHEST);
         capability(event, DEContent.TILE_DRACONIUM_CHEST, Capabilities.ItemHandler.BLOCK);
     }
 

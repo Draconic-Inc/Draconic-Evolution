@@ -50,7 +50,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_IO_CRYSTAL, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_IO_CRYSTAL);
     }
 
     //region Update Energy IO

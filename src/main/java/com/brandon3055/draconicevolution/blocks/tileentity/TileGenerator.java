@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
@@ -90,7 +91,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_GENERATOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_GENERATOR);
         capability(event, DEContent.TILE_GENERATOR, ItemHandler.BLOCK);
         capability(event, DEContent.TILE_GENERATOR, DECapabilities.Host.BLOCK);
     }

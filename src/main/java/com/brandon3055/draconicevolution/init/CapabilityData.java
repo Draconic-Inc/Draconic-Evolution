@@ -26,6 +26,7 @@ import net.covers1624.quack.util.CrashLock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
@@ -36,26 +37,10 @@ public class CapabilityData {
     private static final CrashLock LOCK = new CrashLock("Already Initialized");
 
     private static ModuleHostImpl getItemHostCap(ItemStack stack) {
-//        DumData<ModuleHost> holder = stack.get(ItemData.HOST_CAP_HOLDER);
-//        if (holder == null) {
-//            holder = new DumData<>();
-//            stack.set(ItemData.HOST_CAP_HOLDER, holder);
-//            DraconicEvolution.LOGGER.info("Holder Init: {}", stack);
-//        }
-//
-//        if (holder.value == null) {
-//            if (!(stack.getItem() instanceof IModularItem item)) {
-//                throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularItem!");
-//            }
-//            holder.value = item.createHostCapForRegistration(stack);
-//            DraconicEvolution.LOGGER.info("Holder Value Init: {}", stack);
-//        }
-//
         if (!(stack.getItem() instanceof IModularItem item)) {
             throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularItem!");
         }
-//
-//        ModuleHostImpl host = (ModuleHostImpl) holder.value;
+
         ModuleHostImpl host = item.createHostCapForRegistration(stack);
         assert host != null;
         host.updateDataAccess(DataComponentAccessor.itemStack(stack));
@@ -63,24 +48,10 @@ public class CapabilityData {
     }
 
     private static ModularOPStorage getEnergyCap(ItemStack stack) {
-//        DumData<ModularOPStorage> holder = stack.get(ItemData.ENERGY_CAP_HOLDER);
-//        if (holder == null) {
-//            holder = new DumData<>();
-//            stack.set(ItemData.ENERGY_CAP_HOLDER, holder);
-//        }
-//
-//        if (holder.value == null) {
-//            if (!(stack.getItem() instanceof IModularEnergyItem item)) {
-//                throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularEnergyItem!");
-//            }
-//            holder.value = item.createOPCapForRegistration(stack);
-//        }
-//
         if (!(stack.getItem() instanceof IModularEnergyItem item)) {
             throw new IllegalStateException("ITEM_HOST_DATA can only be used on an ItemStack who's item implements IModularEnergyItem!");
         }
 
-//        ModularOPStorage storage = holder.value;
         ModularOPStorage storage = item.createOPCapForRegistration(stack);
         assert storage != null;
         storage.updateDataAccess(DataComponentAccessor.itemStack(stack));
@@ -89,7 +60,6 @@ public class CapabilityData {
 
     public static void init(IEventBus modBus) {
         LOCK.lock();
-//        ATTACHMENT_TYPES.register(modBus);
         modBus.addListener(CapabilityData::register);
     }
 
@@ -99,9 +69,9 @@ public class CapabilityData {
             Item item = holder.get();
             if (item instanceof IModularItem modularItem) {
                 event.registerItem(DECapabilities.Host.ITEM, (stack, v) -> getItemHostCap(stack), item);
-//                event.registerItem(DECapabilities.Properties.ITEM, (stack, v) -> getItemHostCap(stack), item);
                 if (item instanceof IModularEnergyItem modularEnergyItem) {
                     event.registerItem(CapabilityOP.ITEM, (stack, v) -> getEnergyCap(stack), item);
+                    event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, v) -> getEnergyCap(stack), item);
                 }
             }
             if (item instanceof IDEEquipment) {

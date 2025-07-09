@@ -17,6 +17,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.UUID;
@@ -92,7 +93,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_CREATIVE_OP_CAPACITOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_CREATIVE_OP_CAPACITOR);
     }
 
     @Override

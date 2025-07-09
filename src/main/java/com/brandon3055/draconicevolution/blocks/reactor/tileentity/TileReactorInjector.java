@@ -20,7 +20,7 @@ public class TileReactorInjector extends TileReactorComponent {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_REACTOR_INJECTOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_REACTOR_INJECTOR);
     }
 
     private static class OPInjector implements IOPStorage {

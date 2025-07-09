@@ -43,6 +43,7 @@ import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
@@ -75,7 +76,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_CELESTIAL_MANIPULATOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_CELESTIAL_MANIPULATOR);
     }
 
     @Override

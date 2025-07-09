@@ -41,6 +41,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nullable;
@@ -90,7 +91,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_ENTITY_DETECTOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_ENTITY_DETECTOR);
     }
 
     @Override

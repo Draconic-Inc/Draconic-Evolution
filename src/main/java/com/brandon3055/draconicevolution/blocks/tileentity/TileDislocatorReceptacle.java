@@ -91,7 +91,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE);
         capability(event, DEContent.TILE_DISLOCATOR_RECEPTACLE, Capabilities.ItemHandler.BLOCK);
     }
 
