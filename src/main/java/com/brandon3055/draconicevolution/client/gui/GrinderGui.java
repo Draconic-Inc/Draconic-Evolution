@@ -130,7 +130,7 @@ public class GrinderGui extends ContainerGuiProvider<GrinderMenu> {
                 .constrain(LEFT, relative(root.get(LEFT), 4))
                 .constrain(RIGHT, relative(invBG.get(LEFT), -2));
 
-        GuiButton claimXP = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("collect.xp"))
+        GuiButton claimXP = TOOLKIT.createFlat3DButton(root, () -> TOOLKIT.translate("claim.xp"))
                 .setTooltip(TOOLKIT.translate("claim.xp.info"))
                 .onPress(() -> tile.sendPacketToServer(output -> output.writeByte(0), 1))
                 .constrain(HEIGHT, literal(14))
