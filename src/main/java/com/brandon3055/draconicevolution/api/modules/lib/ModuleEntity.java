@@ -39,6 +39,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -505,6 +507,17 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
                '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ModuleEntity<?> that)) return false;
+        return gridX == that.gridX && gridY == that.gridY && Objects.equals(module, that.module);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(module, gridX, gridY);
+    }
+
     /**
      * Send a message to the server side ModuleEntity.
      * Handle the message using {@link #handleClientMessage(MCDataInput)}
@@ -618,5 +631,9 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
                 return DataResult.success(Pair.of(entity, errors), Lifecycle.stable());
             }
         }
+    }
+
+    public static <T> Optional<T> optionalDefault(T input, Optional<T> defaultVal) {
+        return input == null ? defaultVal : Optional.of(input);
     }
 }

@@ -228,9 +228,9 @@ public class DEContent {
     public static final DeferredHolder<Item, InfoTablet> INFO_TABLET                      = ITEMS.register("info_tablet",                         () -> new InfoTablet(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, MobSoul> MOB_SOUL                            = ITEMS.register("mob_soul",                            () -> new MobSoul(new Item.Properties()));
     //Tools
-    public static final TechProperties WYVERN_TOOLS = (TechProperties) new TechProperties(TechLevel.WYVERN).rarity(Rarity.UNCOMMON).durability(-1).fireResistant();
-    public static final TechProperties DRACONIC_TOOLS = (TechProperties) new TechProperties(TechLevel.DRACONIC).rarity(Rarity.RARE).durability(-1).fireResistant();
-    public static final TechProperties CHAOTIC_TOOLS = (TechProperties) new TechProperties(TechLevel.CHAOTIC).rarity(Rarity.EPIC).durability(-1).fireResistant();
+    public static final TechProperties WYVERN_TOOLS = (TechProperties) new TechProperties(TechLevel.WYVERN).rarity(Rarity.UNCOMMON).fireResistant();
+    public static final TechProperties DRACONIC_TOOLS = (TechProperties) new TechProperties(TechLevel.DRACONIC).rarity(Rarity.RARE).fireResistant();
+    public static final TechProperties CHAOTIC_TOOLS = (TechProperties) new TechProperties(TechLevel.CHAOTIC).rarity(Rarity.EPIC).fireResistant();
     public static DETier WYVERN_TIER = new DETier(TechLevel.WYVERN);
     public static DETier DRACONIC_TIER = new DETier(TechLevel.DRACONIUM);
     public static DETier CHAOTIC_TIER = new DETier(TechLevel.CHAOTIC);

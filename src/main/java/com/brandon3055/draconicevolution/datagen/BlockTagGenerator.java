@@ -5,6 +5,8 @@ import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -39,6 +41,12 @@ public class BlockTagGenerator extends BlockTagsProvider {
         tag(DETags.Blocks.INCORRECT_FOR_WYVERN_TOOL).addTag(DETags.Blocks.NEEDS_AWAKENED_TOOL);
         tag(DETags.Blocks.INCORRECT_FOR_AWAKENED_TOOL).addTag(DETags.Blocks.NEEDS_CHAOTIC_TOOL);
         tag(DETags.Blocks.INCORRECT_FOR_CHAOTIC_TOOL);
+
+        tag(DETags.Blocks.MINEABLE_WITH_STAFF)
+                .addTag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .addTag(BlockTags.MINEABLE_WITH_AXE)
+                .addTag(BlockTags.MINEABLE_WITH_SHOVEL)
+                .addTag(BlockTags.MINEABLE_WITH_HOE);
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(DEContent.GENERATOR.get())

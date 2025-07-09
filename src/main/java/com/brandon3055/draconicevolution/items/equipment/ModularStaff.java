@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.data.DamageModData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
@@ -40,7 +41,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     private final DETier itemTier;
 
     public ModularStaff(DETier tier, TechProperties props) {
-        super(tier, BlockTags.MINEABLE_WITH_PICKAXE, props);
+        super(tier, DETags.Blocks.MINEABLE_WITH_STAFF, props);
         this.techLevel = props.getTechLevel();
         this.itemTier = (DETier) getTier();
     }

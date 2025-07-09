@@ -46,7 +46,9 @@ public interface IModularMiningTool extends IModularTieredItem {
 
     @Override
     default boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return IModularTieredItem.super.shouldCauseBlockBreakReset(oldStack, newStack);
+        ModuleHost host1 = oldStack.getCapability(DECapabilities.Host.ITEM);
+        ModuleHost host2 = newStack.getCapability(DECapabilities.Host.ITEM);
+        return host1 == null || host2 == null || !host1.getIdentity().equals(host2.getIdentity());
     }
 
     //Now called via ModularArmorEventHandler, Will still cancel break if you return true
@@ -198,12 +200,13 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, state);
-            if (event.isCanceled()) {
-                ServerPlayer mpPlayer = (ServerPlayer) player;
-                mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));
-                return;
-            }
+            //Yea woops, all this code now gets called from within BreakEvent so we can not call BreakEvent. Not sure what to do avout this, because we really should be firing an event here...
+//            BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, state);
+//            if (event.isCanceled()) {
+//                ServerPlayer mpPlayer = (ServerPlayer) player;
+//                mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));
+//                return;
+//            }
 
             if (player.getAbilities().instabuild) {
                 if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {

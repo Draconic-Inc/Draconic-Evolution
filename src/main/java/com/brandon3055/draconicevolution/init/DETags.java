@@ -58,6 +58,8 @@ public class DETags {
         public static final TagKey<Block> INCORRECT_FOR_AWAKENED_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_awakened_tool"));
         public static final TagKey<Block> INCORRECT_FOR_CHAOTIC_TOOL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "incorrect_for_chaotic_tool"));
 
+        public static final TagKey<Block> MINEABLE_WITH_STAFF = BlockTags.create(ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "mineable_with_staff"));
+
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
