@@ -82,6 +82,7 @@ public class RenderItemChaosShard implements IItemRenderer {
 
         ccrs.baseColour = 0xFFFFFFF0;
         ccrs.bind(CHAOS_CRYSTAL, getter);
+        mat.apply(new Scale(1.005).at(new Vector3(0.5, 0.5, 0.5)));
         shard.render(ccrs, mat);
     }
 
