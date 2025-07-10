@@ -1,4 +1,4 @@
-// 1.21.1	2025-07-05T17:56:55.94987369	Tags for minecraft:item mod id draconicevolution
+// 1.21.1	2025-07-10T16:47:07.665089951	Tags for minecraft:item mod id draconicevolution
 7a2a766d2f40919d17e6ebc12bd6f0a1205da117 data/c/tags/item/dusts.json
 26a02ca040deced33c1f86c215e347e169ce3499 data/c/tags/item/dusts/draconium.json
 9864e525e028426969eb33f4b4a445b8ad2a3b89 data/c/tags/item/dusts/draconium_awakened.json
@@ -16,3 +16,9 @@ e0559dc39b8d8d852d5d416df07a5247ca59fe4d data/c/tags/item/storage_blocks/draconi
 9bd81dd15a58efd081cb5ee7904c92d52a927123 data/curios/tags/item/body.json
 474ff2e4ba17742c58126f86fb08cb02f7713af4 data/curios/tags/item/curio.json
 3f5e3521f3d587cb2d27bc5d66d7d2ca9ed0d1af data/draconicevolution/tags/item/modules.json
+18bde92bec492418f83c3bd3fea8e347e0c8d380 data/minecraft/tags/item/axes.json
+c698c3ae40c7adc3ca7a4defdaaf030b12cb01cd data/minecraft/tags/item/enchantable/bow.json
+1b7876b22029bdcc5f6ad72fcd5aa83e943ee3b6 data/minecraft/tags/item/hoes.json
+c1819db1c943516c473bac8388c24fec64a06f3e data/minecraft/tags/item/pickaxes.json
+d6b7f79f4b7dff1df7999b59b19f0085c2f1bbf4 data/minecraft/tags/item/shovels.json
+4fb6f4edd5c8df3172d6fdd567539c2c6f110b30 data/minecraft/tags/item/swords.json

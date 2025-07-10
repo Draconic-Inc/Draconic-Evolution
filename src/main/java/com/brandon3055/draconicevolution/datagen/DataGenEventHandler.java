@@ -13,6 +13,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.tags.EnchantmentTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -86,6 +87,13 @@ public class DataGenEventHandler {
 
             tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ITEM_END_DRACONIUM_ORE.get(), DEContent.ITEM_NETHER_DRACONIUM_ORE.get(), DEContent.ITEM_OVERWORLD_DRACONIUM_ORE.get(), DEContent.ITEM_DEEPSLATE_DRACONIUM_ORE.get());
             tag(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
+
+            tag(ItemTags.SWORDS).add(DEContent.SWORD_WYVERN.value(), DEContent.SWORD_DRACONIC.value(), DEContent.SWORD_CHAOTIC.value());
+            tag(ItemTags.PICKAXES).add(DEContent.PICKAXE_WYVERN.value(), DEContent.PICKAXE_DRACONIC.value(), DEContent.PICKAXE_CHAOTIC.value());
+            tag(ItemTags.AXES).add(DEContent.AXE_WYVERN.value(), DEContent.AXE_DRACONIC.value(), DEContent.AXE_CHAOTIC.value());
+            tag(ItemTags.SHOVELS).add(DEContent.SHOVEL_WYVERN.value(), DEContent.SHOVEL_DRACONIC.value(), DEContent.SHOVEL_CHAOTIC.value());
+            tag(ItemTags.HOES).add(DEContent.HOE_WYVERN.value(), DEContent.HOE_DRACONIC.value(), DEContent.HOE_CHAOTIC.value());
+            tag(ItemTags.BOW_ENCHANTABLE).add(DEContent.BOW_WYVERN.value(), DEContent.BOW_DRACONIC.value(), DEContent.BOW_CHAOTIC.value());
 
             for (Module<?> module : ModuleRegistry.getRegistry()) {
                 tag(DETags.Items.MODULES).add(module.getItem());
