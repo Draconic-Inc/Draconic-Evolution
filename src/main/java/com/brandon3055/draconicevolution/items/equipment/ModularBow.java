@@ -19,7 +19,10 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -38,6 +41,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -103,12 +107,20 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
         }
     }
 
+    private boolean hasInfinity(Level level, ItemStack stack) {
+        Registry<Enchantment> reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+        if (reg != null) {
+            Holder<Enchantment> holder = reg.getHolder(Enchantments.INFINITY).orElse(null);
+            return holder != null && stack.getEnchantmentLevel(holder) > 0;
+        }
+        return false;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack bowStack = player.getItemInHand(hand);
-        boolean hasAmmo = !player.getProjectile(bowStack).isEmpty();
-
-        //TODO think i still need something here to enable infinity without an arrow in inventory. May want to just re-work a lot of the bow handling, a lot has changed
+        boolean infinity = hasInfinity(level, bowStack);
+        boolean hasAmmo = infinity || !player.getProjectile(bowStack).isEmpty();
 
         InteractionResultHolder<ItemStack> ret = net.neoforged.neoforge.event.EventHooks.onArrowNock(bowStack, level, player, hand, hasAmmo);
         if (ret != null) return ret;
@@ -131,21 +143,23 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
             return;
         }
 
-        ItemStack itemstack = player.getProjectile(stack);
-        if (itemstack.isEmpty()) {
-            return;
+        boolean infinity = hasInfinity(level, stack);
+        ItemStack ammoStack = player.getProjectile(stack);
+        if (ammoStack.isEmpty()) {
+            if (infinity) {
+                ammoStack = new ItemStack(Items.ARROW);
+            } else {
+                return;
+            }
         }
 
-//        boolean noAmmoRequired = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
-        ItemStack ammoStack = player.getProjectile(stack);
-
         int drawTime = this.getUseDuration(stack, entity) - timeLeft;
-        drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty());// || noAmmoRequired);
+        drawTime = EventHooks.onArrowLoose(stack, level, player, drawTime, !ammoStack.isEmpty() || infinity);
         if (drawTime < 0) {
             return;
         }
 
-        if (ammoStack.isEmpty()/* && !noAmmoRequired*/) {
+        if (ammoStack.isEmpty() && !infinity) {
             return;
         }
 
@@ -159,7 +173,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
                 return;
             }
 
-            infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
+            infiniteAmmo = infinity || player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
 
             if (!level.isClientSide) {
                 ArrowItem arrowitem = (ArrowItem) (ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
@@ -187,7 +201,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularEnergyIt
                     return;
                 }
 
-                if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
+                if (infiniteAmmo) {
                     arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                 }
 
