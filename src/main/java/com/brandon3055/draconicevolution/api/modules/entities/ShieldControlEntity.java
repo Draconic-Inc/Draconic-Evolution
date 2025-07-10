@@ -409,8 +409,8 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         stack.set(ItemData.SHIELD_MODULE_CAP, data.shieldCapacity);
         stack.set(ItemData.SHIELD_MODULE_POINTS, data.shieldPoints);
         stack.set(ItemData.SHIELD_MODULE_COOLDWN, data.shieldCoolDown);
-        stack.set(ItemData.BOOL_ITEM_PROP_1, shieldEnabled).copy();
-        stack.set(ItemData.BOOL_ITEM_PROP_2, alwaysVisible).copy();
+        stack.set(ItemData.BOOL_ITEM_PROP_1, shieldEnabled.copy());
+        stack.set(ItemData.BOOL_ITEM_PROP_2, alwaysVisible.copy());
     }
 
     @Override
