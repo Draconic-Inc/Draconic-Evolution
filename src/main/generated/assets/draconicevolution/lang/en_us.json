@@ -620,7 +620,7 @@
   "module.draconicevolution.filtered_module.clear_slot": "Shift+Right click to clear",
   "module.draconicevolution.filtered_module.configure_slot": "Right click to set tag filter",
   "module.draconicevolution.filtered_module.filter_by_tag": "Filter by item tag",
-  "module.draconicevolution.filtered_module.filter_example": "e.g. forge:stone",
+  "module.draconicevolution.filtered_module.filter_example": "e.g. c:stone",
   "module.draconicevolution.filtered_module.filter_item": "Filter Item",
   "module.draconicevolution.filtered_module.filter_slot": "Filter Slot",
   "module.draconicevolution.filtered_module.filter_tag": "Filter Tag",

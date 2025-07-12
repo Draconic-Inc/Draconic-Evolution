@@ -13,21 +13,15 @@ import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.covers1624.quack.collection.FastStream;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by brandon3055 on 21/01/2023
@@ -40,8 +34,7 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
             DEModules.codec().fieldOf("module").forGetter(ModuleEntity::getModule),
             Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
             Codec.INT.fieldOf("gridy").forGetter(ModuleEntity::getGridY),
-            TAGS_CODEC.fieldOf("filter_tags").forGetter(e -> e.filterTags),
-            STACKS_CODEC.fieldOf("filter_stacks").forGetter(e -> e.filterStacks),
+            FILTERS_CODEC.fieldOf("filters").forGetter(e -> e.filters),
             BooleanProperty.CODEC.fieldOf("enabled").forGetter(e -> e.filterEnabled)
     ).apply(builder, JunkFilterEntity::new));
 
@@ -49,8 +42,7 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
             DEModules.streamCodec(), ModuleEntity::getModule,
             ByteBufCodecs.INT, ModuleEntity::getGridX,
             ByteBufCodecs.INT, ModuleEntity::getGridY,
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, BCStreamCodec.tagKeyCodec(Registries.ITEM)), e -> e.filterTags,
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC), e -> e.filterStacks,
+            FILTERS_STREAM_CODEC, e -> e.filters,
             BooleanProperty.STREAM_CODEC, e -> e.filterEnabled,
             JunkFilterEntity::new
     );
@@ -59,16 +51,14 @@ public class JunkFilterEntity extends FilteredModuleEntity<NoData> {
         super(module, 9);
     }
 
-    JunkFilterEntity(Module<?> module, int gridX, int gridY, Map<Integer, TagKey<Item>> filterTags, Map<Integer, ItemStack> filterStacks, BooleanProperty filterEnabled) {
-        super((Module<NoData>) module, gridX, gridY, 9, filterTags, filterStacks);
+    JunkFilterEntity(Module<?> module, int gridX, int gridY, List<Filter> filters, BooleanProperty filterEnabled) {
+        super((Module<NoData>) module, gridX, gridY, 9, filters);
         this.filterEnabled = filterEnabled;
     }
 
     @Override
     public ModuleEntity<?> copy() {
-        Map<Integer, ItemStack> stacks = new HashMap<>();
-        filterStacks.forEach((integer, stack) -> stacks.put(integer, stack.copy()));
-        return new JunkFilterEntity(module, getGridX(), getGridY(), new HashMap<>(filterTags), stacks, filterEnabled.copy());
+        return new JunkFilterEntity(module, getGridX(), getGridY(), copyFilters(filters), filterEnabled.copy());
     }
 
     @Override

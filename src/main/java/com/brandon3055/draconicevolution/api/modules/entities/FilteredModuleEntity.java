@@ -26,17 +26,17 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.client.ModuleTextures;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -52,10 +52,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -68,13 +66,10 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends ModuleEntity<T> {
 
-    public static final Codec<Map<Integer, ItemStack>> STACKS_CODEC = Codec.unboundedMap(Codec.INT, ItemStack.CODEC);
-    public static final Codec<Map<Integer, TagKey<Item>>> TAGS_CODEC = Codec.unboundedMap(Codec.INT, TagKey.codec(Registries.ITEM));
-    public static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, ItemStack>> STACKS_STREAM_CODEC = ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, TagKey<Item>>> TAGS_STREAM_CODEC = ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, BCStreamCodec.tagKeyCodec(Registries.ITEM));
+    public static final Codec<List<Filter>> FILTERS_CODEC = Codec.list(Filter.CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<Filter>> FILTERS_STREAM_CODEC = Filter.STREAM_CODEC.apply(ByteBufCodecs.list());
 
-    protected Map<Integer, ItemStack> filterStacks = new HashMap<>();
-    protected Map<Integer, TagKey<Item>> filterTags = new HashMap<>();
+    protected List<Filter> filters = new ArrayList<>();
     protected final int slotsCount;
 
     public FilteredModuleEntity(Module<T> module, int slotsCount) {
@@ -83,11 +78,10 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 //        savePropertiesToItem = true;
     }
 
-    FilteredModuleEntity(Module<T> module, int gridX, int gridY, int slotsCount, Map<Integer, TagKey<Item>> filterTags, Map<Integer, ItemStack> filterStacks) {
+    FilteredModuleEntity(Module<T> module, int gridX, int gridY, int slotsCount, List<Filter> filters) {
         super(module, gridX, gridY);
         this.slotsCount = slotsCount;
-        this.filterTags = filterTags;
-        this.filterStacks = filterStacks;
+        this.filters = filters;
     }
 
     protected BooleanProperty createEnabledProperty(String moduleName, boolean includeFilter) {
@@ -98,10 +92,15 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
                 boolean first = true;
                 for (int i = 0; i < slotsCount; i++) {
                     String append = null;
-                    if (filterTags.containsKey(i)) {
-                        append = filterTags.get(i).location().toString();
-                    } else if (filterStacks.containsKey(i)) {
-                        append = filterStacks.get(i).getHoverName().getString();
+                    Filter filter = getFilters().get(i);
+                    if (filter != null) {
+                        if (filter.tagFilter().isPresent()) {
+                            append = filter.tagFilter().get().location().toString();
+                        } else if (filter.stackFilter().isPresent()) {
+                            append = filter.stackFilter().get().getHoverName().getString();
+                        } else {
+                            append = "[invalid]";
+                        }
                     }
                     if (append != null) {
                         if (trim) {
@@ -128,6 +127,19 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     protected abstract List<Slot> layoutSlots(int x, int y, int width, int height);
+
+    protected Map<Integer, Filter> getFilters() {
+        return FastStream.of(filters).toMap(Filter::slot, filter -> filter);
+    }
+
+    protected ItemStack getStackFilter(int i) {
+        return getFilters().getOrDefault(i, Filter.EMPTY).stackFilter().orElse(ItemStack.EMPTY);
+    }
+
+    @Nullable
+    protected TagKey<Item> getTagFilter(int i) {
+        return getFilters().getOrDefault(i, Filter.EMPTY).tagFilter().orElse(null);
+    }
 
     //Render
 
@@ -156,16 +168,17 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
             //Draw Slots
             for (Slot slot : slots) {
                 render.texRect(slotTex, slot.x, slot.y, slot.size, slot.size);
-                if (overlayTex == null || filterStacks.containsKey(slot.index)) continue;
+                if (overlayTex == null || !getStackFilter(slot.index).isEmpty()) continue;
                 render.texRect(overlayTex, slot.x, slot.y, slot.size, slot.size);
             }
 
             render.pose().translate(0, 0, 100);
             //Draw Items
             for (Slot slot : slots) {
-                ItemStack stack = filterStacks.getOrDefault(slot.index, ItemStack.EMPTY);
-                if (filterTags.containsKey(slot.index)) {
-                    List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(filterTags.get(slot.index))).map(Holder::value).toList();
+                ItemStack stack = getStackFilter(slot.index);
+                TagKey<Item> tagKey = getTagFilter(slot.index);
+                if (tagKey != null) {
+                    List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(tagKey)).map(Holder::value).toList();
                     stack = new ItemStack(matchingItems.get((TimeKeeper.getClientTick() / 10) % matchingItems.size()));
                 }
 
@@ -233,8 +246,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         int slotX = MathHelper.clip((int) (((mouseX - x) / width) * 3), 0, 2);
         int slotY = MathHelper.clip((int) (((mouseY - y) / height) * 3), 0, 2);
         int index = slotX + (slotY * 3);
-        ItemStack filter = filterStacks.getOrDefault(index, ItemStack.EMPTY);
-        TagKey<Item> tag = filterTags.get(index);
+        ItemStack filter = getStackFilter(index);
+        TagKey<Item> tag = getTagFilter(index);
 
         if (tag != null) {
             list.add(Component.translatable("module." + MODID + ".filtered_module.filter_tag").withStyle(ChatFormatting.GRAY)
@@ -273,9 +286,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
         //Clear Filter
         if (button == 1 && Screen.hasShiftDown()) {
-            filterStacks.remove(index);
-            filterTags.remove(index);
-            sendMessageToServer(player.registryAccess(), e -> sendConfigToServer(player.registryAccess()));
+            filters.removeIf(filter -> filter.slot() == index);
+            sendConfigToServer(player.registryAccess());
             markDirty();
             return true;
         } else if (button == 1) {
@@ -290,10 +302,10 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         //Set item filter
         ItemStack newFilter = carrying.copy();
         newFilter.setCount(1);
-        filterStacks.put(index, newFilter);
-        filterTags.remove(index);
+        filters.removeIf(filter -> filter.slot() == index);
+        filters.add(Filter.itemStack(index, newFilter));
         markDirty();
-        sendMessageToServer(player.registryAccess(), e -> sendConfigToServer(player.registryAccess()));
+        sendConfigToServer(player.registryAccess());
         return true;
     }
 
@@ -374,7 +386,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         scrollBar.slider().setScrollableElement(scrolling);
 
         List<TagKey<Item>> tagOps = new ArrayList<>();
-        ItemStack filterStack = filterStacks.getOrDefault(index, ItemStack.EMPTY);
+        ItemStack filterStack = getStackFilter(index);
         if (!filterStack.isEmpty()) {
             tagOps.addAll(filterStack.getTags().toList());
         }
@@ -401,7 +413,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
                             .setTooltip(Component.literal(tag.location().toString()));
                     button.getLabel().setTrim(true);
                     button.onPress(() -> {
-                        filterTags.remove(index); //Ensures the scroll element is reloaded even if this tag was already selected.
+                        filters.removeIf(filter -> filter.slot() == index);//Ensures the scroll element is reloaded even if this tag was already selected.
                         textField.setValue(tag.location().toString());
                     });
                     yOffset += 13;
@@ -411,13 +423,13 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
         textField.setTextState(TextState.simpleState("", s -> {
             ResourceLocation location = ResourceLocation.tryParse(s);
-            TagKey<Item> key = filterTags.get(index);
+            TagKey<Item> key = getTagFilter(index);
             if (s.isEmpty() && key == null) return;
 
             GuiElement<?> content = scrolling.getContentElement();
 
-            if (location == null && filterTags.containsKey(index)) {
-                filterTags.remove(index); //Remove old key from server
+            if (location == null && key != null) {
+                filters.removeIf(filter -> filter.slot() == index); //Remove old key from server
                 sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
                 return;
             } else if (location == null || (key != null && location.equals(key.location()) && !content.getChildren().isEmpty())) {
@@ -432,8 +444,8 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
             List<Item> matchingItems = FastStream.of(BuiltInRegistries.ITEM.getTagOrEmpty(key)).map(Holder::value).toList();
             if (matchingItems.isEmpty()) {
-                filterTags.remove(index);
-                sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
+                filters.removeIf(filter -> filter.slot() == index);
+                sendConfigToServer(mc.level.registryAccess());
                 return;
             }
 
@@ -444,30 +456,30 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
                 Constraints.placeInside(icon, content, Constraints.LayoutPos.TOP_LEFT, (int) (i % 7) * 19, (int) (i / 7) * 19D);
             }
 
-            filterTags.put(index, key);
-            sendMessageToServer(mc.level.registryAccess(), e -> sendConfigToServer(mc.level.registryAccess()));
+            filters.removeIf(filter -> filter.slot() == index);
+            filters.add(Filter.tagKey(index, key));
+            sendConfigToServer(mc.level.registryAccess());
         }));
 
         textField.setEnterPressed(dialog::close);
 
-        if (filterTags.containsKey(index)) {
-            textField.setValue(filterTags.get(index).location().toString());
+        TagKey<Item> key = getTagFilter(index);
+        if (key != null) {
+            textField.setValue(key.location().toString());
         }
     }
 
     private void sendConfigToServer(RegistryAccess access) {
         if (slotsCount == 0) return;
         sendMessageToServer(access, e -> {
-            STACKS_STREAM_CODEC.encode(((MCDataByteBuf) e).toRegistryFriendlyByteBuf(), filterStacks);
-            TAGS_STREAM_CODEC.encode(((MCDataByteBuf) e).toRegistryFriendlyByteBuf(), filterTags);
+            FILTERS_STREAM_CODEC.encode(((MCDataByteBuf) e).toRegistryFriendlyByteBuf(), filters);
         });
     }
 
     @Override
     public void handleClientMessage(MCDataInput input) {
         if (slotsCount == 0) return;
-        filterStacks = STACKS_STREAM_CODEC.decode(((MCDataByteBuf) input).toRegistryFriendlyByteBuf());
-        filterTags = TAGS_STREAM_CODEC.decode(((MCDataByteBuf) input).toRegistryFriendlyByteBuf());
+        filters = FILTERS_STREAM_CODEC.decode(((MCDataByteBuf) input).toRegistryFriendlyByteBuf());
         markDirty();
     }
 
@@ -479,13 +491,14 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         }
 
         for (int i = 0; i < slotsCount; i++) {
-            if (filterTags.containsKey(i)) {
-                TagKey<Item> key = filterTags.get(i);
+            TagKey<Item> key = getTagFilter(i);
+            ItemStack stackKey = getStackFilter(i);
+            if (key != null) {
                 if (stack.is(key)) {
                     return true;
                 }
-            } else if (filterStacks.containsKey(i)) {
-                Item item = filterStacks.get(i).getItem();
+            } else if (!stackKey.isEmpty()) {
+                Item item = stackKey.getItem();
                 if (stack.is(item)) {
                     return true;
                 }
@@ -501,12 +514,13 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
 
         Predicate<ItemStack> filterTest = null;
         for (int i = 0; i < slotsCount; i++) {
+            TagKey<Item> key = getTagFilter(i);
+            ItemStack stackKey = getStackFilter(i);
             Predicate<ItemStack> slotTest;
-            if (filterTags.containsKey(i)) {
-                TagKey<Item> key = filterTags.get(i);
+            if (key != null) {
                 slotTest = e -> e.is(key);
-            } else if (filterStacks.containsKey(i)) {
-                Item item = filterStacks.get(i).getItem();
+            } else if (!stackKey.isEmpty()) {
+                Item item = stackKey.getItem();
                 slotTest = e -> e.is(item);
             } else {
                 continue;
@@ -518,7 +532,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     public boolean isEmpty() {
-        return slotsCount == 0 || filterStacks.isEmpty() && filterTags.isEmpty();
+        return slotsCount == 0 || filters.isEmpty();
     }
 
     public boolean isEnabled() {
@@ -530,26 +544,78 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     @Override
     public void saveEntityToStack(ItemStack stack, ModuleContext context) {
         if (slotsCount == 0) return;
-        stack.set(ItemData.FILTER_MODULE_STACKS, copyStackMap(filterStacks));
-        stack.set(ItemData.FILTER_MODULE_TAGS, new HashMap<>(filterTags));
+        stack.set(ItemData.FILTER_MODULE_FILTERS, copyFilters(filters));
     }
 
     @Override
     public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
         if (slotsCount == 0) return;
-        filterStacks = copyStackMap(stack.getOrDefault(ItemData.FILTER_MODULE_STACKS, filterStacks));
-        filterTags = new HashMap<>(stack.getOrDefault(ItemData.FILTER_MODULE_TAGS, filterTags));
+        filters = copyFilters(stack.getOrDefault(ItemData.FILTER_MODULE_FILTERS, filters));
     }
 
-    private Map<Integer, ItemStack> copyStackMap(Map<Integer, ItemStack> map) {
-        Map<Integer, ItemStack> copy = new HashMap<>();
-        map.forEach((index, value) -> copy.put(index, value.copy()));
-        return map;
+    protected List<Filter> copyFilters(List<Filter> list) {
+        //Should not been needed, but lets to a sneaky little slot sanity check here.
+        Map<Integer, Filter> map = new HashMap<>();
+        list.forEach((filter) -> map.put(filter.slot(), filter.copy()));
+        return new ArrayList<>(map.values());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FilteredModuleEntity<?> that)) return false;
+        if (!super.equals(o)) return false;
+        return slotsCount == that.slotsCount && Objects.equals(filters, that.filters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), filters, slotsCount);
     }
 
     protected record Slot(int index, double x, double y, double size) {
         public boolean isInSlot(double testX, double textY) {
             return GuiRender.isInRect(x, y, size, size, testX, textY);
+        }
+    }
+
+    public record Filter(int slot, Optional<ItemStack> stackFilter, Optional<TagKey<Item>> tagFilter) {
+        private static final Filter EMPTY = new Filter(-1, Optional.empty(), Optional.empty());
+        public static final Codec<Filter> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                                Codec.INT.fieldOf("slot").forGetter(Filter::slot),
+                                ItemStack.CODEC.optionalFieldOf("stackFilter").forGetter(Filter::stackFilter),
+                                TagKey.codec(Registries.ITEM).optionalFieldOf("tagFilter").forGetter(Filter::tagFilter)
+                        ).apply(instance, Filter::new)
+        );
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, Filter> STREAM_CODEC = BCStreamCodec.composite(
+                ByteBufCodecs.INT, Filter::slot,
+                ByteBufCodecs.optional(ItemStack.STREAM_CODEC), Filter::stackFilter,
+                ByteBufCodecs.optional( BCStreamCodec.tagKeyCodec(Registries.ITEM)), Filter::tagFilter,
+                Filter::new
+        );
+
+        @Override
+        public int hashCode() {
+            return slot;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Filter filter)) return false;
+            return slot == filter.slot && Objects.equals(stackFilter, filter.stackFilter) && Objects.equals(tagFilter, filter.tagFilter);
+        }
+
+        public static Filter itemStack(int slot, ItemStack stack) {
+            return new Filter(slot, Optional.of(stack), Optional.empty());
+        }
+
+        public static Filter tagKey(int slot, TagKey<Item> tagKey) {
+            return new Filter(slot, Optional.empty(), Optional.of(tagKey));
+        }
+
+        public Filter copy() {
+            return new Filter(slot(), stackFilter.map(ItemStack::copy), tagFilter);
         }
     }
 }

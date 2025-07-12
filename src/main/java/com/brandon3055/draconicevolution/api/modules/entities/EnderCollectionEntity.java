@@ -26,22 +26,20 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -56,8 +54,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
             DEModules.codec().fieldOf("module").forGetter(ModuleEntity::getModule),
             Codec.INT.fieldOf("gridx").forGetter(ModuleEntity::getGridX),
             Codec.INT.fieldOf("gridy").forGetter(ModuleEntity::getGridY),
-            TAGS_CODEC.fieldOf("filter_tags").forGetter(e -> e.filterTags),
-            STACKS_CODEC.fieldOf("filter_stacks").forGetter(e -> e.filterStacks),
+            FILTERS_CODEC.fieldOf("filters").forGetter(e -> e.filters),
             CompoundTag.CODEC.fieldOf("frequency_tag").forGetter(e -> e.frequencyTag),
             BooleanProperty.CODEC.fieldOf("enabled").forGetter(e -> e.filterEnabled)
     ).apply(builder, EnderCollectionEntity::new));
@@ -66,8 +63,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
             DEModules.streamCodec(), ModuleEntity::getModule,
             ByteBufCodecs.INT, ModuleEntity::getGridX,
             ByteBufCodecs.INT, ModuleEntity::getGridY,
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, BCStreamCodec.tagKeyCodec(Registries.ITEM)), e -> e.filterTags,
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC), e -> e.filterStacks,
+            FILTERS_STREAM_CODEC, e -> e.filters,
             ByteBufCodecs.COMPOUND_TAG, e -> e.frequencyTag,
             BooleanProperty.STREAM_CODEC, e -> e.filterEnabled,
             EnderCollectionEntity::new
@@ -78,17 +74,15 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
 //        addEnabledProperty("ender_collection_mod", false);
     }
 
-    EnderCollectionEntity(Module<?> module, int gridX, int gridY, Map<Integer, TagKey<Item>> filterTags, Map<Integer, ItemStack> filterStacks, CompoundTag frequencyTag, BooleanProperty filterEnabled) {
-        super((Module<NoData>) module, gridX, gridY, module.getProperties().getTechLevel() == TechLevel.DRACONIC ? 9 : 0, filterTags, filterStacks);
+    EnderCollectionEntity(Module<?> module, int gridX, int gridY, List<Filter> filters, CompoundTag frequencyTag, BooleanProperty filterEnabled) {
+        super((Module<NoData>) module, gridX, gridY, module.getProperties().getTechLevel() == TechLevel.DRACONIC ? 9 : 0, filters);
         this.frequencyTag = frequencyTag;
         this.filterEnabled = filterEnabled;
     }
 
     @Override
     public ModuleEntity<?> copy() {
-        Map<Integer, ItemStack> stacks = new HashMap<>();
-        filterStacks.forEach((integer, stack) -> stacks.put(integer, stack.copy()));
-        return new EnderCollectionEntity(module, getGridX(), getGridY(), new HashMap<>(filterTags), stacks, frequencyTag.copy(), filterEnabled.copy());
+        return new EnderCollectionEntity(module, getGridX(), getGridY(), copyFilters(filters), frequencyTag.copy(), filterEnabled.copy());
     }
 
     @Override
@@ -141,7 +135,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         }
 
         Predicate<ItemStack> filter = null;
-        if (!filterTags.isEmpty() || !filterStacks.isEmpty()) {
+        if (!filters.isEmpty()) {
             filter = createFilterTest();
         }
 
@@ -174,7 +168,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         }
 
         Predicate<ItemStack> filter = null;
-        if (!filterTags.isEmpty() || !filterStacks.isEmpty()) {
+        if (!filters.isEmpty()) {
             filter = createFilterTest();
         }
 

@@ -362,7 +362,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("filtered_module.matching",                                  "Matching Item(s)");
 
         helper.add("filtered_module.filter_by_tag",                             "Filter by item tag");
-        helper.add("filtered_module.filter_example",                            "e.g. forge:stone");
+        helper.add("filtered_module.filter_example",                            "e.g. c:stone");
         helper.add("filtered_module.select_or_enter",                           "Select tag");
         helper.add("filtered_module.select_from_item",                          "Select tag from item");
 

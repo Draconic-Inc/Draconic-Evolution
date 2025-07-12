@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.init;
 
-import com.brandon3055.brandonscore.api.BCStreamCodec;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.utils.TargetPos;
@@ -9,6 +8,8 @@ import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
+import com.brandon3055.draconicevolution.api.modules.entities.FilteredModuleEntity;
+import com.brandon3055.draconicevolution.api.modules.entities.FilteredModuleEntity.Filter;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem.DestroySpeedData;
@@ -22,17 +23,12 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -111,8 +107,7 @@ public class ItemData {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<InventoryDynamic>>           TREE_MODULE_INVENTORY       = DATA.register("tree_module_inventory",        () -> DataComponentType.<InventoryDynamic>builder().persistent(InventoryDynamic.CODEC).networkSynchronized(InventoryDynamic.STREAM_CODEC).build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<Integer, ItemStack>>>    FILTER_MODULE_STACKS        = DATA.register("filter_module_stacks",         () -> DataComponentType.<Map<Integer, ItemStack>>builder().persistent(Codec.unboundedMap(Codec.INT, ItemStack.CODEC)).networkSynchronized(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC)).build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<Integer, TagKey<Item>>>> FILTER_MODULE_TAGS          = DATA.register("filter_module_tags",           () -> DataComponentType.<Map<Integer, TagKey<Item>>>builder().persistent(Codec.unboundedMap(Codec.INT, TagKey.codec(Registries.ITEM))).networkSynchronized(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT, BCStreamCodec.tagKeyCodec(Registries.ITEM))).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Filter>>>               FILTER_MODULE_FILTERS       = DATA.register("filter_module_filters",        () -> DataComponentType.<List<Filter>>builder().persistent(FilteredModuleEntity.FILTERS_CODEC).networkSynchronized(FilteredModuleEntity.FILTERS_STREAM_CODEC).build());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>>                 ENDER_MODULE_FREQUENCY      = DATA.register("ender_module_frequency",       () -> DataComponentType.<CustomData>builder().persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC).build());
     //@formatter:on
