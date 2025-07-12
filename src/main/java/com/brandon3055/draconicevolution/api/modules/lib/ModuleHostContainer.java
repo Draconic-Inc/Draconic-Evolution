@@ -30,7 +30,7 @@ public interface ModuleHostContainer {
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity<?> entity = module.createEntity();
-                entity.saveEntityToStack(stack, getModuleContext());
+                entity.loadEntityFromStack(stack, getModuleContext());
                 if (getGrid().attemptInstall(entity, host)) {
                     stack.shrink(1);
                     return true;
