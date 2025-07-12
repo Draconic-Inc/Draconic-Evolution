@@ -190,6 +190,13 @@ public class BooleanProperty extends ConfigProperty {
     }
 
     @Override
+    public boolean equalsWOValue(Object o) {
+        if (!(o instanceof BooleanProperty that)) return false;
+        if (!super.equals(o)) return false;
+        return defaultValue == that.defaultValue && formatter == that.formatter;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), value, defaultValue, formatter);
     }

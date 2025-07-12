@@ -232,6 +232,13 @@ public class IntegerProperty extends ConfigProperty {
     }
 
     @Override
+    public boolean equalsWOValue(Object o) {
+        if (!(o instanceof IntegerProperty that)) return false;
+        if (!super.equals(o)) return false;
+        return min == that.min && max == that.max && formatter == that.formatter;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), value, formatter, min, max);
     }

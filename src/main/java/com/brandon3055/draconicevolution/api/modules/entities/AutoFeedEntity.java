@@ -35,6 +35,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
@@ -179,5 +180,17 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
         setStoredFood(stack.getOrDefault(ItemData.AUTO_FEED_MODULE_FOOD, 0D));
         consumeFood = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_1, consumeFood).copy();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AutoFeedEntity that)) return false;
+        if (!super.equals(o)) return false;
+        return Double.compare(storedFood, that.storedFood) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), storedFood);
     }
 }

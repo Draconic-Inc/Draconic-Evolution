@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -34,6 +35,9 @@ public class EntityAttributeHandler<Data> {
             attribute.removeModifier(uuid);
             if (newMod != null) {
                 attribute.addTransientModifier(newMod);
+                if (entity instanceof Player player) {
+                    player.onUpdateAbilities();
+                }
             }
         });
     }

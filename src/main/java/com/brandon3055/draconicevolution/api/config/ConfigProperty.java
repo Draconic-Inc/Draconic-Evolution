@@ -165,6 +165,11 @@ public abstract class ConfigProperty {
         return showOnHud == that.showOnHud && Objects.equals(name, that.name) && Objects.equals(uniqueName, that.uniqueName);
     }
 
+    public boolean equalsWOValue(Object o) {
+        if (!(o instanceof ConfigProperty that)) return false;
+        return showOnHud == that.showOnHud && Objects.equals(name, that.name) && Objects.equals(uniqueName, that.uniqueName);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, showOnHud, uniqueName);

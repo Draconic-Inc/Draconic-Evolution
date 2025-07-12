@@ -261,9 +261,9 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             });
 
             //Gather is not just called on load but also when a property is added or removed so we need to avoid overwriting existing loaded properties.
-            Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
+            Map<String, ConfigProperty> gatheredMNap = FastStream.of(gathered).toMap(ConfigProperty::getName, e -> e);
             //Remove properties that no longer exist
-            providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
+            providedProperties.removeIf(e -> !gatheredMNap.containsKey(e.getName()) || !gatheredMNap.get(e.getName()).equalsWOValue(e));
 
             Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
             //Add new properties

@@ -37,10 +37,7 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 7/7/20
@@ -420,6 +417,18 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         data.shieldCoolDown = stack.getOrDefault(ItemData.SHIELD_MODULE_COOLDWN, 0);
         shieldEnabled = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_1, shieldEnabled.copy());
         alwaysVisible = stack.getOrDefault(ItemData.BOOL_ITEM_PROP_2, alwaysVisible.copy());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ShieldControlEntity that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(data, that.data) && Objects.equals(shieldEnabled, that.shieldEnabled) && Objects.equals(alwaysVisible, that.alwaysVisible);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), data, shieldEnabled, alwaysVisible);
     }
 
     //endregion

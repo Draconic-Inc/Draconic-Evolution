@@ -121,7 +121,10 @@ public class ModularArmorEventHandler {
             if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_ID) == null) {
                 return null;
             }
-            return new AttributeModifier(STEP_HEIGHT_ID, 1.0625D - stepHeight, AttributeModifier.Operation.ADD_VALUE);
+            if (instance.hasModifier(STEP_HEIGHT_ID)) {
+                stepHeight -= instance.getModifier(STEP_HEIGHT_ID).amount();
+            }
+            return new AttributeModifier(STEP_HEIGHT_ID, 1.1625D - stepHeight, AttributeModifier.Operation.ADD_VALUE);
         }
         return null;
     }
@@ -139,6 +142,9 @@ public class ModularArmorEventHandler {
             double value = instance.getValue();
             if (value >= 1) {
                 return null;
+            }
+            if (instance.hasModifier(SUBMERGED_MINE_SPEED_ID)) {
+                value -= instance.getModifier(SUBMERGED_MINE_SPEED_ID).amount();
             }
             return new AttributeModifier(SUBMERGED_MINE_SPEED_ID, 1 - value, AttributeModifier.Operation.ADD_VALUE);
         }
@@ -320,6 +326,8 @@ public class ModularArmorEventHandler {
         }
 
         if (!entity.level().isClientSide() && TimeKeeper.getServerTick() % 10 == 0) {
+            ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
+        } else if (!entity.level().isClientSide() && entity instanceof Player) {
             ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
         }
 

@@ -230,6 +230,13 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     @Override
+    public boolean equalsWOValue(Object o) {
+        if (!(o instanceof DecimalProperty that)) return false;
+        if (!super.equals(o)) return false;
+        return Double.compare(min, that.min) == 0 && Double.compare(max, that.max) == 0 && formatter == that.formatter;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), value, formatter, min, max);
     }

@@ -38,6 +38,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class UndyingEntity extends ModuleEntity<UndyingData> {
 
@@ -212,5 +213,17 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
     @Override
     public void loadEntityFromStack(ItemStack stack, ModuleContext context) {
         charge = stack.getOrDefault(ItemData.UNDYING_MODULE_CHARGE, 0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UndyingEntity that)) return false;
+        if (!super.equals(o)) return false;
+        return charge == that.charge && invulnerableTime == that.invulnerableTime;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), charge, invulnerableTime);
     }
 }
