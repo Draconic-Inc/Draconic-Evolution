@@ -116,15 +116,18 @@ public class ModularArmorEventHandler {
         AttributeInstance instance = entity.getAttribute(Attributes.STEP_HEIGHT);
 
         if (hasHighStep && instance != null) {
-            double stepHeight = instance.getValue();
+            double modifier = instance.getValue();
             //If someone else is already boosting step height then lets not make things dumb.
-            if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_ID) == null) {
+            if (modifier > 1 && instance.getModifier(STEP_HEIGHT_ID) == null) {
                 return null;
             }
             if (instance.hasModifier(STEP_HEIGHT_ID)) {
-                stepHeight -= instance.getModifier(STEP_HEIGHT_ID).amount();
+                modifier -= instance.getModifier(STEP_HEIGHT_ID).amount();
             }
-            return new AttributeModifier(STEP_HEIGHT_ID, 1.1625D - stepHeight, AttributeModifier.Operation.ADD_VALUE);
+            modifier = 1.1625D - modifier;
+            if (modifier > 0) {
+                return new AttributeModifier(STEP_HEIGHT_ID, modifier, AttributeModifier.Operation.ADD_VALUE);
+            }
         }
         return null;
     }
@@ -139,14 +142,17 @@ public class ModularArmorEventHandler {
         AttributeInstance instance = entity.getAttribute(Attributes.SUBMERGED_MINING_SPEED);
 
         if (hasAquaAdapt && instance != null) {
-            double value = instance.getValue();
-            if (value >= 1) {
+            double modifier = instance.getValue();
+            if (modifier >= 1) {
                 return null;
             }
             if (instance.hasModifier(SUBMERGED_MINE_SPEED_ID)) {
-                value -= instance.getModifier(SUBMERGED_MINE_SPEED_ID).amount();
+                modifier -= instance.getModifier(SUBMERGED_MINE_SPEED_ID).amount();
             }
-            return new AttributeModifier(SUBMERGED_MINE_SPEED_ID, 1 - value, AttributeModifier.Operation.ADD_VALUE);
+            modifier = 1 - modifier;
+            if (modifier > 0) {
+                return new AttributeModifier(SUBMERGED_MINE_SPEED_ID, modifier, AttributeModifier.Operation.ADD_VALUE);
+            }
         }
         return null;
     }
