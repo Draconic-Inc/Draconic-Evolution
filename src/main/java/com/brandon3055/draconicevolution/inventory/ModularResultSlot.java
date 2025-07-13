@@ -6,15 +6,11 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
-
-import java.util.List;
 
 public class ModularResultSlot extends ModularSlot {
    private final CraftingContainer craftSlots;
@@ -70,29 +66,35 @@ public class ModularResultSlot extends ModularSlot {
    @Override
    public void onTake(Player pPlayer, ItemStack pStack) {
       this.checkTakeAchievements(pStack);
-      CommonHooks.setCraftingPlayer(pPlayer);
-
-      NonNullList<ItemStack> nonnulllist = pPlayer.level().getRecipeManager().getRemainingItemsFor(RecipeType.CRAFTING, craftSlots.asCraftInput(), pPlayer.level());
+      CraftingInput.Positioned positionedCraftInput = this.craftSlots.asPositionedCraftInput();
+      CraftingInput craftinginput = positionedCraftInput.input();
+      int i = positionedCraftInput.left();
+      int j = positionedCraftInput.top();
+      CommonHooks.setCraftingPlayer(player);
+      NonNullList<ItemStack> nonnulllist = player.level().getRecipeManager().getRemainingItemsFor(RecipeType.CRAFTING, craftinginput, player.level());
       CommonHooks.setCraftingPlayer(null);
-      for(int i = 0; i < nonnulllist.size(); ++i) {
-         ItemStack itemstack = this.craftSlots.getItem(i);
-         ItemStack itemstack1 = nonnulllist.get(i);
-         if (!itemstack.isEmpty()) {
-            this.craftSlots.removeItem(i, 1);
-            itemstack = this.craftSlots.getItem(i);
-         }
 
-         if (!itemstack1.isEmpty()) {
-            if (itemstack.isEmpty()) {
-               this.craftSlots.setItem(i, itemstack1);
-            } else if (ItemStack.isSameItemSameComponents(itemstack, itemstack1)) {
-               itemstack1.grow(itemstack.getCount());
-               this.craftSlots.setItem(i, itemstack1);
-            } else if (!this.player.getInventory().add(itemstack1)) {
-               this.player.drop(itemstack1, false);
+      for (int k = 0; k < craftinginput.height(); k++) {
+         for (int l = 0; l < craftinginput.width(); l++) {
+            int i1 = l + i + (k + j) * this.craftSlots.getWidth();
+            ItemStack itemstack = this.craftSlots.getItem(i1);
+            ItemStack itemstack1 = nonnulllist.get(l + k * craftinginput.width());
+            if (!itemstack.isEmpty()) {
+               this.craftSlots.removeItem(i1, 1);
+               itemstack = this.craftSlots.getItem(i1);
+            }
+
+            if (!itemstack1.isEmpty()) {
+               if (itemstack.isEmpty()) {
+                  this.craftSlots.setItem(i1, itemstack1);
+               } else if (ItemStack.isSameItemSameComponents(itemstack, itemstack1)) {
+                  itemstack1.grow(itemstack.getCount());
+                  this.craftSlots.setItem(i1, itemstack1);
+               } else if (!this.player.getInventory().add(itemstack1)) {
+                  this.player.drop(itemstack1, false);
+               }
             }
          }
       }
-
    }
 }

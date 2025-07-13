@@ -6,6 +6,9 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Brandon on 29/10/2014.
  */
@@ -79,5 +82,14 @@ public class CraftingInventoryWrapper extends TransientCraftingContainer {
         for (int i = 0; i < wrapped.getSlots(); i++) {
             itemHelper.accountSimpleStack(wrapped.getStackInSlot(i));
         }
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 0; i < getContainerSize(); i++) {
+            items.add(getItem(i));
+        }
+        return items;
     }
 }
