@@ -106,6 +106,11 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     @Override
+    public boolean isEnabled() {
+        return filterEnabled.getValue();
+    }
+
+    @Override
     @OnlyIn (Dist.CLIENT)
     protected Material getSlotOverlay() {
         return BCGuiTextures.get("slots/filter");
@@ -126,7 +131,9 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorage opStorage) {
-        if (opStorage == null) return new ArrayList<>(stacks);
+        if (opStorage == null || !isEnabled()) {
+            return new ArrayList<>(stacks);
+        }
         Container container;
         if (ModHelper.ENDERSTORAGE) {
             container = getEnderStorage(player);
@@ -160,6 +167,9 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
      * @return the remaining items that could not be inserted
      */
     public int insertStack(Player player, ItemStack stack, IOPStorage opStorage) {
+        if (!isEnabled()) {
+            return stack.getCount();
+        }
         Container container;
         if (ModHelper.ENDERSTORAGE) {
             container = getEnderStorage(player);
