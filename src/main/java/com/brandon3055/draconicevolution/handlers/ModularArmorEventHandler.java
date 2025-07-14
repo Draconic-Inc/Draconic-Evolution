@@ -111,12 +111,19 @@ public class ModularArmorEventHandler {
         AttributeInstance instance = entity.getAttribute(NeoForgeMod.STEP_HEIGHT.value());
 
         if (hasHighStep && instance != null) {
-            double stepHeight = instance.getValue();
+            double modifier = instance.getValue();
             //If someone else is already boosting step height then lets not make things dumb.
-            if (stepHeight > 1 && instance.getModifier(STEP_HEIGHT_UUID) == null) {
+            AttributeModifier ourMod = instance.getModifier(STEP_HEIGHT_UUID);
+            if (modifier > 1 && ourMod == null) {
                 return null;
             }
-            return new AttributeModifier(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT.value().getDescriptionId(), 1.0625D - stepHeight, AttributeModifier.Operation.ADDITION);
+            if (ourMod != null) {
+                modifier -= ourMod.getAmount();
+            }
+            modifier = 1.1625D - modifier;
+            if (modifier > 0) {
+                return new AttributeModifier(STEP_HEIGHT_UUID, NeoForgeMod.STEP_HEIGHT.value().getDescriptionId(), modifier, AttributeModifier.Operation.ADDITION);
+            }
         }
         return null;
     }
@@ -272,6 +279,8 @@ public class ModularArmorEventHandler {
         }
 
         if (!entity.level().isClientSide() && TimeKeeper.getServerTick() % 10 == 0) {
+            ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
+        } else if (!entity.level().isClientSide() && entity instanceof Player) {
             ATTRIBUTE_HANDLER.updateEntity(entity, armorAbilities);
         }
 
