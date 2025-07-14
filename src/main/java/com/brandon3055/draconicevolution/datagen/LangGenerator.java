@@ -885,6 +885,7 @@ public class LangGenerator extends LanguageProvider {
         add("death.attack." + MODID + ".guardian_projectile", "%1$s was obliterated by %2$s");
         add("death.attack." + MODID + ".guardian_laser",      "%1$s was vaporized by %2$s using a frickin laser beam");
         add("death.attack.administrative.kill",                                 "%1$s deserved to die by the powers that be");
+        add("death.attack." + MODID + ".chaotic_arrow",       "%1$s was shot by %2$s");
 
         add("key." + MODID + ".place_item",                   "Place Item");
         add("key." + MODID + ".tool_config",                  "Tool Config");
