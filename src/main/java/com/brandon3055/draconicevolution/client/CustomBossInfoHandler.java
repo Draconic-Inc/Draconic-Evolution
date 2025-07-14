@@ -70,10 +70,6 @@ public class CustomBossInfoHandler {
     }
 
     public static void preDrawBossInfo(CustomizeGuiOverlayEvent.BossEventProgress event) {
-//        if (event.getOverlay() != VanillaGuiOverlay.BOSS_EVENT_PROGRESS.type()) return;
-
-        //TODO Boss Info
-
         LerpingBossEvent info = event.getBossEvent();
         if (!events.containsKey(info.getId())) return;
         event.setCanceled(true);
@@ -89,7 +85,7 @@ public class CustomBossInfoHandler {
         RenderSystem.enableDepthTest();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI_BARS_LOCATION);
-        drawBar(event.getGuiGraphics(), x, y, info);
+        drawBar(event.getGuiGraphics(), x, y, info, info.getColor(), info.getProgress(), true);
 
         float shield = shieldInfo.isImmune() ? 1 : shieldInfo.getShield();
         MultiBufferSource.BufferSource getter = Minecraft.getInstance().renderBuffers().bufferSource();//IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
@@ -105,6 +101,8 @@ public class CustomBossInfoHandler {
             VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(DraconicGuardianRenderer.SHIELD_TYPE), poseStack);
             drawShieldRect(builder, x, y, 182, 6);
             getter.endBatch();
+        } else if (shield > 0){
+            drawBar(event.getGuiGraphics(), x, y, info, shieldInfo.isImmune() ? BossEvent.BossBarColor.BLUE : BossEvent.BossBarColor.WHITE, shield, false);
         }
 
         if (shieldInfo.crystals > 0) {
@@ -164,15 +162,16 @@ public class CustomBossInfoHandler {
         render.drawString(itextcomponent, (float) stringX, (float) stringY, 0xff0000);
     }
 
-    private static void drawBar(GuiGraphics graphics, int x, int y, BossEvent info) {
-        drawRect(graphics, x, y, 0, info.getColor().ordinal() * 5 * 2, 182, 5);
-        if (info.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
-            drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2, 182, 5);
+    private static void drawBar(GuiGraphics graphics, int x, int y, BossEvent info, BossEvent.BossBarColor color, float progress, boolean backing) {
+        if (backing) {
+            drawRect(graphics, x, y, 0, color.ordinal() * 5 * 2, 182, 5);
+            if (info.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
+                drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2, 182, 5);
+            }
         }
-
-        int i = (int) (info.getProgress() * 183.0F);
+        int i = (int) (progress * 183.0F);
         if (i > 0) {
-            drawRect(graphics, x, y, 0, info.getColor().ordinal() * 5 * 2 + 5, i, 5);
+            drawRect(graphics, x, y, 0, color.ordinal() * 5 * 2 + 5, i, 5);
             if (info.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
                 drawRect(graphics, x, y, 0, 80 + (info.getOverlay().ordinal() - 1) * 5 * 2 + 5, i, 5);
             }
