@@ -134,12 +134,12 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hitIn) {
         if (level.isClientSide) {
             return ItemInteractionResult.SUCCESS;
         }
 
-//        HitResult hit = RayTracer.retrace(player);
+        HitResult hit = RayTracer.retrace(player);
         int slot = hit instanceof SubHitBlockHitResult ? ((SubHitBlockHitResult) hit).subHit : -1;
         if (slot > -1 && slot < 4 && hand != null) {
             ItemStack stack = itemsCombined.getStackInSlot(slot);
