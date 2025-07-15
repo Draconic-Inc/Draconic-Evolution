@@ -63,6 +63,7 @@ public class DEClient {
         modBus.addListener(DEClient::onResourceReload);
         modBus.addListener(DEClient::registerClientExtensions);
         modBus.addListener(DEClient::registerMenuScreens);
+        modBus.addListener(DEParticles::registerFactories);
 
 //        modBus.addListener((RegisterColorHandlersEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
 
