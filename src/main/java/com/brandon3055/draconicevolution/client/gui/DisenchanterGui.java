@@ -38,13 +38,6 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
     public static final int GUI_WIDTH = 198;
     public static final int GUI_HEIGHT = 170;
 
-    //	public Player player;
-//	private TileDisenchanter tile;
-//	private TBasicMachine temp;
-//	private GuiSlideControl scrollBar;
-//	private GuiElement<?> listBG;
-//	private GuiScrollElement listElement;
-
     private GuiScrolling scroll;
     private List<GuiElement<?>> listButtons = new ArrayList<>();
     private ItemStack prevStack = ItemStack.EMPTY;
@@ -115,36 +108,11 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
                 .constrain(TOP, relative(toolSlot.get(BOTTOM), 18));
 
         gui.onTick(() -> tick(tile));
-
-        //		GuiElement input = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 0), BCGuiTextures.getter("slots/sword"), false);
-//		GuiElement books = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 1), null, false);
-//		GuiElement output = toolkit.createSlot(temp.background, container.getSlotLayout().getSlotData(SlotType.TILE_INV, 2), null, false);
-//		toolkit.placeInside(input, temp.background, LayoutPos.TOP_LEFT, 8, 24);
-//		toolkit.placeOutside(books, input, LayoutPos.MIDDLE_RIGHT, 20, 0);
-//		toolkit.placeOutside(output, input, LayoutPos.BOTTOM_CENTER, (books.xPos() - input.xPos()) / 2, 20);
-//		//GuiTexture add = new GuiTexture(BCGuiSprites.getter("add"));
-//		//toolkit.placeOutside(add, input, LayoutPos.MIDDLE_RIGHT, (books.xPos() - input.maxXPos()) / 2 - add.xSize() / 2, 0);
-//		scrollBar = toolkit.createVanillaScrollBar()
-//			.setPos(temp.background.maxXPos() - 12, input.yPos())
-//			.setXSize(10)
-//			.setMaxYPos(temp.playerSlots.yPos() + 2, true);
-//		toolkit.placeInside(scrollBar, temp.background, LayoutPos.TOP_RIGHT, -4, 16);
-//		listBG = temp.background.addChild(new GuiBorderedRect())
-//			.setPos(books.maxXPos() + padding * 2, scrollBar.yPos())
-//			.setYSize(scrollBar.ySize())
-//			.setMaxXPos(scrollBar.xPos() - 1, true)
-//			.set3DGetters(GuiToolkit.Palette.Slot::fill, GuiToolkit.Palette.Slot::accentDark, GuiToolkit.Palette.Slot::accentLight)
-//			.setBorderColourL(GuiToolkit.Palette.Slot::border3D);
-//		prevStack = tile.itemHandler.getStackInSlot(0);
-//		if (!prevStack.isEmpty()) {
-//			addList();
-//		}
-
     }
 
     public void tick(TileDisenchanter tile) {
         ItemStack stack = tile.itemHandler.getStackInSlot(0);
-        if (!stack.equals(prevStack)) {
+        if (!ItemStack.isSameItemSameTags(stack, prevStack)) {
             clearList();
             if (!stack.isEmpty()) {
                 populateList(stack, tile);
