@@ -35,9 +35,6 @@ public class EntityAttributeHandler<Data> {
             attribute.removeModifier(uuid);
             if (newMod != null) {
                 attribute.addTransientModifier(newMod);
-                if (entity instanceof Player player) {
-                    player.onUpdateAbilities();
-                }
             }
         });
     }
