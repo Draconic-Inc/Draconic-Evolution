@@ -135,7 +135,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_ENERGY_PYLON, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_ENERGY_PYLON);
     }
 
     @Override

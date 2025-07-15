@@ -16,6 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 /**
@@ -35,6 +36,14 @@ public class TileFluxGate extends TileFlowGate {
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(CapabilityOP.BLOCK, DEContent.TILE_FLUX_GATE.get(), (tile, side) -> {
+            if (!tile.capsLoaded) {
+                tile.updateCapabilities();
+                tile.capsLoaded = true;
+            }
+            return tile.getCapManager().getCapability(CapabilityOP.BLOCK, side);
+        });
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEContent.TILE_FLUX_GATE.get(), (tile, side) -> {
             if (!tile.capsLoaded) {
                 tile.updateCapabilities();
                 tile.capsLoaded = true;

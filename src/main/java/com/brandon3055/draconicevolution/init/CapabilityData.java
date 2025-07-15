@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -74,6 +75,7 @@ public class CapabilityData {
 
                 if (item instanceof IModularEnergyItem modularEnergyItem) {
                     event.registerItem(CapabilityOP.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_ENERGY), item);
+                    event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> stack.getData(MODULAR_ITEM_ENERGY), item);
                 }
             }
             if (item instanceof IDEEquipment) {

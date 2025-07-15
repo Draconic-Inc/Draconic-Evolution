@@ -71,7 +71,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_ENERGY_TRANSFUSER, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_ENERGY_TRANSFUSER);
         capability(event, DEContent.TILE_ENERGY_TRANSFUSER, Capabilities.ItemHandler.BLOCK);
     }
 

@@ -64,7 +64,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_WIRELESS_CRYSTAL, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_WIRELESS_CRYSTAL);
     }
 
     //region Energy Update

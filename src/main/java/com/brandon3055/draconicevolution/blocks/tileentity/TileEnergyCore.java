@@ -107,7 +107,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_STORAGE_CORE, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_STORAGE_CORE);
     }
 
     @Override

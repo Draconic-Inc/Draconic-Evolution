@@ -22,7 +22,7 @@ public class TileReactorStabilizer extends TileReactorComponent {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_REACTOR_STABILIZER, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_REACTOR_STABILIZER);
     }
 
     @Override

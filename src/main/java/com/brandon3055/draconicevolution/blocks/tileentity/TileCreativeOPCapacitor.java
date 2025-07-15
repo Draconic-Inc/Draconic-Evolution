@@ -91,7 +91,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_CREATIVE_OP_CAPACITOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_CREATIVE_OP_CAPACITOR);
     }
 
     @Override

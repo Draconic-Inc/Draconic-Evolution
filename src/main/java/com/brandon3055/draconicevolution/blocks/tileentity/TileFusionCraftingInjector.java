@@ -71,7 +71,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_CRAFTING_INJECTOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_CRAFTING_INJECTOR);
         capability(event, DEContent.TILE_CRAFTING_INJECTOR, Capabilities.ItemHandler.BLOCK);
     }
 

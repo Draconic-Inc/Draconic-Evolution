@@ -90,7 +90,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        capability(event, DEContent.TILE_ENTITY_DETECTOR, CapabilityOP.BLOCK);
+        energyCapability(event, DEContent.TILE_ENTITY_DETECTOR);
     }
 
     @Override
