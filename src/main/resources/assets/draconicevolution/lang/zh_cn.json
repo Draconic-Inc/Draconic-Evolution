@@ -581,7 +581,7 @@
   "modular_item.draconicevolution.error.module_install_limit": "此模块安装数量达到上限。",
   "modular_item.draconicevolution.error.no_modular_items": "你的物品栏里没有任何模块化物品！",
   "modular_item.draconicevolution.error.not_compatible_with": "不兼容的模块：",
-  "modular_item.draconicevolution.error.only_one_use_override": "已经有一个覆写右键功能的模块存在。一次只能安装一个这样的模块！",
+  "modular_item.draconicevolution.error.only_one_use_override_module": "已经有一个覆写右键功能的模块存在。一次只能安装一个这样的模块！",
   "modular_item.draconicevolution.requires_energy": "此物品需要能量模块才能运作。",
   "modular_item.draconicevolution.requires_energy_press": "按%s打开模块配置。",
   "module.draconicevolution.aoe.name": "范围",
