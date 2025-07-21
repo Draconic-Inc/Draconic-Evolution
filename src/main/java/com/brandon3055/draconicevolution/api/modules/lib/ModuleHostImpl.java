@@ -280,6 +280,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
                 List<ConfigProperty> entityProps = new ArrayList<>();
                 e.getEntityProperties(entityProps);
                 entityProps.forEach(p -> {
+                    p.setProvider(this);
                     if (propertyMap.containsKey(p.getName())) {
                         //TODO, This is a data change that will need to be saved, but theoretically, this will never get called.
                         p.generateUnique(); //This avoids duplicate names due to creative duped items.
