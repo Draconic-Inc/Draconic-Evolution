@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.TransfuserMenu;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -91,7 +92,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
 
                 boolean canExtract = sourceStorage.canExtract();
                 //I want to be able to discharge DE tools, armor, etc but i dont want them to be usable as buffer items.
-                boolean extractOverride = !canExtract && sourcemode == ItemIOMode.DISCHARGE;
+                boolean extractOverride = !canExtract && sourcemode == ItemIOMode.DISCHARGE && stack.getItem() instanceof IModularItem;
                 if (canExtract || extractOverride) {
                     long maxExtract;
                     if (extractOverride) {
