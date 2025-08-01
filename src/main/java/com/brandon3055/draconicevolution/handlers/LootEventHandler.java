@@ -32,6 +32,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -165,7 +166,7 @@ public class LootEventHandler {
     }
 
     private static boolean canEntityDropSoul(LivingEntity entity) {
-        if (!entity.canUsePortal(false) && !DEConfig.allowBossSouls) {
+        if (entity.getType().is(Tags.EntityTypes.BOSSES) && !DEConfig.allowBossSouls) {
             return false;
         }
         //noinspection DataFlowIssue
