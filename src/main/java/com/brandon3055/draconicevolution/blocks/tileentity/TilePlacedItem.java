@@ -128,11 +128,11 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack heldStack, BlockState state, Player player, InteractionHand hand, BlockHitResult traceIn) {
         if (player.level().isClientSide()) return ItemInteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
 
-//        HitResult hit = RayTracer.retrace(player);
+        HitResult hit = RayTracer.retrace(player);
         if (!(hit instanceof SubHitBlockHitResult)){
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
