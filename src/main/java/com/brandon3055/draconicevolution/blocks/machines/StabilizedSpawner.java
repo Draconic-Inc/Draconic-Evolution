@@ -49,8 +49,9 @@ public class StabilizedSpawner extends EntityBlockBCore {
             return;
         }
         CompoundTag tag = stack.get(BlockBCore.BC_TILE_DATA_TAG).copyTag();
+        CompoundTag data = tag.getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
 
-        CompoundTag tier = tag.getCompound("spawner_tier");
+        CompoundTag tier = data.getCompound("spawner_tier");
         if (tier.contains("value")) {
             int index = tier.getByte("value");
             if (index >= 0 && index < TileStabilizedSpawner.SpawnerTier.values().length) {
@@ -58,8 +59,8 @@ public class StabilizedSpawner extends EntityBlockBCore {
                 tooltip.add(techLevel.getDisplayName().copy().withStyle(techLevel.getTextColour()));
             }
         }
-        if (tag.contains("mob_soul")) {
-            ItemStack soul = ItemStack.parseOptional(context.level().registryAccess(), tag.getCompound("mob_soul"));
+        if (data.contains("mob_soul")) {
+            ItemStack soul = ItemStack.parseOptional(context.level().registryAccess(), data.getCompound("mob_soul"));
             if (!soul.isEmpty()) {
                 tooltip.add(soul.getDisplayName().copy().withStyle(ChatFormatting.YELLOW));
             }
