@@ -50,7 +50,7 @@
   "block.draconicevolution.wyvern_wireless_crystal": "飞龙无线能量水晶",
   "death.attack.administrative.kill": "%1$s因为掌权者的力量注定要死去",
   "death.attack.draconicevolution.guardian": "%1$s被%2$s撕裂了",
-  "death.attack.draconicevolution.guardian_laser": "%1$s被%2$s使用混沌激光击杀了",
+  "death.attack.draconicevolution.guardian_laser": "%1$s被%2$s用超级激光蒸发了",
   "death.attack.draconicevolution.guardian_projectile": "%1$s被%2$s抹杀",
   "disenchanter.draconicevolution.not_enough_levels": "你需要%s级经验等级来提取此魔咒！",
   "dislocate.draconicevolution.already_bound": "错误：该符咒只能绑定到一个位置",
