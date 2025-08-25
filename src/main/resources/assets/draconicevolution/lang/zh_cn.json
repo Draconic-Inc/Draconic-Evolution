@@ -176,7 +176,7 @@
   "gui.draconicevolution.energy_net.hud_charge": "充能",
   "gui.draconicevolution.energy_net.hud_links": "链接",
   "gui.draconicevolution.energy_net.hud_wireless_links": "无线链接",
-  "gui.draconicevolution.energy_net.identify": "确认",
+  "gui.draconicevolution.energy_net.identify": "识别",
   "gui.draconicevolution.energy_net.input": "输入",
   "gui.draconicevolution.energy_net.io_mode": "端口模式：",
   "gui.draconicevolution.energy_net.io_output_false": "从方块输入",
