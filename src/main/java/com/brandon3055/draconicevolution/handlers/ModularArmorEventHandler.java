@@ -39,7 +39,10 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -250,7 +253,7 @@ public class ModularArmorEventHandler {
             return;
         }
 
-        List<UndyingEntity> undyingModules = new ArrayList<>();
+        Map<UndyingEntity, ModuleHost> undyingModules = new HashMap<>();
 
         if (entity instanceof Player) {
             Player player = (Player) entity;
@@ -279,26 +282,24 @@ public class ModularArmorEventHandler {
             return;
         }
 
-        boolean blocked = undyingModules.stream()
-                .sorted(Comparator.comparing(e -> e.getModule().getModuleTechLevel().index))
-                .anyMatch(e -> e.tryBlockDeath(event));
-
-        if (blocked) {
-            event.setCanceled(true);
+        for (Map.Entry<UndyingEntity, ModuleHost> entry : undyingModules.entrySet()) {
+            if (entry.getKey().tryBlockDeath(event)) {
+                entry.getValue().save();
+                event.setCanceled(true);
+                return;
+            }
         }
     }
 
-    private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlot slot, boolean inEquipModSlot, HolderLookup.Provider provider) {
-        try (ModuleHost host = DECapabilities.getHost(stack)) {
-            if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
-                if (host != null) {
-                    entities.addAll(host.getModuleEntities()
-                            .stream()
-                            .filter(e -> e instanceof UndyingEntity)
-                            .map(e -> (UndyingEntity) e)
-                            .toList()
-                    );
-                }
+    private static void getUndyingEntities(ItemStack stack, Map<UndyingEntity, ModuleHost> entities, EquipmentSlot slot, boolean inEquipModSlot, HolderLookup.Provider provider) {
+        ModuleHost host = DECapabilities.getHost(stack);
+        if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
+            if (host != null) {
+                host.getModuleEntities()
+                        .stream()
+                        .filter(e -> e instanceof UndyingEntity)
+                        .map(e -> (UndyingEntity) e)
+                        .forEach(undyingEntity -> entities.put(undyingEntity, host));
             }
         }
     }
