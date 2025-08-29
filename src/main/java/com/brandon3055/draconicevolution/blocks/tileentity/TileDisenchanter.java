@@ -107,13 +107,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
             ItemStack book = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantHolder, lvl));
             itemHandler.setStackInSlot(2, book);
 
-            if (list.size() == 1) {
-                input.remove(DataComponents.ENCHANTMENTS);
-            } else {
-                ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(list);
-                mutable.removeIf(enchantmentHolder -> enchantmentHolder == enchantHolder);
-                input.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
-            }
+            EnchantmentHelper.updateEnchantments(input, mutable -> mutable.removeIf(e -> e == enchantHolder));
             return;
         }
     }
