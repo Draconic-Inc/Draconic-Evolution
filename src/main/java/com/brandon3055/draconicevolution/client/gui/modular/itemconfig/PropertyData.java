@@ -315,7 +315,9 @@ public class PropertyData {
             nbt.putString("prop_name", propName);
         }
 
-        nbt.putString("tooltip", Component.Serializer.toJson(toolTip, provider));
+        if (toolTip != null) {
+            nbt.putString("tooltip", Component.Serializer.toJson(toolTip, provider));
+        }
         nbt.putString("display_name", Component.Serializer.toJson(displayName, provider));
         nbt.putString("display_value", displayValue);
         nbt.putBoolean("global", isGlobal);
@@ -368,10 +370,12 @@ public class PropertyData {
             data.propName = nbt.getString("prop_name");
         }
 
-        try {
-            data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"), provider);
-        }catch (JsonParseException ignored) {
-            data.toolTip = Component.literal(nbt.getString("tooltip"));
+        if (nbt.contains("tooltip")) {
+            try {
+                data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"), provider);
+            } catch (JsonParseException ignored) {
+                data.toolTip = Component.literal(nbt.getString("tooltip"));
+            }
         }
         try {
             data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"), provider);
