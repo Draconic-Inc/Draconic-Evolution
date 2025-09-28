@@ -141,8 +141,8 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     @Override
-    public String getDisplayValue() {
-        return formatter.format(getValue());
+    public Component getDisplayValue() {
+        return Component.literal(formatter.format(getValue()));
     }
 
     @Override

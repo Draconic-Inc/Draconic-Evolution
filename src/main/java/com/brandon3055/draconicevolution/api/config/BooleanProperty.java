@@ -93,7 +93,7 @@ public class BooleanProperty extends ConfigProperty {
 //    }
 
     @Override
-    public String getDisplayValue() {
+    public Component getDisplayValue() {
         return formatter.format(getValue());
     }
 

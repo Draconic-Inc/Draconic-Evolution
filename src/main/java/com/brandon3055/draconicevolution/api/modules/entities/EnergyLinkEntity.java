@@ -18,7 +18,6 @@ import com.brandon3055.draconicevolution.init.ItemData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -203,8 +202,8 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         }
 
         String pText = (int) (progress * 100) + "%";
-        String progressText = I18n.get("module.draconicevolution.energy_link.charging") + StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4));
-        drawChargeProgress(render, x, y, width, height, progress, pText, progressText);
+        Component progressText = Component.translatable("module.draconicevolution.energy_link.charging").append(StringUtils.repeat(".", (int) ((System.currentTimeMillis() / 500) % 4)));
+        drawChargeProgress(render, x, y, width, height, progress, Component.literal(pText), progressText);
     }
 
     @Override

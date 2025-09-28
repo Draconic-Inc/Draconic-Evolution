@@ -202,7 +202,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.chargeTime() - charge) / 20) + "s";
-        drawChargeProgress(render, x, y, width, height, progress, pText, tText);
+        drawChargeProgress(render, x, y, width, height, progress, Component.literal(pText), Component.literal(tText));
     }
 
     @Override

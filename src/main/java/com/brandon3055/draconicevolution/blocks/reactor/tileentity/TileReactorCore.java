@@ -23,11 +23,11 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -1106,9 +1106,9 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
         }
 
         @OnlyIn (Dist.CLIENT)
-        public String localize() {
+        public Component localize() {
             ChatFormatting[] colours = {ChatFormatting.RED, ChatFormatting.DARK_AQUA, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.LIGHT_PURPLE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_RED};
-            return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");
+            return Component.translatable("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info").withStyle(colours[ordinal()]);
         }
     }
 }

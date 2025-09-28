@@ -5,7 +5,6 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyD
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -109,7 +108,7 @@ public abstract class ConfigProperty {
      *
      * @return the formatted value of this property.
      */
-    public abstract String getDisplayValue();
+    public abstract Component getDisplayValue();
 
     /**
      * This name will be used to identify this within its parent {@link PropertyProvider} A property provider can never have more than one
@@ -242,22 +241,22 @@ public abstract class ConfigProperty {
     }
 
     public enum BooleanFormatter implements StringRepresentable {
-        TRUE_FALSE(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "true" : "false"))),
-        ENABLED_DISABLED(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "enabled" : "disabled"))),
-        ACTIVE_INACTIVE(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "active" : "inactive"))),
-        YES_NO(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "yes" : "no")));
+        TRUE_FALSE(e -> Component.translatable("gui.draconicevolution.boolean_property." + (e ? "true" : "false"))),
+        ENABLED_DISABLED(e -> Component.translatable("gui.draconicevolution.boolean_property." + (e ? "enabled" : "disabled"))),
+        ACTIVE_INACTIVE(e -> Component.translatable("gui.draconicevolution.boolean_property." + (e ? "active" : "inactive"))),
+        YES_NO(e -> Component.translatable("gui.draconicevolution.boolean_property." + (e ? "yes" : "no")));
 
         public static final Codec<BooleanFormatter> CODEC = StringRepresentable.fromValues(BooleanFormatter::values);
         public static final IntFunction<BooleanFormatter> BY_ID = ByIdMap.continuous(BooleanFormatter::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, BooleanFormatter> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BooleanFormatter::ordinal);
 
-        private Function<Boolean, String> formatter;
+        private Function<Boolean, Component> formatter;
 
-        BooleanFormatter(Function<Boolean, String> formatter) {
+        BooleanFormatter(Function<Boolean, Component> formatter) {
             this.formatter = formatter;
         }
 
-        public String format(boolean value) {
+        public Component format(boolean value) {
             return formatter.apply(value);
         }
 

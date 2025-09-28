@@ -19,8 +19,6 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +26,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +41,10 @@ public class ShieldHudElement extends AbstractHudElement {
     private static Random rand = new Random();
     private Minecraft mc = Minecraft.getInstance();
     private double shieldCharge = 0;
-    private String shieldText = "";
+    private Component shieldText = Component.empty();
     private double coolDown = 0;
     private double energyBar = 0;
-    private String energyText = "";
+    private Component energyText = Component.empty();
     private double[] totemStatus = new double[0];
     private int totemEffect = 0;
     private long totemEffectSeed = 0;
@@ -129,10 +130,10 @@ public class ShieldHudElement extends AbstractHudElement {
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl == null) {
                 shieldCharge = 0;
-                shieldText = I18n.get("hud_armor.draconicevolution.no_shield");
+                shieldText = Component.translatable("hud_armor.draconicevolution.no_shield");
             } else if (!shieldControl.isShieldEnabled()) {
                 shieldCharge = 0;
-                shieldText = I18n.get("hud_armor.draconicevolution.shield_disabled");
+                shieldText = Component.translatable("hud_armor.draconicevolution.shield_disabled");
             } else {
                 double capacity = shieldControl.getShieldCapacity() + shieldControl.getMaxShieldBoost();
                 if (capacity == 0 && shieldControl.getMaxShieldBoost() > 0) {
@@ -140,7 +141,7 @@ public class ShieldHudElement extends AbstractHudElement {
                 }
                 double points = shieldControl.getShieldPoints();
                 shieldCharge = capacity > 0 ? points / capacity : 0;
-                shieldText = (int) points + "/" + (int) capacity;
+                shieldText = Component.literal((int) points + "/" + (int) capacity);
                 double maxCooldown = shieldControl.getMaxShieldCoolDown();
                 coolDown = maxCooldown > 0 ? shieldControl.getShieldCoolDown() / maxCooldown : 0;
             }
@@ -178,7 +179,7 @@ public class ShieldHudElement extends AbstractHudElement {
 
             energyBar = maxEnergy > 0 ? energy / (double) maxEnergy : 0;
             if (numericEnergy) {
-                energyText = I18n.get("op.brandonscore.op") + ": " + Utils.formatNumber(energy);
+                energyText = Component.translatable("op.brandonscore.op").append(": " + Utils.formatNumber(energy));
             }
 
             //Totems
@@ -214,9 +215,9 @@ public class ShieldHudElement extends AbstractHudElement {
     private void setupExample() {
         renderHud = enabled;
         shieldCharge = 1624/3055D;
-        shieldText = "1624/3055";
+        shieldText = Component.literal("1624/3055");
         energyBar = 0.75;
-        energyText = I18n.get("op.brandonscore.op") + ": 42M";
+        energyText = Component.translatable("op.brandonscore.op").append(": 42M");
         totemStatus = showUndying ? new double[] {-1, 0.5, 0.75} : new double[0];
     }
 
@@ -289,7 +290,7 @@ public class ShieldHudElement extends AbstractHudElement {
         double tPos = width / 2D - mc.font.width(shieldText) / 2D;
 //        mc.font.drawInBatch(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF));
         render.drawString(shieldText, (float) tPos, xl ? 4 : 2, scaleAlpha(0xFF0000FF), false);
-        if (numericEnergy && !energyText.isEmpty()) {
+        if (numericEnergy && !energyText.getString().isEmpty()) {
 //            mc.font.drawShadow(mStack, energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF));
             render.drawString(energyText, 2, (float) height + 1F, scaleAlpha(0xFFFFFFFF), true);
         }

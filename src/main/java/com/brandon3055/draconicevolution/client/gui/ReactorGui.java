@@ -303,7 +303,7 @@ public class ReactorGui extends ContainerGuiProvider<ReactorMenu> {
         GuiText statusText = new GuiText(root)
                 .setShadow(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setTextSupplier(() -> {
-                    String s = tile.reactorState.get().localize();
+                    String s = tile.reactorState.get().localize().getString();
                     if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && TimeKeeper.getClientTick() % 10 > 5) {
                         s = ChatFormatting.DARK_RED + "**" + s + "**";
                     } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {

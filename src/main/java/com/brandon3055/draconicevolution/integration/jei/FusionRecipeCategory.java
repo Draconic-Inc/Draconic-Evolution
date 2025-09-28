@@ -17,7 +17,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -75,8 +74,8 @@ public class FusionRecipeCategory implements IRecipeCategory<RecipeHolder<IFusio
         GuiRender render = GuiRender.convert(graphics);
         TechLevel tier = recipe.value().getRecipeTier();
         int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.value().getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
-        render.drawCenteredString(I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
+        render.drawCenteredString(Component.translatable("gui.draconicevolution.fusion_craft.tier." + recipe.value().getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2D, 5, colour, false);
+        render.drawCenteredString(Component.translatable("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2D, this.ySize - 20, 4474111, false);
         render.drawCenteredString(Utils.addCommas(recipe.value().getEnergyCost()) + " OP", this.xSize / 2D, this.ySize - 10, 4500223, false);
 
         render.borderRect((xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF);

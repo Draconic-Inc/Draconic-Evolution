@@ -92,7 +92,7 @@ public class PropertyData {
                 toolTip = null;
             }
 
-            displayValue = property.getDisplayValue();
+            displayValue = property.getDisplayValue().getString();
 
             switch (property.getType()) {
                 case BOOLEAN -> {
@@ -149,7 +149,7 @@ public class PropertyData {
         switch (type) {
             case BOOLEAN -> {
                 if (booleanFormatter != null) {
-                    displayValue = booleanFormatter.format(booleanValue);
+                    displayValue = booleanFormatter.format(booleanValue).getString();
                 }
             }
             case INTEGER -> {

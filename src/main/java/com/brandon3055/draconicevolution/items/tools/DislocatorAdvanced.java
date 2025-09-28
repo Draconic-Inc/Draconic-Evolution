@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.TeleportUtils;
@@ -17,7 +15,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ItemData;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,11 +22,8 @@ import io.netty.buffer.ByteBuf;
 import net.covers1624.quack.collection.FastStream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -116,7 +110,7 @@ public class DislocatorAdvanced extends Dislocator {
 
         if (useFuel(stack, player)) {
             dislocateEntity(stack, player, entity, location);
-            messageUser(player, Component.literal(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
+            messageUser(player, Component.translatable("dislocate.draconicevolution.entity_sent_to").append(" " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
         }
 
         return true;

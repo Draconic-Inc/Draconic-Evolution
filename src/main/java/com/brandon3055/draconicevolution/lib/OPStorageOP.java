@@ -10,9 +10,9 @@ import com.brandon3055.brandonscore.lib.IMCDataSerializable;
 import com.brandon3055.brandonscore.lib.IValueHashable;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.google.common.math.BigIntegerMath;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -279,40 +279,40 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     private static NumberFormat decimalFormat = new DecimalFormat("0.######E0", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
 
-    public String getReadable() {
+    public Component getReadable() {
         if (overflowCount.compareTo(prefixEnd) > 0) {
-            return decimalFormat.format(overflowCount) + " x (2^64)";
+            return Component.literal(decimalFormat.format(overflowCount) + " x (2^64)");
         }
 
         BigInteger value = BigInteger.valueOf(valueStorage).add(overflowCount.multiply(BigInteger.valueOf(Long.MAX_VALUE)));
         if (value.equals(BigInteger.ZERO)) {
-            return "0";
+            return Component.literal("0");
         }
         int digits = BigIntegerMath.log10(value, RoundingMode.DOWN);
         int prefixStep = (digits / 3) * 3;
 
         if (digits < 6) {
-            return Utils.addCommas(value.longValue());
+            return Component.literal(Utils.addCommas(value.longValue()));
         }
 
         BigDecimal decimal = new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-        return decimal.doubleValue() + I18n.get("numprefix.draconicevolution.10-" + prefixStep);
+        return Component.literal(decimal.doubleValue() + "").append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
     }
 
-    public String getReadableCapacity() {
+    public Component getReadableCapacity() {
         if (capacity.get() == -1) {
-            return "~1x10^1300000000";
+            return Component.literal("~1x10^1300000000");
         } else {
             long cap = capacity.get();
-            int digits = (int)Math.log10(cap);
+            int digits = (int) Math.log10(cap);
             int prefixStep = (digits / 3) * 3;
 
             if (digits < 6) {
-                return Utils.addCommas(cap) + " OP";
+                return Component.literal(Utils.addCommas(cap) + " OP");
             }
 
             double decimal = cap / Math.pow(10, prefixStep);//new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-            return (Math.round(decimal * 1000) / 1000D) + I18n.get("numprefix.draconicevolution.10-" + prefixStep);
+            return Component.literal(String.valueOf(Math.round(decimal * 1000) / 1000D)).append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
         }
     }
 

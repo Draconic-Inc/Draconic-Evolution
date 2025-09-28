@@ -175,7 +175,7 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
         Constraints.placeOutside(capLabel, energy, Constraints.LayoutPos.BOTTOM_CENTER, 0, 3);
 
         GuiText capacity = new GuiText(display)
-                .setTextSupplier(() -> Component.literal(tile.energy.getReadableCapacity())
+                .setTextSupplier(() -> Component.empty().append(tile.energy.getReadableCapacity())
                         .append(Component.translatable("mod_gui.brandonscore.energy_bar.op"))
                         .withStyle(GOLD)
                 )

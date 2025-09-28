@@ -21,7 +21,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -123,14 +122,12 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Fusion
 
         // check if we have enough inventory space to shuffle items around to their final locations
         if (filledCraftSlotCount - inputCount > emptySlotCount) {
-            String message = I18n.get("jei.tooltip.error.recipe.transfer.inventory.full");
-            return handlerHelper.createUserErrorWithTooltip(Component.literal(message));
+            return handlerHelper.createUserErrorWithTooltip(Component.translatable("jei.tooltip.error.recipe.transfer.inventory.full"));
         }
 
         List<IRecipeSlotView> missingStacks = checkForMissingIngredients(stackHelper, availableItemStacks, slotViews);
         if (missingStacks.size() > 0) {
-            String message = I18n.get("jei.tooltip.error.recipe.transfer.missing");
-            return handlerHelper.createUserErrorForMissingSlots(Component.literal(message), missingStacks);
+            return handlerHelper.createUserErrorForMissingSlots(Component.translatable("jei.tooltip.error.recipe.transfer.missing"), missingStacks);
         }
 
         if (doTransfer) {

@@ -548,7 +548,7 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
 
     @Deprecated //TODO, Can probably use RenderUtils version... maybe.
     @OnlyIn (Dist.CLIENT)
-    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable String text1, @Nullable String text2) {
+    protected void drawChargeProgress(GuiRender render, int x, int y, int width, int height, double progress, @Nullable Component text1, @Nullable Component text2) {
         double diameter = Math.min(width, height) * 0.425;
 
         render.rect(x, y, width, height, 0x60FF0000);
@@ -571,7 +571,7 @@ public abstract class ModuleEntity<T extends ModuleData<T>> {
     }
 
     @OnlyIn (Dist.CLIENT)
-    public static void drawBackgroundString(GuiRender render, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+    public static void drawBackgroundString(GuiRender render, Component text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
         int width = render.font().width(text);
         x = centered ? x - width / 2F : x;
         render.rect(x - padding, y - padding, width + padding * 2, render.font().lineHeight - 2 + padding * 2, background);

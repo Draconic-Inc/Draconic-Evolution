@@ -8,8 +8,6 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ItemData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -97,7 +95,7 @@ public class Dislocator extends Item implements IHudItem {
         dislocateEntity(stack, player, entity, location);
         stack.hurtAndBreak(1, serverLevel, player, e -> {});
         if (location != null) {
-            messageUser(player, Component.literal(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
+            messageUser(player, Component.translatable("dislocate.draconicevolution.entity_sent_to").append(" "+ location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
         }
 
         return true;
