@@ -97,17 +97,19 @@ public class ChaosCrystal extends EntityBlockBCore implements CustomTabHandling 
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-
         if (state.is(DEContent.CHAOS_CRYSTAL.get())) {
             return SHAPE;
         } else {
             BlockEntity tile = world.getBlockEntity(pos);
-            if (tile instanceof TileChaosCrystal) {
-                BlockPos offset = ((TileChaosCrystal) tile).parentPos.get().subtract(pos);
+            if (tile instanceof TileChaosCrystal crystal) {
+                BlockPos parentPos = crystal.parentPos.get();
+                if (parentPos == null) {
+                    return SHAPE;
+                }
+                BlockPos offset = parentPos.subtract(pos);
                 return SHAPE.move(0, offset.getY(), 0);
             }
         }
-
         return SHAPE;
     }
 
