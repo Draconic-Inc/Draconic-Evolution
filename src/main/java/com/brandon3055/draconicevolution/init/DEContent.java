@@ -110,6 +110,7 @@ public class DEContent {
     //#################################################################
 
     public static final Properties MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(3.0F, 8F).noOcclusion().requiresCorrectToolForDrops();
+    public static final Properties MACHINE_OPAQUE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(3.0F, 8F).requiresCorrectToolForDrops();
     public static final Properties HARDENED_MACHINE = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(20.0F, 600F).noOcclusion().requiresCorrectToolForDrops();
     public static final Properties STORAGE_BLOCK = Properties.of().mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(30.0F, 600F).requiresCorrectToolForDrops();
     public static final Properties STONE_PROP = Properties.of().mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6F).requiresCorrectToolForDrops();
@@ -120,8 +121,8 @@ public class DEContent {
     public static final DeferredHolder<Block, Generator> GENERATOR                             = BLOCKS.register("generator",                          () -> new Generator(MACHINE));
     public static final DeferredHolder<Block, EnergyTransfuser> ENERGY_TRANSFUSER              = BLOCKS.register("energy_transfuser",                  () -> new EnergyTransfuser(MACHINE));
     public static final DeferredHolder<Block, DislocatorPedestal> DISLOCATOR_PEDESTAL          = BLOCKS.register("dislocator_pedestal",                () -> new DislocatorPedestal(MACHINE));
-    public static final DeferredHolder<Block, DislocatorReceptacle> DISLOCATOR_RECEPTACLE      = BLOCKS.register("dislocator_receptacle",              () -> new DislocatorReceptacle(MACHINE));
-    public static final DeferredHolder<Block, CreativeOPSource> CREATIVE_OP_CAPACITOR          = BLOCKS.register("creative_op_capacitor",              () -> new CreativeOPSource(MACHINE));
+    public static final DeferredHolder<Block, DislocatorReceptacle> DISLOCATOR_RECEPTACLE      = BLOCKS.register("dislocator_receptacle",              () -> new DislocatorReceptacle(MACHINE_OPAQUE));
+    public static final DeferredHolder<Block, CreativeOPSource> CREATIVE_OP_CAPACITOR          = BLOCKS.register("creative_op_capacitor",              () -> new CreativeOPSource(MACHINE_OPAQUE));
     public static final DeferredHolder<Block, EntityDetector> ENTITY_DETECTOR                  = BLOCKS.register("entity_detector",                    () -> new EntityDetector(MACHINE, false));
     public static final DeferredHolder<Block, EntityDetector> ENTITY_DETECTOR_ADVANCED         = BLOCKS.register("entity_detector_advanced",           () -> new EntityDetector(MACHINE, true));
     public static final DeferredHolder<Block, StabilizedSpawner> STABILIZED_SPAWNER            = BLOCKS.register("stabilized_spawner",                 () -> new StabilizedSpawner(MACHINE));
