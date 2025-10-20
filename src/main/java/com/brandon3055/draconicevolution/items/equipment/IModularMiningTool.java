@@ -60,13 +60,11 @@ public interface IModularMiningTool extends IModularTieredItem {
         try (ModuleHost host = DECapabilities.getHost(stack)) {
             int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
             boolean aoeSafe = false;
-            if (host instanceof PropertyProvider) {
-                if (((PropertyProvider) host).hasInt("mining_aoe")) {
-                    aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
-                }
-                if (((PropertyProvider) host).hasBool("aoe_safe")) {
-                    aoeSafe = ((PropertyProvider) host).getBool("aoe_safe").getValue();
-                }
+            if (host.hasInt("mining_aoe")) {
+                aoe = host.getInt("mining_aoe").getValue();
+            }
+            if (host.hasBool("aoe_safe")) {
+                aoeSafe = host.getBool("aoe_safe").getValue();
             }
 
             return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
