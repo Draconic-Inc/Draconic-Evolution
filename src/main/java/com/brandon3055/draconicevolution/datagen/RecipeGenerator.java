@@ -1214,7 +1214,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DEContent.CHAOS_FRAG_LARGE)
                 .key('B', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem())
                 .key('C', DEContent.CORE_WYVERN)
-                .key('D', DEContent.CORE_CHAOTIC);
+                .key('D', DEContent.CORE_AWAKENED);
 
         //Shield Capacity XL
         shapedRecipe(DEModules.WYVERN_LARGE_SHIELD_CAPACITY.get().getItem(), "modules")
