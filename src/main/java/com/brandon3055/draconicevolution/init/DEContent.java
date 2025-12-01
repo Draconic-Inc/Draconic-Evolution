@@ -233,7 +233,7 @@ public class DEContent {
     public static final TechProperties DRACONIC_TOOLS = (TechProperties) new TechProperties(TechLevel.DRACONIC).rarity(Rarity.RARE).stacksTo(1).fireResistant();
     public static final TechProperties CHAOTIC_TOOLS = (TechProperties) new TechProperties(TechLevel.CHAOTIC).rarity(Rarity.EPIC).stacksTo(1).fireResistant();
     public static DETier WYVERN_TIER = new DETier(TechLevel.WYVERN);
-    public static DETier DRACONIC_TIER = new DETier(TechLevel.DRACONIUM);
+    public static DETier DRACONIC_TIER = new DETier(TechLevel.DRACONIC);
     public static DETier CHAOTIC_TIER = new DETier(TechLevel.CHAOTIC);
     public static final DeferredHolder<Item, DraconiumCapacitor> CAPACITOR_WYVERN             = ITEMS.register("wyvern_capacitor",                    () -> new DraconiumCapacitor(WYVERN_TOOLS));
     public static final DeferredHolder<Item, DraconiumCapacitor> CAPACITOR_DRACONIC           = ITEMS.register("draconic_capacitor",                  () -> new DraconiumCapacitor(DRACONIC_TOOLS));
