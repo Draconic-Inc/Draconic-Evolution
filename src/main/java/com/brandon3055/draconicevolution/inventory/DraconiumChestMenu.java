@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.inventory;
 
 import codechicken.lib.gui.modular.lib.container.SlotGroup;
 import codechicken.lib.inventory.container.modular.ModularSlot;
+import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,7 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeCraftingHolder;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -24,14 +28,9 @@ import java.util.Optional;
  * Created by brandon3055 on 4/06/2017.
  */
 public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
-//    public List<Slot> mainSlots = new ArrayList<>();
-//    public List<Slot> playerSlots = new ArrayList<>();
-//    public List<Slot> craftInputSlots = new ArrayList<>();
-//    public List<Slot> furnaceInputSlots = new ArrayList<>();
     public ModularResultSlot craftResultSlot;
-//    public Slot capacitorSlot;
-    private CraftingInventoryWrapper craftInventory;
-    private final ResultContainer resultInventory = new ResultContainer();
+    private final CraftingInventoryWrapper craftInventory;
+    private final ResultContainerWrapper resultInventory;
 
     public final SlotGroup main = createSlotGroup(0, 1, 2, 3, 4);
     public final SlotGroup hotBar = createSlotGroup(0, 1, 2, 3, 4);
@@ -56,41 +55,20 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
 
         chestInv.addSlots(tile.mainInventory.getSlots(), 0, slot -> new ModularSlot(tile.mainInventory, slot));
 
-
-
-//        Player Inventory
-//        for (int i = 0; i < inv.items.size(); i++) {
-//            playerSlots.add(addSlot(new SlotCheckValid.IInv(inv, i, 0, 0)));
-//        }
-
-        //Main Inventory
-//        for (int i = 0; i < tile.mainInventory.getSlots(); i++) {
-//            mainSlots.add(addSlot(new SlotCheckValid(tile.mainInventory, i, 0, 0)));
-//        }
-
         //Crafting Inventory
         craftInventory = new CraftingInventoryWrapper(this, 3, 3, tile.craftingItems);
-//        this.addSlot(craftResultSlot = new ModularResultSlot(inv.player, craftInventory, resultInventory, 0, 0, 0));
-//        for (int i = 0; i < 9; ++i) {
-//            craftInputSlots.add(addSlot(new Slot(craftInventory, i, 0, 0)));
-//        }
+        resultInventory = new ResultContainerWrapper(tile.craftingItems, 9);
         craftOut.addSlot(craftResultSlot = new ModularResultSlot(inv.player, craftInventory, resultInventory, 0, 0, 0));
         craftIn.addSlots(craftInventory.getContainerSize(), 0, slot -> new ModularSlot(craftInventory, slot));
 
         furnaceInputs.addSlots(tile.furnaceItems.getSlots(), 0, slot -> new ModularSlot(tile.furnaceItems, slot));
-
-        //Furnace Inventory
-//        for (int i = 0; i < 5; i++) {
-//            furnaceInputSlots.add(addSlot(new SlotCheckValid(tile.furnaceItems, i, 0, 0)));
-//        }
         capacitor.addSlot(new ModularSlot(tile.capacitorInv, 0));
-//        addSlot(capacitorSlot = new SlotCheckValid(tile.capacitorInv, 0, 0, 0));
 
         slotsChanged(inv);
     }
 
 
-    protected void slotChangedCraftingGrid(int containerID, Level level, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory) {
+    protected void slotChangedCraftingGrid(int containerID, Level level, Player player, CraftingContainer craftingInventory, ResultContainerWrapper resultInventory) {
         if (!level.isClientSide) {
             ServerPlayer serverplayerentity = (ServerPlayer) player;
             ItemStack itemstack = ItemStack.EMPTY;
@@ -103,7 +81,7 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
             }
 
             resultInventory.setItem(0, itemstack);
-            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerID, stateId, ((Slot)craftResultSlot).index, itemstack));
+            serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(containerID, stateId, ((Slot) craftResultSlot).index, itemstack));
         }
     }
 
@@ -112,139 +90,73 @@ public class DraconiumChestMenu extends DETileMenu<TileDraconiumChest> {
         slotChangedCraftingGrid(this.containerId, tile.getLevel(), this.player, this.craftInventory, this.resultInventory);
     }
 
+    public static class ResultContainerWrapper implements Container, RecipeCraftingHolder {
+        private final TileItemStackHandler stackHandler;
+        private final int slot;
 
-//    @Override
-//    public void slotsChanged(@Nonnull IInventory inventory) {
-//        if (!Objects.requireNonNull(tile.getLevel()).isClientSide()) {
-//            ItemStack stack = ItemStack.EMPTY;
-//            Optional<ICraftingRecipe> optional = Objects.requireNonNull(tile.getLevel().getServer()).getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftMatrix, tile.getLevel());
-//            if (optional.isPresent()) {
-//                ICraftingRecipe recipe = optional.get();
-//                if (craftResult.setRecipeUsed(tile.getLevel(), (ServerPlayerEntity) this.player, recipe)) {
-//                    stack = recipe.assemble(craftMatrix);
-//                }
-//            }
-//            craftResult.setItem(1, stack);
-//            super.slotsChanged(inventory);
-//            ((ServerPlayerEntity)this.player).connection.send(new SSetSlotPacket(containerId, 267, stack));
-//        }
-//    }
-//
-//    @Nullable
-//    @Override
-//    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
-//        ItemStack itemstack = ItemStack.EMPTY;
-//        Slot slot = slots.get(index);
-//        if (slot != null && slot.hasItem()) {
-//            ItemStack itemstack1 = slot.getItem();
-//            itemstack = itemstack1.copy();
-//
-//            //Transferring from Main Container
-//            if (index < 260) {
-//                if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
-//                    return ItemStack.EMPTY;
-//                }
-//                slot.onQuickCraft(itemstack1, itemstack);
-//            }
-//            //Transferring from a crafting inventory
-//            else if (index == 267 || index == 265 || index == 266) {
-//                //First try placing the stack in the players inventory
-//                if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
-//                    //If that fails try the chest inventory
-//                    if (!moveItemStackTo(itemstack1, 0, 259, false)) {
-//                        return ItemStack.EMPTY;
-//                    }
-//                }
-//                slot.onQuickCraft(itemstack1, itemstack);
-//            }
-//            else if (index >= 260 && index < 277) {
-//                //First try the players inventory
-//                if (!moveItemStackTo(itemstack1, 0, 259, false)) {
-//                    //If that fails try the chest inventory
-//                    if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
-//                        return ItemStack.EMPTY;
-//                    }
-//                }
-//                slot.onQuickCraft(itemstack1, itemstack);
-//            }
-//            //Transferring from Player Inventory
-//            else if (!DraconiumChest.isStackValid(itemstack1) || !moveItemStackTo(itemstack1, 0, 259, false)) {
-//                return ItemStack.EMPTY;
-//            }
-//
-//            if (itemstack1.getCount() == 0) {
-//                slot.set(ItemStack.EMPTY);
-//            }
-//            else {
-//                slot.setChanged();
-//            }
-//
-//            slot.onTake(player, itemstack1);
-//        }
-//        return itemstack;
-//    }
-//
-//    @Nullable
-//    @Override
-//    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
-//        ItemStack stack = super.clicked(slotId, dragType, clickTypeIn, player);
-//
-//        if (dragType == 1 && clickTypeIn == ClickType.PICKUP && slotId >= 260 && slotId <= 264) {
-////            tile.validateSmelting();
-//        }
-//
-//        return stack;
-//    }
-//
-//
-//    public class SlotSmeltable extends SlotItemHandler {
-//        public SlotSmeltable(IItemHandler p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
-//            super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
-//        }
-//
-//        @Override
-//        public boolean mayPlace(ItemStack stack) {
-//            return false;//tile.getSmeltResult(stack) != null;
-//        }
-//    }
-//
-//    public class SlotRFCapacitor extends SlotItemHandler {
-//        public SlotRFCapacitor(IItemHandler inventory, int id, int x, int y) {
-//            super(inventory, id, x, y);
-//
-//        }
-//
-//        @Override
-//        public boolean mayPlace(ItemStack stack) {
-//            if (super.mayPlace(stack)) {
-//                return EnergyUtils.canExtractEnergy(stack);
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        public int getMaxStackSize() {
-//            return 1;
-//        }
-//    }
-//
-//    public class SlotCore extends SlotItemHandler {
-//        public SlotCore(IItemHandler inventory, int id, int x, int y) {
-//            super(inventory, id, x, y);
-//
-//        }
-//
-//        @Override
-//        public boolean mayPlace(ItemStack stack) {
-//            if (super.mayPlace(stack)) {
-//                return !stack.isEmpty() && stack.getItem() instanceof ItemCore /*&& stack.getItem() != DEContent.draconicCore*/;
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        public int getMaxStackSize() {
-//            return 1;
-//        }
-//    }
+        public ResultContainerWrapper(TileItemStackHandler stackHandler, int slot) {
+            this.stackHandler = stackHandler;
+            this.slot = slot;
+        }
+
+        @Nullable
+        private RecipeHolder<?> recipeUsed;
+
+        @Override
+        public int getContainerSize() {
+            return 1;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return stackHandler.getStackInSlot(slot).isEmpty();
+        }
+
+        @Override
+        public ItemStack getItem(int p_40147_) {
+            return stackHandler.getStackInSlot(slot);
+        }
+
+        @Override
+        public ItemStack removeItem(int p_40149_, int p_40150_) {
+            ItemStack stack = stackHandler.getStackInSlot(slot);
+            stackHandler.setStackInSlot(slot, ItemStack.EMPTY);
+            return stack;
+        }
+
+        @Override
+        public ItemStack removeItemNoUpdate(int p_40160_) {
+            return removeItem(0, 0);
+        }
+
+        @Override
+        public void setItem(int p_40152_, ItemStack stack) {
+            stackHandler.setStackInSlot(slot, stack);
+        }
+
+        @Override
+        public void setChanged() {
+        }
+
+        @Override
+        public boolean stillValid(Player p_40155_) {
+            return true;
+        }
+
+        @Override
+        public void clearContent() {
+            stackHandler.setStackInSlot(slot, ItemStack.EMPTY);
+        }
+
+        @Override
+        public void setRecipeUsed(@Nullable RecipeHolder<?> p_301012_) {
+            this.recipeUsed = p_301012_;
+        }
+
+        @Nullable
+        @Override
+        public RecipeHolder<?> getRecipeUsed() {
+            return this.recipeUsed;
+        }
+    }
 }

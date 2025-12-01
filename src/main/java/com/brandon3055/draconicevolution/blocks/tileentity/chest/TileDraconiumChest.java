@@ -44,7 +44,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public float lidAngle;
 
     public TileItemStackHandler mainInventory = new TileItemStackHandler(this, 260);
-    public TileItemStackHandler craftingItems = new TileItemStackHandler(this, 9);
+    public TileItemStackHandler craftingItems = new TileItemStackHandler(this, 10);
     public TileItemStackHandler furnaceItems = new TileItemStackHandler(this, 5);
     public TileItemStackHandler capacitorInv = new TileItemStackHandler(this, 1);
     public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);

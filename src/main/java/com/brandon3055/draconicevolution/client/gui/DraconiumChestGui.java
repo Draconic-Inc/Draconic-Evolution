@@ -62,7 +62,7 @@ public class DraconiumChestGui extends ContainerGuiProvider<DraconiumChestMenu> 
         Constraints.placeInside(chestInv, root, Constraints.LayoutPos.TOP_CENTER, 0, 5);
 
         //Crafting grid
-        GuiSlots craftIn = new GuiSlots(root, screenAccess, menu.craftIn, 3)
+        GuiSlots craftIn = new GuiSlots(root, screenAccess, menu.craftIn, 0, 9, 3)
                 .setSlotTexture(slot -> BCGuiTextures.getThemed("slot"));
         Constraints.placeOutside(craftIn, playInv.container(), Constraints.LayoutPos.MIDDLE_RIGHT, 12, 0);
 
