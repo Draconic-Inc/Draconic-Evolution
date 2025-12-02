@@ -162,7 +162,7 @@ public class EnergyCoreGui extends ContainerGuiProvider<EnergyCoreMenu> {
         Constraints.placeInside(opLabel, display, Constraints.LayoutPos.TOP_CENTER, 0, 5);
 
         GuiText energy = new GuiText(display)
-                .setTextSupplier(() -> Component.literal(tile.energy.getReadable() + (tile.energy.getEnergyStored() < 1000000 ? " " : ""))
+                .setTextSupplier(() -> Component.empty().append(tile.energy.getReadable()).append((tile.energy.getEnergyStored() < 1000000 ? " " : ""))
                         .append(Component.translatable("mod_gui.brandonscore.energy_bar.op"))
                         .withStyle(GOLD)
                 );
