@@ -120,6 +120,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularEner
     @Override
     public void handleTick(ModuleHost host, ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
         IModularEnergyItem.super.handleTick(host, stack, entity, slot, inEquipModSlot);
+        if (entity.level().isClientSide()) return;
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
 

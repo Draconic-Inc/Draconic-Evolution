@@ -43,6 +43,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.Supplier;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -344,10 +345,10 @@ public class ModularArmorEventHandler {
             boolean canFly = true;
             boolean noPower = false;
             if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.getAbilities().instabuild && !player.isSpectator()) {
-                canFly = armorAbilities.flightPower.getOPStored() >= EquipCfg.creativeFlightEnergy;
+                canFly = armorAbilities.flightPower.get().getOPStored() >= EquipCfg.creativeFlightEnergy;
                 noPower = !canFly;
                 if (canFly && player.getAbilities().flying && !entity.level().isClientSide) {
-                    armorAbilities.flightPower.modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
+                    armorAbilities.flightPower.get().modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
                 }
             }
             if (armorAbilities.creativeFlight && canFly) {
@@ -508,7 +509,7 @@ public class ModularArmorEventHandler {
 
         FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
         if (flight != null) {
-            abilities.addFlightData(flight, stack.getCapability(CapabilityOP.ITEM));
+            abilities.addFlightData(flight, () -> stack.getCapability(CapabilityOP.ITEM));
         }
     }
 
@@ -518,26 +519,26 @@ public class ModularArmorEventHandler {
         private SpeedData data;
         private boolean elytraFlight = false;
         private boolean creativeFlight = false;
-        private IOPStorage flightPower = null;
+        private Supplier<IOPStorage> flightPower = null;
 
         private void addSpeedData(SpeedData data, ModuleHost host) {
             this.data = this.data == null ? data : this.data.combine(data);
             if (host instanceof PropertyProvider) {
-                if (((PropertyProvider) host).hasDecimal("run_speed")) {
+                if (host.hasDecimal("run_speed")) {
                     if (speedSettingRun == -1) speedSettingRun = 0;
-                    speedSettingRun += ((PropertyProvider) host).getDecimal("run_speed").getValue();
+                    speedSettingRun += host.getDecimal("run_speed").getValue();
                 }
-                if (((PropertyProvider) host).hasDecimal("walk_speed")) {
+                if (host.hasDecimal("walk_speed")) {
                     if (speedSetting == -1) speedSetting = 0;
-                    speedSetting += ((PropertyProvider) host).getDecimal("walk_speed").getValue();
+                    speedSetting += host.getDecimal("walk_speed").getValue();
                 }
             }
         }
 
-        private void addFlightData(FlightEntity entity, IOPStorage flightPower) {
+        private void addFlightData(FlightEntity entity, Supplier<IOPStorage> flightPower) {
             elytraFlight = elytraFlight || entity.getElytraEnabled();
             creativeFlight = creativeFlight || entity.getCreativeEnabled();
-            if (flightPower != null && (this.flightPower == null || flightPower.getOPStored() > this.flightPower.getOPStored())) {
+            if (flightPower != null && flightPower.get() != null && (this.flightPower == null || flightPower.get().getOPStored() > this.flightPower.get().getOPStored())) {
                 this.flightPower = flightPower;
             }
         }
