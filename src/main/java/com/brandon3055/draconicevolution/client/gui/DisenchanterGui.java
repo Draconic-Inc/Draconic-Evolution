@@ -136,8 +136,9 @@ public class DisenchanterGui extends ContainerGuiProvider<DisenchanterMenu> {
         for (Holder<Enchantment> enchantHolder : list.keySet()) {
             int lvl = list.getLevel(enchantHolder);
             Enchantment enchantment = enchantHolder.value();
+            if (enchantment == null || enchantHolder.getKey() == null) continue; //I know, should never be null, but I have a crash report here that says otherwise...
 
-            GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), () -> enchantment.description())
+            GuiButton button = TOOLKIT.createFlat3DButton(scroll.getContentElement(), enchantment::description)
                     .setTooltip(Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl), Component.translatable("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(enchantment, lvl)))
                     .onPress(() -> tile.sendPacketToServer(output -> output.writeResourceLocation(enchantHolder.getKey().location()), 1))
                     .constrain(HEIGHT, literal(14))
