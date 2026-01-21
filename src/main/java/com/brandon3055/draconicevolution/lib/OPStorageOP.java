@@ -296,7 +296,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
         }
 
         BigDecimal decimal = new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-        return Component.literal(decimal.doubleValue() + "").append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
+        return Component.empty().append(Component.literal(decimal.doubleValue() + "")).append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
     }
 
     public Component getReadableCapacity() {
@@ -312,7 +312,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
             }
 
             double decimal = cap / Math.pow(10, prefixStep);//new BigDecimal(value).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-            return Component.literal(String.valueOf(Math.round(decimal * 1000) / 1000D)).append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
+            return Component.empty().append(Component.literal(String.valueOf(Math.round(decimal * 1000) / 1000D))).append(Component.translatable("numprefix.draconicevolution.10-" + prefixStep));
         }
     }
 
