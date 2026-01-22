@@ -14,8 +14,11 @@ import net.covers1624.quack.collection.FastStream;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 16/11/2022
  */
-public class SimpleModuleHost implements ModuleHost {
+public class SimpleModuleHost implements ModuleHost, INBTSerializable<CompoundTag> {
     private static final Logger LOGGER = LogManager.getLogger(SimpleModuleHost.class);
 
     private UUID identity = null;
@@ -177,46 +180,30 @@ public class SimpleModuleHost implements ModuleHost {
         identity = UUID.randomUUID();
     }
 
-//    @Override
-//    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-//        CompoundTag nbt = new CompoundTag();
-//        ListTag modules = new ListTag();
-//        for (ModuleEntity<?> entity : moduleEntities) {
-//            CompoundTag entityNBT = new CompoundTag();
-//            entityNBT.putString("id", DEModules.REGISTRY.getKey(entity.module).toString());
-//            entity.writeToNBT(entityNBT, provider);
-//            modules.add(entityNBT);
-//        }
-//        nbt.put("modules", modules);
-//        nbt.putUUID("identity", getIdentity());
-//        return nbt;
-//    }
-//
-//    @Override
-//    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-//        clearCaches();
-//        moduleEntities.clear();
-//        ListTag modules = nbt.getList("modules", 10);
-//        modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
-//            ResourceLocation id = ResourceLocation.parse(compound.getString("id"));
-//            com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().get(id);
-//            if (module == null) {
-//                LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
-//            } else {
-//                ModuleEntity<?> entity = module.createEntity();
-//                entity.readFromNBT(compound, provider);
-//                if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-//                    LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
-//                } else {
-//                    moduleEntities.add(entity);
-//                    entity.setHost(this);
-//                }
-//            }
-//        });
-//        if (nbt.hasUUID("identity")) {
-//            identity = nbt.getUUID("identity");
-//        }
-//    }
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        var ops = provider.createSerializationContext(NbtOps.INSTANCE);
+        var result = ModuleEntity.CODEC.listOf().encodeStart(ops, moduleEntities);
+        CompoundTag nbt = new CompoundTag();
+        result.ifSuccess(tag -> nbt.put("modules", tag));
+        nbt.putUUID("identity", getIdentity());
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        clearCaches();
+        moduleEntities.clear();
+        Tag modules = nbt.get("modules");
+        if (modules != null) {
+            var ops = provider.createSerializationContext(NbtOps.INSTANCE);
+            ModuleEntity.CODEC.listOf().parse(ops, modules).ifSuccess(moduleEntities::addAll);
+
+        }
+        if (nbt.hasUUID("identity")) {
+            identity = nbt.getUUID("identity");
+        }
+    }
 
     public void saveData(DataComponentAccessor.Setter setter) {
         setter.set(ItemData.MODULE_ENTITIES, FastStream.of(moduleEntities).map(ModuleEntity::copy).toImmutableList(FastStream.infer()));
