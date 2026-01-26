@@ -1446,7 +1446,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_SWIFTNESS),Items.POTION));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_SWIFTNESS),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_VELOCITY.get().getItem(), "modules")
                 .patternLine("###")
@@ -1530,7 +1530,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_STRENGTH),Items.POTION));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_STRENGTH),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_DAMAGE.get().getItem(), "modules")
                 .patternLine("###")
@@ -1558,7 +1558,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.LONG_SLOW_FALLING),Items.POTION));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.LONG_SLOW_FALLING),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_GRAV_COMP.get().getItem(), "modules")
                 .patternLine("###")
