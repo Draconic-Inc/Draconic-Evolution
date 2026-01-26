@@ -1290,7 +1290,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', Items.FIREWORK_ROCKET);
 
         shapedRecipe(DEModules.DRACONIC_FLIGHT.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("#P#")
                 .patternLine("ABA")
                 .patternLine("#D#")
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
@@ -1300,9 +1300,9 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', Items.FIREWORK_ROCKET);
 
         shapedRecipe(DEModules.CHAOTIC_FLIGHT.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("PCP")
                 .patternLine("ABA")
-                .patternLine("#C#")
+                .patternLine("PCP")
                 .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_SWIFTNESS),Items.POTION))
                 .key('A', DEContent.CORE_AWAKENED)
                 .key('B', DEModules.DRACONIC_FLIGHT.get().getItem())
@@ -1320,7 +1320,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', DEModules.WYVERN_SHIELD_CAPACITY.get().getItem());
 
         shapedRecipe(DEModules.DRACONIC_UNDYING.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("#P#")
                 .patternLine("ABA")
                 .patternLine("#D#")
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
