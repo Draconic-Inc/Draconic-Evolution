@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -143,7 +144,7 @@ public class LootEventHandler {
 
         int rand = RANDOM.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
         int rand2 = RANDOM.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
-        boolean isAnimal = entity instanceof Animal;
+        boolean isAnimal = entity instanceof Animal || entity instanceof WaterAnimal;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEContent.MOB_SOUL.get().getSoulFromEntity(entity, false);
