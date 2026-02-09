@@ -208,8 +208,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         ItemStack weapon = itemHandler.getStackInSlot(1);
-        getFakePlayer().setItemInHand(InteractionHand.MAIN_HAND, weapon);
-
+        BlockPos pos = getBlockPos();
+        FakePlayer fakePlayer = getFakePlayer();
+        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, weapon);
+        fakePlayer.absMoveTo(pos.getX(), pos.getY(), pos.getZ(), 90, 90);
+        
         int eph = DEConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
 
@@ -231,14 +234,14 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         //Dont mess around. If we know the mob should die lets just make it die!
         float damage = willKill ? Float.MAX_VALUE / 5F : ((float) cost / (float) eph) * 1.1F;
-        DamageSource source = level.damageSources().playerAttack(getFakePlayer());
+        DamageSource source = level.damageSources().playerAttack(fakePlayer);
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
         if (nextTarget.hurt(source, damage)) {
             if (!weapon.isEmpty()) {
                 ItemStack justInCase = weapon.copy();
                 justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
-                weapon.hurtAndBreak(1, (ServerLevel) level, getFakePlayer(), item -> itemHandler.setStackInSlot(1, justInCase));
+                weapon.hurtAndBreak(1, (ServerLevel) level, fakePlayer, item -> itemHandler.setStackInSlot(1, justInCase));
             }
 
             debug("Dealt " + damage + " damage to entity: " + nextTarget);
