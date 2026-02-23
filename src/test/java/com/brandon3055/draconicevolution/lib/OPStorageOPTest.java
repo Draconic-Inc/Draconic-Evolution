@@ -22,6 +22,15 @@ public class OPStorageOPTest {
     public static final Logger LOGGER = LogManager.getLogger("OPStorageOPTest");
 
     @Test
+    public void testLargeOverflowDisplay() {
+        OPStorageOP storageOP = new OPStorageOP(null, () -> -1L);
+        storageOP.overflowCount = new BigInteger("975781955236953990712502012356953416011859675234");
+        storageOP.valueStorage = 4176350882083897343L;
+        assertEquals("4.87891E47 x (2^64)", storageOP.getReadable().getString());
+        assertEquals("4.87891E47 x (2^64) OP", storageOP.getScientific());
+    }
+
+    @Test
     public void testToString() {
         OPStorageOP storageOP = new OPStorageOP(null, () -> -1L);
 

@@ -281,7 +281,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
 
     public Component getReadable() {
         if (overflowCount.compareTo(prefixEnd) > 0) {
-            return Component.literal(decimalFormat.format(overflowCount) + " x (2^64)");
+            return Component.literal(decimalFormat.format(overflowCount.divide(BigInteger.TWO)) + " x (2^64)");
         }
 
         BigInteger value = BigInteger.valueOf(valueStorage).add(overflowCount.multiply(BigInteger.valueOf(Long.MAX_VALUE)));
@@ -318,7 +318,7 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
 
     public String getScientific() {
         if (overflowCount.compareTo(prefixEnd) > 0) {
-            return decimalFormat.format(overflowCount) + " x (2^64) OP";
+            return decimalFormat.format(overflowCount.divide(BigInteger.TWO)) + " x (2^64) OP";
         }
 
         return decimalFormat.format(getStoredBig());
