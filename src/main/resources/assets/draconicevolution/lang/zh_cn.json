@@ -213,7 +213,7 @@
   "gui.draconicevolution.flow_gate.apply": "应用",
   "gui.draconicevolution.flow_gate.flow": "流量",
   "gui.draconicevolution.flow_gate.flow.info": "实际的流量会根据接受到的红石信号强度在两个设定值之间变化。",
-  "gui.draconicevolution.flow_gate.overridden": "覆写",
+  "gui.draconicevolution.flow_gate.overridden": "已覆盖",
   "gui.draconicevolution.flow_gate.overridden.info": "默认的控制方案已被计算机禁用。",
   "gui.draconicevolution.flow_gate.redstone_high": "红石信号：高",
   "gui.draconicevolution.flow_gate.redstone_high.info": "红石信号为15时允许通过的流量。",
