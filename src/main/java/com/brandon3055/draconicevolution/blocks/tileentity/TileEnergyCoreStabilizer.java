@@ -12,6 +12,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.utils.FacingUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -223,7 +224,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
 
         //Otherwise look for a valid inactive core.
         for (Direction facing : Direction.values()) {
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < DEConfig.energyCoreRange; i++) {
                 BlockEntity tile = level.getBlockEntity(worldPosition.offset(facing.getStepX() * i, facing.getStepY() * i, facing.getStepZ() * i));
                 if (tile instanceof TileEnergyCore) {
                     TileEnergyCore core = (TileEnergyCore) tile;
