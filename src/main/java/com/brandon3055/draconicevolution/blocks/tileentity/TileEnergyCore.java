@@ -253,6 +253,9 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
         active.set(false);
         updateStabilizers(false);
+
+        stabilizersValid.set(false);
+        validateStructure();
     }
 
     /**
