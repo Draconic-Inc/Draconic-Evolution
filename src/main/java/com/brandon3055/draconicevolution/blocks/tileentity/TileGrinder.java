@@ -230,7 +230,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         //Dont mess around. If we know the mob should die lets just make it die!
-        float damage = willKill ? Float.MAX_VALUE / 5F : ((float) cost / (float) eph) * 1.1F;
+        float damage = willKill ? Float.MAX_VALUE / 100F : ((float) cost / (float) eph) * 1.1F;
         DamageSource source = level.damageSources().playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
