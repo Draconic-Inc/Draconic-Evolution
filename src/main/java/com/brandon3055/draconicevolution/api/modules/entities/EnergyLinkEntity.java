@@ -42,12 +42,12 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
     private Optional<UUID> linkId = Optional.empty();
     //This shouldn't be saved to item, or maybe just clear on insert?
     private long linkCharge = 0;
+    private Optional<Double> flow = Optional.empty();
 
     //Component data can probably still be set from entity constructor.
     private BooleanProperty enabled = new BooleanProperty("energy_link_mod.enabled", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED);
 
     //Not Serialised
-    private double flow = 0;
 //    private boolean coreEnergyLow = false;
 
     public static final Codec<EnergyLinkEntity> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -57,6 +57,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             GlobalPos.CODEC.optionalFieldOf("linked_pos").forGetter(e -> e.linkedPos),
             UUIDUtil.CODEC.optionalFieldOf("link_id").forGetter(e -> e.linkId),
             Codec.LONG.fieldOf("link_charge").forGetter(e -> e.linkCharge),
+            Codec.DOUBLE.optionalFieldOf("flow").forGetter(e -> e.flow),
             BooleanProperty.CODEC.fieldOf("enabled").forGetter(e -> e.enabled)
             ).apply(builder, EnergyLinkEntity::new));
 
@@ -67,6 +68,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             ByteBufCodecs.optional(GlobalPos.STREAM_CODEC), energyLinkEntity -> energyLinkEntity.linkedPos,
             ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), energyLinkEntity -> energyLinkEntity.linkId,
             ByteBufCodecs.VAR_LONG, energyLinkEntity -> energyLinkEntity.linkCharge,
+            ByteBufCodecs.optional(ByteBufCodecs.DOUBLE), energyLinkEntity -> energyLinkEntity.flow,
             BooleanProperty.STREAM_CODEC, energyLinkEntity -> energyLinkEntity.enabled,
             EnergyLinkEntity::new
     );
@@ -75,17 +77,18 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         super(module);
     }
 
-    EnergyLinkEntity(Module<?> module, int gridX, int gridY, Optional<GlobalPos> linkedPos, Optional<UUID> linkId, long linkCharge, BooleanProperty enabled) {
+    EnergyLinkEntity(Module<?> module, int gridX, int gridY, Optional<GlobalPos> linkedPos, Optional<UUID> linkId, long linkCharge, Optional<Double> flow, BooleanProperty enabled) {
         super((Module<EnergyLinkData>) module, gridX, gridY);
         this.linkedPos = linkedPos;
         this.linkId = linkId;
         this.linkCharge = linkCharge;
+        this.flow = flow;
         this.enabled = enabled;
     }
 
     @Override
     public ModuleEntity<?> copy() {
-        return new EnergyLinkEntity(module, getGridX(), getGridY(), linkedPos, linkId, linkCharge, enabled.copy());
+        return new EnergyLinkEntity(module, getGridX(), getGridY(), linkedPos, linkId, linkCharge, flow, enabled.copy());
     }
 
     @Override
@@ -133,7 +136,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         if (!updateConnection(data, storage, core)) return;
 
         long inserted = core.energy.extractOP(storage.modifyEnergyStored(core.energy.extractOP(data.transferLimit(), true)), false);
-        flow = MathHelper.approachExp(flow, inserted, 1 / 20D);
+        flow = Optional.of(MathHelper.approachExp(flow.orElse(0D), inserted, 1 / 20D));
         markDirty();
     }
 
@@ -157,7 +160,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
             return false;
         }
 
-        long maintenanceCost = (long) ((data.operationEnergy() * 0.1) + (data.operationEnergy() * 0.9 * (flow / data.transferLimit())));
+        long maintenanceCost = (long) ((data.operationEnergy() * 0.1) + (data.operationEnergy() * 0.9 * (flow.orElse(0D) / data.transferLimit())));
         long extracted = core.energy.extractOP(maintenanceCost, false);
         if (extracted < maintenanceCost) {
             disconnect();
@@ -169,7 +172,7 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
 
     private void disconnect() {
         linkCharge = 0;
-        flow = 0;
+        flow = Optional.of(0D);
         markDirty();
     }
 
