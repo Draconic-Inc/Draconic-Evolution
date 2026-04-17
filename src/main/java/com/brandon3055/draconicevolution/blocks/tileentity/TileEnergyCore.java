@@ -56,7 +56,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public static final int MSG_TOGGLE_ACTIVATION = 1;
     public static final int MSG_BUILD_CORE = 2;
     public static final int ADV_STABILIZER_TIER = 5;
-    public static final int MAX_STABILIZER_DIST = 16;
 
     public static final int DEFAULT_FRAME_COLOUR = 0x191919;
     public static final int DEFAULT_TRIANGLE_COLOUR = 0x660099;
@@ -86,6 +85,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public final ManagedUUID linkUUID = register(new ManagedUUID("link_uuid", (UUID) null, SAVE_NBT));
 
     public OPStorageOP energy = new OPStorageOP(this, this::getCapacity);
+    public static int maxStabilizerDist = DEConfig.energyCoreRange;
 
     private MultiBlockDefinition definitionCache = null;
     private MultiBlockBuilder activeBuilder = null;
@@ -253,6 +253,9 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
         active.set(false);
         updateStabilizers(false);
+
+        stabilizersValid.set(false);
+        validateStructure();
     }
 
     /**
@@ -355,7 +358,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                 //For each of the 4 possible directions around the axis
                 for (int fIndex = 0; fIndex < dirs.length; fIndex++) {
                     Direction facing = dirs[fIndex];
-                    for (int dist = 1; dist < MAX_STABILIZER_DIST; dist++) {
+                    for (int dist = 1; dist < maxStabilizerDist; dist++) {
                         BlockPos testPos = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
                         BlockEntity tile = level.getBlockEntity(testPos);
                         if (!(tile instanceof TileEnergyCoreStabilizer stabilizer)) {

@@ -85,6 +85,7 @@ public class DEConfig {
 
     public static boolean forceDroppedItemOwner = true;
 
+    public static int energyCoreRange;
     public static Long[] coreCapacity = new Long[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, -1L};
 
     private static void loadServer() {
@@ -324,6 +325,12 @@ public class DEConfig {
                         "This may be useful for people like pack developers who want to add custom tool tier progression.")
                 .setDefaultBoolean(false)
                 .onSync((tag, type) -> useToolTierTags = tag.getBoolean());
+
+        serverTag.getValue("energyCoreRange")
+                .syncTagToClient()
+                .setComment("Sets how far energy core stabilizers can be from the energy core")
+                .setDefaultInt(16)
+                .onSync((tag, type) -> energyCoreRange = tag.getInt());
 
         serverTag.getValueList("coreCapacity")
                 .syncTagToClient()
