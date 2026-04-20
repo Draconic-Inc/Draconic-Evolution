@@ -23,6 +23,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.minecraft.core.component.DataComponents;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -983,7 +984,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', Tags.Items.INGOTS_IRON)
                 .key('A', Items.CLOCK)
                 .key('B', DEContent.MODULE_CORE)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.SWIFTNESS)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.SWIFTNESS),Items.POTION));
 
         shapedRecipe(DEModules.WYVERN_SPEED.get().getItem(), "modules")
                 .patternLine("###")
@@ -1016,7 +1017,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("ABA")
                 .patternLine("GPI")
                 .key('I', Tags.Items.INGOTS_IRON)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.STRENGTH)))
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRENGTH),Items.POTION))
                 .key('G', Tags.Items.INGOTS_GOLD)
                 .key('A', Tags.Items.DUSTS_GLOWSTONE)
                 .key('B', DEContent.MODULE_CORE);
@@ -1026,7 +1027,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("ABA")
                 .patternLine("IPI")
                 .key('I', DETags.Items.INGOTS_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.STRONG_STRENGTH)))
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_STRENGTH),Items.POTION))
                 .key('A', DEModules.DRACONIUM_DAMAGE.get().getItem())
                 .key('B', DEContent.CORE_DRACONIUM);
 
@@ -1289,20 +1290,20 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', Items.FIREWORK_ROCKET);
 
         shapedRecipe(DEModules.DRACONIC_FLIGHT.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("#P#")
                 .patternLine("ABA")
                 .patternLine("#D#")
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .key('A', DEContent.CORE_WYVERN)
                 .key('B', DEModules.WYVERN_FLIGHT.get().getItem())
-                .key('C', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.SLOW_FALLING)))
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.SLOW_FALLING),Items.POTION))
                 .key('D', Items.FIREWORK_ROCKET);
 
         shapedRecipe(DEModules.CHAOTIC_FLIGHT.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("PCP")
                 .patternLine("ABA")
-                .patternLine("#C#")
-                .key('#', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.STRONG_SWIFTNESS)))
+                .patternLine("PCP")
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_SWIFTNESS),Items.POTION))
                 .key('A', DEContent.CORE_AWAKENED)
                 .key('B', DEModules.DRACONIC_FLIGHT.get().getItem())
                 .key('C', DEContent.CHAOS_FRAG_LARGE);
@@ -1319,13 +1320,13 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', DEModules.WYVERN_SHIELD_CAPACITY.get().getItem());
 
         shapedRecipe(DEModules.DRACONIC_UNDYING.get().getItem(), "modules")
-                .patternLine("#C#")
+                .patternLine("#P#")
                 .patternLine("ABA")
                 .patternLine("#D#")
                 .key('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .key('A', DEContent.CORE_WYVERN)
                 .key('B', DEModules.WYVERN_UNDYING.get().getItem())
-                .key('C', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.STRONG_HEALING)))
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_HEALING),Items.POTION))
                 .key('D', DEModules.DRACONIC_SHIELD_CAPACITY.get().getItem());
 
         shapedRecipe(DEModules.CHAOTIC_UNDYING.get().getItem(), "modules")
@@ -1375,7 +1376,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM)
                 .key('A', DEContent.CORE_DRACONIUM)
                 .key('B', DEContent.MODULE_CORE)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.NIGHT_VISION)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.NIGHT_VISION),Items.POTION));
 
         //Jump Boost
         shapedRecipe(DEModules.DRACONIUM_JUMP.get().getItem(), "modules")
@@ -1386,7 +1387,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEContent.MODULE_CORE)
                 .key('C', Tags.Items.INGOTS_IRON)
                 .key('D', Tags.Items.INGOTS_GOLD)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.LEAPING)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.LEAPING),Items.POTION));
 
         shapedRecipe(DEModules.WYVERN_JUMP.get().getItem(), "modules")
                 .patternLine("#P#")
@@ -1395,7 +1396,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('#', DETags.Items.INGOTS_DRACONIUM)
                 .key('B', DEContent.CORE_DRACONIUM)
                 .key('A', DEModules.DRACONIUM_JUMP.get().getItem())
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.POTION, Potions.STRONG_LEAPING)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_LEAPING),Items.POTION));
 
         shapedRecipe(DEModules.DRACONIC_JUMP.get().getItem(), "modules")
                 .patternLine("###")
@@ -1445,7 +1446,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.SPLASH_POTION, Potions.STRONG_SWIFTNESS)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_SWIFTNESS),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_VELOCITY.get().getItem(), "modules")
                 .patternLine("###")
@@ -1529,7 +1530,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.SPLASH_POTION, Potions.STRONG_STRENGTH)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRONG_STRENGTH),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_DAMAGE.get().getItem(), "modules")
                 .patternLine("###")
@@ -1557,7 +1558,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ItemTags.ARROWS)
                 .key('B', DEContent.MODULE_CORE)
                 .key('A', DEContent.CORE_DRACONIUM)
-                .key('P', DataComponentIngredient.of(false, PotionContents.createItemStack(Items.SPLASH_POTION, Potions.LONG_SLOW_FALLING)));
+                .key('P', DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(Potions.LONG_SLOW_FALLING),Items.SPLASH_POTION));
 
         shapedRecipe(DEModules.DRACONIC_PROJ_GRAV_COMP.get().getItem(), "modules")
                 .patternLine("###")
