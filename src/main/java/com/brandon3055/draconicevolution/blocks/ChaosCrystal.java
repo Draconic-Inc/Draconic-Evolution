@@ -76,7 +76,7 @@ public class ChaosCrystal extends EntityBlockBCore implements CustomTabHandling 
                 ((TileChaosCrystal) tile).guardianDefeated.set(true);
             }
         } else {
-            placer.hurt(DEDamage.chaosImplosion(level), Float.MAX_VALUE);
+            placer.hurt(DEDamage.chaosImplosion(level), Float.MAX_VALUE / 100F);
         }
     }
 
@@ -88,7 +88,7 @@ public class ChaosCrystal extends EntityBlockBCore implements CustomTabHandling 
 //            if (player.abilities.instabuild) {
 //                return;
 //            }
-//            player.hurt(punishment, Float.MAX_VALUE);
+//            player.hurt(punishment, Float.MAX_VALUE / 100F);
 //        }
 //    }
 

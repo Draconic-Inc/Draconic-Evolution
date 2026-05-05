@@ -83,7 +83,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         if (fireSecondary()) {
             beamPower += getSecondaryCharge();
             DraconicNetwork.sendGuardianBeam(guardian.level(), headPos, beamPos, beamPower);
-            beamPower += getSecondaryCharge() * (Float.MAX_VALUE / 5F);
+            beamPower += getSecondaryCharge() * (Float.MAX_VALUE / 100F);
         } else {
             DraconicNetwork.sendGuardianBeam(guardian.level(), headPos, beamPos, beamPower);
             beamPower *= 20;
