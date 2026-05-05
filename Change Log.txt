@@ -1,4 +1,11 @@
 ######## 3.0.31.xxx ########
+- Insta-kill damage no longer sometimes bugs out
+- If too many mods modify damage/death events (i.e. Apothic Attributes + Relics), dealing too much damage puts the entity in a semi-dead state.
+- Lowering the damage dealt prevents that from occurring.
+- Backport from 1.21.1 to 1.20.1
+- https://github.com/Draconic-Inc/Draconic-Evolution/commit/4683a54f7c5a2dd1df501bae6a78a994e7f2857b
+
+######## 3.0.31.xxx ########
 - Fix: Prevented guardian crystals from being pushed by pistons.
 - Fixed dislocators vanishing when dropped.
 
