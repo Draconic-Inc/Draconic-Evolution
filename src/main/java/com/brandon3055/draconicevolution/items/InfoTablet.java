@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.items;
 
-import com.brandon3055.brandonscore.integration.PIHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import guideme.GuidesCommon;
 
 /**
  * Created by brandon3055 on 22/09/2016.
@@ -29,22 +30,21 @@ public class InfoTablet extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         if (worldIn.isClientSide) {
-            openPIGui();
+            openGMEGui(playerIn);
         }
         return super.use(worldIn, playerIn, hand);
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public static void openPIGui() {
-        if (PIHelper.isInstalled()) {
-            PIHelper.openMod(null, DraconicEvolution.MODID);
+    public static void openGMEGui(Player player) {
+        if (ModHelper.GUIDEME) {
+            GuidesCommon.openGuide(player, ResourceLocation.fromNamespaceAndPath(DraconicEvolution.MODID, "info_tablet"));
         } else {
-            Player player = Minecraft.getInstance().player;
-            MutableComponent message = Component.literal("Project Intelligence is required to view DE documentation. ").withStyle(ChatFormatting.RED);
+            MutableComponent message = Component.literal("GuideME is required to view DE documentation. ").withStyle(ChatFormatting.RED);
             MutableComponent link = Component.literal("[Click here to view curse page]").withStyle(ChatFormatting.BLUE);
-            link.setStyle(link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/project-intelligence")));
-            link.setStyle(link.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("https://www.curseforge.com/minecraft/mc-mods/project-intelligence"))));
+            link.setStyle(link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/guideme")));
+            link.setStyle(link.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("https://www.curseforge.com/minecraft/mc-mods/guideme"))));
             message.append(link);
             player.sendSystemMessage(message);
         }

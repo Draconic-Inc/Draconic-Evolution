@@ -31,6 +31,7 @@ public class ModHelper {
     public static final boolean JEI = ModList.get().isLoaded("jei");
     public static final boolean BAUBLES = ModList.get().isLoaded("baubles");
     public static final boolean ENDERSTORAGE = ModList.get().isLoaded("enderstorage");
+    public static final boolean GUIDEME = ModList.get().isLoaded("guideme");
     private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
