@@ -26,3 +26,6 @@
 # Other Important Folders
 !src/
 src/generated/resources/.cache
+
+# GuideME guidebook
+!guidebook/

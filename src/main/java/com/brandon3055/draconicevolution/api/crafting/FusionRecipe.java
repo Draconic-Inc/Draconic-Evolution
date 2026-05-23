@@ -79,10 +79,13 @@ public class FusionRecipe implements IFusionRecipe {
         return result;
     }
 
+    public ItemStack getResultItem() {return result;}
+
     @Override
     public RecipeSerializer<?> getSerializer() {
         return DraconicAPI.FUSION_RECIPE_SERIALIZER.get();
     }
+
 
     public static class FusionIngredient implements IFusionIngredient {
         private static final Codec<FusionIngredient> CODEC = RecordCodecBuilder.create(builder -> builder.group(

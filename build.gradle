@@ -32,6 +32,7 @@ minecraft {
 
 runs {
     client {
+        systemProperty('guideme.draconicevolution.info_tablet.sources', file('guidebook').absolutePath)
         workingDirectory file('run')
 //         mods { draconicevolution { source sourceSets.main } }
     }
@@ -88,6 +89,9 @@ dependencies {
     implementation("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}") {
         transitive false
     }
+
+    compileOnly "org.appliedenergistics:guideme:${guideme_version}:api"
+    runtimeOnly "org.appliedenergistics:guideme:${guideme_version}"
 
     // For Testing
 //    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
@@ -174,6 +178,9 @@ jar {
         attributes 'MixinConfigs': 'mixins.draconicevolution.json'
     }
     from file("LICENSE")
+    from('guidebook') {
+        into 'assets/draconicevolution/guides/draconicevolution/info_tablet'
+    }
 }
 
 tasks.register("signJar") {
