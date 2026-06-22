@@ -18,5 +18,6 @@ public class ComputerCraftCompatEventHandler {
 		event.registerBlockEntity(PeripheralCapability.get(), DEContent.TILE_FLUID_GATE.get(), (be, direction) -> new PeripheralFluidGate(be));
 		event.registerBlockEntity(PeripheralCapability.get(), DEContent.TILE_FLUX_GATE.get(), (be, direction) -> new PeripheralFlowGate(be));
 		event.registerBlockEntity(PeripheralCapability.get(), DEContent.TILE_FLUX_GATE.get(), (be, direction) -> new PeripheralFluxGate(be));
+		event.registerBlockEntity(PeripheralCapability.get(), DEContent.TILE_CELESTIAL_MANIPULATOR.get(), (be, direction) -> new PeripheralCelestialManipulator(be));
     }
 }
