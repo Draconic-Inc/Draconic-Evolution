@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipula
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -32,13 +33,18 @@ public class PeripheralCelestialManipulator implements IPeripheral {
 	}
 	
     @LuaFunction(mainThread = true)
-    public final boolean isActive() {
-        return tile.active.get();
-    }
+	public final long getEnergyStored() {
+		return tile.opStorage.getOPStored();
+	}
 
     @LuaFunction(mainThread = true)
-    public final long getEnergyStored() {
-        return tile.opStorage.getEnergyStored();
+	public final long getMaxEnergyStored() {
+		return tile.opStorage.getMaxOPStored();
+	}
+
+    @LuaFunction(mainThread = true)
+    public final boolean isActive() {
+        return tile.active.get();
     }
 
     @LuaFunction(mainThread = true)
@@ -52,57 +58,68 @@ public class PeripheralCelestialManipulator implements IPeripheral {
     }
 
     @LuaFunction(mainThread = true)
-    public final void sunrise() {
-        tile.handleInteract("SUN_RISE", null);
+    public final String sunrise() {
+        Component message = tile.handleInteract("SUN_RISE", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void midday() {
-        tile.handleInteract("MID_DAY", null);
+    public final String midday() {
+        Component message = tile.handleInteract("MID_DAY", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void sunset() {
-        tile.handleInteract("SUN_SET", null);
+    public final String sunset() {
+        Component message = tile.handleInteract("SUN_SET", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void midnight() {
-        tile.handleInteract("MIDNIGHT", null);
+    public final String midnight() {
+        Component message = tile.handleInteract("MIDNIGHT", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void moonrise() {
-        tile.handleInteract("MOON_RISE", null);
+    public final String moonrise() {
+        Component message = tile.handleInteract("MOON_RISE", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void moonset() {
-        tile.handleInteract("MOON_SET", null);
+    public final String moonset() {
+        Component message = tile.handleInteract("MOON_SET", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void skipDay() {
-        tile.handleInteract("SKIP_24", null);
+    public final String skipDay() {
+        Component message = tile.handleInteract("SKIP_24", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void startRain() {
-        tile.handleInteract("START_RAIN", null);
+    public final String startRain() {
+        Component message = tile.handleInteract("START_RAIN", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void stopRain() {
-        tile.handleInteract("STOP_RAIN", null);
+    public final String stopRain() {
+        Component message = tile.handleInteract("STOP_RAIN", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void startStorm() {
-        tile.handleInteract("START_STORM", null);
+    public final String startStorm() {
+        Component message = tile.handleInteract("START_STORM", null);
+        return message == null ? "" : message.getString();
     }
 
     @LuaFunction(mainThread = true)
-    public final void stop() {
-        tile.handleInteract("STOP", null);
+    public final String stop() {
+        Component message = tile.handleInteract("STOP", null);
+        return message == null ? "" : message.getString();
     }
 }
