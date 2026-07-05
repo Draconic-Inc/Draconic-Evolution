@@ -192,86 +192,95 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
     }
 
-    public void handleInteract(String action, Player player) {
+    @Nullable
+    public Component handleInteract(String action, Player player) {
         if (action.endsWith("STOP") && active.get() && timeWarpRunning.get()) {
             stopTimeWarp();
-            return;
+            return null;
         }
 
         if (active.get()) {
-            sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning"), player);
-            return;
+            Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning");
+            sendMessage(message, player);
+            return message;
         }
 
         switch (action) {
             case "STOP_RAIN":
                 if (!level.isRaining()) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining");
+                    sendMessage(message, player);
+                    return message;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)");
+                    sendMessage(message, player);
+                    return message;
                 }
                 opStorage.modifyEnergyStored(-256000);
                 toggleWeather(false, false);
-                LogHelper.info("Stopped rain! Cause: " + worldPosition);
-                return;
+                DraconicEvolution.LOGGER.info("Stopped rain! Cause: " + worldPosition);
+                return null;
             case "START_RAIN":
                 if (level.isRaining()) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining");
+                    sendMessage(message, player);
+                    return message;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)");
+                    sendMessage(message, player);
+                    return message;
                 }
                 opStorage.modifyEnergyStored(-256000);
                 toggleWeather(true, false);
-                LogHelper.info("Started rain! Cause: " + worldPosition);
-                return;
+                DraconicEvolution.LOGGER.info("Started rain! Cause: " + worldPosition);
+                return null;
             case "START_STORM":
                 if (level.isRaining() && level.isThundering()) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming");
+                    sendMessage(message, player);
+                    return message;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
-                    return;
+                    Component message = Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)");
+                    sendMessage(message, player);
+                    return message;
                 }
                 opStorage.modifyEnergyStored(-384000);
                 toggleWeather(true, true);
-                LogHelper.info("Started storm! Cause: " + worldPosition);
-                return;
+                DraconicEvolution.LOGGER.info("Started storm! Cause: " + worldPosition);
+                return null;
             case "SUN_RISE":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(0));
-                LogHelper.info("Set time to sunrise! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to sunrise! Cause: " + worldPosition);
+                return null;
             case "MID_DAY":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(5900));
-                LogHelper.info("Set time to midday! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to midday! Cause: " + worldPosition);
+                return null;
             case "SUN_SET":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(12000));
-                LogHelper.info("Set time to sunset! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to sunset! Cause: " + worldPosition);
+                return null;
             case "MOON_RISE":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(13000));
-                LogHelper.info("Set time to moonrise! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to moonrise! Cause: " + worldPosition);
+                return null;
             case "MIDNIGHT":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(17900));
-                LogHelper.info("Set time to midnight! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to midnight! Cause: " + worldPosition);
+                return null;
             case "MOON_SET":
                 startTimeWarp(level.getDayTime() + calculateTimeTill(22500));
-                LogHelper.info("Set time to moonset! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Set time to moonset! Cause: " + worldPosition);
+                return null;
             case "SKIP_24":
                 startTimeWarp(level.getDayTime() + 24000);
-                LogHelper.info("Skipped one day! Cause: " + worldPosition);
-                break;
+                DraconicEvolution.LOGGER.info("Skipped one day! Cause: " + worldPosition);
+                return null;
         }
+        return null;
     }
 
     private void sendMessage(Component message, Player player) {
