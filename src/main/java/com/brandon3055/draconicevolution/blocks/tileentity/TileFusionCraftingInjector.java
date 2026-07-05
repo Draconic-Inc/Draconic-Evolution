@@ -165,6 +165,13 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
         }
     }
 
+    public boolean isSingleItemMode() {
+        return singleItem.get();
+    }
+
+    public void setSingleItemMode(boolean singleItem) {
+        this.singleItem.set(singleItem);
+    }
 
 //    private boolean validateCraftingInventory() {
 //        if (!getStackInPedestal().isEmpty() && currentCraftingInventory != null && currentCraftingInventory.craftingInProgress() && !((TileEntity) currentCraftingInventory).isRemoved()) {

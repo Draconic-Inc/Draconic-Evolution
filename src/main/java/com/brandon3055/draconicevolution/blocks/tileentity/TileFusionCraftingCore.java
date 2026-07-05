@@ -424,5 +424,14 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         injectorPositions = Arrays.stream(compound.getLongArray("injector_positions")).mapToObj(BlockPos::of).collect(Collectors.toList());
         injectorCache = null;
     }
+
+    public float getFusionProgress() {
+        return progress.get();
+    }
+
+    @Nullable
+    public Component getFusionStatus() {
+        return userStatus.get();
+    }
 }
 
