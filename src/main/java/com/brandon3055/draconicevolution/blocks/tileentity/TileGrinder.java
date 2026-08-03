@@ -242,6 +242,9 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             }
 
             debug("Dealt " + damage + " damage to entity: " + nextTarget);
+            if (nextTarget.getHealth() <= 0){
+                nextTarget.kill();
+            }
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);
             return true;
