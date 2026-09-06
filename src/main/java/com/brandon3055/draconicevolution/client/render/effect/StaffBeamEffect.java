@@ -135,6 +135,7 @@ public class StaffBeamEffect extends Particle {
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
             textureManager.bindForSetup(texture);
+            RenderSystem.enableDepthTest(); // Guard against depth test being left disabled (see CrystalFXBeam.FXHandler#begin)
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();

@@ -37,6 +37,13 @@ public class DERenderTypes {
         public void setupRenderState() {
             RenderSystem.disableDepthTest();
         }
+
+        @Override
+        public void clearRenderState() {
+            // The inherited clearRenderState is a no-op for func 519, so without this override
+            // the disableDepthTest() above leaks into all subsequent rendering.
+            RenderSystem.enableDepthTest();
+        }
     };
 
     public static final RenderType BOX_NO_DEPTH = RenderType.create("de:box_no_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
@@ -52,7 +59,7 @@ public class DERenderTypes {
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-            .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+            .setDepthTestState(DISABLE_DEPTH)
             .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
             .createCompositeState(false)
     );

@@ -12,6 +12,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.GameRenderer;
@@ -150,6 +151,8 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            RenderSystem.enableDepthTest(); // Guard against depth test being left disabled (see CrystalFXBeam.FXHandler#begin)
+            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();

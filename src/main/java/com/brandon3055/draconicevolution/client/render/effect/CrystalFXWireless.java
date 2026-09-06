@@ -129,6 +129,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     public static class FXHandler implements ParticleRenderType {
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            RenderSystem.enableDepthTest(); // Guard against depth test being left disabled (see CrystalFXBeam.FXHandler#begin)
+            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);

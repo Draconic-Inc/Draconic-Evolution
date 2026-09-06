@@ -13,6 +13,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.GameRenderer;
@@ -185,6 +186,15 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            // Depth testing may have been left disabled by a previously rendered particle type.
+            // e.g. vanilla's ItemPickupParticle (ParticleRenderType.CUSTOM) renders the picked up
+            // item entity mid particle-pass via MultiBufferSource#endBatch, and the entity render
+            // types' clearRenderState() leaves GL depth testing disabled. Without this guard the
+            // beams render through walls whenever an item pickup animation is on screen. (#2030)
+            // The same flush also unbinds the lightmap texture (LightmapStateShard#clearRenderState),
+            // so that gets re-bound here as well.
+            RenderSystem.enableDepthTest();
+            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
