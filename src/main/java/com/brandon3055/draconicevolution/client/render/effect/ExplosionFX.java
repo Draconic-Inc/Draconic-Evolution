@@ -56,6 +56,13 @@ public class ExplosionFX extends Particle {
         public void setupRenderState() {
             RenderSystem.disableDepthTest();
         }
+
+        @Override
+        public void clearRenderState() {
+            // The inherited clearRenderState is a no-op for func 519, so without this override
+            // the disableDepthTest() above leaks into all subsequent rendering.
+            RenderSystem.enableDepthTest();
+        }
     };
 
     public static RenderType EXPLOSION_TYPE = RenderType.create(MODID + ":explosion_shader", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()

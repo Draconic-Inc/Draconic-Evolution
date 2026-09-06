@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.GameRenderer;
@@ -26,6 +27,8 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
 
     public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
+            RenderSystem.enableDepthTest(); // Guard against depth test being left disabled (see CrystalFXBeam.FXHandler#begin)
+            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
             RenderSystem.depthMask(false);
 //            RenderSystem.setShader(GameRenderer::getParticleShader);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);

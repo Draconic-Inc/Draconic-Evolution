@@ -44,6 +44,8 @@ public class AtlasTextureHelper {
 
     public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
+            RenderSystem.enableDepthTest(); // Guard against depth test being left disabled (see CrystalFXBeam.FXHandler#begin)
+            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
