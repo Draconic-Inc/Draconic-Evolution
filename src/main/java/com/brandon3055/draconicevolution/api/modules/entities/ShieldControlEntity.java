@@ -466,6 +466,20 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
                 ShieldSaveData::new
         );
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ShieldSaveData that)) return false;
+            return Double.compare(shieldPoints, that.shieldPoints) == 0 && Double.compare(shieldBoost, that.shieldBoost) == 0
+                   && Double.compare(maxBoost, that.maxBoost) == 0 && boostTime == that.boostTime && shieldCapacity == that.shieldCapacity
+                   && shieldCoolDown == that.shieldCoolDown && envDmgCoolDown == that.envDmgCoolDown && shieldVisible == that.shieldVisible;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(shieldPoints, shieldBoost, maxBoost, boostTime, shieldCapacity, shieldCoolDown, envDmgCoolDown, shieldVisible);
+        }
+
         public ShieldSaveData(double shieldPoints, double shieldBoost, double maxBoost, int boostTime, int shieldCapacity, int shieldCoolDown, byte envDmgCoolDown, boolean shieldVisible) {
             this.shieldPoints = shieldPoints;
             this.shieldBoost = shieldBoost;
