@@ -28,7 +28,6 @@ public class ENetFXHandlerServer<T extends BlockEntity & IENetEffectTile> extend
 
     @Override
     public void detectAndSendChanges() {
-        lastTickIndexToFlow.clear();
         BatchedCrystalUpdate update = new BatchedCrystalUpdate(tile.getIDHash(), tile.getEnergyStored());
         for (byte i = 0; i < tile.getFlowRates().size(); i++) {
             byte flow = tile.getFlowRates().get(i);

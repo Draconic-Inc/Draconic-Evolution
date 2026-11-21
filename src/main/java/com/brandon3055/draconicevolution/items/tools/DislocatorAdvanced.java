@@ -295,6 +295,15 @@ public class DislocatorAdvanced extends Dislocator {
 
     //Interaction Handling
 
+    // The client decides the list size and the names; without limits a client can grow the item, and with it the player
+    // save and every slot sync, without bound. Existing larger lists are kept, they just cannot grow.
+    public static final int MAX_TARGETS = 256;
+    public static final int MAX_NAME_LENGTH = 64;
+
+    private static String clampName(String name) {
+        return name.length() > MAX_NAME_LENGTH ? name.substring(0, MAX_NAME_LENGTH) : name;
+    }
+
     public void handleClientAction(ServerPlayer player, ItemStack stack, MCDataInput input) {
         int action = input.readByte();
         int selectIndex = getSelectedIndex(stack);
@@ -306,7 +315,9 @@ public class DislocatorAdvanced extends Dislocator {
             case 0: //Add Current Pos
                 int mode = input.readByte();
                 int index = input.readVarInt();
-                DislocatorTarget newPoint = new DislocatorTarget(player).setName(input.readString());
+                String newName = clampName(input.readString());
+                if (list.size() >= MAX_TARGETS) return;
+                DislocatorTarget newPoint = new DislocatorTarget(player).setName(newName);
                 if (mode == 1 || index < 0) { //Add Top
                     list.addFirst(newPoint);
                 } else if (mode == 2 || index >= list.size()) { //Add Bottom
@@ -320,7 +331,7 @@ public class DislocatorAdvanced extends Dislocator {
                 DataUtils.safeRemove(list, input.readVarInt());
                 break;
             case 2: //Update Name
-                DataUtils.ifPresent(list, input.readVarInt(), e -> e.setName(input.readString()));
+                DataUtils.ifPresent(list, input.readVarInt(), e -> e.setName(clampName(input.readString())));
                 break;
             case 3: //Update Lock
                 DataUtils.ifPresent(list, input.readVarInt(), e -> e.setLocked(input.readBoolean()));
