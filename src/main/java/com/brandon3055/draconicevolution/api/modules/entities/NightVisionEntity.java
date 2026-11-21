@@ -33,7 +33,6 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
     //Not serialised
     private boolean wasJustDisabled = false;
     private boolean appliedByModule = false;
-    private int tick;
     private int disableTimer = 0;
 
     public static final Codec<NightVisionEntity> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -81,7 +80,8 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     public void tick(ModuleContext context) {
-        if ((tick++ % 20 != 0) || !(context instanceof StackModuleContext ctx)) return;
+        // The host (and this entity) is rebuilt from the item on every capability query, so a counter field here is always 0.
+        if (!(context instanceof StackModuleContext ctx) || ctx.getEntity().tickCount % 20 != 0) return;
         if (!(ctx.getEntity() instanceof ServerPlayer player) || player.level().isClientSide() || !ctx.isEquipped()) return;
 
         if (!enabled.getValue()) {
@@ -111,7 +111,7 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
             disableTimer = 0;
         } else if (appliedByModule && disableTimer++ >= 3){
             player.removeEffect(MobEffects.NIGHT_VISION);
-            appliedByModule = true;
+            appliedByModule = false;
         }
         markDirty();
     }
