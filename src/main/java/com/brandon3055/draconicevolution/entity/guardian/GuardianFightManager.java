@@ -150,7 +150,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
     private boolean isFightAreaLoaded() {
         for (int x = -8; x <= 8; ++x) {
-            for (int z = 8; z <= 8; ++z) {
+            for (int z = -8; z <= 8; ++z) {
                 ChunkPos pos = new ChunkPos(arenaOrigin);
                 ChunkAccess ichunk = level.getChunk(pos.x + x, pos.z + z, ChunkStatus.FULL, false);
                 if (!(ichunk instanceof LevelChunk)) {
