@@ -603,7 +603,9 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
         @Override
         public boolean equals(Object o) {
             if (!(o instanceof Filter filter)) return false;
-            return slot == filter.slot && Objects.equals(stackFilter, filter.stackFilter) && Objects.equals(tagFilter, filter.tagFilter);
+            boolean sameStack = stackFilter.isPresent() == filter.stackFilter.isPresent()
+                                && (stackFilter.isEmpty() || ItemStack.matches(stackFilter.get(), filter.stackFilter.get()));
+            return slot == filter.slot && sameStack && Objects.equals(tagFilter, filter.tagFilter);
         }
 
         public static Filter itemStack(int slot, ItemStack stack) {
