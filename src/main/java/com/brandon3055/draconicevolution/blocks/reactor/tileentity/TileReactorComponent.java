@@ -208,6 +208,7 @@ public abstract class TileReactorComponent extends TileBCore {
             return null;
         }
 
+        if (!com.brandon3055.draconicevolution.lib.LoadedLookup.isLoaded(level, getCorePos())) return null; // don't load the core's chunk, and don't invalidate
         BlockEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
@@ -226,6 +227,7 @@ public abstract class TileReactorComponent extends TileBCore {
             return null;
         }
 
+        if (!com.brandon3055.draconicevolution.lib.LoadedLookup.isLoaded(level, getCorePos())) return null;
         BlockEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
@@ -236,12 +238,14 @@ public abstract class TileReactorComponent extends TileBCore {
     public TileReactorCore getCachedCore() {
         if (isBound.get()) {
             BlockPos corePos = getCorePos();
-            LevelChunk coreChunk = level.getChunkAt(corePos);
-
-            if (!level.isLoaded(corePos)) {
+            if (!com.brandon3055.draconicevolution.lib.LoadedLookup.isLoaded(level, corePos)) {
                 cachedCore = null;
                 return null;
             }
+            if (cachedCore != null && !cachedCore.isRemoved() && cachedCore.getBlockPos().equals(corePos)) {
+                return cachedCore;
+            }
+            LevelChunk coreChunk = level.getChunkAt(corePos);
 
             BlockEntity tileAtPos = coreChunk.getBlockEntity(corePos, LevelChunk.EntityCreationType.CHECK);
             if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isRemoved()) {

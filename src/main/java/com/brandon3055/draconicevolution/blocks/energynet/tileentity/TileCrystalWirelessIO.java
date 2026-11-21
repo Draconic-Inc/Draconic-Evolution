@@ -499,13 +499,13 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         public boolean isLinkValid(Level world) {
-            tileCache = world.getBlockEntity(pos);
-
-            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && level.isLoaded(pos)) {
-                return false;
+            // Unloaded receivers keep their link but are not looked up (the lookup used to load or hold their chunk).
+            if (!com.brandon3055.draconicevolution.lib.LoadedLookup.isLoaded(world, pos)) {
+                tileCache = null;
+                return true;
             }
-
-            return true;
+            tileCache = com.brandon3055.draconicevolution.lib.LoadedLookup.blockEntity(world, pos);
+            return tileCache != null && EnergyUtils.getStorage(tileCache, side) != null;
         }
 
         /**

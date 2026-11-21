@@ -191,12 +191,20 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         BlockPos pos = coreOffset.get();
         if (pos != null) {
             BlockPos corePos = worldPosition.subtract(pos);
-            LevelChunk coreChunk = level.getChunkAt(corePos);
-
+            // Check before getChunkAt, which loads (or re-tickets) the core's chunk. A valid cached core only needs its own
+            // chunk loaded; the 16-block area check is kept for a fresh lookup.
+            if (!com.brandon3055.draconicevolution.lib.LoadedLookup.isLoaded(level, corePos)) {
+                core = null;
+                return null;
+            }
+            if (core != null && !core.isRemoved() && core.getBlockPos().equals(corePos)) {
+                return core;
+            }
             if (!level.isAreaLoaded(corePos, 16)) {
                 core = null;
                 return null;
             }
+            LevelChunk coreChunk = level.getChunkAt(corePos);
 
             BlockEntity tileAtPos = coreChunk.getBlockEntity(corePos, LevelChunk.EntityCreationType.CHECK);
             if (tileAtPos == null || core == null || tileAtPos != core) {
