@@ -52,6 +52,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     //Serialized
     private final List<ModuleEntity<?>> moduleEntities = new ArrayList<>();
     private final List<ConfigProperty> providedProperties = new ArrayList<>();
+    public static final UUID UNSET_IDENTITY = new UUID(0L, 0L);
     private UUID identity = null;
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
@@ -206,10 +207,10 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public UUID getIdentity() {
-        if (identity == null) {
-            regenIdentity();
-        }
-        return identity;
+        // No random id until one is needed (#2040). Fresh items share UNSET_IDENTITY, so identical crafted items
+        // (e.g. from AE2 autocrafting) stack; the module/config menus already give duplicates their own id when
+        // opened (IdentityProvider.resolveDuplicateIdentities), which is then saved.
+        return identity == null ? UNSET_IDENTITY : identity;
     }
 
     @Override
@@ -297,7 +298,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         dataAccess.setter().set(ItemData.MODULE_ENTITIES, FastStream.of(moduleEntities).map(ModuleEntity::copy).toImmutableList(FastStream.infer()));
         dataAccess.setter().set(ItemData.CONFIG_PROPERTIES, FastStream.of(providedProperties).map(ConfigProperty::copy).toImmutableList());
-        dataAccess.setter().set(ItemData.PROVIDER_IDENTITY, getIdentity());
+        if (identity != null) dataAccess.setter().set(ItemData.PROVIDER_IDENTITY, identity);
     }
 
     public void loadData() {
@@ -307,7 +308,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         dataAccess.getter().getOrDefault(ItemData.MODULE_ENTITIES, moduleEntities).forEach(e -> moduleEntities.add(e.copy()));
         dataAccess.getter().getOrDefault(ItemData.CONFIG_PROPERTIES, providedProperties).forEach(e -> providedProperties.add(e.copy()));
-        identity = dataAccess.getter().getOrDefault(ItemData.PROVIDER_IDENTITY, getIdentity());
+        identity = dataAccess.getter().get(ItemData.PROVIDER_IDENTITY);
 
         moduleEntities.forEach(e -> e.setHost(this));
         providedProperties.forEach(e -> e.setProvider(this));
