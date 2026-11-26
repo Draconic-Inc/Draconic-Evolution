@@ -38,6 +38,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> AUTO_FEED_BLACKLIST =
+            net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("draconicevolution", "auto_feed_blacklist"));
+
 
     private BooleanProperty consumeFood = new BooleanProperty("feed_mod.consume_food", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO);
     private double storedFood = 0;
@@ -101,7 +105,9 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                     //Do food consumption
                     for (ItemStack stack : player.getInventory().items) {
                         FoodProperties food = stack.getFoodProperties(player);
-                        if (!stack.isEmpty() && food != null) {
+                        // Never eat "infinite" foods (they use durability) or anything in the
+                        // draconicevolution:auto_feed_blacklist item tag; shrink(1) would delete them (#2017).
+                        if (!stack.isEmpty() && food != null && !stack.isDamageableItem() && !stack.is(AUTO_FEED_BLACKLIST)) {
                             if (food.nutrition() > 0 && food.effects().isEmpty()) {
                                 double val = food.nutrition() + food.saturation();
                                 double rem = getStoredFood() + val - data.foodStorage();
