@@ -155,7 +155,13 @@ public class EnergyLinkEntity extends ModuleEntity<EnergyLinkData> {
         if (linkCharge < data.activationEnergy()) {
             long chargeRate = Math.max(1, data.activationEnergy() / (20 * 30));
             long remaining = data.activationEnergy() - linkCharge;
-            linkCharge += storage.modifyEnergyStored(-Math.min(remaining, chargeRate));
+            long step = Math.min(remaining, chargeRate);
+            long paid = storage.modifyEnergyStored(-step);
+            // The re-link charge used to come only from the capacitor, so after a disconnect with an empty
+            // capacitor it paid 0 forever and sat at "0% linking" while the core was full (#1968).
+            // The core now pays whatever the capacitor can't.
+            if (paid < step) paid += core.energy.extractOP(step - paid, false);
+            linkCharge += paid;
             markDirty();
             return false;
         }
