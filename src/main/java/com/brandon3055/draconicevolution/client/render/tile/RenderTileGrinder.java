@@ -101,8 +101,9 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
         fanMat.apply(new Rotation((tile.fanRotation + (tile.fanSpeed * partialTicks)), 0, 0, 1));
         fanModel.render(ccrs, fanMat);
 
-        if (tile.aoeDisplay > 0.51) {
+        if (tile.aoeDisplay > 0.51 && !tile.isRemoved()) {
             tile.validateKillZone(true);
+            if (tile.killZone == null) return;
             VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(aoeOutlineType), mat);
             Cuboid6 box = new Cuboid6(tile.killZone.move(Vector3.fromTile(tile).multiply(-1).pos()).deflate(0.01).deflate(tile.aoe.get() - tile.aoeDisplay));
             RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);

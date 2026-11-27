@@ -189,7 +189,10 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     public void validateKillZone(boolean forceReCalc) {
         if (forceReCalc || killZone == null) {
-            BlockState state = level.getBlockState(worldPosition);
+            // The tile's own state, not the world's: while the grinder is being broken the renderer can still call
+            // this for a frame after the world already holds air there ("Cannot get property facing ... minecraft:air").
+            BlockState state = getBlockState();
+            if (!state.hasProperty(Grinder.FACING)) return; // keep the last zone
             Direction facing = state.getValue(Grinder.FACING);
             int aoe = this.aoe.get();
             BlockPos pos1 = worldPosition.offset(-(aoe - 1), -(aoe - 1), -(aoe - 1));
