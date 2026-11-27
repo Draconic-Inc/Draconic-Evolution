@@ -33,6 +33,15 @@ public abstract class EquipmentManager implements IEquipmentManager {
     private static boolean curiosLoaded;
     private static EquipmentManager instance = null;
 
+    /** False when the first curio matching the predicate sits in a slot whose render toggle is off. */
+    public static boolean isCurioVisible(Predicate<ItemStack> predicate, LivingEntity entity) {
+        return instance == null || instance.curioVisible(predicate, entity);
+    }
+
+    protected boolean curioVisible(Predicate<ItemStack> predicate, LivingEntity entity) {
+        return true;
+    }
+
     public static void initialize(IEventBus modBus) {
         curiosLoaded = ModList.get().isLoaded("curios");
 

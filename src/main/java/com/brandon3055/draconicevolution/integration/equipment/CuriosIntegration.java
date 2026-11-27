@@ -60,6 +60,14 @@ public class CuriosIntegration extends EquipmentManager {
     }
 
     @Override
+    protected boolean curioVisible(Predicate<ItemStack> predicate, LivingEntity entity) {
+        return CuriosApi.getCuriosInventory(entity)
+                .flatMap(e -> e.findFirstCurio(predicate))
+                .map(r -> r.slotContext().visible())
+                .orElse(true);
+    }
+
+    @Override
     public ItemStack findMatchingItem(Predicate<ItemStack> predicate, LivingEntity entity) {
         return CuriosApi.getCuriosInventory(entity)
                 .map(e -> e.findFirstCurio(predicate))

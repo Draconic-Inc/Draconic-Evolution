@@ -231,7 +231,9 @@ public class DEClient {
         }
         if (BrandonsCore.equipmentManager != null) {
             ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
-            return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
+            // Hidden curio slot = no wings either (flight itself is unaffected; this only drives the wing model).
+            return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity)
+                    && com.brandon3055.draconicevolution.integration.equipment.EquipmentManager.isCurioVisible(e -> e.getItem() instanceof IModularArmor, entity);
         }
         return false;
     }
