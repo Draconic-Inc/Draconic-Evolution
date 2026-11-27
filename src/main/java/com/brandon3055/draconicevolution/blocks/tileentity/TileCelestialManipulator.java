@@ -65,6 +65,8 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     public int timer = 0;
     public boolean storm = false;
     public boolean rain = false;
+    /** Paid when the weather actually changes, not on the click (the run isn't saved, so an unload during the wind-up lost it). */
+    private int weatherCost = 0;
     public long targetTime;
 
     public OPStorage opStorage = new ModularOPStorage(this, 8000000, 4000000, 4000000);
@@ -91,6 +93,8 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                 if (timer >= 230) {
                     timer = 0;
                     weatherToggleRunning.set(false);
+                    if (opStorage.getEnergyStored() < weatherCost) return;
+                    opStorage.modifyEnergyStored(-weatherCost);
                     level.getLevelData().setRaining(rain);
                     ((ServerLevelData) level.getLevelData()).setThundering(storm);
                     int time = (10 * 60 * 20) + level.random.nextInt(20 * 60 * 20);
@@ -112,6 +116,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                         cLevel.setDayTime(cLevel.getDayTime() + ticks);
                     } else {
                         ServerLevel sLevel = (ServerLevel) level;
+                        ticks = (int) Math.min(ticks, Math.max(0, targetTime - sLevel.getDayTime())); // don't skip past the target
                         sLevel.setDayTime(sLevel.getDayTime() + ticks);
                         opStorage.extractEnergy(ticks * 320, false);
                     }
@@ -164,11 +169,22 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     }
 
     public void startTimeWarp(long targetTime) {
+        startTimeWarp(targetTime, null);
+    }
+
+    /** Refuses up front when the stored power can't pay for the whole skip (320 OP per skipped tick). */
+    public boolean startTimeWarp(long targetTime, @Nullable Player player) {
+        long cost = Math.max(0, targetTime - level.getDayTime()) * 320L;
+        if (opStorage.getOPStored() < cost) {
+            sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (" + cost + "RF)"), player);
+            return false;
+        }
         active.set(true);
         this.targetTime = targetTime;
         timer = 0;
         timeWarpRunning.set(true);
         //        sendPacketToClients(new PacketTileMessage(this, (byte) 1, 0, false), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
+        return true;
     }
 
     public void stopTimeWarp() {
@@ -213,7 +229,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                     sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
-                opStorage.modifyEnergyStored(-256000);
+                weatherCost = 256000;
                 toggleWeather(false, false);
                 LogHelper.info("Stopped rain! Cause: " + worldPosition);
                 return;
@@ -226,7 +242,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                     sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
                     return;
                 }
-                opStorage.modifyEnergyStored(-256000);
+                weatherCost = 256000;
                 toggleWeather(true, false);
                 LogHelper.info("Started rain! Cause: " + worldPosition);
                 return;
@@ -239,36 +255,36 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
                     sendMessage(Component.translatable("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
                     return;
                 }
-                opStorage.modifyEnergyStored(-384000);
+                weatherCost = 384000;
                 toggleWeather(true, true);
                 LogHelper.info("Started storm! Cause: " + worldPosition);
                 return;
             case "SUN_RISE":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(0));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(0), player)) return;
                 LogHelper.info("Set time to sunrise! Cause: " + worldPosition);
                 break;
             case "MID_DAY":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(5900));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(5900), player)) return;
                 LogHelper.info("Set time to midday! Cause: " + worldPosition);
                 break;
             case "SUN_SET":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(12000));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(12000), player)) return;
                 LogHelper.info("Set time to sunset! Cause: " + worldPosition);
                 break;
             case "MOON_RISE":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(13000));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(13000), player)) return;
                 LogHelper.info("Set time to moonrise! Cause: " + worldPosition);
                 break;
             case "MIDNIGHT":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(17900));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(17900), player)) return;
                 LogHelper.info("Set time to midnight! Cause: " + worldPosition);
                 break;
             case "MOON_SET":
-                startTimeWarp(level.getDayTime() + calculateTimeTill(22500));
+                if (!startTimeWarp(level.getDayTime() + calculateTimeTill(22500), player)) return;
                 LogHelper.info("Set time to moonset! Cause: " + worldPosition);
                 break;
             case "SKIP_24":
-                startTimeWarp(level.getDayTime() + 24000);
+                if (!startTimeWarp(level.getDayTime() + 24000, player)) return;
                 LogHelper.info("Skipped one day! Cause: " + worldPosition);
                 break;
         }
