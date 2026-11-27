@@ -172,4 +172,9 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     public int getBarColor(ItemStack stack) {
         return damageBarColour(stack);
     }
+    /** Worn as a curio (slot == null): respect that Curios slot's render toggle. */
+    @Override
+    public boolean shouldRenderInSlot(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot) {
+        return slot != null || EquipmentManager.isCurioVisible(e -> e.getItem() instanceof ModularChestpiece, entity);
+    }
 }
